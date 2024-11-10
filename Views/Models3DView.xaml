@@ -9,25 +9,44 @@
     d:DataContext="{d:DesignInstance Type=viewmodesl:Models3DViewModel}"
     mc:Ignorable="d" 
     d:DesignHeight="450" d:DesignWidth="800">
-    <Grid x:Name="_sceneBackground" Background="AliceBlue">
-        <Viewport3D x:Name="_scene">
-            <Viewport3D.Camera>
-                <PerspectiveCamera x:Name="_perspectivCamera"/>
-            </Viewport3D.Camera>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        
+        <Grid x:Name="_sceneBackground" Background="AliceBlue" MouseWheel="OnMouseWheel">
+            <Viewport3D x:Name="_scene">
+                <Viewport3D.Camera>
+                    <PerspectiveCamera x:Name="_perspectivCamera"/>
+                </Viewport3D.Camera>
 
-            <Viewport3D.Children>
-                <ModelVisual3D>
-                    <ModelVisual3D.Content>
-                        <DirectionalLight Color="White" Direction="-1,-1,-2" />
-                    </ModelVisual3D.Content>
-                </ModelVisual3D>
-                <ModelVisual3D>
-                    <ModelVisual3D.Content>
-                        <Model3DGroup Children="{Binding Models, Mode=TwoWay}"/>
-                    </ModelVisual3D.Content>
-                </ModelVisual3D>
-            </Viewport3D.Children>
-        </Viewport3D>
+                <Viewport3D.Children>
+                    <ModelVisual3D>
+                        <ModelVisual3D.Content>
+                            <DirectionalLight Color="White" Direction="-1,-1,-2" />
+                        </ModelVisual3D.Content>
+                    </ModelVisual3D>
+                    <ModelVisual3D>
+                        <ModelVisual3D.Content>
+                            <Model3DGroup Children="{Binding Models, Mode=TwoWay}"/>
+                        </ModelVisual3D.Content>
+                    </ModelVisual3D>
+                </Viewport3D.Children>
+            </Viewport3D>
+        </Grid>
+        <StackPanel Orientation="Horizontal" Grid.Row="1" DataContext="{Binding ElementName=_perspectivCamera}" Background="White">
+            <StackPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="Margin" Value="10 0"/>
+                </Style>
+            </StackPanel.Resources>
+            <TextBlock Text="{Binding Position.X, StringFormat = X : {0}}"/>
+            <TextBlock Text="{Binding Position.Y, StringFormat = Y : {0}}"/>
+            <TextBlock Text="{Binding Position.Z, StringFormat = Z : {0}}"/>
+        </StackPanel>
     </Grid>
+    
     
 </baseviews:ViewMvvmBase>

@@ -1,5 +1,6 @@
 ﻿using GohMdlExpert.ViewModesl;
 using GohMdlExpert.Views.Camera3D;
+using GohMdlExpert.Views.Models3D;
 using GohMdlExpert.Views.MouseHandlers;
 using MvvmWpf.ViewModels;
 using MvvmWpf.Views;
@@ -19,7 +20,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace GohMdlExpert.Views
 {
@@ -33,7 +33,10 @@ namespace GohMdlExpert.Views
 
         private Models3DViewModel Models3DViewModel => (Models3DViewModel)ViewModel!;
 
+        
+
         public Models3DView() {
+            
             InitializeComponent();
 
             ViewModel = new Models3DViewModel();
@@ -46,21 +49,36 @@ namespace GohMdlExpert.Views
             _mouseCameraPositionMover.MouseDownMove += OnMouseCameraPositionMover;
 
             _cameraPositioner.SetCameraFocus(Models3DViewModel.ModelsCenter ?? new Point3D());
+
+            var tr = new TranslateTransform3D(_cameraPositioner.Focus - new Point3D());
+
+            _cameraPositioner.PropertyChanged += (_, e) => {
+                if (e.PropertyName == "Focus") {
+                    tr.OffsetX = _cameraPositioner.Focus.X;
+                    tr.OffsetY = _cameraPositioner.Focus.Y;
+                    tr.OffsetZ = _cameraPositioner.Focus.Z;
+                }
+            };
+
+            _scene.Children.Add(new ModelVisual3D() {
+                Content = Geometry3DDrawinger.DrowCube(0.1),
+                Transform = tr
+            });
         }
 
         public PerspectiveCamera Camera => _perspectivCamera;
 
         private void OnMouseCameraPositionMover(object sender, MouseDownHolder.MouseMoveArgs e) {
-            var newCameraPosition = _perspectivCamera.Position;
-            newCameraPosition.X += e.Vector.X / 1000;
-            newCameraPosition.Y += e.Vector.Y / 1000;
-            Debug.Print(e.Vector.ToString());
-            _perspectivCamera.Position = newCameraPosition;
+            //_cameraPositioner.MoveCamera(new Vector3D(e.Vector.X, e.Vector.Y, 0) / 100);
         }
 
         private void OnMouseCameraRotationMove(object sender, MouseDownHolder.MouseMoveArgs e) {
-            _cameraPositioner.RotationCameraAroundFocus((e.Vector.X < 0) ? 1 : -1);
-            _cameraPositioner.RotationXCameraAroundFocus((e.Vector.Y > 0) ? 0.5 : -0.5);
+            _cameraPositioner.RotationCameraAroundFocus(e.Vector.X * 0.5);
+            _cameraPositioner.RotationXCameraAroundFocus(e.Vector.Y * 0.5);
+        }
+
+        private void OnMouseWheel(object sender, MouseWheelEventArgs e) {
+            _cameraPositioner.ZoomCamera(e.Delta / 120);
         }
     }
 }

@@ -16,6 +16,7 @@ namespace GohMdlExpert.Views.MouseHandlers {
 
         private readonly FrameworkElement _frameworkElement;
         private Point _mousePosition;
+        private Point _startMousePosition;
         private bool _mouseReturn;
 
         private Point FrameworkElementCenter => new(_frameworkElement.ActualWidth / 2, _frameworkElement.ActualHeight / 2);
@@ -35,7 +36,7 @@ namespace GohMdlExpert.Views.MouseHandlers {
 
         private void OnMouseButtonDown(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == NeedMouseButton) {
-                _mousePosition = e.GetPosition(Application.Current.MainWindow);
+                _mousePosition = _startMousePosition = e.GetPosition(Application.Current.MainWindow);
                 Mouse.OverrideCursor = Cursors.None;
                 Mouse.Capture(_frameworkElement);
             }
@@ -44,7 +45,7 @@ namespace GohMdlExpert.Views.MouseHandlers {
         private void OnMouseButtonUp(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == NeedMouseButton) {
                 Mouse.OverrideCursor = Cursors.Arrow;
-                SetCursorPos((int)(FrameworkElementPosition.X + FrameworkElementCenter.X), (int)(FrameworkElementPosition.Y + FrameworkElementCenter.Y));
+                SetCursorPos((int)(FrameworkElementPosition.X + _startMousePosition.X), (int)(FrameworkElementPosition.Y + _startMousePosition.Y));
                 Mouse.Capture(null);
             }
         }

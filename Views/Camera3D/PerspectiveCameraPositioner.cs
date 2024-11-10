@@ -10,16 +10,17 @@ using System.Windows.Media.Media3D;
 
 namespace GohMdlExpert.Views.Camera3D {
     public class PerspectiveCameraPositioner : INotifyPropertyChanged {
-        private PerspectiveCamera _camera;
+        private readonly PerspectiveCamera _camera;
+        private readonly AxisAngleRotation3D _cameraYRotation;
+        private readonly AxisAngleRotation3D _cameraXRotation;
+        private readonly RotateTransform3D _cameraRotationYTransform;
+        private readonly RotateTransform3D _cameraRotationXTransform;
         private Point3D _focus;
-        readonly AxisAngleRotation3D _cameraYRotation;
-        readonly AxisAngleRotation3D _cameraXRotation;
-        readonly RotateTransform3D _cameraRotationYTransform;
-        readonly RotateTransform3D _cameraRotationXTransform;
 
         public Point3D Focus {
             get => _focus; set {
                 _focus = value;
+                UpdateCameraLookDirection();
                 OnPropertyChanged(nameof(Focus));
             }
         }
@@ -55,29 +56,47 @@ namespace GohMdlExpert.Views.Camera3D {
             };
         }
 
-        public void RotationCameraAroundFocus(double Angle) {
-            _cameraYRotation.Angle += Angle;
+        public void RotationCameraAroundFocus(double angle) {
+            _cameraYRotation.Angle += angle * -1;
         }
 
-        public void RotationXCameraAroundFocus(double Angle) {
-            _cameraXRotation.Angle += Angle;
+        public void RotationXCameraAroundFocus(double angle) {
+            _cameraXRotation.Angle += angle;
         }
 
         public void ZoomCamera(int value) {
             var moveVector = _camera.Position - Focus;
             var newPosition = _camera.Position;
 
-            newPosition.X += moveVector.X / 10;
-            newPosition.Y += moveVector.Y / 10;
-            newPosition.Z += moveVector.Z / 10;
+            value *= -1;
+
+            newPosition.X += moveVector.X * value / 10;
+            newPosition.Y += moveVector.Y * value / 10;
+            newPosition.Z += moveVector.Z * value / 10;
             _camera.Position = newPosition;
         }
 
         public void SetCameraFocus(Point3D point) {
             Focus = _camera.Position = point;
-            _camera.Position += new Vector3D(0, 5, -20);
-            _camera.LookDirection = Focus - _camera.Position;
+            _camera.Position += new Vector3D(0, 0, -20);
+            RotationXCameraAroundFocus(10);
+            UpdateCameraLookDirection();
 
+        }
+
+        public void MoveCamera(Vector3D vector) {
+            var newCameraPosition = _camera.Position;
+
+            Vector3D focusVector = Focus - _camera.Position;
+
+            newCameraPosition += vector;
+            //Focus += vector;
+
+            _camera.Position = newCameraPosition;
+        }
+
+        private void UpdateCameraLookDirection() {
+            _camera.LookDirection = Focus - _camera.Position;
         }
 
         private void OnPropertyChanged([CallerMemberName] string? propertyName = null) {
