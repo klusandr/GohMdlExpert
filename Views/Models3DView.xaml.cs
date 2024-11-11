@@ -1,4 +1,4 @@
-﻿using GohMdlExpert.ViewModesl;
+﻿using GohMdlExpert.ViewModels;
 using GohMdlExpert.Views.Camera3D;
 using GohMdlExpert.Views.Models3D;
 using GohMdlExpert.Views.MouseHandlers;
@@ -50,6 +50,8 @@ namespace GohMdlExpert.Views
 
             _cameraPositioner.SetCameraFocus(Models3DViewModel.ModelsCenter ?? new Point3D());
 
+            //Models3DViewModel.Models.Changed += ((_, _) => _cameraPositioner.SetCameraFocus(Models3DViewModel.ModelsCenter ?? new Point3D()));
+
             var tr = new TranslateTransform3D(_cameraPositioner.Focus - new Point3D());
 
             _cameraPositioner.PropertyChanged += (_, e) => {
@@ -69,7 +71,7 @@ namespace GohMdlExpert.Views
         public PerspectiveCamera Camera => _perspectivCamera;
 
         private void OnMouseCameraPositionMover(object sender, MouseDownHolder.MouseMoveArgs e) {
-            //_cameraPositioner.MoveCamera(new Vector3D(e.Vector.X, e.Vector.Y, 0) / 100);
+            _cameraPositioner.MoveCamera(new Vector3D(e.Vector.X, e.Vector.Y, 0) / 100);
         }
 
         private void OnMouseCameraRotationMove(object sender, MouseDownHolder.MouseMoveArgs e) {
