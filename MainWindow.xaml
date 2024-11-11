@@ -4,10 +4,28 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GohMdlExpert"
-        xmlns:views="clr-namespace:GohMdlExpert.Views"
+        xmlns:views="clr-namespace:GohMdlExpert.Views" 
+        xmlns:viewmodels="clr-namespace:GohMdlExpert.ViewModels" 
+        d:DataContext="{d:DesignInstance Type=viewmodels:ApplicationViewModel}"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <views:Models3DView/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Menu Margin="5">
+            <Menu.Resources>
+                <Style TargetType="MenuItem">
+                    <Setter Property="Padding" Value="5 0"/>
+                </Style>
+            </Menu.Resources>
+            <MenuItem Header="Файл">
+                <MenuItem Header="Открыть" Command="{Binding OpenFileCommand}"/>
+                <MenuItem Header="Перебор" Command="{Binding ThroughModelsCommand}"/>
+            </MenuItem>
+        </Menu>
+
+        <views:Models3DView Grid.Row="1" />
     </Grid>
 </Window>

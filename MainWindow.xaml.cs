@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using GohMdlExpert.ViewModels;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -14,8 +15,13 @@ namespace GohMdlExpert {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
+
+        public ApplicationViewModel ViewModel => (ApplicationViewModel)DataContext;
+
         public MainWindow() {
             InitializeComponent();
+
+            DataContext = new ApplicationViewModel();
         }
     }
 }
