@@ -4,9 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GohMdlExpert.Models.GohModel {
-    public class MdlModel {
-        
-
+namespace GohMdlExpert.Models.GatesOfHell.Resources {
+    internal class MtlTexture {
     }
 }

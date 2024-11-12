@@ -1,4 +1,5 @@
-﻿using GohMdlExpert.Models;
+﻿using GohMdlExpert.Models.GatesOfHell.Resources;
+using GohMdlExpert.Models.GatesOfHell.Serialization;
 using GohMdlExpert.Views.Models3D;
 using Microsoft.Win32;
 using MvvmWpf.Extensions;
@@ -9,10 +10,14 @@ using System.Data.Common;
 using System.IO;
 using System.Reflection.Metadata;
 using System.Windows.Input;
-using static GohMdlExpert.Models.MdlSerialize;
+using ModelDataParametr = GohMdlExpert.Models.GatesOfHell.Serialization.ModelDataSerializer.ModelDataParameter;
+using MdlTypes = GohMdlExpert.Models.GatesOfHell.Serialization.MdlSerialize.MdlTypes;
 
-namespace GohMdlExpert.ViewModels {
+namespace GohMdlExpert.ViewModels
+{
     public class ApplicationViewModel : ViewModelBase {
+        private MdlSerialize _mdlSerialize = new MdlSerialize();
+
         public string Path { get; set; } = "F:\\SDK\\Content\\goh\\entity\\humanskin\\[germans]";
 
         public ICommand OpenFileCommand => CommandManager.GetCommand(OpenFile);
@@ -25,20 +30,18 @@ namespace GohMdlExpert.ViewModels {
             fileDialog.Filter = "Mdl files (*.mdl)|*.mdl";
 
             if (fileDialog.ShowDialog() ?? false) {
-                var d = MdlSerialize.Deserialize(File.ReadAllText(fileDialog.FileName));
+                var d = _mdlSerialize.Deserialize(File.ReadAllText(fileDialog.FileName));
 
-                List<string> files = new List<string>();
+                List<string> files = new();
 
-                foreach (var lodViewParameter in (IEnumerable<MdlParameter>)FindParameter(d, MdlTypes.Bone, "skin")?.Data!) {
-                    files.Add((string)((IEnumerable<MdlParameter>)lodViewParameter.Data!).First().Data!);
+                foreach (var lodViewParameter in (IEnumerable<ModelDataParametr>)FindParameter(d, MdlTypes.Bone.ToString(), "skin")?.Data!) {
+                    files.Add((string)((IEnumerable<ModelDataParametr>)lodViewParameter.Data!).First().Data!);
                 }
 
                 var models3DViewModel = ViewModelManager.GetViewModel<Models3DViewModel>();
 
                 foreach (var file in files) {
-                    if (!file.Contains("head")) {
-                        models3DViewModel.Models.Add(models3DViewModel.OpenPlyFile(file.Replace("..", Path)));
-                    }
+                    models3DViewModel.OpenPlyFile(file.Replace("..", Path));
                 }
             }
         }
@@ -49,7 +52,7 @@ namespace GohMdlExpert.ViewModels {
 
             var models3DViewModel = ViewModelManager.GetViewModel<Models3DViewModel>();
 
-            models3DViewModel.Models.Add(models3DViewModel.OpenPlyFile(ranksFiles[0]));
+            models3DViewModel.OpenPlyFile(ranksFiles[0]);
 
 
             await Task.Run(() => {
@@ -58,12 +61,12 @@ namespace GohMdlExpert.ViewModels {
                     App.Current.Synchronize(() => {
                         if (i < ranksFiles.Length) {
                             models3DViewModel.Models.RemoveAt(models3DViewModel.Models.Count - 1);
-                            models3DViewModel.Models.Add(models3DViewModel.OpenPlyFile(ranksFiles[i]));
+                            models3DViewModel.OpenPlyFile(ranksFiles[i]);
                         }
 
                         if (i < ranksFiles1.Length) {
                             models3DViewModel.Models.RemoveAt(models3DViewModel.Models.Count - 2);
-                            models3DViewModel.Models.Add(models3DViewModel.OpenPlyFile(ranksFiles1[i]));
+                            models3DViewModel.OpenPlyFile(ranksFiles1[i]);
                         }
                     });
                 }
@@ -75,8 +78,8 @@ namespace GohMdlExpert.ViewModels {
             });
         }
 
-        private MdlParameter? FindParameter(IEnumerable<MdlParameter> parameters, MdlTypes type, string? name = null) {
-            MdlParameter? result = null;
+        private ModelDataSerializer.ModelDataParameter? FindParameter(IEnumerable<ModelDataSerializer.ModelDataParameter> parameters, string type, string? name = null) {
+            ModelDataSerializer.ModelDataParameter? result = null;
 
             foreach (var parameter in parameters) {
                 if (parameter.Data != null) {
@@ -90,12 +93,12 @@ namespace GohMdlExpert.ViewModels {
             return result;
         }
 
-        private MdlParameter? FindParameter(MdlParameter parameter, MdlTypes type, string? name = null) {
+        private ModelDataSerializer.ModelDataParameter? FindParameter(ModelDataSerializer.ModelDataParameter parameter, string type, string? name = null) {
             if (parameter.Type == type && name != null && parameter.Name == name) {
                 return parameter;
             }
 
-            if (parameter.Data is IEnumerable<MdlParameter> parametersCollection) {
+            if (parameter.Data is IEnumerable<ModelDataSerializer.ModelDataParameter> parametersCollection) {
                 return FindParameter(parametersCollection, type, name);
             }
 
