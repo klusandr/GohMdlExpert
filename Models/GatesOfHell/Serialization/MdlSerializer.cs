@@ -1,7 +1,7 @@
 ﻿using System.Text;
 
 namespace GohMdlExpert.Models.GatesOfHell.Serialization {
-    public class MdlSerialize : ModelDataSerializer {
+    public class MdlSerializer : ModelDataSerializer {
         public enum MdlTypes {
             Skeleton,
             Bone,
@@ -15,7 +15,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
             VolumeView,
         }
 
-        public MdlSerialize() {
+        public MdlSerializer() {
             AddType("Skeleton", "skeleton");   
             AddType("Bone", "bone");   
             AddType("BoneRevolute", "bone revolute");   

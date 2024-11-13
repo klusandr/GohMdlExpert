@@ -19,7 +19,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
 
             public Face() { }
         }
-
+        
         public Point3D[] Points { get; init; }
         public Face[] Faces { get; init; }
         public Vector3D[]? Normalizes { get; init; }

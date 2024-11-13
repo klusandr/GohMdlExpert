@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static GohMdlExpert.Models.GatesOfHell.Serialization.MdlSerialize;
+using static GohMdlExpert.Models.GatesOfHell.Serialization.MdlSerializer;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace GohMdlExpert.Models.GatesOfHell.Serialization {
@@ -25,6 +25,35 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
        
         public ModelDataSerializer() {
             _types = new();
+        }
+
+        public static ModelDataParameter? FindParameterByName(IEnumerable<ModelDataParameter> parameters, string name) {
+            return FindParameter(parameters, null, name);
+        }
+
+        public static ModelDataParameter? FindParameter(IEnumerable<ModelDataParameter> parameters, string? type, string? name = null) {
+            ModelDataParameter? result = null;
+
+            foreach (var parameter in parameters) {
+                result = FindParameter(parameter, type, name);
+                if (result != null) {
+                    break;
+                }
+            }
+
+            return result;
+        }
+
+        public static ModelDataParameter? FindParameter(ModelDataParameter parameter, string? type, string? name = null) {
+            if ((type == null || parameter.Type == type) && (name == null || parameter.Name == name)) {
+                return parameter;
+            }
+
+            if (parameter.Data is IEnumerable<ModelDataParameter> parametersCollection) {
+                return FindParameter(parametersCollection, type, name);
+            }
+
+            return null;
         }
 
         protected void AddType(string typeName, string? typeInText = null) {
@@ -52,6 +81,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
 
             ClearComments(buildText);
             SetSimpleType(buildText);
+            buildText.Replace("\t", " ");
 
             return ParseParameter(buildText.ToString().Trim('{', '}'));
         }
