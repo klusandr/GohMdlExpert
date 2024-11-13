@@ -25,6 +25,10 @@ namespace GohMdlExpert.ViewModels
 
         public IAsyncCommand ThroughModelsCommand => CommandManager.GetAsyncCommand(ThroughModels);
 
+        public ApplicationViewModel() {
+            ResourceLocations.Instance.ResourcePath = "F:\\SDK\\Content\\goh";
+        }
+
         public void OpenFile() {
             var fileDialog = new OpenFileDialog();
 
@@ -44,8 +48,6 @@ namespace GohMdlExpert.ViewModels
                 //foreach (var file in files) {
                 //    models3DViewModel.OpenPlyFile(file.Replace("..", Path));
                 //}
-
-                ResourceLocations.Instance.ResourcePath = "F:\\SDK\\Content\\goh";
 
                 //var mdlFile = new MdlFile(fileDialog.FileName);
 
