@@ -54,6 +54,8 @@ namespace GohMdlExpert.ViewModels
                 //var text = mdlFile.Data.Textures[0].Data.Diffuse.Data;
 
                 models3DViewModel.OpenMdlFile(fileDialog.FileName);
+                    }
+                }
             }
         }
 
@@ -71,21 +73,27 @@ namespace GohMdlExpert.ViewModels
                     Thread.Sleep(100);
                     App.Current.Synchronize(() => {
                         if (i < ranksFiles.Length) {
-                            models3DViewModel.Models.RemoveAt(models3DViewModel.Models.Count - 1);
+                        models3DViewModel.Models.RemoveAt(models3DViewModel.Models.Count - 1);
                             models3DViewModel.OpenPlyFile(ranksFiles[i]);
-                        }
+        }
 
                         if (i < ranksFiles1.Length) {
                             models3DViewModel.Models.RemoveAt(models3DViewModel.Models.Count - 2);
                             models3DViewModel.OpenPlyFile(ranksFiles1[i]);
-                        }
-                    });
                 }
+                    });
+            }
 
                 foreach (var rankFile in ranksFiles) {
 
-                    
-                }
+        private MdlParameter? FindParameter(MdlParameter parameter, MdlTypes type, string? name = null) {
+            if (parameter.Type == type && name != null && parameter.Name == name) {
+                return parameter;
+            }
+
+            if (parameter.Data is IEnumerable<MdlParameter> parametersCollection) {
+                return FindParameter(parametersCollection, type, name);
+            }
             });
         }
     }

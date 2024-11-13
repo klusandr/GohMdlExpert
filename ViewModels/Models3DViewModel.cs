@@ -53,12 +53,12 @@ namespace GohMdlExpert.ViewModels
                             }
                         );
 
-                    var mesh = new MeshGeometry3D {
+            var mesh = new MeshGeometry3D {
                         Positions = new Point3DCollection(points),
                         Normals = new Vector3DCollection(plyModels.Normalizes),
                         TriangleIndices = new Int32Collection(triangleIndices),
                         TextureCoordinates = new PointCollection(plyModels.UVPoints)
-                    };
+            };
 
                     meshes.Add((mesh, meshData.TextureFileName));
                 }
@@ -102,7 +102,7 @@ namespace GohMdlExpert.ViewModels
                     Normals = new Vector3DCollection(plyModel.Normalizes),
                     TriangleIndices = new Int32Collection(triangleIndices),
                     TextureCoordinates = new PointCollection(plyModel.UVPoints)
-                };
+            };
 
                 meshes.Add((mesh, meshData.TextureFileName));
             }
