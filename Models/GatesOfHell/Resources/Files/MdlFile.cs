@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static GohMdlExpert.Models.MdlSerialize;
 using ModelDataParameter = GohMdlExpert.Models.GatesOfHell.Serialization.ModelDataSerializer.ModelDataParameter;
 using SystemPath = System.IO.Path;
 
@@ -15,7 +16,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
         public static MdlSerializer Serializer => s_serializer ??= new MdlSerializer();
 
-        public new MdlModel? Data { get => (MdlModel?)base.Data; set => base.Data = value; }
+        public new MdlModel Data { get => (MdlModel)base.Data; set => base.Data = value; }
 
         public override string? Extension => ".mdl";
 
@@ -23,14 +24,14 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             : base(name, path, relativePathPoint, location) { }
 
         public override void LoadData() {
-            var mdlParameters = Serializer.Deserialize(GetAllText());
+            var parameters = (IEnumerable<ModelDataParameter>)Serializer.Deserialize(GetAllText()).Data!;
             var plyFiles = new List<PlyFile>();
             var textureNames = new List<string>();
 
-            var plyFilesParameters = (IEnumerable<ModelDataParameter>)ModelDataSerializer.FindParameter(mdlParameters, MdlSerializer.MdlTypes.Bone.ToString(), "skin")?.Data!;
+            var plySkinsParameter = (IEnumerable<ModelDataParameter>)ModelDataSerializer.FindParameterByName(parameters, "skin")?.Data!;
 
-            foreach (var plyFilesParameter in plyFilesParameters) {
-                foreach (var plyFileName in ((IEnumerable<ModelDataParameter>)plyFilesParameter.Data!).Select(p => (string)p.Data!)) {
+            foreach (var plySkinParameter in plySkinsParameter) {
+                foreach (var plyFileName in ((IEnumerable<ModelDataParameter>)plySkinParameter.Data!).Select(p => (string)p.Data!)) {
                     var plyFile = new PlyFile(plyFileName, relativePathPoint: Path);
                     textureNames.AddRange(plyFile.Data!.Meshes!.Select(m => m.TextureFileName));
                     plyFiles.Add(plyFile);
@@ -39,7 +40,12 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
             var textures = textureNames.Distinct().Select(t => new MtlFile(t, Path));
 
-            Data = new MdlModel(plyFiles, textures);
+            Data = new MdlModel(parameters, plyFiles, textures);
+        }
+
+        private void GetPlyFileNames() {
+            var mdlParameters = Serializer.Deserialize(GetAllText());
+            var plySkinsParameter = (IEnumerable<ModelDataParameter>)ModelDataSerializer.FindParameter(mdlParameters, MdlSerializer.MdlTypes.Bone.ToString(), "skin")?.Data!;
         }
     }
 }

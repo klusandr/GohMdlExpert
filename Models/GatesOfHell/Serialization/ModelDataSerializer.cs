@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using static GohMdlExpert.Models.GatesOfHell.Serialization.MdlSerializer;
@@ -31,6 +32,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
             return FindParameter(parameters, null, name);
         }
 
+        public static ModelDataParameter? FindParameterByName(ModelDataParameter parameter, string name) {
+            return FindParameter(parameter, null, name);
+        }
+
         public static ModelDataParameter? FindParameter(IEnumerable<ModelDataParameter> parameters, string? type, string? name = null) {
             ModelDataParameter? result = null;
 
@@ -56,6 +61,26 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
             return null;
         }
 
+        public virtual string Serialize(ModelDataParameter modelDataParameter) {
+            throw new NotImplementedException();
+        }
+
+        public virtual ModelDataParameter Deserialize(string text) {
+            var buildText = new StringBuilder(text);
+
+            ClearComments(buildText);
+            SetSimpleType(buildText);
+            buildText.Replace("\t", " ");
+
+            return ParseParameter(buildText.ToString().Trim('{', '}'));
+        }
+
+        public ModelDataParameter DesirializeParameter(string text, string parameterName) {
+            int bracketIndex = text.LastIndexOf('{', text.IndexOf(parameterName));
+
+            return Deserialize(text[bracketIndex..(GetIndexOfClosingBracket(text, bracketIndex) + 1)]);
+        }
+
         protected void AddType(string typeName, string? typeInText = null) {
             if (_types.ContainsKey(typeName)) {
                 throw new ArgumentException("Error add type. Model data type already exists!", nameof(typeName));
@@ -72,18 +97,25 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
             _types[typeName] = (value.nameInText, parse);
         }
 
-        public virtual string Serialize(ModelDataParameter modelDataParameter) {
-            throw new NotImplementedException();
-        }
+        private static int GetIndexOfClosingBracket(string text, int indexOpen, char openBracket = '{', char closeBracket = '}') {
+            int open = 0;
+            int close = 0;
 
-        public virtual ModelDataParameter Deserialize(string text) {
-            var buildText = new StringBuilder(text);
+            for (int i = indexOpen; i < text.Length; i++) {
+                if (text[i] == openBracket) {
+                    open++;
+                }
 
-            ClearComments(buildText);
-            SetSimpleType(buildText);
-            buildText.Replace("\t", " ");
+                if (text[i] == closeBracket) {
+                    close++;
+                }
 
-            return ParseParameter(buildText.ToString().Trim('{', '}'));
+                if (close == open) {
+                    return i;
+                }
+            }
+
+            return -1;
         }
 
         private ModelDataParameter ParseParameter(string text) {

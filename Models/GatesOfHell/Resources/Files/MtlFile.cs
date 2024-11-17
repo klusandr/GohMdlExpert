@@ -8,12 +8,14 @@ using System.Threading.Tasks;
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class MtlFile : GohResourceFile {
         public static MtlSerializer? s_serializer;
+        public static GohResourceLoader? s_loader;
 
-        public static MtlSerializer Serializer => s_serializer ??= new MtlSerializer();
+        private static MtlSerializer Serializer => s_serializer ??= new MtlSerializer();
+        private static GohResourceLoader Loader => s_loader ??= GohResourceLoader.Instance;
 
         public override string? Extension => ".mtl";
 
-        public new MtlTexture? Data { get => (MtlTexture?)base.Data; set => base.Data = value; }
+        public new MtlTexture Data { get => (MtlTexture)base.Data; set => base.Data = value; }
 
         public MtlFile(string name, string? path = null, string? relativePathPoint = null, string? location = null) 
             : base(name, path, relativePathPoint, location) { }
@@ -28,7 +30,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             diffusePath = diffusePath.Replace("$", "");
 
             Data = new MtlTexture() {
-                Diffuse = new TextureFile(diffusePath, location: "textures")
+                Diffuse = Loader.GetTextureFile(diffusePath),
             };
         }
     }

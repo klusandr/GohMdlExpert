@@ -6,19 +6,23 @@ using System.Threading.Tasks;
 
 namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
     public class GohResourceFileException : GohException {
-        private static readonly string s_message = "Loading Gates of hell resource file error.";
+        private static readonly string s_message = "Loading Gates of hell resource file {0} error.";
 
-        public GohResourceFileException() : base(GetFullErrorMessage()) { }
+        public string? FileName { get; init; }
 
-        public GohResourceFileException(string message) : base(GetFullErrorMessage(message)) { }
+        public GohResourceFileException(string? fileName = null) : base(GetFullErrorMessage(fileName: fileName)) {
+            FileName = fileName;
+        }
 
-        public GohResourceFileException(string message, Exception inner) : base(GetFullErrorMessage(message), inner) { }
+        public GohResourceFileException(string message, string? fileName = null) : base(GetFullErrorMessage(message, fileName)) { }
 
-        private static string GetFullErrorMessage(string? message = null) {
+        public GohResourceFileException(string message, Exception inner, string? fileName = null) : base(GetFullErrorMessage(message, fileName), inner) { }
+
+        private static string GetFullErrorMessage(string? message = null, string? fileName = null) {
             if (message == null) {
-                return s_message;
+                return string.Format(s_message, fileName);
             } else {
-                return s_message + " " + message;
+                return string.Format(s_message) + " " + message;
             }
         }
     }

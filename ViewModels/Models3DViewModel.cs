@@ -78,8 +78,8 @@ namespace GohMdlExpert.ViewModels
             }
         }
 
-        public void OpenPlyFile(string fileName) {
-            var plyModel = new PlyFile(fileName).Data;
+        public void OpenPlyFile(PlyFile plyFile) {
+            var plyModel = plyFile.Data!;
 
             List<(Geometry3D mesh, string texture)> meshes = new();
 
@@ -110,7 +110,7 @@ namespace GohMdlExpert.ViewModels
 
             foreach (var mesh in meshes) {
                 if (!_texturesCache.ContainsKey(mesh.texture)) {
-                    var d = Directory.GetFiles(ResourceLocations.Instance.GetLocationPath("ger_humanskin"), mesh.texture, SearchOption.AllDirectories);
+                    var d = Directory.GetFiles(GohResourceLocations.Instance.GetLocationFullPath("ger_humanskin"), mesh.texture, SearchOption.AllDirectories);
 
                     var textureFileName = d.First();
                     _texturesCache.Add(mesh.texture, new MtlFile(textureFileName));

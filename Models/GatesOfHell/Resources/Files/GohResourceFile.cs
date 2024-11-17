@@ -3,47 +3,40 @@ using System.IO;
 using SystemPath = System.IO.Path;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
-    public class GohResourceFile {
+    public class GohResourceFile : GohResourceElement {
         private object? _data;
 
-        public string Name { get; set; }
-        public string? Path { get; set; }
-        public bool RelativePath => RelativePathPoint != null || ResourceLocation != null;
-        public string? RelativePathPoint { get; set; }
-        public string? ResourceLocation { get; set; }
         public virtual string? Extension => null;
-        public object? Data {
+        public object Data {
             get {
                 if (_data == null) {
                     LoadData();
                 } 
 
-                return _data;
+                return _data!;
             }
             set => _data = value;
         }
 
-        public GohResourceFile(string name, string? path = null, string? relativePathPoint = null, string? location = null) {
+        public GohResourceFile(string name, string? path = null, string? relativePathPoint = null, string? location = null) : base(name, path, relativePathPoint, location) {
             if (Extension != null && SystemPath.GetExtension(name) != Extension) {
                 throw new GohResourceFileException($"File \"{GetFullPath}\" is not {Extension}.");
             }
 
             if (path == null) {
-                path = SystemPath.GetDirectoryName(name);
-                name = SystemPath.GetFileName(name);
+                Path = SystemPath.GetDirectoryName(name);
+
+                if (Path == "") { Path = null; }
+
+                Name = SystemPath.GetFileName(name);
             }
-            
-            Name = name;
-            Path = path;
-            ResourceLocation = location;
-            RelativePathPoint = relativePathPoint;
         }
 
         public string GetAllText() {
             string path = GetFullPath();
 
             if (!File.Exists(path)) {
-                throw new GohResourcesException("Resource file is not exists");
+                throw new GohResourceFileException("File is not exists.", path);
             }
 
             return File.ReadAllText(path);
@@ -53,28 +46,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             string path = GetFullPath();
 
             if (!File.Exists(path)) {
-                throw new GohResourcesException("Resource file is not exists");
+                throw new GohResourceFileException("File is not exists.", path);
             }
 
             return new FileStream(path, FileMode.Open);
-        }
-
-        public string GetFullPath() {
-            string path = Path ?? "";
-
-            if (!SystemPath.IsPathFullyQualified(path) && RelativePath) {
-                string absolutePath;
-
-                if (ResourceLocation != null) {
-                    absolutePath = SystemPath.Join(ResourceLocations.Instance.GetLocationPath(ResourceLocation), path);
-                } else {
-                    absolutePath = SystemPath.GetFullPath(SystemPath.Combine(RelativePathPoint!, path));
-                }
-
-                path = absolutePath;
-            }
-
-            return SystemPath.Combine(path, Name);
         }
 
         public virtual void LoadData() {

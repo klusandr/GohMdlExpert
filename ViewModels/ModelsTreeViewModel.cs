@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace GohMdlExpert.ViewModels {
     public class ModelsTreeViewModel : ViewModelBase {
@@ -26,7 +27,7 @@ namespace GohMdlExpert.ViewModels {
         }
 
         public void LoadModels() {
-            var d = ResourceLocations.Instance.GetLocationPath("ger_humanskin_source");
+            var d = GohResourceLoader.Instance.GetResourceDirectory("ger_humanskin_source");
 
             var item = new TreeViewItem() { Header = "[get_source]" };
             ModelsFiles.Add(item);
@@ -35,19 +36,19 @@ namespace GohMdlExpert.ViewModels {
 
         }
 
-        public void LoadPlyDirectory(string path, TreeViewItem currentItem) {
-            var directories = Directory.GetDirectories(path);
-            var fileNames = Directory.GetFiles(path).Where(f => Path.GetExtension(f) == ".ply" && !f.Contains("lod"));
-            
+        public void LoadPlyDirectory(GohResourceDirectory currentDirectory, TreeViewItem currentItem) {
+            var directories = currentDirectory.GetDirectories();
+            var files = currentDirectory.GetFiles().OfType<PlyFile>().Where(f => !f.Name.Contains("lod"));
+
             foreach (var directory in directories) {
-                var newItem = new TreeViewItem() { Header = GetLastDirectory(directory) };
+                var newItem = new TreeViewItem() { Header = directory.Name };
                 currentItem.Items.Add(newItem);
                 LoadPlyDirectory(directory, newItem);
             }
 
-            foreach (var file in fileNames) {
-                var newItem = new TreeViewItem() { 
-                    Header = Path.GetFileName(file),
+            foreach (var file in files) {
+                var newItem = new TreeViewItem() {
+                    Header = file.Name,
                     DataContext = file,
                 };
                 currentItem.Items.Add(newItem);
@@ -56,13 +57,34 @@ namespace GohMdlExpert.ViewModels {
         }
 
         private void PlyModelMouseDoubleClick(object sender, MouseButtonEventArgs e) {
-            if (sender is TreeViewItem item) {
-                Models3DViewModel.OpenPlyFile((string)item.DataContext);
-            }
-        }
+            if (sender is TreeViewItem item && item.IsSelected) {
+                var plyFile = (PlyFile)item.DataContext;
 
-        private string GetLastDirectory(string path) {
-            return path[(path.LastIndexOf("\\") + 1)..];
+                var plyModel = plyFile.Data;
+                var textures = GohResourceLoader.Instance.GetPlyMtlFiles(plyFile);
+
+                foreach (var mesh in plyModel.Meshes!) {
+                    var newItem = new TreeViewItem() {
+                        Header = mesh.TextureFileName,
+                        DataContext = mesh,
+                    };
+
+                    var defTextures = textures
+                        .Where(t => mesh.TextureFileName.Contains(t.Name))
+                        .Select(t => t.Data.Diffuse)
+                        .Distinct();
+
+                    foreach (var texture in defTextures) {
+                        newItem.Items.Add(new TreeViewItem() {
+                            Header = texture.Name,
+                            ToolTip = texture.GetFullPath(),
+                            DataContext = texture,
+                        });
+                    }
+
+                    item.Items.Add(newItem);
+                }
+            }
         }
     }
 }

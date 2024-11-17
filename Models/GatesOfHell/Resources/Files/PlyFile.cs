@@ -12,7 +12,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
         public static PlySerializer Serializer => s_serializer ??= new PlySerializer();
 
-        public new PlyModel? Data { get => (PlyModel?)base.Data; set => base.Data = value; }
+        public new PlyModel Data { get => (PlyModel)base.Data; set => base.Data = value; }
 
         public override string? Extension => ".ply";
 

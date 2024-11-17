@@ -26,7 +26,7 @@ namespace GohMdlExpert.ViewModels
         public IAsyncCommand ThroughModelsCommand => CommandManager.GetAsyncCommand(ThroughModels);
 
         public ApplicationViewModel() {
-            ResourceLocations.Instance.ResourcePath = "F:\\SDK\\Content\\goh";
+            GohResourceLocations.Instance.ResourcePath = "F:\\SDK\\Content\\goh";
         }
 
         public void OpenFile() {
@@ -54,47 +54,13 @@ namespace GohMdlExpert.ViewModels
                 //var text = mdlFile.Data.Textures[0].Data.Diffuse.Data;
 
                 models3DViewModel.OpenMdlFile(fileDialog.FileName);
-                    }
-                }
+                //    }
+                //}
             }
         }
 
         private async Task ThroughModels(object? p) {
-            var ranksFiles = Directory.GetFiles("F:\\SDK\\Content\\goh\\entity\\humanskin\\[germans]\\[ger_source]\\ger_gear").Where(f => !f.Contains("lod")).ToArray();
-            var ranksFiles1 = Directory.GetFiles("F:\\SDK\\Content\\goh\\entity\\humanskin\\[germans]\\[ger_source]\\ger_equipment").Where(f => !f.Contains("lod")).ToArray();
-
-            var models3DViewModel = ViewModelManager.GetViewModel<Models3DViewModel>();
-
-            models3DViewModel.OpenPlyFile(ranksFiles[0]);
-
-
-            await Task.Run(() => {
-                for (int i = 0; i < ranksFiles.Length || i < ranksFiles1.Length; i++) {
-                    Thread.Sleep(100);
-                    App.Current.Synchronize(() => {
-                        if (i < ranksFiles.Length) {
-                        models3DViewModel.Models.RemoveAt(models3DViewModel.Models.Count - 1);
-                            models3DViewModel.OpenPlyFile(ranksFiles[i]);
-        }
-
-                        if (i < ranksFiles1.Length) {
-                            models3DViewModel.Models.RemoveAt(models3DViewModel.Models.Count - 2);
-                            models3DViewModel.OpenPlyFile(ranksFiles1[i]);
-                }
-                    });
-            }
-
-                foreach (var rankFile in ranksFiles) {
-
-        private MdlParameter? FindParameter(MdlParameter parameter, MdlTypes type, string? name = null) {
-            if (parameter.Type == type && name != null && parameter.Name == name) {
-                return parameter;
-            }
-
-            if (parameter.Data is IEnumerable<MdlParameter> parametersCollection) {
-                return FindParameter(parametersCollection, type, name);
-            }
-            });
+            
         }
     }
 }

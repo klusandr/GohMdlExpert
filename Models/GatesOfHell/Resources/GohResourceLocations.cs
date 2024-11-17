@@ -1,4 +1,5 @@
 ﻿using GohMdlExpert.Models.GatesOfHell.Exceptions;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,10 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources {
-    public class ResourceLocations {
-        private const string RESORCE_PATH_SIGNATURE = "|res|";
-
-        private static ResourceLocations? s_instance;
+    public class GohResourceLocations {
+        private static GohResourceLocations? s_instance;
 
         private static readonly string[] s_resourceNeedDirectories = {
             "entity", "texture"
@@ -18,13 +17,13 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
 
         private string? _resourcePath;
         private readonly Dictionary<string, string> _locationsPaths = new() {
-            ["textures"] = @"|res|\texture\common",
-            ["ger_humanskin"] = @"|res|\entity\humanskin\[germans]",
-            ["ger_humanskin_source"] = @"|res|\entity\humanskin\[germans]\[ger_source]",
-            ["base"] = "|res|"
+            ["textures"] = @"\texture\common",
+            ["ger_humanskin"] = @"\entity\humanskin\[germans]",
+            ["ger_humanskin_source"] = @"\entity\humanskin\[germans]\[ger_source]",
+            ["base"] = ""
         };
 
-        public static ResourceLocations Instance => s_instance ??= new ResourceLocations();
+        public static GohResourceLocations Instance => s_instance ??= new GohResourceLocations();
 
         public string ResourcePath {
             get {
@@ -40,24 +39,28 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
             }
         }
 
-        private ResourceLocations() {
+        private GohResourceLocations() {
             
+        }
+
+        public string GetLocationFullPath(string location) {
+            return GetLocationPath(location).Insert(0, ResourcePath);
         }
 
         public string GetLocationPath(string location) {
             if (!_locationsPaths.TryGetValue(location, out string? path)) {
-                throw new GohResourcesException("Resource location is not defined.");
+                throw new GohResourcesException($"Resource location \"{location}\" is not defined.");
             } else {
-                if (path.Contains(RESORCE_PATH_SIGNATURE)) {
-                    path = path.Replace(RESORCE_PATH_SIGNATURE, ResourcePath);
-                }
-
                 return path;
             }
         }
 
-        public bool CheckGohResourceDirectory(string path) {
-            var directories = Directory.GetDirectories(path).Select(d => d[(d.LastIndexOf(@"\") + 1)..]);
+        public GohResourceDirectory GetLocationDirectory(string location) {
+            return new GohResourceDirectory(GetLocationFullPath(location));
+        }
+
+        private static bool CheckGohResourceDirectory(string path) {
+            var directories = Directory.GetDirectories(path).Select(d => d[(d.LastIndexOf('\\') + 1)..]);
             return s_resourceNeedDirectories
                 .All((d) => directories
                     .Contains(d)
