@@ -5,24 +5,29 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GohMdlExpert"
         xmlns:views="clr-namespace:GohMdlExpert.Views" 
+        xmlns:modelstree="clr-namespace:GohMdlExpert.Views.ModelsTree" 
         xmlns:viewmodels="clr-namespace:GohMdlExpert.ViewModels" 
         d:DataContext="{d:DesignInstance Type=viewmodels:ApplicationViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" WindowStyle="None">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
-            <RowDefinition/>
+            <RowDefinition />
         </Grid.RowDefinitions>
-        <Menu Margin="5">
+        <Menu Margin="2 0 2 5" Background="{x:Null}">
             <Menu.Resources>
                 <Style TargetType="MenuItem">
-                    <Setter Property="Padding" Value="5 0"/>
+                    <Setter Property="Padding" Value="10 2"/>
                 </Style>
             </Menu.Resources>
             <MenuItem Header="Файл">
                 <MenuItem Header="Открыть" Command="{Binding OpenFileCommand}"/>
                 <MenuItem Header="Перебор" Command="{Binding ThroughModelsCommand}"/>
+                <MenuItem Header="Выход" Click="MenuItemExitClick"/>
+            </MenuItem>
+            <MenuItem Header="Правка">
+                
             </MenuItem>
         </Menu>
         <Grid Grid.Row="1" >
@@ -33,7 +38,7 @@
             </Grid.ColumnDefinitions>
             <views:Models3DView Grid.Column="2"/>
             <GridSplitter Width="3"/>
-            <views:ModelsTreeView/>
+            <modelstree:ModelsTreeView/>
         </Grid>
     </Grid>
 </Window>

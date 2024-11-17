@@ -23,5 +23,9 @@ namespace GohMdlExpert {
 
             DataContext = new ApplicationViewModel();
         }
+
+        private void MenuItemExitClick(object sender, RoutedEventArgs e) {
+            Close();
+        }
     }
 }
