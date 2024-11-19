@@ -12,7 +12,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         
         <Grid x:Name="_sceneBackground" Background="AliceBlue" MouseWheel="OnMouseWheel">
@@ -32,20 +32,25 @@
                             <Model3DGroup Children="{Binding Models, Mode=TwoWay}"/>
                         </ModelVisual3D.Content>
                     </ModelVisual3D>
+                    <ModelVisual3D Content="{Binding Adder.AddedModel, Mode=TwoWay}"/>
                 </Viewport3D.Children>
             </Viewport3D>
         </Grid>
-        <StackPanel Orientation="Horizontal" Grid.Row="1" DataContext="{Binding ElementName=_perspectivCamera}" Background="White">
-            <StackPanel.Resources>
-                <Style TargetType="TextBlock">
-                    <Setter Property="VerticalAlignment" Value="Center"/>
-                    <Setter Property="Margin" Value="10 0"/>
-                </Style>
-            </StackPanel.Resources>
-            <TextBlock Text="{Binding Position.X, StringFormat = X : {0}}"/>
-            <TextBlock Text="{Binding Position.Y, StringFormat = Y : {0}}"/>
-            <TextBlock Text="{Binding Position.Z, StringFormat = Z : {0}}"/>
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" DataContext="{Binding ElementName=_perspectivCamera}" Background="White">
+                <StackPanel.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="Margin" Value="10 0"/>
+                    </Style>
+                </StackPanel.Resources>
+                <TextBlock Text="{Binding Position.X, StringFormat = X : {0}.00}"/>
+                <TextBlock Text="{Binding Position.Y, StringFormat = Y : {0}.00}"/>
+                <TextBlock Text="{Binding Position.Z, StringFormat = Z : {0}.00}"/>
+            </StackPanel>
+            <Button Content="Добавить выбранную модель" Command="{Binding Adder.EndAddCommand}" Margin="5" Padding="5"/>
         </StackPanel>
+        
     </Grid>
     
     

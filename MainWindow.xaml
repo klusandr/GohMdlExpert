@@ -9,7 +9,7 @@
         xmlns:viewmodels="clr-namespace:GohMdlExpert.ViewModels" 
         d:DataContext="{d:DesignInstance Type=viewmodels:ApplicationViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" WindowStyle="None">
+        Title="MainWindow" Height="450" Width="800" >
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -27,9 +27,18 @@
                 <MenuItem Header="Выход" Click="MenuItemExitClick"/>
             </MenuItem>
             <MenuItem Header="Правка">
-                
+
             </MenuItem>
         </Menu>
+        <!--<StackPanel HorizontalAlignment="Right">
+            <Button Width="20" Height="20" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}">
+                <Path Stroke="Black" Margin="2" StrokeStartLineCap="Triangle" StrokeThickness="2" Stretch="Uniform" StrokeEndLineCap="Triangle">
+                    <Path.Data>
+                        <PathGeometry Figures="M0,0 L15,15 M15,0 L0,15"/>
+                    </Path.Data>
+                </Path>
+            </Button>
+        </StackPanel>-->
         <Grid Grid.Row="1" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
@@ -39,6 +48,7 @@
             <views:Models3DView Grid.Column="2"/>
             <GridSplitter Width="3"/>
             <modelstree:ModelsTreeView/>
+            <Image Source="/Resources/shell32_4.ico"/>
         </Grid>
     </Grid>
 </Window>

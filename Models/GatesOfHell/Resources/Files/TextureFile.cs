@@ -12,12 +12,21 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class TextureFile(string name, string? path = null, string? relativePathPoint = null, string? location = null) 
         : GohResourceFile(name, path, relativePathPoint, location) {
 
-        public new DiffuseMaterial? Data { get => (DiffuseMaterial?)base.Data; set => base.Data = value; }
+        public new DiffuseMaterial Data {
+            get {
+                var diffuseMaterial = new DiffuseMaterial(
+                    new ImageBrush(new BitmapImage(new Uri(GetFullPath()))) {
+                        ViewportUnits = BrushMappingMode.Absolute,
+                    }
+                );
 
-        public override void LoadData() {
-            Data = new DiffuseMaterial(new ImageBrush(new BitmapImage(new Uri(GetFullPath(), UriKind.Absolute)))
-                { ViewportUnits = BrushMappingMode.Absolute }
-            );
+                diffuseMaterial.Freeze();
+                diffuseMaterial.Brush.Freeze();
+
+                return diffuseMaterial;
+            }
         }
+
+        public override void LoadData() { }
     }
 }

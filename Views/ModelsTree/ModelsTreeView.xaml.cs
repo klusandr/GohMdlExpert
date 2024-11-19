@@ -1,4 +1,5 @@
 ﻿using GohMdlExpert.ViewModels;
+using GohMdlExpert.ViewModels.ModelsTree;
 using MvvmWpf.Views;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace GohMdlExpert.Views {
+namespace GohMdlExpert.Views.ModelsTree {
     /// <summary>
     /// Логика взаимодействия для ModelsTreeView.xaml
     /// </summary>

@@ -55,5 +55,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         public virtual void LoadData() {
             Data = GetAllText();
         }
+
+        public virtual void UnloadData() {
+            _data = null;
+        }
     }
 }

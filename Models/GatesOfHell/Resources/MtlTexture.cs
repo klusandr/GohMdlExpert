@@ -8,9 +8,9 @@ using System.Windows.Media;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources
 {
-    public class MtlTexture
-    {
-        public TextureFile? Diffuse { get; set; }
+    public class MtlTexture(TextureFile diffuse) {
+        public TextureFile Diffuse { get; set; } = diffuse;
+
         public TextureFile? Bump { get; set; }
         public TextureFile? Specular { get; set; }
         public Colors? Color { get; set; }

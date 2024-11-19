@@ -29,9 +29,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
             diffusePath = diffusePath.Replace("$", "");
 
-            Data = new MtlTexture() {
-                Diffuse = Loader.GetTextureFile(diffusePath),
-            };
+            Data = new MtlTexture(Loader.LoadTextureFile(diffusePath));
         }
     }
 }

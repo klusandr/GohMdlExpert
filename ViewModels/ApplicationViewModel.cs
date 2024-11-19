@@ -35,27 +35,7 @@ namespace GohMdlExpert.ViewModels
             fileDialog.Filter = "Mdl files (*.mdl)|*.mdl";
 
             if (fileDialog.ShowDialog() ?? false) {
-                //var d = _mdlSerialize.Deserialize(File.ReadAllText(fileDialog.FileName));
-
-                //List<string> files = new();
-
-                //foreach (var lodViewParameter in (IEnumerable<ModelDataParametr>) ModelDataSerializer.FindParameter(d, MdlTypes.Bone.ToString(), "skin")?.Data!) {
-                //    files.Add((string)((IEnumerable<ModelDataParametr>)lodViewParameter.Data!).First().Data!);
-                //}
-
-                var models3DViewModel = ViewModelManager.GetViewModel<Models3DViewModel>();
-
-                //foreach (var file in files) {
-                //    models3DViewModel.OpenPlyFile(file.Replace("..", Path));
-                //}
-
-                //var mdlFile = new MdlFile(fileDialog.FileName);
-
-                //var text = mdlFile.Data.Textures[0].Data.Diffuse.Data;
-
-                models3DViewModel.OpenMdlFile(fileDialog.FileName);
-                //    }
-                //}
+                
             }
         }
 

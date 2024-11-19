@@ -104,7 +104,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
             return textureFiles;
         }
 
-        public TextureFile GetTextureFile(string path) {
+        public TextureFile LoadTextureFile(string path) {
             if (_textureFiles.TryGetValue(path, out var value)) {
                 return value;
             }
