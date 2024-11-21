@@ -32,8 +32,8 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
                     AddNextNode(new ModelsTreeTextureViewModel(mtlFile, modelsTree, this));
                 }
 
-                if (Items.Count != 0 && Items.FirstOrDefault()?.DataContext is ModelsTreeTextureViewModel textureItem) {
-                    textureItem.Select();
+                if (Items.Count != 0 && Items.FirstOrDefault() is ModelsTreeTextureViewModel textureItem) {
+                    textureItem.Approve();
                 }
             }
         }

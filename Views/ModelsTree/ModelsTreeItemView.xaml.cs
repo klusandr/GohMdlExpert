@@ -18,23 +18,19 @@ namespace GohMdlExpert.Views.ModelsTree {
     /// <summary>
     /// Логика взаимодействия для ModelTreeItemView.xaml
     /// </summary>
-    public partial class ModelsTreeItemView : TreeViewItem {
-        public ModelsTreeItemViewModel ViewModel => (ModelsTreeItemViewModel)DataContext;
+    public partial class ModelsTreeItemView : UserControl {
+        public ModelsTreeItemViewModel ViewModel {
+            get => (ModelsTreeItemViewModel)DataContext;
+            init => DataContext = value;
+        }
 
-        public ModelsTreeItemView(ModelsTreeItemViewModel viewModel) {
-            DataContext = viewModel;
+        public ModelsTreeItemView() {
             InitializeComponent();
         }
 
         private void OnMouseDoubleClick(object sender, MouseButtonEventArgs e) {
-            if (sender == this && IsSelected) {
+            if (sender == this) {
                 ViewModel.DoubleClickCommand?.Execute(null);
-            }
-        }
-
-        private void OnExpanded(object sender, RoutedEventArgs e) {
-            if (sender == this && IsSelected) {
-                ViewModel.ExpandedCommand?.Execute(null);
             }
         }
     }

@@ -20,6 +20,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
         protected ModelsTreeViewModel ModelsTree { get; }
 
         public ModelsTreeItemViewModel? Parent { get; }
+        public ObservableCollection<ModelsTreeItemViewModel> Items { get; }
 
         public string HeaderText {
             get => _headerText;
@@ -37,7 +38,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
             }
         }
 
-        public string? Tooltip {
+        public string? ToolTip {
             get => _tooltip;
             set {
                 _tooltip = value;
@@ -56,7 +57,6 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
         public virtual ICommand? DoubleClickCommand { get; }
         public virtual ICommand? ExpandedCommand { get; }
 
-        public ObservableCollection<ModelsTreeItemView> Items { get; }
 
         public ModelsTreeItemViewModel(ModelsTreeViewModel modelsTree, ModelsTreeItemViewModel? parent = null) {
             _headerText = "";
@@ -66,7 +66,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
         }
 
         public void AddNextNode(ModelsTreeItemViewModel viewModel) {
-            Items.Add(new ModelsTreeItemView(viewModel));
+            Items.Add(viewModel);
         }
     }
 }

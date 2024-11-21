@@ -17,7 +17,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
 
         private readonly PlyFile _plyFile;
 
-        public override ICommand DoubleClickCommand => CommandManager.GetCommand(Select);
+        public override ICommand DoubleClickCommand => CommandManager.GetCommand(Approve);
 
         public ModelsTreePlyViewModel(PlyFile plyFile, ModelsTreeViewModel modelsTree, ModelsTreeItemViewModel? parent = null) : base(modelsTree, parent) {
             _plyFile = plyFile;
@@ -25,11 +25,16 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
             IconSource = s_iconSource;
         }
 
-        public void Select() {
-            ModelsTree.Models3DView.Adder.SetModel(_plyFile);
-            IsApproved = true;
-            foreach (var mesh in _plyFile.Data.Meshes) {
-                AddNextNode(new ModelsTreeMashViewModel(_plyFile, mesh, ModelsTree, this));
+        public void Approve() {
+            if (!IsApproved) {
+                ModelsTree.Models3DView.Adder.SetModel(_plyFile);
+                IsApproved = true;
+            }
+
+            if (Items.Count == 0) {
+                foreach (var mesh in _plyFile.Data.Meshes) {
+                    AddNextNode(new ModelsTreeMashViewModel(_plyFile, mesh, ModelsTree, this));
+                }
             }
         }
     }

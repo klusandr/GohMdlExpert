@@ -15,18 +15,20 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
         private static ImageSource s_iconSource = new BitmapImage().FromByteArray(Resources.TextureIcon);
         private readonly MtlFile _mtlFile;
 
-        public override ICommand DoubleClickCommand => CommandManager.GetCommand(Select);
+        public override ICommand DoubleClickCommand => CommandManager.GetCommand(Approve);
 
         public ModelsTreeTextureViewModel(MtlFile mtlFile, ModelsTreeViewModel modelsTree, ModelsTreeItemViewModel? parent = null) : base(modelsTree, parent) {
             _mtlFile = mtlFile;
             HeaderText = mtlFile.Data.Diffuse.Name;
-            Tooltip = mtlFile.Data.Diffuse.GetFullPath();
+            ToolTip = mtlFile.Data.Diffuse.GetFullPath();
             IconSource = s_iconSource;
         }
 
-        public void Select() {
-            ModelsTree.Models3DView.Adder.SetModelTexture(_mtlFile);
-            IsApproved = true;
+        public void Approve() {
+            if (!IsApproved) {
+                ModelsTree.Models3DView.Adder.SetModelTexture(_mtlFile);
+                IsApproved = true;
+            }
         }
     }
 }

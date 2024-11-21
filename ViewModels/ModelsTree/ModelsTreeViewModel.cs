@@ -10,7 +10,8 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
     public class ModelsTreeViewModel : ViewModelBase {
         public Models3DViewModel Models3DView { get; }
         public GohResourceLoader ResourceLoader { get; }
-        public ObservableCollection<TreeViewItem> Items { get; }
+        public ObservableCollection<ModelsTreeItemViewModel> Items { get; }
+        public ModelsTreePlyViewModel? ApprovedPlyItem { get; private set; }
 
         public ICommand LoadModelsCommand => CommandManager.GetCommand(LoadResources);
 
@@ -21,7 +22,21 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
         }
 
         public void LoadResources() {
-            Items.Add(new ModelsTreeItemView(new ModelsTreeDirectoryViewModel(ResourceLoader.GetResourceDirectory("ger_humanskin_source"), this)));
+            Items.Add(new ModelsTreeDirectoryViewModel(ResourceLoader.GetResourceDirectory("ger_humanskin_source"), this));
+            OnPropertyChanged(nameof(Items));
+        }
+
+        public void ApprovePlyItem(ModelsTreePlyViewModel plyItem) {
+            if (ApprovedPlyItem != null) {
+                UnapproveItem(ApprovedPlyItem);
+            }
+
+            ApprovedPlyItem = plyItem;
+            plyItem.IsApproved = true;
+        }
+
+        private void UnapproveItem(ModelsTreePlyViewModel plyItem) {
+
         }
     }
 }

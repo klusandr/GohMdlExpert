@@ -15,6 +15,12 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Button Content="Загрузить" Command="{Binding LoadModelsCommand}" Margin="5" Padding="5"/>
-        <TreeView Grid.Row="1" Padding="0 0 30 0" ItemsSource="{Binding Items}" MinWidth="150"/>
+        <TreeView Grid.Row="1" Padding="0 0 30 0" ItemsSource="{Binding Items}" MinWidth="150" SelectedItemChanged="TreeView_SelectedItemChanged">
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Items}">
+                    <local:ModelsTreeItemView DataContext="{Binding}"/>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
     </Grid>
 </baseviews:ViewMvvmBase>
