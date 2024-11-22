@@ -28,17 +28,17 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
         }
 
         public void LoadData() {
-            if (Items.Count == 0) {
-                var directories = _directory.GetDirectories();
-                var plyFiles = _directory.GetFiles().OfType<PlyFile>().Where(f => !f.Name.Contains("lod"));
+            Items.Clear();
 
-                foreach (var directory in directories) {;
-                    AddNextNode(new ModelsTreeDirectoryViewModel(directory, ModelsTree, this));
-                }
+            var directories = _directory.GetDirectories();
+            var plyFiles = _directory.GetFiles().OfType<PlyFile>().Where(f => !f.Name.Contains("lod"));
 
-                foreach (var plyFile in plyFiles) {
-                    AddNextNode(new ModelsTreePlyViewModel(plyFile, ModelsTree, this));
-                }
+            foreach (var directory in directories) {
+                AddNextNode(new ModelsTreeDirectoryViewModel(directory, ModelsTree, this));
+            }
+
+            foreach (var plyFile in plyFiles) {
+                AddNextNode(new ModelsTreePlyViewModel(plyFile, ModelsTree, this));
             }
         }
     }

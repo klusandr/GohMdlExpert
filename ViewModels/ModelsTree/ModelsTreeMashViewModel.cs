@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 
 namespace GohMdlExpert.ViewModels.ModelsTree {
     public class ModelsTreeMashViewModel : ModelsTreeItemViewModel {
-        private static ImageSource s_iconSource = new BitmapImage().FromByteArray(Resources.MeshIcon);
+        private static readonly ImageSource s_iconSource = new BitmapImage().FromByteArray(Resources.MeshIcon);
 
         public ModelsTreeMashViewModel(PlyFile plyFile, PlyModel.Mesh mesh, ModelsTreeViewModel modelsTree, ModelsTreeItemViewModel? parent = null) : base(modelsTree, parent) {
             var mtlFiles = modelsTree.ResourceLoader.GetPlyMtlFiles(plyFile);

@@ -13,11 +13,13 @@ using System.Windows.Media.Imaging;
 
 namespace GohMdlExpert.ViewModels.ModelsTree {
     public class ModelsTreePlyViewModel : ModelsTreeItemViewModel {
-        private static ImageSource s_iconSource = new BitmapImage().FromByteArray(Resources.PlyIcon);
+        private static readonly ImageSource s_iconSource = new BitmapImage().FromByteArray(Resources.PlyIcon);
 
         private readonly PlyFile _plyFile;
 
-        public override ICommand DoubleClickCommand => CommandManager.GetCommand(Approve);
+        public override ICommand DoubleClickCommand => CommandManager.GetCommand(LoadData);
+
+        public PlyFile PlyFile => _plyFile;
 
         public ModelsTreePlyViewModel(PlyFile plyFile, ModelsTreeViewModel modelsTree, ModelsTreeItemViewModel? parent = null) : base(modelsTree, parent) {
             _plyFile = plyFile;
@@ -25,15 +27,10 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
             IconSource = s_iconSource;
         }
 
-        public void Approve() {
-            if (!IsApproved) {
-                ModelsTree.Models3DView.Adder.SetModel(_plyFile);
-                IsApproved = true;
-            }
-
+        public void LoadData() {
             if (Items.Count == 0) {
-                foreach (var mesh in _plyFile.Data.Meshes) {
-                    AddNextNode(new ModelsTreeMashViewModel(_plyFile, mesh, ModelsTree, this));
+                foreach (var mesh in PlyFile.Data.Meshes) {
+                    AddNextNode(new ModelsTreeMashViewModel(PlyFile, mesh, ModelsTree, this));
                 }
             }
         }
