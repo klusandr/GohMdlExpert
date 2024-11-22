@@ -59,5 +59,21 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         public virtual void UnloadData() {
             _data = null;
         }
+
+        public override bool Equals(object? obj) {
+            if (obj == null) {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj)) {
+                return true;
+            }
+
+            if (obj is GohResourceFile file) {
+                return GetFullPath() == file.GetFullPath();
+            }
+
+            return false;
+        }
     }
 }
