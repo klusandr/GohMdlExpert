@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
     public class GohResourceFileException : GohException {
-        private static readonly string s_message = "Loading Gates of hell resource file {0} error.";
+        private const string MESSAGE = "Loading Gates of hell resource file {0}error.";
 
         public string? FileName { get; init; }
 
@@ -19,11 +20,20 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
         public GohResourceFileException(string message, Exception inner, string? fileName = null) : base(GetFullErrorMessage(message, fileName), inner) { }
 
         private static string GetFullErrorMessage(string? message = null, string? fileName = null) {
-            if (message == null) {
-                return string.Format(s_message, fileName);
+            var fullMessage = new StringBuilder();
+
+            if (fileName != null) {
+                fullMessage.Append(string.Format(MESSAGE, $"\"{fileName}\" "));
             } else {
-                return string.Format(s_message) + " " + message;
+                fullMessage.Append(MESSAGE);
             }
+
+            if (message != null) {
+                fullMessage.Append(' ');
+                fullMessage.Append(message);
+            }
+
+            return fullMessage.ToString();
         }
     }
 }

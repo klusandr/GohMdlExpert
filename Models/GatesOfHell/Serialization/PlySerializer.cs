@@ -45,12 +45,12 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
         public PlyModel Deserialize(FileStream modelFileStream) {
             try {
                 Point3D minPoint, maxPoint;
-                List<Mesh> meshes = new();
-                List<string> skins = new();
-                List<Point3D> points = new();
-                List<Vector3D> normalizes = new();
-                List<Point> uvPoints = new();
-                List<Face> indicesList = new();
+                List<Mesh> meshes = [];
+                List<string> skins = [];
+                List<Point3D> points = [];
+                List<Vector3D> normalizes = [];
+                List<Point> uvPoints = [];
+                List<Face> indicesList = [];
 
                 byte[] readBytes = new byte[READ_BUFFER_SIZE];
 
@@ -58,7 +58,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
                 var fileHeader = Encoding.ASCII.GetString(readBytes, 0, 8);
 
                 if (!fileHeader.Contains("EPLY")) {
-                    throw new GohResourceFileException($"File \"{modelFileStream.Name}\" does not match the EPLY format.");
+                    throw new GohResourceFileException($"File don't match the EPLY format.", modelFileStream.Name);
                 }
 
                 modelFileStream.Read(readBytes, 0, 24);
