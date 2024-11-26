@@ -10,8 +10,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         public static MtlSerializer? s_serializer;
         public static GohResourceLoader? s_loader;
 
-        private static MtlSerializer Serializer => s_serializer ??= new MtlSerializer();
-        private static GohResourceLoader Loader => s_loader ??= GohResourceLoader.Instance;
+        protected static MtlSerializer Serializer => s_serializer ??= new MtlSerializer();
+        protected static GohResourceLoader Loader => s_loader ??= GohResourceLoader.Instance;
 
         public override string? Extension => ".mtl";
 
@@ -29,7 +29,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
             diffusePath = diffusePath.Replace("$", "");
 
-            Data = new MtlTexture(Loader.LoadTextureFile(diffusePath));
+            Data = new MtlTexture(new TextureFile(diffusePath, location: "textures"));
         }
     }
 }

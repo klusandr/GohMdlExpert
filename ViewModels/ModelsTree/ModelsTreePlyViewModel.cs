@@ -17,7 +17,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
 
         private readonly PlyFile _plyFile;
 
-        public override ICommand DoubleClickCommand => CommandManager.GetCommand(LoadData);
+        public override ICommand DoubleClickCommand => CommandManager.GetCommand(Approve);
 
         public PlyFile PlyFile => _plyFile;
 

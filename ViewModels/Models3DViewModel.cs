@@ -1,4 +1,5 @@
 ﻿using GohMdlExpert.Extensions;
+using GohMdlExpert.Models.GatesOfHell.Media3D;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Serialization;
@@ -21,9 +22,11 @@ using static GohMdlExpert.Models.GatesOfHell.Resources.PlyModel;
 namespace GohMdlExpert.ViewModels
 {
     public sealed class Models3DViewModel : ViewModelBase {
-        private readonly Dictionary<string, MtlFile> _texturesCache;
+        private List<Model3DPly> _modelsPly;
+        private Model3DCollection _models;
 
-        public Model3DCollection Models { get; set; }
+        public IReadOnlyCollection<Model3DPly> ModelsPly => _modelsPly;
+        public Model3DCollection Models => _models;
 
         public ModelAdderViewModel Adder { get; set; }
 
@@ -31,8 +34,28 @@ namespace GohMdlExpert.ViewModels
 
         public Models3DViewModel() {
             Adder = new ModelAdderViewModel(this);
-            Models = [];
-            _texturesCache = [];
+
+            _models = [];
+            _modelsPly = [];
+        }
+
+        public void AddModel(Model3DPly modelPly) {
+            _modelsPly.Add(modelPly);
+            _models.Add(modelPly);
+
+            OnPropertyChanged(nameof(Models));
+        }
+
+        public void RemoveModel(PlyFile plyFile) {
+
+        }
+
+        public void RemoveModel(Model3D model) {
+
+        }
+
+        public void Clear() {
+            
         }
 
         private Point3D GetPointsCenter(params Point3D[] points3D) {

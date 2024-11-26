@@ -32,7 +32,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             foreach (var plySkinParameter in plySkinsParameter) {
                 foreach (var plyFileName in ((IEnumerable<ModelDataParameter>)plySkinParameter.Data!).Select(p => (string)p.Data!)) {
                     var plyFile = new PlyFile(plyFileName, relativePathPoint: Path);
-                    textureNames.AddRange(plyFile.Data!.Meshes!.Select(m => m.TextureFileName));
+                    textureNames.AddRange(plyFile.Data!.Meshes!.Select(m => m.TextureName));
                     plyFiles.Add(plyFile);
                 }
             }

@@ -60,6 +60,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             _data = null;
         }
 
+        public virtual void SaveData() {
+            throw new NotImplementedException();
+        }
+
         public override bool Equals(object? obj) {
             if (obj == null) {
                 return false;

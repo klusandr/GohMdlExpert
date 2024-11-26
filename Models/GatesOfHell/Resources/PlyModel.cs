@@ -11,7 +11,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
         public struct Mesh {
             public int FirstFace { get; set; }
             public int FaceCount { get; set; }
-            public string TextureFileName { get; set; }
+            public string TextureName { get; set; }
         }
 
         public readonly struct Face {

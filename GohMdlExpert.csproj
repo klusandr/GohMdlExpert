@@ -21,7 +21,7 @@
 
   <ItemGroup>
     <Reference Include="MvvmWpf">
-      <HintPath>..\..\MvvmWpf\BaseMvvmWpf\bin\Debug\net8.0-windows\MvvmWpf.dll</HintPath>
+      <HintPath>C:\Users\Андрей\source\repos\MvvmWpf\BaseMvvmWpf\bin\Release\net8.0-windows\MvvmWpf.dll</HintPath>
     </Reference>
   </ItemGroup>
 

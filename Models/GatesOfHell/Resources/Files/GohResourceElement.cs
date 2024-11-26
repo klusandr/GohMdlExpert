@@ -34,5 +34,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
             return SystemPath.Combine(path, Name);
         }
+
+        public string GetDirectoryPath() {
+            return SystemPath.GetDirectoryName(GetFullPath())!; 
+        }
     }
 }

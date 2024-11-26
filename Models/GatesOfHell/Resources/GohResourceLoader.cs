@@ -73,47 +73,42 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
             } else {
                 return new GohResourceFile(fileName, path);
             }
-
         }
 
-        public IEnumerable<MtlFile>? GetPlyMtlFiles(PlyFile plyFile, GohResourceDirectory? currentDirectory = null) {
+        //TODO Поиск .mdl файлов по имени .ply без пути может вызвать выборку .mdl содержащих другие .ply файлы с идентичными именами, ну другими путями.
+        public IEnumerable<MdlFile> GetPlyMdlFiles(PlyFile plyFile, GohResourceDirectory? currentDirectory = null) {
             currentDirectory ??= GetResourceDirectory("ger_humanskin");
-            var textureNames = plyFile.Data.Meshes!.Select(m => m.TextureFileName);
 
-            List<MtlFile>? textureFiles = null;
-
-            if(currentDirectory.GetFiles()
+            var mdlFiles = currentDirectory.GetFiles()
                 .OfType<MdlFile>()
-                .Any(f => f.GetAllText().Contains(plyFile.Name))) {
-                textureFiles = [];
-                textureFiles.AddRange(currentDirectory.GetFiles()
-                    .OfType<MtlFile>()
-                    .Where(f => textureNames.Contains(f.Name)));
-            }
+                .Where(f => f.GetAllText().Contains(plyFile.Name));
 
             foreach (var directory in currentDirectory.GetDirectories()) {
-                var directoryTextureNames = GetPlyMtlFiles(plyFile, directory);
+                var directoryMdlFiles = GetPlyMdlFiles(plyFile, directory);
 
-                if (directoryTextureNames?.Any() ?? false) {
-                    textureFiles ??= [];
-
-                    textureFiles.AddRange(directoryTextureNames);
+                if (directoryMdlFiles != null) {
+                    mdlFiles = mdlFiles.Concat(directoryMdlFiles);
                 }
             }
 
-            return textureFiles;
+            return mdlFiles;
         }
 
-        public TextureFile LoadTextureFile(string path) {
-            if (_textureFiles.TryGetValue(path, out var value)) {
-                return value;
+        public MtlTextureCollection GetPlyMeshMtlTextures(PlyFile plyFile, PlyModel.Mesh mesh) {
+            var mdlFiles = GetPlyMdlFiles(plyFile);
+            var mtlTextures = new MtlTextureCollection();
+
+            foreach (var mdlFile in mdlFiles) {
+                var directory = new GohResourceDirectory(mdlFile);
+
+                foreach (var mtlFile in directory.GetFiles().OfType<MtlFile>()) {
+                    if (mtlFile.Name == mesh.TextureName) {
+                        mtlTextures.Add(mtlFile.Data);
+                    }
+                }
             }
 
-            var newTexture = new TextureFile(path, location: "textures");
-
-            _textureFiles[path] = newTexture;
-
-            return newTexture;
+            return mtlTextures;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using GohMdlExpert.Extensions;
+using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Properties;
 using System;
@@ -13,18 +14,12 @@ using System.Windows.Media.Imaging;
 namespace GohMdlExpert.ViewModels.ModelsTree {
     internal class ModelsTreeTextureViewModel : ModelsTreeItemViewModel {
         private static readonly ImageSource s_iconSource = new BitmapImage().FromByteArray(Resources.TextureIcon);
-        private readonly MtlFile _mtlFile;
+        
+        public override ICommand DoubleClickCommand => CommandManager.GetCommand(Approve);
 
-        public override ICommand DoubleClickCommand => CommandManager.GetCommand(
-            () => ModelsTree.ApproveItem(this)
-        );
-
-        public MtlFile MtlFile => _mtlFile;
-
-        public ModelsTreeTextureViewModel(MtlFile mtlFile, ModelsTreeViewModel modelsTree, ModelsTreeItemViewModel? parent = null) : base(modelsTree, parent) {
-            _mtlFile = mtlFile;
-            HeaderText = mtlFile.Data.Diffuse.Name;
-            ToolTip = mtlFile.Data.Diffuse.GetFullPath();
+        public ModelsTreeTextureViewModel(MtlTexture mtlTexture, ModelsTreeViewModel modelsTree, ModelsTreeItemViewModel? parent = null) : base(modelsTree, parent) {
+            HeaderText = mtlTexture.Diffuse.Name;
+            ToolTip = mtlTexture.Diffuse.GetFullPath();
             IconSource = s_iconSource;
         }
     }

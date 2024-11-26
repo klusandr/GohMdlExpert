@@ -25,6 +25,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             }
         }
 
+        public GohResourceDirectory(GohResourceElement resourceElement) : this(resourceElement.GetDirectoryPath()) { }
+
         public void LoadData() {
             if (Items != null) {
                 Items.Clear();

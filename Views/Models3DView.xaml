@@ -29,7 +29,7 @@
                     </ModelVisual3D>
                     <ModelVisual3D>
                         <ModelVisual3D.Content>
-                            <Model3DGroup Children="{Binding Models, Mode=TwoWay}"/>
+                            <Model3DGroup Children="{Binding Models, Mode=OneWay}"/>
                         </ModelVisual3D.Content>
                     </ModelVisual3D>
                     <ModelVisual3D Content="{Binding Adder.AddedModel, Mode=TwoWay}"/>

@@ -13,6 +13,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Button Content="Загрузить" Command="{Binding LoadModelsCommand}" Margin="5" Padding="5"/>
         <TreeView Grid.Row="1" Padding="0 0 30 0" ItemsSource="{Binding Items}" MinWidth="150" SelectedItemChanged="TreeView_SelectedItemChanged">
@@ -22,5 +23,13 @@
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Content="&lt;" Command="{Binding PastModelCommand}"/>
+            <Button Grid.Column="1" Content="&gt;" Command="{Binding NextModelCommand}"/>
+        </Grid>
     </Grid>
 </baseviews:ViewMvvmBase>

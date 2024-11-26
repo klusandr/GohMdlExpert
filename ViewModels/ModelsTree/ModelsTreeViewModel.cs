@@ -4,6 +4,7 @@ using GohMdlExpert.Views.ModelsTree;
 using MvvmWpf.ViewModels;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Security.Policy;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -17,6 +18,8 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
         public IEnumerable<ModelsTreeItemViewModel> ApprovedItems => _approvedItems;
 
         public ICommand LoadModelsCommand => CommandManager.GetCommand(LoadResources);
+        public ICommand NextModelCommand => CommandManager.GetCommand(NextModel); 
+        public ICommand PastModelCommand => CommandManager.GetCommand(PastModel); 
 
         public ModelsTreeViewModel() {
             _approvedItems = [];
@@ -31,47 +34,102 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
         }
 
         public void ApproveItem(ModelsTreeItemViewModel item) {
-            if (item.IsApproved || !_approvedItems.Contains(item)) {
+            if (item.IsApproved || _approvedItems.Contains(item)) {
                 return;
             }
 
-            bool tryApproved = item switch {
-                ModelsTreePlyViewModel plyItem => TryApprovePLyItem(plyItem),
-                ModelsTreeTextureViewModel textureItem => TryApproveTextureItem(textureItem),
-                _ => true
-            };
-
-            if (tryApproved) {
-                _approvedItems.Add(item);
-                item.IsApproved = true;
+            switch (item) {
+                case ModelsTreePlyViewModel plyItem:
+                    ApprovePLyItem(plyItem);
+                    break;
+                case ModelsTreeTextureViewModel textureItem:
+                    ApproveTextureItem(textureItem);
+                    break;
+                default:
+                    break;
             }
+
+            _approvedItems.Add(item);
         }
 
         public void CancelApproveItem(ModelsTreeItemViewModel item) {
+            switch (item) {
+                case ModelsTreePlyViewModel plyItem:
+                    CancelApprovePlyItem(plyItem);
+                    break;
+            }
+
             _approvedItems.Remove(item);
-            item.IsApproved = false;
+            item.CancelApprove();
         }
 
-        public void CancelApproveAllItems(ModelsTreeItemViewModel? item) {
-            var items = item?.Items ?? (IEnumerable<ModelsTreeItemViewModel>)_approvedItems;
+        public void CancelApproveItems(IEnumerable<ModelsTreeItemViewModel>? items = null) {
+            items ??= _approvedItems;
 
-            foreach (var cItem in items) {
-                CancelApproveItem(cItem);
+            foreach (var item in items) {
+                if (item.IsApproved) {
+                    CancelApproveItem(item);
+                }
             }
         }
 
-        private bool TryApprovePLyItem(ModelsTreePlyViewModel item) {
+        public void CancelApproveItems<T>(IEnumerable<ModelsTreeItemViewModel>? items = null) where T : ModelsTreeItemViewModel {
+            items ??= _approvedItems;
+
+            foreach (var item in items) {
+                if (item is T && item.IsApproved) {
+                    CancelApproveItem(item);
+                }
+            }
+        }
+
+        public void NextModel() {
+            var selectModel = _approvedItems.First();
+
+            var currentList = selectModel.Parent!;
+
+            int index = currentList.Items.IndexOf(selectModel);
+
+            var nextModel = currentList.Items.ElementAtOrDefault(index + 1);
+
+            nextModel?.Approve();
+        }
+
+        public void PastModel() {
+            var selectModel = _approvedItems.First();
+
+            var currentList = selectModel.Parent!;
+
+            int index = currentList.Items.IndexOf(selectModel);
+
+            var nextModel = currentList.Items.ElementAtOrDefault(index - 1);
+
+            nextModel?.Approve();
+        }
+
+        private void ApprovePLyItem(ModelsTreePlyViewModel item) {
             Models3DView.Adder.SetModel(item.PlyFile);
 
-            foreach (var meshItem in item.Items) {
-                
-            }
+            item.LoadData();
 
-            return true;
+            CancelApproveItems();
+
+            foreach (var meshItem in item.Items) {
+                var textureItem = meshItem.Items.FirstOrDefault();
+
+                textureItem?.Approve();
+            }
         }
 
-        private bool TryApproveTextureItem(ModelsTreeTextureViewModel item) {
-            return true;
+        private void CancelApprovePlyItem(ModelsTreePlyViewModel item) {
+            item.Items.Clear();
+        }
+
+        private void ApproveTextureItem(ModelsTreeTextureViewModel item) {
+            if (item.Parent is ModelsTreeMashViewModel meshItem) {
+                Models3DView.Adder.SelectModelMeshTextureByIndex(meshItem.Mesh, meshItem.Items.IndexOf(item));
+                CancelApproveItems(meshItem.Items);
+            }   
         }
     }
 }

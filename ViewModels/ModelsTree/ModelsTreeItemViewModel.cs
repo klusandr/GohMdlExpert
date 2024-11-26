@@ -48,7 +48,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
 
         public bool IsApproved {
             get => _approved;
-            set {
+            private set {
                 _approved = value;
                 OnPropertyChanged();
             }
@@ -65,6 +65,15 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
 
         public void AddNextNode(ModelsTreeItemViewModel viewModel) {
             Items.Add(viewModel);
+        }
+
+        public void Approve() {
+            ModelsTree.ApproveItem(this);
+            IsApproved = true;
+        }
+
+        public void CancelApprove() {
+            IsApproved &= false;
         }
     }
 }

@@ -58,7 +58,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
                 var fileHeader = Encoding.ASCII.GetString(readBytes, 0, 8);
 
                 if (!fileHeader.Contains("EPLY")) {
-                    throw new GohResourceFileException($"File {modelFileStream.Name} does not match the EPLY format.");
+                    throw new GohResourceFileException($"File \"{modelFileStream.Name}\" does not match the EPLY format.");
                 }
 
                 modelFileStream.Read(readBytes, 0, 24);
@@ -122,7 +122,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
                                 }
                             }
 
-                            meshes.Add(new Mesh() { FirstFace = firstFace, FaceCount = faceCount, TextureFileName = materialName });
+                            meshes.Add(new Mesh() { FirstFace = firstFace, FaceCount = faceCount, TextureName = materialName });
 
                             break;
                         case "VERT":

@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources {
@@ -11,12 +13,16 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
 
         private readonly List<MtlTexture> _mtlTextures;
 
+        public int Count => ((ICollection<MtlTexture>)_mtlTextures).Count;
+
+        public bool IsReadOnly => ((ICollection<MtlTexture>)_mtlTextures).IsReadOnly;
+
         public MtlTextureCollection() {
             _mtlTextures = [];
         }
 
-        public MtlTextureCollection(IEnumerable<MtlTexture> mtlTextures) {
-            _mtlTextures = new(mtlTextures);
+        public MtlTextureCollection(IEnumerable<MtlTexture> collection) {
+            _mtlTextures = new List<MtlTexture>(collection);
         }
 
         public CollectionEquality Equals(MtlTextureCollection mtlTextures) {
@@ -43,12 +49,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
         }
 
         #region ICollection
-        public int Count => ((ICollection<MtlTexture>)_mtlTextures).Count;
-
-        public bool IsReadOnly => ((ICollection<MtlTexture>)_mtlTextures).IsReadOnly;
-
         public void Add(MtlTexture item) {
-            ((ICollection<MtlTexture>)_mtlTextures).Add(item);
+            if (!_mtlTextures.Any(item.Equals)) {
+                ((ICollection<MtlTexture>)_mtlTextures).Add(item);
+            }
         }
 
         public void Clear() {
@@ -63,12 +67,12 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
             ((ICollection<MtlTexture>)_mtlTextures).CopyTo(array, arrayIndex);
         }
 
-        public IEnumerator<MtlTexture> GetEnumerator() {
-            return ((IEnumerable<MtlTexture>)_mtlTextures).GetEnumerator();
-        }
-
         public bool Remove(MtlTexture item) {
             return ((ICollection<MtlTexture>)_mtlTextures).Remove(item);
+        }
+
+        public IEnumerator<MtlTexture> GetEnumerator() {
+            return ((IEnumerable<MtlTexture>)_mtlTextures).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator() {

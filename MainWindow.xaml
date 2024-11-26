@@ -48,7 +48,6 @@
             <views:Models3DView Grid.Column="2"/>
             <GridSplitter Width="3"/>
             <modelstree:ModelsTreeView/>
-            <Image Source="/Resources/shell32_4.ico"/>
         </Grid>
     </Grid>
 </Window>
