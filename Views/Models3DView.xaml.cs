@@ -2,44 +2,37 @@
 using GohMdlExpert.Views.Camera3D;
 using GohMdlExpert.Views.Models3D;
 using GohMdlExpert.Views.MouseHandlers;
-using MvvmWpf.ViewModels;
-using MvvmWpf.Views;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using WpfMvvm.DependencyInjection;
+using WpfMvvm.Diagnostics;
+using WpfMvvm.ViewModels;
+using WpfMvvm.Views;
 
-namespace GohMdlExpert.Views
-{
+namespace GohMdlExpert.Views {
     /// <summary>
     /// Логика взаимодействия для Models3dView.xaml
     /// </summary>
-    public partial class Models3DView : ViewMvvmBase {
+    public partial class Models3DView : BaseView {
         private MouseDownHolder _mouseCameraRotatedMover;
         private MouseDownHolder _mouseCameraPositionMover;
         private PerspectiveCameraPositioner _cameraPositioner;
 
+#if DEBUG //Используется для правильного отображения компонентов использующих объекты предоставленные DI
+        static Models3DView() {
+            Designer.Startup += (_) => {
+                AppDependencyInjection.ServicesStartup += ServicesStartup.Startup;
+                ViewModelProvider.ViewModelsProviderStartup += ViewModelsStartup.Startup;
+            };
+        }
+#endif
         private Models3DViewModel Models3DViewModel => (Models3DViewModel)ViewModel!;
 
-        
-
         public Models3DView() {
-            
+
             InitializeComponent();
 
-            ViewModel = new Models3DViewModel();
+            ViewModel = ViewModelProvider.GetRequiredViewModel<Models3DViewModel>();
 
             _mouseCameraRotatedMover = new(_sceneBackground, MouseButton.Left);
             _mouseCameraPositionMover = new(_sceneBackground, MouseButton.Middle);
@@ -48,7 +41,7 @@ namespace GohMdlExpert.Views
             _mouseCameraRotatedMover.MouseDownMove += OnMouseCameraRotationMove;
             _mouseCameraPositionMover.MouseDownMove += OnMouseCameraPositionMover;
 
-            _cameraPositioner.SetCameraFocus(Models3DViewModel.ModelsCenter ?? new Point3D());
+            //_cameraPositioner.SetCameraFocus(Models3DViewModel.ModelsCenter ?? new Point3D());
 
             //Models3DViewModel.Models.Changed += ((_, _) => _cameraPositioner.SetCameraFocus(Models3DViewModel.ModelsCenter ?? new Point3D()));
 

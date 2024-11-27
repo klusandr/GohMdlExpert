@@ -1,9 +1,10 @@
-﻿<Application x:Class="GohMdlExpert.App"
+﻿<wpfmvvm:WpfApplication x:Class="GohMdlExpert.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:wpfmvvm="clr-namespace:WpfMvvm;assembly=WpfMvvm" 
              xmlns:local="clr-namespace:GohMdlExpert"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          
     </Application.Resources>
-</Application>
+</wpfmvvm:WpfApplication>

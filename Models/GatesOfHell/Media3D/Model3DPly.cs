@@ -21,7 +21,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D {
         public PlyModel Ply { get; }
         public PlyFile? PlyFile { get; }
         public IEnumerable<string> MeshesNames => _meshes.Keys;
-        public IEnumerable<int> MeshesTexturesCount => _meshesTextures.Values.Select(t => t.Count);
+        public IEnumerable<int> MeshesTexturesCount => _meshesTextures.Values.Select(t => t?.Count ?? 0);
 
         public Model3DPly(PlyModel ply, IEnumerable<MtlTextureCollection?> textures) {
             _meshesTextures = LoadTextures(ply, textures, PlyFile);

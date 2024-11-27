@@ -1,24 +1,23 @@
-﻿using GohMdlExpert.Extensions;
-using GohMdlExpert.Models.GatesOfHell.Exceptions;
-using GohMdlExpert.Models.GatesOfHell.Media3D;
+﻿using GohMdlExpert.Models.GatesOfHell.Media3D;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.ViewModels.ModelsTree;
-using MvvmWpf.ViewModels;
-using MvvmWpf.ViewModels.Commands;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using WpfMvvm.ViewModels;
+using WpfMvvm.ViewModels.Commands;
 
-namespace GohMdlExpert.ViewModels {
-    public class ModelAdderViewModel : ViewModelBase {
+namespace GohMdlExpert.ViewModels.LoadModels {
+    public class ModelAdderViewModel : BaseViewModel {
         private Model3DPly? _modelPly;
         private Model3D? _addedModel;
 
         public Models3DViewModel Models3DView { get; }
 
-        public ICommand EndAddCommand => CommandManager.GetCommand(AddModel);
+        public event EventHandler? ModelAdded;
+
+        public ICommand AddModelCommand => CommandManager.GetCommand(AddModel);
 
         public Model3D? AddedModel {
             get => _addedModel;
@@ -31,9 +30,8 @@ namespace GohMdlExpert.ViewModels {
         public bool IsAddedInProgress => AddedModel != null;
 
         public ModelAdderViewModel(Models3DViewModel models3DView) {
-            Models3DView = models3DView;
             _addedModel = null;
-            CommandManager.CommandFactory = new OperationCommandFactory(exceptionHandler: (e) => MessageBox.Show(e!.Message, "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error));
+            Models3DView = models3DView;
         }
 
         public void SetModel(PlyFile plyFile) {
@@ -56,7 +54,7 @@ namespace GohMdlExpert.ViewModels {
             }
 
             AddedModel = null;
-            ViewModelManager.GetViewModel<ModelsTreeViewModel>()!.CancelApproveItems();
+            ModelAdded?.Invoke(this, EventArgs.Empty);
         }
     }
 }

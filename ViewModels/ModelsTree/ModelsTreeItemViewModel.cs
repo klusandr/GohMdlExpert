@@ -1,5 +1,5 @@
 ﻿using GohMdlExpert.Views.ModelsTree;
-using MvvmWpf.ViewModels;
+using WpfMvvm.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,7 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 
 namespace GohMdlExpert.ViewModels.ModelsTree {
-    public abstract class ModelsTreeItemViewModel : ViewModelBase {
+    public abstract class ModelsTreeItemViewModel : BaseViewModel {
         private string _headerText;
         private ImageSource? _iconSource;
         private string? _tooltip;

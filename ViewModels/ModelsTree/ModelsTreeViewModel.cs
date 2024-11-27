@@ -1,62 +1,49 @@
 ﻿using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Views.ModelsTree;
-using MvvmWpf.ViewModels;
+using WpfMvvm.ViewModels;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Security.Policy;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GohMdlExpert.ViewModels.ModelsTree {
-    public class ModelsTreeViewModel : ViewModelBase {
+    public abstract class ModelsTreeViewModel : BaseViewModel {
         private readonly HashSet<ModelsTreeItemViewModel> _approvedItems;
 
-        public Models3DViewModel Models3DView { get; }
-        public GohResourceLoader ResourceLoader { get; }
+        private Dictionary<Type, Action<ModelsTreeItemViewModel>> _approveItemHandlers;
+        private Dictionary<Type, Action<ModelsTreeItemViewModel>> _cancelApproveItemHandlers;
+
+        
         public ObservableCollection<ModelsTreeItemViewModel> Items { get; }
         public IEnumerable<ModelsTreeItemViewModel> ApprovedItems => _approvedItems;
 
-        public ICommand LoadModelsCommand => CommandManager.GetCommand(LoadResources);
-        public ICommand NextModelCommand => CommandManager.GetCommand(NextModel); 
-        public ICommand PastModelCommand => CommandManager.GetCommand(PastModel); 
-
         public ModelsTreeViewModel() {
-            _approvedItems = [];
             Items = [];
-            ResourceLoader = GohResourceLoader.Instance;
-            Models3DView = ViewModelManager.GetViewModel<Models3DViewModel>()!;
+            _approvedItems = [];
+            _approveItemHandlers = [];
+            _cancelApproveItemHandlers = [];
         }
 
-        public void LoadResources() {
-            Items.Add(new ModelsTreeDirectoryViewModel(ResourceLoader.GetResourceDirectory("ger_humanskin_source"), this));
-            OnPropertyChanged(nameof(Items));
-        }
+        public abstract void LoadResources();
 
         public void ApproveItem(ModelsTreeItemViewModel item) {
             if (item.IsApproved || _approvedItems.Contains(item)) {
                 return;
             }
 
-            switch (item) {
-                case ModelsTreePlyViewModel plyItem:
-                    ApprovePLyItem(plyItem);
-                    break;
-                case ModelsTreeTextureViewModel textureItem:
-                    ApproveTextureItem(textureItem);
-                    break;
-                default:
-                    break;
+            if (_approveItemHandlers.TryGetValue(item.GetType(), out var handler)) {
+                handler.Invoke(item);
             }
 
             _approvedItems.Add(item);
         }
 
         public void CancelApproveItem(ModelsTreeItemViewModel item) {
-            switch (item) {
-                case ModelsTreePlyViewModel plyItem:
-                    CancelApprovePlyItem(plyItem);
-                    break;
+            if (_cancelApproveItemHandlers.TryGetValue(item.GetType(), out var handler)) {
+                handler.Invoke(item);
             }
 
             _approvedItems.Remove(item);
@@ -83,53 +70,12 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
             }
         }
 
-        public void NextModel() {
-            var selectModel = _approvedItems.First();
-
-            var currentList = selectModel.Parent!;
-
-            int index = currentList.Items.IndexOf(selectModel);
-
-            var nextModel = currentList.Items.ElementAtOrDefault(index + 1);
-
-            nextModel?.Approve();
+        protected void SetApproveItemHandler<T>(Action<ModelsTreeItemViewModel> handler) where T : ModelsTreeItemViewModel {
+            _approveItemHandlers[typeof(T)] = handler;
         }
 
-        public void PastModel() {
-            var selectModel = _approvedItems.First();
-
-            var currentList = selectModel.Parent!;
-
-            int index = currentList.Items.IndexOf(selectModel);
-
-            var nextModel = currentList.Items.ElementAtOrDefault(index - 1);
-
-            nextModel?.Approve();
-        }
-
-        private void ApprovePLyItem(ModelsTreePlyViewModel item) {
-            Models3DView.Adder.SetModel(item.PlyFile);
-
-            item.LoadData();
-
-            CancelApproveItems();
-
-            foreach (var meshItem in item.Items) {
-                var textureItem = meshItem.Items.FirstOrDefault();
-
-                textureItem?.Approve();
-            }
-        }
-
-        private void CancelApprovePlyItem(ModelsTreePlyViewModel item) {
-            item.Items.Clear();
-        }
-
-        private void ApproveTextureItem(ModelsTreeTextureViewModel item) {
-            if (item.Parent is ModelsTreeMashViewModel meshItem) {
-                Models3DView.Adder.SelectModelMeshTextureByIndex(meshItem.Mesh, meshItem.Items.IndexOf(item));
-                CancelApproveItems(meshItem.Items);
-            }   
+        protected void SetCancelApproveItemHandler<T>(Action<ModelsTreeItemViewModel> handler) where T : ModelsTreeItemViewModel {
+            _cancelApproveItemHandlers[typeof(T)] = handler;
         }
     }
 }

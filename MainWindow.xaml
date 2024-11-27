@@ -23,7 +23,6 @@
             </Menu.Resources>
             <MenuItem Header="Файл">
                 <MenuItem Header="Открыть" Command="{Binding OpenFileCommand}"/>
-                <MenuItem Header="Перебор" Command="{Binding ThroughModelsCommand}"/>
                 <MenuItem Header="Выход" Click="MenuItemExitClick"/>
             </MenuItem>
             <MenuItem Header="Правка">
@@ -41,13 +40,17 @@
         </StackPanel>-->
         <Grid Grid.Row="1" >
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width=".3*"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <views:Models3DView Grid.Column="2"/>
-            <GridSplitter Width="3"/>
-            <modelstree:ModelsTreeView/>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <views:Models3DView Grid.Column="1" Grid.RowSpan="2"/>
+            <GridSplitter Width="3" Grid.RowSpan="2"/>
+            <modelstree:LoadModelsTreeView Margin="5"/>
+            <views:ModelAdderView Grid.Row="1"/>
         </Grid>
     </Grid>
 </Window>
