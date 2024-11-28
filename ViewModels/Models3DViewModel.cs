@@ -1,32 +1,15 @@
-﻿using GohMdlExpert.Extensions;
-using GohMdlExpert.Models.GatesOfHell.Media3D;
-using GohMdlExpert.Models.GatesOfHell.Resources;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files;
-using GohMdlExpert.Models.GatesOfHell.Serialization;
-using Microsoft.Win32;
-using WpfMvvm.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Media.Media3D;
-using static GohMdlExpert.Models.GatesOfHell.Resources.PlyModel;
-using GohMdlExpert.ViewModels.LoadModels;
+using GohMdlExpert.Extensions;
+using GohMdlExpert.Models.GatesOfHell.Media3D;
+using WpfMvvm.ViewModels;
 
-namespace GohMdlExpert.ViewModels
-{
+namespace GohMdlExpert.ViewModels {
     public sealed class Models3DViewModel : BaseViewModel {
-        private List<Model3DPly> _modelsPly;
+        private ObservableCollection<Model3DPly> _modelsPly;
         private Model3DCollection _models;
 
-        public IReadOnlyCollection<Model3DPly> ModelsPly => _modelsPly;
+        public ObservableCollection<Model3DPly> ModelsPly => _modelsPly;
         public Model3DCollection Models => _models;
 
 

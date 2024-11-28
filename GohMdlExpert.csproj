@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>call_to_arms_120.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +14,10 @@
     <EmbeddedResource Remove="old\**" />
     <None Remove="old\**" />
     <Page Remove="old\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="call_to_arms_120.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,6 +48,5 @@
 
   <ItemGroup>
     <Folder Include="Services\" />
-    <Folder Include="ViewModels\LoadModels\" />
   </ItemGroup>
 </Project>

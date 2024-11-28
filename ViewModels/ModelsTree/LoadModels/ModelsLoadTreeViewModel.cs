@@ -4,9 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Windows.Input;
 using WpfMvvm.DependencyInjection;
 
-namespace GohMdlExpert.ViewModels.ModelsTree
+namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels
 {
-    public sealed class LoadModelsTreeViewModel : ModelsTreeViewModel
+    public sealed class ModelsLoadTreeViewModel : ModelsTreeViewModel
     {
         public ModelAdderViewModel ModelsAdder { get; }
         public GohHumanskinResourceProvider SkinResourceProvider { get; }
@@ -16,15 +16,15 @@ namespace GohMdlExpert.ViewModels.ModelsTree
         public ICommand NextModelCommand => CommandManager.GetCommand(NextModel);
         public ICommand PastModelCommand => CommandManager.GetCommand(PastModel);
 
-        public LoadModelsTreeViewModel(ModelAdderViewModel modelsAdder, GohHumanskinResourceProvider skinResourceProvider)
+        public ModelsLoadTreeViewModel(ModelAdderViewModel modelsAdder, GohHumanskinResourceProvider skinResourceProvider)
         {
             ModelsAdder = modelsAdder;
             SkinResourceProvider = skinResourceProvider;
             ModelsAdder.ModelAdded += (_, _) => CancelApproveItems();
 
-            SetApproveItemHandler<ModelsTreePlyViewModel>(ApprovePlyItem);
+            SetApproveItemHandler<ModelsTreePlyFileViewModel>(ApprovePlyItem);
             SetApproveItemHandler<ModelsTreeTextureViewModel>(ApproveTextureItem);
-            SetCancelApproveItemHandler<ModelsTreePlyViewModel>(CancelApprovePlyItem);
+            SetCancelApproveItemHandler<ModelsTreePlyFileViewModel>(CancelApprovePlyItem);
 
             SkinResourceProvider.HumanskinsResourceUpdate += OnHumanskinResourceUpdate;
         }
@@ -73,9 +73,8 @@ namespace GohMdlExpert.ViewModels.ModelsTree
             LoadResources();
         }
 
-        private void ApprovePlyItem(ModelsTreeItemViewModel item)
-        {
-            var plyItem = (ModelsTreePlyViewModel)item;
+        private void ApprovePlyItem(ModelsTreeItemViewModel item) {
+            var plyItem = (ModelsTreePlyFileViewModel)item;
 
             ModelsAdder.SetModel(plyItem.PlyFile);
 
@@ -83,20 +82,8 @@ namespace GohMdlExpert.ViewModels.ModelsTree
 
             CancelApproveItems();
 
-            foreach (var meshItem in item.Items.Select(i => (ModelsTreeMashViewModel)i))
-            {
-                var meshTextures = HumanskinResource?.GetPlyMeshMtlTextures(plyItem.PlyFile, meshItem.Mesh);
-
-                if (meshTextures != null)
-                {
-
-                    foreach (var texture in meshTextures)
-                    {
-                        meshItem.AddNextNode(new ModelsTreeTextureViewModel(texture, this, meshItem));
-                    }
-
-                    meshItem.Items.FirstOrDefault()?.Approve();
-                }
+            foreach (var meshItem in item.Items.Select(i => (ModelsTreeMashViewModel)i)) {
+                meshItem.Items.FirstOrDefault()?.Approve();
             }
         }
 
@@ -105,11 +92,10 @@ namespace GohMdlExpert.ViewModels.ModelsTree
             item.Items.Clear();
         }
 
-        private void ApproveTextureItem(ModelsTreeItemViewModel item)
-        {
+        private void ApproveTextureItem(ModelsTreeItemViewModel item) {
             var meshItem = (ModelsTreeMashViewModel)item.Parent!;
 
-            ModelsAdder.SelectModelMeshTextureByIndex(meshItem.Mesh, meshItem.Items.IndexOf(item));
+            ModelsAdder.SelectModelMeshTextureByIndex(meshItem.MtlFile.Name, meshItem.Items.IndexOf(item));
             CancelApproveItems(meshItem.Items);
         }
     }

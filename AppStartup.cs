@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using WpfMvvm.DependencyInjection;
 using WpfMvvm.ViewModels;
+using WpfMvvm.ViewModels.Commands;
+using WpfMvvm.Views.Dialogs;
 
 namespace GohMdlExpert {
     public static class AppStartup {
@@ -24,6 +26,11 @@ namespace GohMdlExpert {
             e.Services.AddSingleton<GohResourceProvider>();
             e.Services.AddSingleton<GohHumanskinResourceProvider>();
             e.Services.AddSingleton<GohTextureProvider>();
+            e.Services.AddSingleton(new CommandFactory(
+                exceptionHandler: (e) => {
+                    AppDependencyInjection.Instance.ServiceProvider.GetRequiredService<IUserDialogProvider>().ShowError("", exception: e);
+                }
+            ));
         }
     }
 }

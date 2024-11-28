@@ -42,8 +42,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D {
             PlyMtlFiles = textureFiles;
         }
 
-        public static implicit operator Model3D(Model3DPly ply) {
-            return ply.Model;
+        public static implicit operator Model3D(Model3DPly? ply) {
+            return ply?.Model;
         }
 
         public void SelectMeshTexture(string mashTextureName, int index) {

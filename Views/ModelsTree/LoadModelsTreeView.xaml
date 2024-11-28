@@ -15,7 +15,7 @@
             <RowDefinition/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Button Content="Загрузить" Command="{Binding LoadModelsCommand}" Margin="5" Padding="5"/>
+        <TextBlock Text="Загрузка моделей"/>
         <TreeView Grid.Row="1" ItemsSource="{Binding Items}" MinWidth="150">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Items}">

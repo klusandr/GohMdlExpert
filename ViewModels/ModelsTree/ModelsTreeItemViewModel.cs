@@ -11,13 +11,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 
 namespace GohMdlExpert.ViewModels.ModelsTree {
-    public abstract class ModelsTreeItemViewModel : BaseViewModel {
+    public class ModelsTreeItemViewModel : BaseViewModel {
         private string _headerText;
         private ImageSource? _iconSource;
         private string? _tooltip;
         private bool _approved;
 
-        protected ModelsTreeViewModel ModelsTree { get; }
+        public ModelsTreeViewModel Tree { get; }
 
         public ModelsTreeItemViewModel? Parent { get; }
         public ObservableCollection<ModelsTreeItemViewModel> Items { get; }
@@ -59,7 +59,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
         public ModelsTreeItemViewModel(ModelsTreeViewModel modelsTree, ModelsTreeItemViewModel? parent = null) {
             _headerText = "";
             Items = [];
-            ModelsTree = modelsTree;
+            Tree = modelsTree;
             Parent = parent;
         }
 
@@ -68,7 +68,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
         }
 
         public void Approve() {
-            ModelsTree.ApproveItem(this);
+            Tree.ApproveItem(this);
             IsApproved = true;
         }
 

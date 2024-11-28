@@ -11,7 +11,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class PlyAggregateMtlFile : MtlFile {
         private MtlTextureCollection? _data;
         private readonly PlyFile _plyFile;
-        private readonly GohFactionHumanskinResource _HumanskinResource;
+        private readonly GohFactionHumanskinResource _humanskinResource;
 
         public PlyFile PlyFile => _plyFile;
 
@@ -25,14 +25,14 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
         public PlyAggregateMtlFile(string name, PlyFile plyFile, GohFactionHumanskinResource HumanskinResource) : base(name) {
             _plyFile = plyFile;
-            _HumanskinResource = HumanskinResource;
+            _humanskinResource = HumanskinResource;
         }
 
         public override void LoadData() {
             try {
                 var plyMash = _plyFile.Data.Meshes.First(x => x.TextureName == Name);
 
-                Data = _HumanskinResource.GetPlyMeshMtlTextures(PlyFile, plyMash);
+                Data = _humanskinResource.GetPlyMeshMtlTextures(PlyFile, plyMash);
             } catch (InvalidOperationException) {
                 throw new GohResourceFileException($"Error load aggregate .mtl file for {_plyFile.Name} file. Ply file don't contain mesh with the same name.", Name);
             }

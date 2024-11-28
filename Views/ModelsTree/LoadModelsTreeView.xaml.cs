@@ -1,4 +1,4 @@
-﻿using GohMdlExpert.ViewModels.ModelsTree;
+﻿using GohMdlExpert.ViewModels.ModelsTree.LoadModels;
 using WpfMvvm.Views;
 
 namespace GohMdlExpert.Views.ModelsTree
@@ -10,7 +10,7 @@ namespace GohMdlExpert.Views.ModelsTree
         public LoadModelsTreeView() {
             InitializeComponent();
 
-            ViewModel = ViewModelProvider.GetRequiredViewModel<LoadModelsTreeViewModel>();
+            ViewModel = ViewModelProvider.GetRequiredViewModel<ModelsLoadTreeViewModel>();
         }
     }
 }

@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:wpfmvvm="clr-namespace:WpfMvvm.Views;assembly=WpfMvvm"
              xmlns:local="clr-namespace:GohMdlExpert.Views" 
-             xmlns:viewmodels="clr-namespace:GohMdlExpert.ViewModels.LoadModels" 
+             xmlns:viewmodels="clr-namespace:GohMdlExpert.ViewModels" 
              d:DataContext="{d:DesignInstance Type=viewmodels:ModelAdderViewModel}"
              mc:Ignorable="d"
              MaxWidth="200">
