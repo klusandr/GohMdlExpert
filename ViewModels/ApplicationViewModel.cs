@@ -19,14 +19,14 @@ namespace GohMdlExpert.ViewModels
     public class ApplicationViewModel : BaseViewModel {
         private MdlSerializer _mdlSerialize = new MdlSerializer();
 
-        public string Path { get; set; } = "F:\\SDK\\Content\\goh\\entity\\humanskin\\[germans]";
+        public string Path { get; set; } = "F:\\SDK\\Content\\goh\\entity\\Humanskin\\[germans]";
 
-        public ICommand OpenFileCommand => CommandManager.GetCommand(OpenFile);
+        public ICommand OpenFileCommand => CommandManager.GetCommand(OpenResourceDirectory);
 
-        //public IAsyncCommand ThroughModelsCommand => CommandManager.GetAsyncCommand(ThroughModels);
+        public GohResourceProvider GohResourceProvider { get; }
 
-        public ApplicationViewModel() {
-            GohResourceLocations.Instance.ResourcePath = "F:\\SDK\\Content\\goh";
+        public ApplicationViewModel(GohResourceProvider gohResourceProvider) {
+            GohResourceProvider = gohResourceProvider;
         }
 
         public void OpenFile() {
@@ -36,6 +36,14 @@ namespace GohMdlExpert.ViewModels
 
             if (fileDialog.ShowDialog() ?? false) {
                 
+            }
+        }
+
+        public void OpenResourceDirectory() {
+            var folderDialog = new OpenFolderDialog();
+
+            if (folderDialog.ShowDialog() ?? false) {
+                GohResourceProvider.OpenResources(folderDialog.FolderName);
             }
         }
     }

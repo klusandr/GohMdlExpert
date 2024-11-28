@@ -44,16 +44,14 @@ namespace GohMdlExpert.ViewModels
             OnPropertyChanged(nameof(Models));
         }
 
-        public void RemoveModel(PlyFile plyFile) {
-
-        }
-
-        public void RemoveModel(Model3D model) {
-
+        public void RemoveModel(Model3DPly modelPly) {
+            _models.Remove(modelPly);
+            _modelsPly.Remove(modelPly);
         }
 
         public void Clear() {
-            
+            _models.Clear();
+            _modelsPly.Clear();
         }
 
         private Point3D GetPointsCenter(params Point3D[] points3D) {

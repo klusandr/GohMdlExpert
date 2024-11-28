@@ -20,10 +20,7 @@ namespace GohMdlExpert.Views {
 
 #if DEBUG //Используется для правильного отображения компонентов использующих объекты предоставленные DI
         static Models3DView() {
-            Designer.Startup += (_) => {
-                AppDependencyInjection.ServicesStartup += ServicesStartup.Startup;
-                ViewModelProvider.ViewModelsProviderStartup += ViewModelsStartup.Startup;
-            };
+            Designer.Startup += AppStartup.Startup;
         }
 #endif
         private Models3DViewModel Models3DViewModel => (Models3DViewModel)ViewModel!;
@@ -41,7 +38,7 @@ namespace GohMdlExpert.Views {
             _mouseCameraRotatedMover.MouseDownMove += OnMouseCameraRotationMove;
             _mouseCameraPositionMover.MouseDownMove += OnMouseCameraPositionMover;
 
-            //_cameraPositioner.SetCameraFocus(Models3DViewModel.ModelsCenter ?? new Point3D());
+            _cameraPositioner.SetCameraFocus(Models3DViewModel.ModelsCenter ?? new Point3D());
 
             //Models3DViewModel.Models.Changed += ((_, _) => _cameraPositioner.SetCameraFocus(Models3DViewModel.ModelsCenter ?? new Point3D()));
 

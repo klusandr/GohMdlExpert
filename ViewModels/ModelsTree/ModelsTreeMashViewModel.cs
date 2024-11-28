@@ -21,15 +21,8 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
         public PlyModel.Mesh Mesh { get; }
 
         public ModelsTreeMashViewModel(PlyFile plyFile, PlyModel.Mesh mesh, ModelsTreeViewModel modelsTree, ModelsTreeItemViewModel? parent = null) : base(modelsTree, parent) {
-            var mtlTextures = plyFile.Textures[mesh.TextureName];
             HeaderText = Path.GetFileNameWithoutExtension(mesh.TextureName);
             IconSource = s_iconSource;
-
-            if (mtlTextures != null) {
-                foreach (var mtlTexture in mtlTextures.Data) {
-                    AddNextNode(new ModelsTreeTextureViewModel(mtlTexture, modelsTree, this));
-                }
-            }
 
             Mesh = mesh;
         }

@@ -1,4 +1,5 @@
 ﻿using GohMdlExpert.Models.GatesOfHell.Exceptions;
+using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 using GohMdlExpert.Models.GatesOfHell.Serialization;
 using System;
 using System.Collections.Generic;
@@ -7,9 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
-    public class PlyGeneralMtlFile : MtlFile {
+    public class PlyAggregateMtlFile : MtlFile {
         private MtlTextureCollection? _data;
         private readonly PlyFile _plyFile;
+        private readonly GohFactionHumanskinResource _HumanskinResource;
 
         public PlyFile PlyFile => _plyFile;
 
@@ -21,17 +23,18 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             set => _data = value;
         }
 
-        public PlyGeneralMtlFile(string name, PlyFile plyFile) : base(name, null, null, null) {
+        public PlyAggregateMtlFile(string name, PlyFile plyFile, GohFactionHumanskinResource HumanskinResource) : base(name) {
             _plyFile = plyFile;
+            _HumanskinResource = HumanskinResource;
         }
 
         public override void LoadData() {
             try {
                 var plyMash = _plyFile.Data.Meshes.First(x => x.TextureName == Name);
 
-                Data = Loader.GetPlyMeshMtlTextures(PlyFile, plyMash);
-            } catch (InvalidOperationException e) {
-                throw new GohResourceFileException($"Error load general .mtl file for {_plyFile.Name} file.", Name);
+                Data = _HumanskinResource.GetPlyMeshMtlTextures(PlyFile, plyMash);
+            } catch (InvalidOperationException) {
+                throw new GohResourceFileException($"Error load aggregate .mtl file for {_plyFile.Name} file. Ply file don't contain mesh with the same name.", Name);
             }
         }
     }

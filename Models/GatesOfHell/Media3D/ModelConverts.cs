@@ -1,5 +1,7 @@
 ﻿using GohMdlExpert.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Resources;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using WpfMvvm.DependencyInjection;
 
 namespace GohMdlExpert.Models.GatesOfHell.Media3D {
     /// <summary>
@@ -40,7 +43,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D {
             IEnumerator<Material?> materialsEnumerator;
 
             if (textures != null && textures.Any()) {
-                materialsEnumerator = textures.Select(t => t?.Diffuse.Data).GetEnumerator();
+                materialsEnumerator = textures.Select(t => GetMaterial(t?.Diffuse)).GetEnumerator();
             } else {
                 materialsEnumerator = new List<Material?>(1).GetEnumerator();
             }
@@ -111,6 +114,14 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D {
                     B = (byte)Random.Shared.Next(0, 255),
                 }
             ));
+        }
+        #warning Исправить это....
+        private static Material? GetMaterial(TextureFile? mtlTexture) {
+            if (mtlTexture == null) {
+                return null;
+            }
+
+            return AppDependencyInjection.Instance.ServiceProvider.GetRequiredService<GohTextureProvider>().GetMaterial(mtlTexture);
         }
     }
 }

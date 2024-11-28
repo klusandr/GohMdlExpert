@@ -6,30 +6,20 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
         public string Name { get; set; }
         public string? Path { get; set; }
-        public bool RelativePath => RelativePathPoint != null || ResourceLocation != null;
         public string? RelativePathPoint { get; set; }
-        public string? ResourceLocation { get; set; }
+        public bool IsRelativePath => RelativePathPoint != null;
 
-        public GohResourceElement(string name, string? path = null, string? relativePathPoint = null, string? location = null) {
+        public GohResourceElement(string name, string? path = null, string? relativePathPoint = null) {
             Name = name;
             Path = path;
-            ResourceLocation = location;
             RelativePathPoint = relativePathPoint;
         }
 
         public string GetFullPath() {
             string path = Path ?? "";
 
-            if (!SystemPath.IsPathFullyQualified(path) && RelativePath) {
-                string absolutePath;
-
-                if (ResourceLocation != null) {
-                    absolutePath = SystemPath.Join(GohResourceLocations.Instance.GetLocationFullPath(ResourceLocation), path);
-                } else {
-                    absolutePath = SystemPath.GetFullPath(SystemPath.Combine(RelativePathPoint!, path));
-                }
-
-                path = absolutePath;
+            if (!SystemPath.IsPathFullyQualified(path) && RelativePathPoint != null) {
+                path = SystemPath.Combine(RelativePathPoint, path);
             }
 
             return SystemPath.Combine(path, Name);

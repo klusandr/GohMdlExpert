@@ -14,12 +14,8 @@ namespace GohMdlExpert {
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : WpfApplication {
-
-        public static new App Current => (App)WpfApplication.Current;
-
         public App() {
-            AppDependencyInjection.ServicesStartup += GohMdlExpert.ServicesStartup.Startup;
-            ViewModelProvider.ViewModelsProviderStartup += ViewModelsStartup.Startup;
+            AppStartup.Startup(this, EventArgs.Empty);
         }
     }
 }

@@ -19,8 +19,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
         public override string? Extension => ".mdl";
 
-        public MdlFile(string name, string? path = null, string? relativePathPoint = null, string? location = null) 
-            : base(name, path, relativePathPoint, location) { }
+        public MdlFile(string name, string? path = null, string? relativePathPoint = null) 
+            : base(name, path, relativePathPoint) { }
 
         public override void LoadData() {
             var parameters = (IEnumerable<ModelDataParameter>)Serializer.Deserialize(GetAllText()).Data!;

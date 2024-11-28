@@ -1,7 +1,8 @@
-﻿using GohMdlExpert.ViewModels.LoadModels;
+﻿using GohMdlExpert.ViewModels.ModelsTree;
 using WpfMvvm.Views;
 
-namespace GohMdlExpert.Views.ModelsTree {
+namespace GohMdlExpert.Views.ModelsTree
+{
     /// <summary>
     /// Логика взаимодействия для ModelsTreeView.xaml
     /// </summary>

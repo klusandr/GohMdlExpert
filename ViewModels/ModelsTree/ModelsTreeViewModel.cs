@@ -29,6 +29,11 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
 
         public abstract void LoadResources();
 
+        public virtual void ClearResources() {
+            CancelApproveItems();
+            Items.Clear();
+        }
+
         public void ApproveItem(ModelsTreeItemViewModel item) {
             if (item.IsApproved || _approvedItems.Contains(item)) {
                 return;

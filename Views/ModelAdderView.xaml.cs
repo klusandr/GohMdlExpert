@@ -1,7 +1,8 @@
-﻿using GohMdlExpert.ViewModels.LoadModels;
+﻿using GohMdlExpert.ViewModels;
 using WpfMvvm.Views;
 
-namespace GohMdlExpert.Views {
+namespace GohMdlExpert.Views
+{
     /// <summary>
     /// Логика взаимодействия для ModelAdderView.xaml
     /// </summary>
