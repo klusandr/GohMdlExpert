@@ -35,7 +35,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         public string GetAllText() {
             string path = GetFullPath();
 
-            if (!File.Exists(path)) {
+            if (!Exists()) {
                 throw new GohResourceFileException("File is not exists.", path);
             }
 
@@ -45,7 +45,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         public FileStream GetStream() {
             string path = GetFullPath();
 
-            if (!File.Exists(path)) {
+            if (!Exists()) {
                 throw new GohResourceFileException("File is not exists.", path);
             }
 
@@ -64,6 +64,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             throw new NotImplementedException();
         }
 
+        public bool Exists() {
+            return File.Exists(GetFullPath());
+        }
+
         public override bool Equals(object? obj) {
             if (obj == null) {
                 return false;
@@ -78,6 +82,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             }
 
             return false;
+        }
+
+        public override int GetHashCode() {
+            return base.GetHashCode();
         }
     }
 }

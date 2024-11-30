@@ -11,7 +11,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
     public class GohResourceLocations {
         public const string HUMANSKIN_SOURCE_DIRECTORY_NAME = "[[*_source]]";
 
-        private string? _resourcePath;
         private readonly Dictionary<string, string> _locationsPaths = new() {
             ["texture"] = @"\texture\common",
             ["ger_humanskin"] = @"\entity\humanskin\[germans]",

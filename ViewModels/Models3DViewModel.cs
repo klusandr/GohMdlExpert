@@ -2,14 +2,17 @@
 using System.Windows.Media.Media3D;
 using GohMdlExpert.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Media3D;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using WpfMvvm.ViewModels;
 
 namespace GohMdlExpert.ViewModels {
     public sealed class Models3DViewModel : BaseViewModel {
-        private ObservableCollection<Model3DPly> _modelsPly;
-        private Model3DCollection _models;
+        private readonly ObservableCollection<PlyModel3D> _modelsPly;
+        private readonly ObservableCollection<PlyAggregateMtlFile> _aggregateMtlFiles;
+        private readonly Model3DCollection _models;
 
-        public ObservableCollection<Model3DPly> ModelsPly => _modelsPly;
+        public ObservableCollection<PlyModel3D> ModelsPly => _modelsPly;
+        public ObservableCollection<PlyAggregateMtlFile> AggregateMtlFiles => _aggregateMtlFiles;
         public Model3DCollection Models => _models;
 
 
@@ -18,16 +21,17 @@ namespace GohMdlExpert.ViewModels {
         public Models3DViewModel() {
             _models = [];
             _modelsPly = [];
+            _aggregateMtlFiles = [];
         }
 
-        public void AddModel(Model3DPly modelPly) {
+        public void AddModel(PlyModel3D modelPly) {
             _modelsPly.Add(modelPly);
             _models.Add(modelPly);
 
             OnPropertyChanged(nameof(Models));
         }
 
-        public void RemoveModel(Model3DPly modelPly) {
+        public void RemoveModel(PlyModel3D modelPly) {
             _models.Remove(modelPly);
             _modelsPly.Remove(modelPly);
         }

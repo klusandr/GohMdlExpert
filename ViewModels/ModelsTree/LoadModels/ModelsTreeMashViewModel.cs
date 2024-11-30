@@ -8,7 +8,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
     public class ModelsTreeMashViewModel : ModelsTreeItemViewModel {
         private static readonly ImageSource s_iconSource = new BitmapImage().FromByteArray(Resources.MeshIcon);
 
-        public MtlFile MtlFile { get; }
+        public PlyAggregateMtlFile MtlFile { get; }
 
         public ModelsTreeMashViewModel(PlyAggregateMtlFile mtlFile, ModelsTreeViewModel modelsTree, ModelsTreeItemViewModel? parent = null) : base(modelsTree, parent) {
             HeaderText = mtlFile.Name;

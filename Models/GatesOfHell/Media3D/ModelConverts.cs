@@ -1,21 +1,25 @@
 ﻿using GohMdlExpert.Extensions;
+using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using WpfMvvm.DependencyInjection;
+using static GohMdlExpert.Models.GatesOfHell.Resources.PlyModel;
 
 namespace GohMdlExpert.Models.GatesOfHell.Media3D {
     /// <summary>
-    /// Предоставляет методы конвертации объектов <see cref="PlyModel"/> в объекты <see cref="System.Windows.Media.Media3D"/>.
+    /// Предоставляет методы преобразования различных ресурсов GoH в объекты используемые в .Net.
     /// </summary>
-    public static class Model3DConverts {
+    public static class ResourceConverts {
         /// <summary>
         /// Конвертирует <see cref="PlyModel"/> в модель <see cref="Model3DGroup"/>, содержащую одну или несколько <see cref="GeometryModel3D"/>,
         /// представляющие <see cref="PlyModel.Mesh"/> в исходной модели, с возможностью указания использованных материалов.
@@ -24,11 +28,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D {
         /// Ply Модели в GoH имеют несколько другие установки по осям, и для правильного отображения применяются трансформации вращения.
         /// </remarks>
         /// <param name="plyModel">Модель <see cref="PlyModel"/>, которую необходимо конвертировать в <see cref="Model3DGroup"/>.</param>
-        /// <param name="textures">Перечисление материалов <see cref="Material"/>, используемых в текстуре. Если будет равно <see langword="null"/>, 
+        /// <param name="meshesTextures">Перечисление материалов <see cref="Material"/>, используемых в текстуре. Если будет равно <see langword="null"/>, 
         /// будут использованы <see cref="SolidColorBrush"/> со случайными цветами.</param>
         /// <returns>Экземпляр <see cref="Model3DGroup"/>, содержащий один или несколько <see cref="GeometryModel3D"/>, 
         /// соответствующим порядку <see cref="PlyModel.Mesh"/> в исходной модели.</returns>
-        public static Model3DGroup PlyModelToModel3D(PlyModel plyModel, IEnumerable<MtlTexture?>? textures = null) {
+        public static Model3DGroup PlyModelToModel3D(PlyModel plyModel, Dictionary<string, MtlTexture?>? meshesTextures = null) {
             var model = new Model3DGroup() {
                 Transform = new Transform3DGroup() {
                     Children = [
@@ -38,20 +42,13 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D {
                 }
             };
 
-            var meshes = PlyModelToMeshesGeometry3D(plyModel);
+            var meshesEnumerator = PlyModelToMeshesGeometry3D(plyModel).GetEnumerator();
+            meshesEnumerator.MoveNext();
 
-            IEnumerator<Material?> materialsEnumerator;
-
-            if (textures != null && textures.Any()) {
-                materialsEnumerator = textures.Select(t => GetMaterial(t?.Diffuse)).GetEnumerator();
-            } else {
-                materialsEnumerator = new List<Material?>(1).GetEnumerator();
-            }
-
-            foreach (var mesh in meshes) {
-                var geometry = new GeometryModel3D(mesh, materialsEnumerator.Current ?? GetRandomTexture());
+            foreach (var meshData in plyModel.Meshes) {
+                var geometry = new GeometryModel3D(meshesEnumerator.Current, GetMeshMaterialOrRandomColor(meshData.TextureName, meshesTextures));
                 model.Children.Add(geometry);
-                materialsEnumerator.MoveNext();
+                meshesEnumerator.MoveNext();
             }
 
             return model;
@@ -93,6 +90,31 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D {
         }
 
         /// <summary>
+        /// Возвращает материал текстуры из файла материала в виде изображения.
+        /// </summary>
+        /// <param name="materialFile">Файл материала.</param>
+        /// <returns>Материал.</returns>
+        public static Material GetMaterial(MaterialFile materialFile) {
+            string fullPath = materialFile.GetFullPath();
+            DiffuseMaterial diffuseMaterial;
+
+            if (!materialFile.Exists()) {
+                throw new GohResourcesException($"Texture \"{fullPath}\" is not found.");
+            }
+
+            diffuseMaterial = new DiffuseMaterial(
+                new ImageBrush(new BitmapImage(new Uri(fullPath))) {
+                    ViewportUnits = BrushMappingMode.Absolute,
+                }
+            );
+
+            diffuseMaterial.Freeze();
+            diffuseMaterial.Brush.Freeze();
+
+            return diffuseMaterial;
+        }
+
+        /// <summary>
         /// Проверяет, является ли материал загруженной текстурой.
         /// </summary>
         /// <param name="material"></param>
@@ -105,6 +127,17 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D {
             }
         }
 
+        private static Material GetMeshMaterialOrRandomColor(string meshTextureName, Dictionary<string, MtlTexture?>? meshesTextures) {
+            if (meshesTextures != null) {
+                if (meshesTextures.TryGetValue(meshTextureName, out var texture) && texture != null) {
+                    return texture.Diffuse.Data;
+                }
+            }
+
+            return GetRandomTexture();
+        }
+
+
         private static DiffuseMaterial GetRandomTexture() {
             return new DiffuseMaterial(new SolidColorBrush(
                 new Color() {
@@ -114,14 +147,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D {
                     B = (byte)Random.Shared.Next(0, 255),
                 }
             ));
-        }
-        #warning Исправить это....
-        private static Material? GetMaterial(TextureFile? mtlTexture) {
-            if (mtlTexture == null) {
-                return null;
-            }
-
-            return AppDependencyInjection.Instance.ServiceProvider.GetRequiredService<GohTextureProvider>().GetMaterial(mtlTexture);
         }
     }
 }

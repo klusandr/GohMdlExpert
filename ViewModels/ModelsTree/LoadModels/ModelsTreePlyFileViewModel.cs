@@ -9,16 +9,14 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
     public class ModelsTreePlyFileViewModel : ModelsTreeItemViewModel {
         private static readonly ImageSource s_iconSource = new BitmapImage().FromByteArray(Resources.PlyIcon);
 
-        private readonly PlyFile _plyFile;
-
+        public PlyFile PlyFile { get; }
+        public PlyAggregateMtlFiles? AggregateMtlFiles { get; private set; }
         public new ModelsLoadTreeViewModel Tree => (ModelsLoadTreeViewModel)base.Tree;
-        public PlyFile PlyFile => _plyFile;
 
         public override ICommand DoubleClickCommand => CommandManager.GetCommand(Approve);
 
-
         public ModelsTreePlyFileViewModel(PlyFile plyFile, ModelsLoadTreeViewModel modelsTree, ModelsTreeItemViewModel? parent = null) : base(modelsTree, parent) {
-            _plyFile = plyFile;
+            PlyFile = plyFile;
             HeaderText = plyFile.Name;
             IconSource = s_iconSource;
         }
@@ -29,14 +27,14 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
                     return;
                 }
 
-                var plyModel = _plyFile.Data;
+                AggregateMtlFiles = new PlyAggregateMtlFiles(PlyFile, Tree.HumanskinResource);
 
-                foreach (var mesh in plyModel.Meshes) {
-                    var meshesMtlFiles = Tree.HumanskinResource.GetPlyAggregateMtlFiles(_plyFile);
+                foreach (var mtlTexture in AggregateMtlFiles.SelectMany(a => a.Data)) {
+                    Tree.TextureProvider.SetTextureMaterialsFullPath(mtlTexture);
+                }
 
-                    foreach (var meshMtlFile in meshesMtlFiles) {
-                        AddNextNode(new ModelsTreeMashViewModel(meshMtlFile, Tree, this));
-                    }
+                foreach (var mtlFile in AggregateMtlFiles) {
+                    AddNextNode(new ModelsTreeMashViewModel(mtlFile, Tree, this));
                 }
             }
         }

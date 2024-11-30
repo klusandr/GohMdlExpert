@@ -11,10 +11,13 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
 
         public override ICommand DoubleClickCommand => CommandManager.GetCommand(Approve);
 
+        public MtlTexture MtlTexture { get; }
+
         public ModelsTreeTextureViewModel(MtlTexture mtlTexture, ModelsTreeViewModel modelsTree, ModelsTreeItemViewModel? parent = null) : base(modelsTree, parent) {
             HeaderText = mtlTexture.Diffuse.Name;
             ToolTip = mtlTexture.Diffuse.GetFullPath();
             IconSource = s_iconSource;
+            MtlTexture = mtlTexture;
         }
     }
 }

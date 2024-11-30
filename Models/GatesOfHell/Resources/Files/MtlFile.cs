@@ -1,4 +1,5 @@
-﻿using GohMdlExpert.Models.GatesOfHell.Serialization;
+﻿using GohMdlExpert.Models.GatesOfHell.Exceptions;
+using GohMdlExpert.Models.GatesOfHell.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +22,17 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         public override void LoadData() {
             var parameters = Serializer.Deserialize(GetAllText());
 
-            string diffusePath = (string)ModelDataSerializer.FindParameter(parameters, "Diffuse")?.Data!;
+            var diffuseParameter = ModelDataSerializer.FindParameter(parameters, "Diffuse");
 
-            Data = new MtlTexture(new TextureFile(diffusePath));
+            if (diffuseParameter == null || diffuseParameter.Value.Data == null) {
+                throw new GohResourceFileException("Diffuse material parameter not found or be null.", GetFullPath());
+            }
+
+            string diffusePath = (string)diffuseParameter.Value.Data;
+
+            diffusePath = diffusePath.Replace("$", "");
+
+            Data = new MtlTexture(new MaterialFile(diffusePath));
         }
     }
 }

@@ -48,7 +48,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
             return mtlFiles;
         }
 
-        public MtlTextureCollection GetPlyMeshMtlTextures(PlyFile plyFile, PlyModel.Mesh mesh) {
+        public MtlTextureCollection GetPlyMeshMtlTextures(PlyFile plyFile, string meshTextureName) {
+            ResourceChecking.ThrowCheckPlyFileMeshTextureName(plyFile, meshTextureName);
+
             var mdlFiles = GetPlyMdlFiles(plyFile);
             var mtlTextures = new MtlTextureCollection();
 
@@ -56,7 +58,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
                 var directory = new GohResourceDirectory(mdlFile);
 
                 foreach (var mtlFile in directory.GetFiles().OfType<MtlFile>()) {
-                    if (mtlFile.Name == mesh.TextureName) {
+                    if (mtlFile.Name == meshTextureName) {
                         mtlTextures.Add(mtlFile.Data);
                     }
                 }

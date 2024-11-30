@@ -10,27 +10,27 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
 
         public GohFactionHumanskinResource? Current { get; private set; }
 
-        public event EventHandler? HumanskinsResourceUpdate;
+        public event EventHandler? ResourceUpdated;
 
-        public GohHumanskinResourceProvider(GohResourceProvider gohResourceProvider) {
-            GohResourceProvider = gohResourceProvider;
+        public GohHumanskinResourceProvider(GohResourceProvider ResourceProvider) {
+            GohResourceProvider = ResourceProvider;
 
-            GohResourceProvider.ResourceUpdate += OnGohResourceUpdate;
+            GohResourceProvider.ResourceUpdated += OnGohResourceUpdated;
         }
 
-        public void Update() {
+        public void UpdateResource() {
             if (GohResourceProvider.ResourceDictionary != null) {
                 Current = new GohFactionHumanskinResource(GohResourceProvider.GetLocationDirectory("ger_humanskin"));
-                OnHumanskinsResourceUpdate();
+                OnResourceUpdated();
             }
         }
 
-        private void OnGohResourceUpdate(object? sender, EventArgs e) {
-            Update();
+        private void OnGohResourceUpdated(object? sender, EventArgs e) {
+            UpdateResource();
         }
 
-        private void OnHumanskinsResourceUpdate() {
-            HumanskinsResourceUpdate?.Invoke(this, EventArgs.Empty);
+        private void OnResourceUpdated() {
+            ResourceUpdated?.Invoke(this, EventArgs.Empty);
         }
     }
 }

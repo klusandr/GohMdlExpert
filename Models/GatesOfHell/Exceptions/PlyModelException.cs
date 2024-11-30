@@ -1,6 +1,8 @@
-﻿using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+﻿using GohMdlExpert.Models.GatesOfHell.Resources;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,6 +34,15 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
             }
 
             return fullMessage.ToString();
+        }
+
+
+        public static PlyModelException NoContainMeshTextureName(PlyFile? plyFile, string meshTextureName) {
+            return new PlyModelException(plyFile, $"Ply model don't contain mesh with \"{meshTextureName}\" texture name.");
+        }
+
+        public static PlyModelException AttemptInstallInvalidMtlTexture(PlyFile? plyFile, MtlTexture mtlTexture) {
+            return new PlyModelException(plyFile, $"Attempt set invalid texture \"{mtlTexture.Diffuse.Name}\".");
         }
     }
 }

@@ -38,7 +38,7 @@
                 </Path>
             </Button>
         </StackPanel>-->
-        <Grid Grid.Row="1" >
+        <Grid Grid.Row="1" Cursor="">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width=".3*" MinWidth="100"/>
                 <ColumnDefinition Width="auto"/>
@@ -46,20 +46,20 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width=".3*" MinWidth="100"/>
             </Grid.ColumnDefinitions>
-            <GridSplitter Width="3" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
-            <views:Models3DView Grid.Column="2"/>
-            <GridSplitter Width="3" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
-            <modelstree:ModelsOverviewTreeView Grid.Column="4"/>
-            <Grid>
+            <Grid Margin="5">
                 <Grid.RowDefinitions>
                     <RowDefinition MinHeight="50"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height=".3*" MinHeight="40"/>
                 </Grid.RowDefinitions>
-                <modelstree:LoadModelsTreeView Margin="5"/>
+                <modelstree:LoadModelsTreeView />
                 <GridSplitter Height="3" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
                 <views:ModelAdderView Grid.Row="2"/>
             </Grid>
+            <GridSplitter Width="3" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
+            <views:Models3DView Grid.Column="2"/>
+            <GridSplitter Width="3" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
+            <modelstree:ModelsOverviewTreeView Margin="5" Grid.Column="4"/>
         </Grid>
     </Grid>
 </Window>

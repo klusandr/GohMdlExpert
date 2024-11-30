@@ -20,7 +20,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
                 case NotifyCollectionChangedAction.Add:
                     if (e.NewItems != null) {
                         foreach (var model in e.NewItems) {
-                            var modelPly = (Model3DPly)model!;
+                            var modelPly = (PlyModel3D)model!;
                             Items.Add(new ModelsTreeItemViewModel(this) { HeaderText = modelPly.PlyFile?.Name ?? ""});
                         }
                     }
@@ -28,7 +28,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
                 case NotifyCollectionChangedAction.Remove:
                     if (e.OldItems != null) {
                         foreach (var model in e.OldItems) {
-                            var modelPly = (Model3DPly)model!;
+                            var modelPly = (PlyModel3D)model!;
 
                             var delete = Items.FirstOrDefault(x => x.HeaderText == modelPly.PlyFile?.Name);
 

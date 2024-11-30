@@ -9,10 +9,10 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources
 {
-    public class MtlTexture(TextureFile diffuse) {
-        public TextureFile Diffuse { get; set; } = diffuse;
-        public TextureFile? Bump { get; set; }
-        public TextureFile? Specular { get; set; }
+    public class MtlTexture(MaterialFile diffuse) {
+        public MaterialFile Diffuse { get; set; } = diffuse;
+        public MaterialFile? Bump { get; set; }
+        public MaterialFile? Specular { get; set; }
         public Colors? Color { get; set; }
 
         public override bool Equals(object? obj) {
@@ -32,6 +32,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             }
             
             return false;
+        }
+
+        public override int GetHashCode() {
+            return base.GetHashCode();
         }
     }
 }

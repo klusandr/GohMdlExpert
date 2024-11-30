@@ -1,5 +1,6 @@
 ﻿using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
+using GohMdlExpert.Views.ModelsTree;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows.Input;
 using WpfMvvm.DependencyInjection;
@@ -10,23 +11,26 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels
     {
         public ModelAdderViewModel ModelsAdder { get; }
         public GohHumanskinResourceProvider SkinResourceProvider { get; }
+        public GohTextureProvider TextureProvider { get; }
+
         public GohFactionHumanskinResource? HumanskinResource => SkinResourceProvider.Current;
 
         public ICommand LoadModelsCommand => CommandManager.GetCommand(LoadResources);
         public ICommand NextModelCommand => CommandManager.GetCommand(NextModel);
         public ICommand PastModelCommand => CommandManager.GetCommand(PastModel);
 
-        public ModelsLoadTreeViewModel(ModelAdderViewModel modelsAdder, GohHumanskinResourceProvider skinResourceProvider)
+        public ModelsLoadTreeViewModel(ModelAdderViewModel modelsAdder, GohHumanskinResourceProvider skinResourceProvider, GohTextureProvider textureProvider)
         {
             ModelsAdder = modelsAdder;
             SkinResourceProvider = skinResourceProvider;
+            TextureProvider = textureProvider;
             ModelsAdder.ModelAdded += (_, _) => CancelApproveItems();
 
             SetApproveItemHandler<ModelsTreePlyFileViewModel>(ApprovePlyItem);
             SetApproveItemHandler<ModelsTreeTextureViewModel>(ApproveTextureItem);
             SetCancelApproveItemHandler<ModelsTreePlyFileViewModel>(CancelApprovePlyItem);
 
-            SkinResourceProvider.HumanskinsResourceUpdate += OnHumanskinResourceUpdate;
+            SkinResourceProvider.ResourceUpdated += OnHumanskinResourceUpdate;
         }
 
         public override void LoadResources()
@@ -76,9 +80,9 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels
         private void ApprovePlyItem(ModelsTreeItemViewModel item) {
             var plyItem = (ModelsTreePlyFileViewModel)item;
 
-            ModelsAdder.SetModel(plyItem.PlyFile);
-
             plyItem.LoadData();
+
+            ModelsAdder.SetModel(plyItem.PlyFile, plyItem.AggregateMtlFiles);
 
             CancelApproveItems();
 
@@ -94,8 +98,9 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels
 
         private void ApproveTextureItem(ModelsTreeItemViewModel item) {
             var meshItem = (ModelsTreeMashViewModel)item.Parent!;
+            var textureItem = (ModelsTreeTextureViewModel)item;
 
-            ModelsAdder.SelectModelMeshTextureByIndex(meshItem.MtlFile.Name, meshItem.Items.IndexOf(item));
+            ModelsAdder.SelectModelMeshTextureByIndex(meshItem.MtlFile.Name, textureItem.MtlTexture);
             CancelApproveItems(meshItem.Items);
         }
     }

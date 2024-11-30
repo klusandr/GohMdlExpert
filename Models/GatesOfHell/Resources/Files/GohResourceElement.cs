@@ -4,10 +4,10 @@ using SystemPath = System.IO.Path;
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class GohResourceElement {
 
-        public string Name { get; set; }
-        public string? Path { get; set; }
+        public string Name { get; protected set; }
+        public string? Path { get; protected set; }
         public string? RelativePathPoint { get; set; }
-        public bool IsRelativePath => RelativePathPoint != null;
+        public bool IsRelativePath => !SystemPath.IsPathFullyQualified(Path ?? string.Empty);
 
         public GohResourceElement(string name, string? path = null, string? relativePathPoint = null) {
             Name = name;
@@ -18,11 +18,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         public string GetFullPath() {
             string path = Path ?? "";
 
-            if (!SystemPath.IsPathFullyQualified(path) && RelativePathPoint != null) {
-                path = SystemPath.Combine(RelativePathPoint, path);
+            if (IsRelativePath && RelativePathPoint != null) {
+                path = SystemPath.Join(RelativePathPoint, path);
             }
 
-            return SystemPath.Combine(path, Name);
+            return SystemPath.Join(path, Name);
         }
 
         public string GetDirectoryPath() {

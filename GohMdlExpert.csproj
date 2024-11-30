@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>call_to_arms_120.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\call_to_arms_120.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="call_to_arms_120.ico" />
+    <Content Include="Resources\call_to_arms_120.ico" />
   </ItemGroup>
 
   <ItemGroup>

@@ -26,6 +26,7 @@ namespace GohMdlExpert {
             e.Services.AddSingleton<GohResourceProvider>();
             e.Services.AddSingleton<GohHumanskinResourceProvider>();
             e.Services.AddSingleton<GohTextureProvider>();
+
             e.Services.AddSingleton(new CommandFactory(
                 exceptionHandler: (e) => {
                     AppDependencyInjection.Instance.ServiceProvider.GetRequiredService<IUserDialogProvider>().ShowError("", exception: e);
