@@ -12,14 +12,15 @@ using System.Windows.Media;
 
 namespace GohMdlExpert.ViewModels.ModelsTree {
     public class ModelsTreeItemViewModel : BaseViewModel {
-        private string _headerText;
-        private ImageSource? _iconSource;
-        private string? _tooltip;
-        private bool _approved;
+        private readonly ModelsTreeViewModel _tree;
+        protected string _headerText;
+        protected ImageSource? _iconSource;
+        protected string? _tooltip;
+        private ModelsTreeItemViewModel? _parent;
+        private bool _isExpended;
 
-        public ModelsTreeViewModel Tree { get; }
+        public ModelsTreeViewModel Tree => _tree;
 
-        public ModelsTreeItemViewModel? Parent { get; }
         public ObservableCollection<ModelsTreeItemViewModel> Items { get; }
 
         public string HeaderText {
@@ -46,34 +47,36 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
             }
         }
 
-        public bool IsApproved {
-            get => _approved;
-            private set {
-                _approved = value;
+        public ModelsTreeItemViewModel? Parent {
+            get => _parent;
+            set {
+                if (_parent != null) {
+                    throw new InvalidOperationException($"Attempt to set {nameof(ModelsTreeItemViewModel)} parent again.");
+                }
+
+                _parent = value;
+            }
+        }
+
+        public bool IsExpended {
+            get => _isExpended;
+            set {
+                _isExpended = value;
                 OnPropertyChanged();
             }
         }
 
         public virtual ICommand? DoubleClickCommand { get; }
-
-        public ModelsTreeItemViewModel(ModelsTreeViewModel modelsTree, ModelsTreeItemViewModel? parent = null) {
+        
+        public ModelsTreeItemViewModel(ModelsTreeViewModel modelsTree) {
             _headerText = "";
             Items = [];
-            Tree = modelsTree;
-            Parent = parent;
+            _tree = modelsTree;
         }
 
-        public void AddNextNode(ModelsTreeItemViewModel viewModel) {
+        public virtual void AddNextNode(ModelsTreeItemViewModel viewModel) {
+            viewModel.Parent ??= this;
             Items.Add(viewModel);
-        }
-
-        public void Approve() {
-            Tree.ApproveItem(this);
-            IsApproved = true;
-        }
-
-        public void CancelApprove() {
-            IsApproved &= false;
         }
     }
 }

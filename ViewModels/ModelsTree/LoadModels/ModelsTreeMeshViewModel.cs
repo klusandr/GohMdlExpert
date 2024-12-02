@@ -5,20 +5,26 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
-    public class ModelsTreeMashViewModel : ModelsTreeItemViewModel {
+    public class ModelsTreeMeshViewModel : ModelsLoadTreeItemViewModel {
         private static readonly ImageSource s_iconSource = new BitmapImage().FromByteArray(Resources.MeshIcon);
 
         public PlyAggregateMtlFile MtlFile { get; }
 
-        public ModelsTreeMashViewModel(PlyAggregateMtlFile mtlFile, ModelsTreeViewModel modelsTree, ModelsTreeItemViewModel? parent = null) : base(modelsTree, parent) {
+        public ModelsTreeMeshViewModel(PlyAggregateMtlFile mtlFile, ModelsLoadTreeViewModel modelsTree) : base(mtlFile, modelsTree) {
             HeaderText = mtlFile.Name;
             IconSource = s_iconSource;
             MtlFile = mtlFile;
+            LoadData();
+        }
 
-            foreach (var texture in mtlFile.Data) {
+        public override void LoadData() {
+            if (Items.Count != 0) {
+                return;
+            }
+
+            foreach (var texture in MtlFile.Data) {
                 AddNextNode(new ModelsTreeTextureViewModel(texture, Tree, this));
             }
         }
-
     }
 }

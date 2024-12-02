@@ -50,10 +50,8 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
 
         }
 
-        public override void LoadResources() {
+        public override void LoadData() {
             
         }
-
-
     }
 }

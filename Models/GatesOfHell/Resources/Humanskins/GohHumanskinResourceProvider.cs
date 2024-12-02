@@ -6,26 +6,25 @@ using System.Threading.Tasks;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
     public class GohHumanskinResourceProvider {
-        public GohResourceProvider GohResourceProvider { get; }
+        private readonly GohResourceProvider _resourceProvider;
 
         public GohFactionHumanskinResource? Current { get; private set; }
 
         public event EventHandler? ResourceUpdated;
 
         public GohHumanskinResourceProvider(GohResourceProvider ResourceProvider) {
-            GohResourceProvider = ResourceProvider;
-
-            GohResourceProvider.ResourceUpdated += OnGohResourceUpdated;
+            _resourceProvider = ResourceProvider;
+            _resourceProvider.ResourceUpdated += GohResourceUpdated;
         }
 
         public void UpdateResource() {
-            if (GohResourceProvider.ResourceDictionary != null) {
-                Current = new GohFactionHumanskinResource(GohResourceProvider.GetLocationDirectory("ger_humanskin"));
+            if (_resourceProvider.ResourceDictionary != null) {
+                Current = new GohFactionHumanskinResource("German", _resourceProvider.GetLocationDirectory("ger_humanskin"));
                 OnResourceUpdated();
             }
         }
 
-        private void OnGohResourceUpdated(object? sender, EventArgs e) {
+        private void GohResourceUpdated(object? sender, EventArgs e) {
             UpdateResource();
         }
 

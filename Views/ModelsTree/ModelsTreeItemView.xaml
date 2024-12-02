@@ -4,11 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GohMdlExpert.Views.ModelsTree" 
-             xmlns:modelstree="clr-namespace:GohMdlExpert.ViewModels.ModelsTree" 
-             d:DataContext="{d:DesignInstance Type=modelstree:ModelsTreeItemViewModel}"
+             xmlns:vm="clr-namespace:GohMdlExpert.ViewModels.ModelsTree.LoadModels" 
+             d:DataContext="{d:DesignInstance Type=vm:ModelsLoadTreeItemViewModel}"
              mc:Ignorable="d"
-             MouseDoubleClick="OnMouseDoubleClick"
-             ToolTip="{Binding ToolTip}">
+             MouseDoubleClick="IsMouseDoubleClick"
+             ToolTip="{Binding ToolTip}"
+             Expander.Expanded="ModelsTreeItemViewExpanded" Expander.Collapsed="ModelsTreeItemViewCollapsed">
     <UserControl.Style>
         <Style TargetType="UserControl">
             <Style.Triggers>

@@ -60,7 +60,7 @@ namespace GohMdlExpert.ViewModels {
             ModelAdded?.Invoke(this, EventArgs.Empty);
         }
 
-        public void SelectModelMeshTextureByIndex(string mashTextureName, MtlTexture mtlTexture) {
+        public void SelectModelMeshTexture(string mashTextureName, MtlTexture mtlTexture) {
             if (!IsAddedInProgress) {
                 throw new InvalidOperationException("Error setting texture model. Model not added yet.");
             }

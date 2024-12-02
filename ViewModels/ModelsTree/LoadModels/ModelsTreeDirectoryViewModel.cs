@@ -1,50 +1,43 @@
-﻿using GohMdlExpert.Extensions;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files;
-using GohMdlExpert.Properties;
-using GohMdlExpert.Views.ModelsTree;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using GohMdlExpert.Extensions;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+using GohMdlExpert.Properties;
 
-namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels
-{
-    public class ModelsTreeDirectoryViewModel : ModelsTreeItemViewModel {
+namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
+    public class ModelsTreeDirectoryViewModel : ModelsLoadTreeItemViewModel {
         private static ImageSource s_iconSource = new BitmapImage().FromByteArray(Resources.DirectoryIcon);
 
         private readonly GohResourceDirectory _directory;
 
-        public new ModelsLoadTreeViewModel Tree => (ModelsLoadTreeViewModel)base.Tree;
+        private static IEnumerable<string> FileFilters { get; } = [
+            @"^(?!.*_lod\d*\.)",
+            @"^(?!.*#)",
+        ];
 
         public override ICommand? DoubleClickCommand => CommandManager.GetCommand(LoadData);
 
-        public ModelsTreeDirectoryViewModel(GohResourceDirectory directory, ModelsLoadTreeViewModel modelsTree, ModelsTreeItemViewModel? parent = null) : base(modelsTree, parent) {
-            HeaderText = directory.Name;
+        public ModelsTreeDirectoryViewModel(GohResourceDirectory directory, ModelsLoadTreeViewModel modelsTree) : base(directory, modelsTree) {
             _directory = directory;
             IconSource = s_iconSource;
         }
 
-        public void LoadData()
-        {
-            Items.Clear();
-
-            var directories = _directory.GetDirectories();
-            var plyFiles = _directory.GetFiles().OfType<PlyFile>().Where(f => !f.Name.Contains("lod"));
-
-            foreach (var directory in directories)
-            {
-                AddNextNode(new ModelsTreeDirectoryViewModel(directory, Tree, this));
+        public override void LoadData() {
+            if (Items.Count != 0) {
+                return;
             }
 
-            foreach (var plyFile in plyFiles)
-            {
-                AddNextNode(new ModelsTreePlyFileViewModel(plyFile, Tree, this));
+            var directories = _directory.GetDirectories();
+            var files = _directory.GetFiles().OfType<PlyFile>().Where(f => FileFilters.All(ff => Regex.IsMatch(f.Name, ff)));
+
+            foreach (var directory in directories) {
+                AddNextNode(new ModelsTreeDirectoryViewModel(directory, Tree));
+            }
+
+            foreach (var plyFile in files) {
+                AddNextNode(new ModelsTreePlyFileViewModel(plyFile, Tree));
             }
         }
     }

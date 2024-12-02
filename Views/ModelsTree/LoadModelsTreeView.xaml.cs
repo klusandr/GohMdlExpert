@@ -1,4 +1,5 @@
-﻿using GohMdlExpert.ViewModels.ModelsTree.LoadModels;
+﻿using System.Windows.Controls;
+using GohMdlExpert.ViewModels.ModelsTree.LoadModels;
 using WpfMvvm.Views;
 
 namespace GohMdlExpert.Views.ModelsTree
@@ -9,8 +10,11 @@ namespace GohMdlExpert.Views.ModelsTree
     public partial class LoadModelsTreeView : BaseView {
         public LoadModelsTreeView() {
             InitializeComponent();
-
             ViewModel = ViewModelProvider.GetRequiredViewModel<ModelsLoadTreeViewModel>();
+        }
+
+        private void HierarchicalDataTemplate_Expanded(object sender, System.Windows.RoutedEventArgs e) {
+
         }
     }
 }

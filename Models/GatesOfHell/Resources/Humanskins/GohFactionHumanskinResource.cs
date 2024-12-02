@@ -4,11 +4,12 @@ using System.IO;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
     public class GohFactionHumanskinResource {
+        public string Name { get; }
         public GohResourceDirectory Root { get; }
         public GohResourceDirectory Source { get; }
 
-        public GohFactionHumanskinResource(GohResourceDirectory factionRoot) {
-            var source = factionRoot.FindResourceElements<GohResourceDirectory>(null, searchPattern: GohResourceLocations.HUMANSKIN_SOURCE_DIRECTORY_NAME, first: true, deepSearch: false).FirstOrDefault();
+        public GohFactionHumanskinResource(string name, GohResourceDirectory factionRoot) {
+            var source = factionRoot.FindResourceElements<GohResourceDirectory>(null, searchPattern: GohResourceLocations.HUMANSKIN_SOURCE_DIRECTORY_NAME_REG, first: true, deepSearch: false).FirstOrDefault();
 
             if (source == null 
                 || !source.FindResourceElements<PlyFile>(first: true).Any() 
@@ -17,6 +18,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
                 throw new GohResourcesException($"Directory {factionRoot.GetFullPath} is not faction Humanskin directory");
             }
 
+            Name = name;
             Root = factionRoot;
             Source = source;
         }
@@ -65,10 +67,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
             }
 
             return mtlTextures;
-        }
-
-        private bool CheckRootDirectory(GohResourceDirectory directory) {
-            return directory.FindResourceElements<GohResourceDirectory>(null, searchPattern: GohResourceLocations.HUMANSKIN_SOURCE_DIRECTORY_NAME).Any();
         }
     }
 }

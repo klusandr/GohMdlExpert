@@ -26,7 +26,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
         public GohResourceDirectory? ResourceDictionary { get; private set; }
         public bool IsResourceLoaded => ResourceDictionary != null;
 
-
         public event EventHandler? ResourceUpdated;
 
         public GohResourceProvider(GohResourceLocations resourceLocations) {
@@ -39,7 +38,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
             }
 
             ResourceDictionary = new GohResourceDirectory(path);
-            ResourceUpdated?.Invoke(this, EventArgs.Empty);
+            OnResourceUpdated();
         }
 
         public GohResourceDirectory GetLocationDirectory(string location) {
@@ -68,6 +67,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
                 .All((d) => directories
                     .Contains(d)
                 );
+        }
+
+        private void OnResourceUpdated() {
+            ResourceUpdated?.Invoke(this, EventArgs.Empty);
         }
     }
 }

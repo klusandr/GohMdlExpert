@@ -20,7 +20,7 @@ namespace GohMdlExpert.Views {
 
 #if DEBUG //Используется для правильного отображения компонентов использующих объекты предоставленные DI
         static Models3DView() {
-            Designer.Startup += AppStartup.Startup;
+            XamlDesigner.Startup += AppStartup.Startup;
         }
 #endif
         private Models3DViewModel Models3DViewModel => (Models3DViewModel)ViewModel!;

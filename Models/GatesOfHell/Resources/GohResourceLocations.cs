@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources {
     public class GohResourceLocations {
-        public const string HUMANSKIN_SOURCE_DIRECTORY_NAME = "[[*_source]]";
+        public const string HUMANSKIN_SOURCE_DIRECTORY_NAME_REG = @"\[.*_source\]";
 
         private readonly Dictionary<string, string> _locationsPaths = new() {
             ["texture"] = @"\texture\common",

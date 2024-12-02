@@ -16,10 +16,18 @@ namespace GohMdlExpert.Views.ModelsTree {
             InitializeComponent();
         }
 
-        private void OnMouseDoubleClick(object sender, MouseButtonEventArgs e) {
+        private void IsMouseDoubleClick(object sender, MouseButtonEventArgs e) {
             if (sender == this) {
                 ViewModel.DoubleClickCommand?.Execute(null);
             }
+        }
+
+        private void ModelsTreeItemViewExpanded(object sender, System.Windows.RoutedEventArgs e) {
+            ViewModel.IsExpended = true;
+        }
+
+        private void ModelsTreeItemViewCollapsed(object sender, System.Windows.RoutedEventArgs e) {
+            ViewModel.IsExpended = false;
         }
     }
 }
