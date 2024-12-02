@@ -35,6 +35,13 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
             return new TextureException(string.Format("Aggregate textures don't belong to the ply model \"{0}\".", mtlFiles.PlyFile.GetFullPath()));
         }
 
+        internal static TextureException AggregateFilesInconsistency(PlyAggregateMtlFile aggregateFile1, PlyAggregateMtlFile aggregateFile2) {
+            return new TextureException(string.Format("Aggregate texture for ply model \"{0}\" inconsistency with aggregate texture for \"{1}\". Texture name \"{2}\".",
+                aggregateFile1.PlyFile.GetFullPath(),
+                aggregateFile2.PlyFile.GetFullPath(),
+                aggregateFile1.Name));
+        }
+
         private static string GetFullMessage(string? message = null, MtlFile? mtlFile = null, MaterialFile? materialFile = null) {
             return string.Format(MESSAGE,
                 materialFile != null ? string.Format(MESSAGE_MATERIAL, "\"" + materialFile.GetFullPath() + "\" ") : string.Empty,

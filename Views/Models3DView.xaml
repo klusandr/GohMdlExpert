@@ -6,9 +6,13 @@
     xmlns:local="clr-namespace:GohMdlExpert.Views"
     xmlns:baseviews="clr-namespace:WpfMvvm.Views;assembly=WpfMvvm" 
     xmlns:viewmodels="clr-namespace:GohMdlExpert.ViewModels" 
+    xmlns:goh="clr-namespace:GohMdlExpert.Models.GatesOfHell.Media3D"
     d:DataContext="{d:DesignInstance Type=viewmodels:Models3DViewModel}"
     mc:Ignorable="d" 
     d:DesignHeight="450" d:DesignWidth="800">
+    <baseviews:BaseView.Resources>
+        <goh:PlyModel3DToModel3DConverter x:Key="PlyModel3DToModel3DConverter"/>
+    </baseviews:BaseView.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -32,6 +36,7 @@
                             <Model3DGroup Children="{Binding Models, Mode=OneWay}"/>
                         </ModelVisual3D.Content>
                     </ModelVisual3D>
+                    <ModelVisual3D Content="{Binding AddedModel, Mode=OneWay, Converter={StaticResource PlyModel3DToModel3DConverter}}"/>
                 </Viewport3D.Children>
             </Viewport3D>
         </Grid>

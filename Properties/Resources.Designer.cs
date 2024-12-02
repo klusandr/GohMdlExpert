@@ -73,6 +73,16 @@ namespace GohMdlExpert.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Byte[].
         /// </summary>
+        internal static byte[] MdlIcon {
+            get {
+                object obj = ResourceManager.GetObject("MdlIcon", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
         internal static byte[] MeshIcon {
             get {
                 object obj = ResourceManager.GetObject("MeshIcon", resourceCulture);

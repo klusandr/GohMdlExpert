@@ -32,11 +32,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
 
         public PlyModel Deserialize(string fileName) {
             if (File.Exists(fileName)) {
-                throw new GohResourceFileException($"File \"{fileName}\" is not exists.");
+                throw GohResourceFileException.IsNotExists(fileName);
             }
 
             if (Path.GetExtension(fileName) != ".ply") {
-                throw new GohResourceFileException($"File \"{fileName}\" is .ply file.");
+                throw GohResourceFileException.InvalidExtension(fileName, ".ply");
             }
 
             return Deserialize(new FileStream(fileName, FileMode.Open));
@@ -58,7 +58,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
                 var fileHeader = Encoding.ASCII.GetString(readBytes, 0, 8);
 
                 if (!fileHeader.Contains("EPLY")) {
-                    throw new GohResourceFileException($"File don't match the EPLY format.", modelFileStream.Name);
+                    throw GohResourceFileException.InvalidFormat(modelFileStream.Name, "EPLY");
                 }
 
                 modelFileStream.Read(readBytes, 0, 24);

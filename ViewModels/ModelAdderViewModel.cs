@@ -9,15 +9,14 @@ using WpfMvvm.ViewModels.Commands;
 
 namespace GohMdlExpert.ViewModels {
     public class ModelAdderViewModel : BaseViewModel {
-        private PlyModel3D? _addedModel;
         private PlyAggregateMtlFiles? _aggregateMtlFiles;
 
         public Models3DViewModel Models3DView { get; }
 
         public PlyModel3D? AddedModel {
-            get { return _addedModel; }
+            get { return Models3DView.AddedModel; }
             private set {
-                _addedModel = value;
+                Models3DView.AddedModel = value;
                 OnPropertyChanged();
             }
         }
@@ -28,36 +27,36 @@ namespace GohMdlExpert.ViewModels {
 
         public ICommand AddModelCommand => CommandManager.GetCommand(AddModel);
 
-
         public event EventHandler? ModelAdded;
 
         public ModelAdderViewModel(Models3DViewModel models3DView) {
-            _addedModel = null;
             Models3DView = models3DView;
         }
 
-        public void SetModel(PlyFile plyFile, PlyAggregateMtlFiles? mtlFiles) {
-            if (mtlFiles != null && plyFile != mtlFiles.PlyFile) {
-                throw TextureException.NotBelongPlyModel(mtlFiles);
+        public void SetModel(PlyFile plyFile, PlyAggregateMtlFiles? aggragateMtlFiles) {
+            if (aggragateMtlFiles != null && plyFile != aggragateMtlFiles.PlyFile) {
+                throw TextureException.NotBelongPlyModel(aggragateMtlFiles);
             }
     
             ClearModel();
 
-            AddedModel = new PlyModel3D(plyFile, mtlFiles);
-            Models3DView.AddModel(AddedModel);
+            AddedModel = new PlyModel3D(plyFile, aggragateMtlFiles);
+            AggregateMtlFiles = aggragateMtlFiles;
         }
 
         public void ClearModel() {
             if (IsAddedInProgress) {
-                Models3DView.RemoveModel(AddedModel!);
                 AggregateMtlFiles = null;
                 AddedModel = null;
             }
         }
 
         public void AddModel() {
-            AddedModel = null;
-            ModelAdded?.Invoke(this, EventArgs.Empty);
+            if (AddedModel != null) {
+                Models3DView.AddModel(AddedModel, AggregateMtlFiles);
+                AddedModel = null;
+                ModelAdded?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         public void SelectModelMeshTexture(string mashTextureName, MtlTexture mtlTexture) {

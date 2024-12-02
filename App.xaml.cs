@@ -8,6 +8,8 @@ using WpfMvvm;
 using GohMdlExpert.ViewModels;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using WpfMvvm.Diagnostics;
+using GohMdlExpert.Models.GatesOfHell.Exceptions;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 
 namespace GohMdlExpert {
     /// <summary>
@@ -16,6 +18,10 @@ namespace GohMdlExpert {
     public partial class App : WpfApplication {
         public App() {
             AppStartup.Startup(this, EventArgs.Empty);
+        }
+#warning переработать startup приложения.
+        protected override void OnStartup(StartupEventArgs e) {
+            base.OnStartup(e);
         }
     }
 }

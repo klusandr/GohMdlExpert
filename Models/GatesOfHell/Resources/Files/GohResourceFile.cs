@@ -85,7 +85,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         }
 
         public override int GetHashCode() {
-            return base.GetHashCode();
+            return Name.GetHashCode()
+                + Path?.GetHashCode() ?? 0
+                + RelativePathPoint?.GetHashCode() ?? 0
+                + Extension?.GetHashCode() ?? 0;
+
         }
     }
 }

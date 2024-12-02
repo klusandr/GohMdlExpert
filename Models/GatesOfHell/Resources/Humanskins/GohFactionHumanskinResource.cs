@@ -23,7 +23,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
             Source = source;
         }
 
-        //TODO Поиск .mdl файлов по имени .ply без пути может вызвать выборку .mdl содержащих другие .ply файлы с идентичными именами, но другими путями.
         public IEnumerable<MdlFile> GetPlyMdlFiles(PlyFile plyFile) {
             var currentDirectory = Root;
 

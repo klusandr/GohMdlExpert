@@ -40,6 +40,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D {
             mesh.Material = texture?.Diffuse.Data;
         }
 
+        public MtlTexture? GetMeshTexture(string meshTextureName) {
+            _ = GetMesh(meshTextureName);
+            return _meshesTextures[meshTextureName];
+        }
+
         public bool CheckNoMaterial(string? meshTextureName = null) {
             if (_meshesTextures == null) {
                 return true;
