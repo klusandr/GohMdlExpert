@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 
 namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
 	public class GohException : ApplicationException {
-		public GohException() : base("Gate of hell exception") { }
-		public GohException(string message) : base(message) { }
-		public GohException(string message, Exception inner) : base(message, inner) { }
+		public GohException(string? message = null, Exception? inner = null) : base(message ?? "Gate of hell exception", inner) { }
 	}
 }

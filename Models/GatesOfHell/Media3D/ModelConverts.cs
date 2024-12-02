@@ -99,7 +99,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D {
             DiffuseMaterial diffuseMaterial;
 
             if (!materialFile.Exists()) {
-                throw new GohResourcesException($"Texture \"{fullPath}\" is not found.");
+                throw GohResourceFileException.IsNotExists(materialFile);  
             }
 
             diffuseMaterial = new DiffuseMaterial(

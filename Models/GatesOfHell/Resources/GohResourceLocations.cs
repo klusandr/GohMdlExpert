@@ -21,7 +21,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
 
         public string GetLocationPath(string location) {
             if (!_locationsPaths.TryGetValue(location, out string? path)) {
-                throw new GohResourcesException($"Resource location \"{location}\" is not defined.");
+                throw GohResourcesException.LocationNotDefined(location);
             } else {
                 return path;
             }

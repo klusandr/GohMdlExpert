@@ -34,7 +34,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
 
         public void OpenResources(string path) {
             if (!CheckGohResourceDirectory(path)) {
-                throw new GohResourcesException($"{path} is not GoH resource directory.");
+                throw GohResourcesException.IsNotGohResource(path);
             }
 
             ResourceDictionary = new GohResourceDirectory(path);
@@ -45,12 +45,12 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
             string locationPath = ResourceLocations.GetLocationPath(location);
 
             if (ResourceDictionary == null) {
-                throw new GohResourcesException($"Resource directory is not specified.");
+                throw GohResourcesException.DirectoryNotSpecified();
             }
 
             var findDirectory = ResourceDictionary.AlongPath(locationPath);
 
-            return findDirectory ?? throw new GohResourcesException($"Resource path \"(GoHResource)\\{locationPath}\" is not find");
+            return findDirectory ?? throw GohResourcesException.LocationNotFound(location, locationPath);
         }
 
         public static GohResourceFile GetResourceFile(string fileName, string? path = null) {

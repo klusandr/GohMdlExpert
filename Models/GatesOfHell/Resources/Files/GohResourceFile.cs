@@ -20,7 +20,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
         public GohResourceFile(string name, string? path = null, string? relativePathPoint = null) : base(name, path, relativePathPoint) {
             if (Extension != null && SystemPath.GetExtension(name) != Extension) {
-                throw new GohResourceFileException($"File \"{GetFullPath}\" is not {Extension}.");
+                throw GohResourceFileException.InvalidExtension(this, Extension);
             }
 
             if (path == null) {
@@ -36,7 +36,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             string path = GetFullPath();
 
             if (!Exists()) {
-                throw new GohResourceFileException("File is not exists.", path);
+                throw GohResourceFileException.IsNotExists(this);
             }
 
             return File.ReadAllText(path);
@@ -46,7 +46,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             string path = GetFullPath();
 
             if (!Exists()) {
-                throw new GohResourceFileException("File is not exists.", path);
+                throw GohResourceFileException.IsNotExists(this);
             }
 
             return new FileStream(path, FileMode.Open);

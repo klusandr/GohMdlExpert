@@ -44,7 +44,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
 
         private MaterialFile SetMaterialFullPath(MaterialFile materialFile) {
             if (TextureDirectory == null) {
-                throw new GohResourcesException("Error load textures. Texture directory is not specified.");
+                throw TextureException.DirectoryNotSpecified();
             }
 
             if (materialFile.IsRelativePath && materialFile.RelativePathPoint == null) {

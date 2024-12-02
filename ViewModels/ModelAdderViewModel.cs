@@ -38,7 +38,7 @@ namespace GohMdlExpert.ViewModels {
 
         public void SetModel(PlyFile plyFile, PlyAggregateMtlFiles? mtlFiles) {
             if (mtlFiles != null && plyFile != mtlFiles.PlyFile) {
-                throw new PlyModelException(plyFile, "Files .mtl don't belong to the ply model.");
+                throw TextureException.NotBelongPlyModel(mtlFiles);
             }
     
             ClearModel();
