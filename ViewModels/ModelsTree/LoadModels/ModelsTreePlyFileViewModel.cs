@@ -44,16 +44,18 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
                 } catch (GohResourceFileException) {
                     throw;
                 } finally {
-                    Tree.ApprovedPlyItem = this;
                     base.Approve();
+                    Tree.ApprovedPlyItem = this;
                 }
             }
         }
 
         public override void CancelApprove() {
-            ClearData();
-            Tree.ApprovedTextureItems.Clear();
-            base.CancelApprove();
+            if (IsApproved) {
+                base.CancelApprove();
+                ClearData();
+                Tree.ApprovedTextureItems.Clear();
+            }
         }
     }
 }

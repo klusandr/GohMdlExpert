@@ -25,16 +25,16 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
 
         public override void Approve() {
             if (!IsApproved) {
+                base.Approve();
                 Tree.ModelsAdder.SelectModelMeshTexture(((ModelsTreeMeshViewModel)Parent!).MtlFile.Name, MtlTexture);
                 Tree.ApprovedTextureItems.Add(this);
-                base.Approve();
             }
         }
 
         public override void CancelApprove() {
             if (IsApproved) {
-                Tree.ApprovedTextureItems.Remove(this);
                 base.CancelApprove();
+                Tree.ApprovedTextureItems.Remove(this);
             }
             
         }
