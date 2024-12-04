@@ -25,7 +25,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
             _mtlTextures = new List<MtlTexture>(collection);
         }
 
-        public CollectionEquality Equals(MtlTextureCollection mtlTextures) {
+        public CollectionEquality CollectionEquals(MtlTextureCollection mtlTextures) {
             bool fullEquality = true;
             bool partialEquality = false;
 

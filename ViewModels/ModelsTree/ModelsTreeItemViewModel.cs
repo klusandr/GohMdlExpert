@@ -67,6 +67,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
         }
 
         public virtual ICommand? DoubleClickCommand { get; }
+        public virtual ICommand? MouseLeftClickCommand { get; }
         
         public ModelsTreeItemViewModel(ModelsTreeViewModel modelsTree) {
             _headerText = "";

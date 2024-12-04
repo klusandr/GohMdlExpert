@@ -64,7 +64,7 @@ namespace GohMdlExpert.ViewModels {
                 throw new InvalidOperationException("Error setting texture model. Model not added yet.");
             }
 
-            ResourceChecking.ThrowCheckPlyFileMeshTextureName(AddedModel!.PlyFile!, mashTextureName);
+            ResourceChecking.ThrowCheckPlyFileMeshTextureName(AddedModel!.PlyFile, mashTextureName);
 
             if (AggregateMtlFiles != null) {
                 if (!AggregateMtlFiles[mashTextureName].Data.Contains(mtlTexture)) {

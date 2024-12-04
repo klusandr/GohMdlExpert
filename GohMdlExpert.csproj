@@ -17,6 +17,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Resources\hide.ico" />
+    <None Remove="Resources\show.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="Resources\call_to_arms_120.ico" />
   </ItemGroup>
 
@@ -28,6 +33,15 @@
     <Reference Include="WpfMvvm">
       <HintPath>C:\Users\Андрей\source\repos\MvvmWpf\BaseWpfMvvm\bin\Debug\net8.0-windows\WpfMvvm.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\hide.ico" />
+    <Resource Include="Resources\show.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -44,9 +58,5 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\" />
   </ItemGroup>
 </Project>

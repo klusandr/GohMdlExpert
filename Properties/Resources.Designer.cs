@@ -22,7 +22,7 @@ namespace GohMdlExpert.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -73,6 +73,16 @@ namespace GohMdlExpert.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Byte[].
         /// </summary>
+        internal static byte[] HideIcon {
+            get {
+                object obj = ResourceManager.GetObject("HideIcon", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
         internal static byte[] MdlIcon {
             get {
                 object obj = ResourceManager.GetObject("MdlIcon", resourceCulture);
@@ -96,6 +106,16 @@ namespace GohMdlExpert.Properties {
         internal static byte[] PlyIcon {
             get {
                 object obj = ResourceManager.GetObject("PlyIcon", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] ShowIcon {
+            get {
+                object obj = ResourceManager.GetObject("ShowIcon", resourceCulture);
                 return ((byte[])(obj));
             }
         }

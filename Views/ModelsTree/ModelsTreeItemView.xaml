@@ -8,8 +8,7 @@
              d:DataContext="{d:DesignInstance Type=vm:ModelsLoadTreeItemViewModel}"
              mc:Ignorable="d"
              MouseDoubleClick="IsMouseDoubleClick"
-             ToolTip="{Binding ToolTip}"
-             Expander.Expanded="ModelsTreeItemViewExpanded" Expander.Collapsed="ModelsTreeItemViewCollapsed">
+             ToolTip="{Binding ToolTip}">
     <UserControl.Style>
         <Style TargetType="UserControl">
             <Style.Triggers>

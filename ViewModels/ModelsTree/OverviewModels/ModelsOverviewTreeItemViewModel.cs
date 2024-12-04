@@ -9,17 +9,36 @@ using WpfMvvm.ViewModels.Commands;
 
 namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
     public class ModelsOverviewTreeItemViewModel : ModelsTreeItemViewModel {
+        private bool _isVisible;
+        private bool _isEnable;
 
         public new ModelsOverviewTreeViewModel Tree => (ModelsOverviewTreeViewModel)base.Tree;
 
-        public Action<ModelsOverviewTreeItemViewModel> Action { get; init; }
+        public bool IsEnable {
+            get => _isEnable;
+            set {
+                _isEnable = value;
+                OnPropertyChanged();
+            }
+        }
 
-        public string MtlFileName { get; set; }
+        public bool IsVisible {
+            get => _isVisible;
+            set {
+                _isVisible = value;
+                OnPropertyChanged();
+            }
+        }
 
-        public override ICommand? DoubleClickCommand => CommandManager.GetCommand(() => Action(this));
+        public bool IsEnableActive { get; init; }
+        public bool IsVisibleActive { get; init; }
 
         public ModelsOverviewTreeItemViewModel(ModelsOverviewTreeViewModel modelsTree) : base(modelsTree) {
-            Action = (e) => { };
+            _isEnable = true;
+            _isVisible = true;
+
+            IsVisibleActive = true;
+            IsEnableActive = true;
         }
     }
 }

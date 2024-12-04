@@ -9,29 +9,30 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D {
         private readonly Dictionary<string, GeometryModel3D> _meshes;
         private readonly Dictionary<string, MtlTexture?> _meshesTextures;
 
+        public PlyFile PlyFile { get; }
         public Model3DGroup Model { get; }
-        public PlyModel Ply { get; }
-        public PlyFile? PlyFile { get; }
-        public IEnumerable<string> MeshesNames => _meshes.Keys;
+        public IEnumerable<string> MeshesTextureNames => _meshes.Keys;
 
-        public PlyModel3D(PlyModel plyModel, Dictionary<string, MtlTexture?>? meshesTextures = null) {
-            Ply = plyModel;
-            Model = ResourceConverts.PlyModelToModel3D(plyModel, meshesTextures);
+        public PlyModel3D(PlyFile plyFile, Dictionary<string, MtlTexture?>? meshesTextures = null) {
+            PlyFile = plyFile;
+            Model = ResourceConverts.PlyModelToModel3D(plyFile.Data, meshesTextures);
 
             _meshesTextures = meshesTextures != null ? new(meshesTextures) : [];
-            _meshes = LoadMeshes(plyModel, Model, PlyFile);
+            _meshes = LoadMeshes(plyFile.Data, Model, PlyFile);
         }
 
-        public PlyModel3D(PlyFile plyFile, Dictionary<string, MtlTexture?>? meshesTextures = null) : this(plyFile.Data, meshesTextures) {
-            PlyFile = plyFile;
-        }
-
-        public PlyModel3D(PlyFile plyFile, PlyAggregateMtlFiles? mtlFiles) : this(plyFile.Data, mtlFiles?.GetFirstMeshesTextures()) {
-            PlyFile = plyFile;
-        }
+        public PlyModel3D(PlyFile plyFile, PlyAggregateMtlFiles? mtlFiles) : this(plyFile, mtlFiles?.GetFirstMeshesTextures()) { }
 
         public static implicit operator Model3D?(PlyModel3D? ply) {
             return ply?.Model;
+        }
+
+        public GeometryModel3D GetMesh(string meshTextureName) {
+            if (!_meshes.TryGetValue(meshTextureName, out var mesh)) {
+                throw PlyModelException.NoContainMeshTextureName(null, meshTextureName);
+            }
+
+            return mesh;
         }
 
         public void SetMeshTexture(string meshTextureName, MtlTexture? texture) {
@@ -65,14 +66,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D {
             }
 
             return false;
-        }
-
-        private GeometryModel3D GetMesh(string meshTextureName) {
-            if (!_meshes.TryGetValue(meshTextureName, out var mesh)) {
-                throw PlyModelException.NoContainMeshTextureName(null, meshTextureName);
-            }
-
-            return mesh;
         }
 
         private static Dictionary<string, GeometryModel3D> LoadMeshes(PlyModel plyModel, Model3DGroup model3DGroup, PlyFile? plyFile = null) {

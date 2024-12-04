@@ -14,105 +14,92 @@ using GohMdlExpert.Properties;
 
 namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
     public class ModelsOverviewTreeViewModel : ModelsTreeViewModel {
+        private IEnumerable<MtlTexture>? _mtlTextures;
+
         public Models3DViewModel Models3DViewModel { get; }
 
-        public ModelsOverviewTreeItemViewModel MdlFile { get; }
-
-        public ICollection<ModelsTreeItemViewModel> PlyItems => MdlFile.Items;
+        public ModelsOverviewTreeMdlViewModel MdlItem { get; }
+        public ObservableCollection<ModelsTreeItemViewModel> PlyItems => MdlItem.Items;
 
         public IEnumerable<PlyAggregateMtlFile> MtlFiles => Models3DViewModel.AggregateMtlFiles.Values;
-        public ObservableCollection<MtlTexture> MtlTextures { get; } 
+        public IEnumerable<MtlTexture>? MtlTextures {
+            get => _mtlTextures;
+            private set {
+                _mtlTextures = value;
+                OnPropertyChanged();
+            }
+        }
 
         public ModelsOverviewTreeViewModel(Models3DViewModel models3DViewModel) {
             Models3DViewModel = models3DViewModel;
             MtlTextures = [];
 
-            MdlFile = new ModelsOverviewTreeItemViewModel(this) {
-                HeaderText = "new_humanskin.mdl",
-                IconSource = new BitmapImage().FromByteArray(Resources.MdlIcon)
-            };
-
-            Items.Add(MdlFile);
+            MdlItem = new ModelsOverviewTreeMdlViewModel(new MdlFile("new_humanskin.mdl"), this);
 
             models3DViewModel.PlyModels.CollectionChanged += ModelsPlyChanged;
             models3DViewModel.AggregateMtlFiles.CollectionChanged += MtlFilesChanged;
-        }
 
-        public void UpdateMtlFiles() {
-            for (int i = 1; i < MtlFiles.Count(); i++) {
-                Items.RemoveAt(i);
-            }
-
-            foreach (var mtlFile in MtlFiles) {
-                string materialName = Models3DViewModel.GetCurrentMtlFileTexture(mtlFile.Name).Diffuse.Name;
-
-                var item = new ModelsOverviewTreeItemViewModel(this) {
-                    HeaderText = $"{mtlFile.Name} [{materialName}]",
-                    IconSource = new BitmapImage().FromByteArray(Resources.TextureIcon),
-                    MtlFileName = mtlFile.Name,
-                    Action = (e) => SelectMtlFile(e.MtlFileName)
-                };
-
-                Items.Add(item);
-            }
-        }
-
-        private void SelectMtlFile(string mtlFileName) {
-            var textures = MtlFiles.FirstOrDefault(mf => mf.Name == mtlFileName)?.Data;
-
-            MtlTextures.Clear();
-
-            if (textures != null) {
-                foreach (var mtlTexture in textures) {
-                    MtlTextures.Add(mtlTexture);
+            PropertyNotifyHandler.AddHandler(nameof(SelectedItem), () => {
+                if (SelectedItem is ModelsOverviewTreeMtlViewModel mtlItem) {
+                    SelectedMtlItem(mtlItem);
                 }
-            }
+            });
+
+            LoadData();
+        }
+
+        private void SelectedMtlItem(ModelsOverviewTreeMtlViewModel mtlItem) {
+            MtlTextures = mtlItem.MtlFile.Data;
         }
 
         private void MtlFilesChanged(object? sender, NotifyCollectionChangedEventArgs e) {
-            UpdateMtlFiles();
+            switch (e.Action) {
+                case NotifyCollectionChangedAction.Add:
+                    var newMtlFile = ((KeyValuePair<string, PlyAggregateMtlFile>)e.NewItems![0]!).Value;
+                    Items.Add(new ModelsOverviewTreeMtlViewModel(newMtlFile, this));
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    if (e.OldStartingIndex != -1) {
+                        PlyItems.RemoveAt(e.OldStartingIndex + 1);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    PlyItems?.Clear();
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                case NotifyCollectionChangedAction.Move:
+                    break;
+            }
         }
 
         private void ModelsPlyChanged(object? sender, NotifyCollectionChangedEventArgs e) {
             switch (e.Action) {
                 case NotifyCollectionChangedAction.Add:
-                    if (e.NewItems != null) {
-                        foreach (var model in e.NewItems) {
-                            var modelPly = (PlyModel3D)model!;
-                            PlyItems.Add(new ModelsOverviewTreeItemViewModel(this) { 
-                                HeaderText = modelPly.PlyFile?.Name ?? "",
-                                IconSource = new BitmapImage().FromByteArray(Resources.PlyIcon)
-                            });
-                        }
-                    }
+                    var newPlyModel = (PlyModel3D)e.NewItems![0]!;
+                    PlyItems.Add(new ModelsOverviewTreePlyViewModel(newPlyModel, this));
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    if (e.OldItems != null) {
-                        foreach (var model in e.OldItems) {
-                            var modelPly = (PlyModel3D)model!;
-
-                            var delete = PlyItems.FirstOrDefault(x => x.HeaderText == modelPly.PlyFile?.Name);
-
-                            if (delete != null) {
-                                PlyItems.Remove(delete);
-                            }
-                        }
+                    if (e.OldStartingIndex != -1) {
+                        PlyItems.RemoveAt(e.OldStartingIndex);
                     }
                     break;
-                case NotifyCollectionChangedAction.Replace:
-                    break;
-                case NotifyCollectionChangedAction.Move:
-                    break;
                 case NotifyCollectionChangedAction.Reset:
+                    PlyItems?.Clear();
                     break;
-                default:
+                case NotifyCollectionChangedAction.Replace:
+                case NotifyCollectionChangedAction.Move:
                     break;
             }
 
         }
 
         public override void LoadData() {
-            
+            Items.Add(MdlItem);
+
+            foreach (var item in MtlFiles) {
+                Items.Add(new ModelsOverviewTreeMtlViewModel(item, this));
+            }
+
         }
     }
 }

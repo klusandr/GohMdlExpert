@@ -6,10 +6,14 @@ namespace GohMdlExpert.Views.ModelsTree {
     /// Логика взаимодействия для ModelsTreeView.xaml
     /// </summary>
     public partial class ModelsOverviewTreeView : BaseView {
+
+        private ModelsOverviewTreeViewModel OverviewTreeViewModel => (ModelsOverviewTreeViewModel)DataContext;
+
         public ModelsOverviewTreeView() {
             InitializeComponent();
 
             DataContext = ViewModelProvider.GetViewModel<ModelsOverviewTreeViewModel>();
+            _tree.SelectedItemChanged += OverviewTreeViewModel.SelectedItemChanged;
         }
     }
 }

@@ -133,4 +133,10 @@
   <data name="MdlIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\mdl.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="ShowIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\show.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="HideIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\hide.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

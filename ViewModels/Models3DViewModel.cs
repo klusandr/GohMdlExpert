@@ -14,7 +14,7 @@ namespace GohMdlExpert.ViewModels {
     public sealed class Models3DViewModel : BaseViewModel {
         private readonly ObservableCollection<PlyModel3D> _plyModels;
         private readonly ObservableDictionary<string, PlyAggregateMtlFile> _aggregateMtlFiles;
-        private readonly ObservableDictionary<string, int> _currentMtlFilesTexturesIndex;
+        private readonly Dictionary<string, int> _currentMtlFilesTexturesIndex;
         private readonly Model3DCollection _models;
         private PlyModel3D? _addedModel;
 
@@ -55,25 +55,21 @@ namespace GohMdlExpert.ViewModels {
         public void AddAggregateMtlFiles(PlyAggregateMtlFiles aggregateMtlFiles) {
             foreach (var newAggregateFile in aggregateMtlFiles) {
                 if (_aggregateMtlFiles.TryGetValue(newAggregateFile.Name, out var usedAggregateFile)) {
-                    var equalsResult = usedAggregateFile.Data.Equals(newAggregateFile.Data);
+                    var equalsResult = usedAggregateFile.Data.CollectionEquals(newAggregateFile.Data);
 
-                    switch (equalsResult) {
-                        case MtlTextureCollection.CollectionEquality.No:
-                            throw TextureException.AggregateFilesInconsistency(newAggregateFile, usedAggregateFile);
-                        case MtlTextureCollection.CollectionEquality.Partial:
-                            var result = _userDialog.Ask(
-                                string.Format("Added texture \"{0}\" partial inconsistency with used textures \"{1}\". " +
-                                    "Combine them? When combined, some materials will become unavailable.",
-                                    newAggregateFile,
-                                    usedAggregateFile),
-                                "Texture combined");
+                    if (equalsResult == MtlTextureCollection.CollectionEquality.No) {
+                        throw TextureException.AggregateFilesInconsistency(newAggregateFile, usedAggregateFile);
+                    } else if (equalsResult == MtlTextureCollection.CollectionEquality.Partial) {
+                        var result = _userDialog.Ask(
+                            string.Format("Added texture \"{0}\" partial inconsistency with used textures \"{1}\". " +
+                                "Combine them? When merge, some materials will become unavailable.",
+                                newAggregateFile,
+                                usedAggregateFile),
+                            "Texture combined");
 
-                            if (result == QuestionResult.OK) {
-                                MargeAggregateTexture(usedAggregateFile, newAggregateFile);
-                            }
-                            break;
-                        case MtlTextureCollection.CollectionEquality.Full:
-                            break;
+                        if (result == QuestionResult.OK) {
+                            usedAggregateFile.Data = MargeAggregateTextures(usedAggregateFile.Data, newAggregateFile.Data);
+                        }
                     }
                 } else {
                     _currentMtlFilesTexturesIndex.Add(newAggregateFile.Name, 0);
@@ -90,16 +86,12 @@ namespace GohMdlExpert.ViewModels {
             _plyModels.Clear();
         }
 
-        public MtlTexture GetCurrentMtlFileTexture(string meshTextureName) {
-            return GetMtlFileTextureByIndex(meshTextureName, _currentMtlFilesTexturesIndex[meshTextureName]);
-        }
-
         public void SetMtlFileTextureByIndex(string meshTextureName, int index) {
             if (_aggregateMtlFiles.TryGetValue(meshTextureName, out var aggregateTextures)) {
                 var mtlTexture = aggregateTextures.Data.ElementAt(index);
                 _currentMtlFilesTexturesIndex[meshTextureName] = index;
 
-                foreach (var model in _plyModels.Where(m => m.MeshesNames.Contains(meshTextureName))) {
+                foreach (var model in _plyModels.Where(m => m.MeshesTextureNames.Contains(meshTextureName))) {
                     model.SetMeshTexture(meshTextureName, mtlTexture);
                 }
             }
@@ -117,17 +109,24 @@ namespace GohMdlExpert.ViewModels {
             }
         }
 
+        public MtlTexture GetCurrentMtlFileTexture(string meshTextureName) {
+            return GetMtlFileTextureByIndex(meshTextureName, _currentMtlFilesTexturesIndex[meshTextureName]);
+        }
+
+        public IEnumerable<PlyModel3D> GetMtlFilePlyModels(string mtlFileName) {
+            return _plyModels.Where(p => p.MeshesTextureNames.Contains(mtlFileName));
+        }
+
+        private static MtlTextureCollection MargeAggregateTextures(MtlTextureCollection oldTextures, MtlTextureCollection newTextures) {
+            return new MtlTextureCollection(oldTextures.Intersect(newTextures));
+        }
+
         private Point3D GetPointsCenter(params Point3D[] points3D) {
             return new Point3D() {
                 X = points3D.Average(p => p.X),
                 Y = points3D.Average(p => p.Y),
                 Z = points3D.Average(p => p.Z),
             };
-        }
-
-        private void MargeAggregateTexture(PlyAggregateMtlFile oldAggregateTexture, PlyAggregateMtlFile newAggregateTexture) {
-            oldAggregateTexture.Data = new MtlTextureCollection(oldAggregateTexture.Data.Intersect(newAggregateTexture.Data, MtlTexture.GetEqualityComparer()));
-            UpdateTexture();
         }
 
         private void UpdateTexture() {
@@ -137,7 +136,7 @@ namespace GohMdlExpert.ViewModels {
                 string meshTextureName = aggregateTextures.Value.Name;
                 int mtlFileTextureIndex = _currentMtlFilesTexturesIndex[meshTextureName];
 
-                foreach (var model in _plyModels.Where(m => m.MeshesNames.Contains(meshTextureName))) {
+                foreach (var model in _plyModels.Where(m => m.MeshesTextureNames.Contains(meshTextureName))) {
                     var texture = model.GetMeshTexture(meshTextureName);
 
                     if (texture != null && !aggregateTextures.Value.Data.Contains(texture)) {
