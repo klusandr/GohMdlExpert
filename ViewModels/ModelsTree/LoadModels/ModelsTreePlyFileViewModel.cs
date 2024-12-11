@@ -14,10 +14,23 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
         public PlyAggregateMtlFiles? AggregateMtlFiles { get; private set; }
 
         public override ICommand DoubleClickCommand => CommandManager.GetCommand(Approve);
+        public override ICommand LoadCommand => Tree.ModelsAdder.AddModelCommand;
+        public override ICommand DeleteCommand => Tree.ModelsAdder.ClearModelCommand;
+        public ICommand AddCommand => CommandManager.GetCommand(AddPlyModel);
+
+        private void AddPlyModel() {
+            if (Tree.HumanskinResource != null) {
+                try {
+                    Tree.ModelsAdder.AddModel(PlyFile, new PlyAggregateMtlFiles(PlyFile, Tree.HumanskinResource, Tree.TextureProvider));
+                } catch (OperationCanceledException) { }
+            }
+        }
 
         public ModelsTreePlyFileViewModel(PlyFile plyFile, ModelsLoadTreeViewModel modelsTree) : base(plyFile, modelsTree) {
             PlyFile = plyFile;
             IconSource = s_iconSource;
+            ContextMenuCommands.Add("Add", AddCommand);
+            ContextMenuCommands.Add("Delete", DeleteCommand);
         }
 
         public override void LoadData() {
@@ -25,11 +38,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
                 return;
             }
 
-            AggregateMtlFiles = new PlyAggregateMtlFiles(PlyFile, Tree.HumanskinResource);
-
-            foreach (var mtlTexture in AggregateMtlFiles.SelectMany(a => a.Data)) {
-                Tree.TextureProvider.SetTextureMaterialsFullPath(mtlTexture);
-            }
+            AggregateMtlFiles = new PlyAggregateMtlFiles(PlyFile, Tree.HumanskinResource, Tree.TextureProvider);
 
             foreach (var mtlFile in AggregateMtlFiles) {
                 AddNextNode(new ModelsTreeMeshViewModel(mtlFile, Tree));
@@ -41,20 +50,27 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
                 try {
                     LoadData();
                     Tree.ModelsAdder.SetModel(PlyFile, AggregateMtlFiles);
+                    SelectTextures();
+                    IsButtonActive = true;
                 } catch (GohResourceFileException) {
                     throw;
                 } finally {
                     base.Approve();
-                    Tree.ApprovedPlyItem = this;
                 }
             }
         }
 
         public override void CancelApprove() {
             if (IsApproved) {
-                base.CancelApprove();
                 ClearData();
-                Tree.ApprovedTextureItems.Clear();
+                IsButtonActive = false;
+                base.CancelApprove();
+            }
+        }
+
+        private void SelectTextures() {
+            foreach (var meshItem in Items) {
+                (meshItem.Items.FirstOrDefault() as ModelsTreeTextureViewModel)?.Approve();
             }
         }
     }

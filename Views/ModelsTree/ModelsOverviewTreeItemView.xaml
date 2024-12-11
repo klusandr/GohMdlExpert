@@ -32,7 +32,7 @@
                 </Style>
             </CheckBox.Resources>
         </CheckBox>
-        <!--<CheckBox Template="{StaticResource ShowHideCheckBox}" IsChecked="{Binding IsVisible}">
+        <CheckBox Template="{StaticResource ShowHideCheckBox}" IsChecked="{Binding IsVisible}">
             <CheckBox.Resources>
                 <Style TargetType="CheckBox">
                     <Style.Triggers>
@@ -42,6 +42,16 @@
                     </Style.Triggers>
                 </Style>
             </CheckBox.Resources>
-        </CheckBox>-->
+        </CheckBox>
     </StackPanel>
+
+    <UserControl.ContextMenu>
+        <ContextMenu ItemsSource="{Binding ContextMenuCommands}">
+            <ContextMenu.ItemTemplate>
+                <DataTemplate>
+                    <MenuItem Header="{Binding Key}" Command="{Binding Value}"/>
+                </DataTemplate>
+            </ContextMenu.ItemTemplate>
+        </ContextMenu>
+    </UserControl.ContextMenu>
 </UserControl>

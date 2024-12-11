@@ -17,8 +17,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Resources\check.ico" />
+    <None Remove="Resources\cross.ico" />
     <None Remove="Resources\hide.ico" />
     <None Remove="Resources\show.ico" />
+    <None Remove="Resources\texture.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,8 +43,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\check.ico" />
+    <Resource Include="Resources\cross.ico" />
     <Resource Include="Resources\hide.ico" />
     <Resource Include="Resources\show.ico" />
+    <Resource Include="Resources\texture.ico" />
   </ItemGroup>
 
   <ItemGroup>

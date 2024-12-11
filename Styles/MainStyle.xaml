@@ -18,6 +18,16 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-    
+    <ControlTemplate x:Key="CheckButton" TargetType="Button">
+        <Grid Background="Transparent">
+            <Border>
+                <Rectangle Margin="2"
+                     StrokeThickness="1"
+                     Stroke="#60000000"
+                     StrokeDashArray="1 2" />
+            </Border>
+            <Image Source="/Resources/check.ico" Width="20"/>
+        </Grid>
+    </ControlTemplate>
 </ResourceDictionary>
     

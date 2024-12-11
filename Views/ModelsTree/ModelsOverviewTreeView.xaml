@@ -5,16 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:baseviews="clr-namespace:WpfMvvm.Views;assembly=WpfMvvm"
              xmlns:local="clr-namespace:GohMdlExpert.Views.ModelsTree" 
-             xmlns:overviewmodels="clr-namespace:GohMdlExpert.ViewModels.ModelsTree.OverviewModels" 
-             xmlns:prop="clr-namespace:GohMdlExpert.Properties" 
-             d:DataContext="{d:DesignInstance Type=overviewmodels:ModelsOverviewTreeViewModel}"
+             xmlns:vm="clr-namespace:GohMdlExpert.ViewModels.ModelsTree.OverviewModels" 
+             xmlns:tml="clr-namespace:GohMdlExpert.Views"
+             d:DataContext="{d:DesignInstance Type=vm:ModelsOverviewTreeViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition/>
-            <RowDefinition Height="auto"/>
             <RowDefinition Height=".3*"/>
         </Grid.RowDefinitions>
         <TextBlock Text="Обозреватель содержимого"/>
@@ -25,16 +24,6 @@
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
-        <TextBlock Text="Обозреватель текстур" Grid.Row="2"/>
-        <ListView ItemsSource="{Binding MtlTextures}" Grid.Row="3">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="{Binding TextureIcon, Source={StaticResource ResourceKey=Resources}}" Width="20"/>
-                        <TextBlock Text="{Binding Diffuse.Name}"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <tml:TextureMaterialListView Grid.Row="2"/>
     </Grid>
 </baseviews:BaseView>

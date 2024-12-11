@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using WpfMvvm.Collections.ObjectModel;
 
 namespace GohMdlExpert.ViewModels.ModelsTree {
     public class ModelsTreeItemViewModel : BaseViewModel {
@@ -17,7 +18,9 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
         protected ImageSource? _iconSource;
         protected string? _tooltip;
         private ModelsTreeItemViewModel? _parent;
-        private bool _isExpended;
+        private bool _isExpanded;
+        private bool _isActive;
+        private bool _selected;
 
         public ModelsTreeViewModel Tree => _tree;
 
@@ -47,6 +50,8 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
             }
         }
 
+        public ObservableDictionary<string, ICommand> ContextMenuCommands { get; }
+
         public ModelsTreeItemViewModel? Parent {
             get => _parent;
             set {
@@ -58,21 +63,38 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
             }
         }
 
-        public bool IsExpended {
-            get => _isExpended;
+        public bool IsExpanded {
+            get => _isExpanded;
             set {
-                _isExpended = value;
+                _isExpanded = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsActive {
+            get => _isActive;
+            set {
+                _isActive = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsSelected {
+            get => _selected;
+            set {
+                _selected = value;
                 OnPropertyChanged();
             }
         }
 
         public virtual ICommand? DoubleClickCommand { get; }
         public virtual ICommand? MouseLeftClickCommand { get; }
-        
+
         public ModelsTreeItemViewModel(ModelsTreeViewModel modelsTree) {
             _headerText = "";
             Items = [];
             _tree = modelsTree;
+            ContextMenuCommands = [];
         }
 
         public virtual void AddNextNode(ModelsTreeItemViewModel viewModel) {

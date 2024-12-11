@@ -52,7 +52,7 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height=".3*" MinHeight="40"/>
                 </Grid.RowDefinitions>
-                <modelstree:LoadModelsTreeView />
+                <modelstree:ModelsLoadTreeView />
                 <GridSplitter Height="3" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
                 <views:ModelAdderView Grid.Row="2"/>
             </Grid>

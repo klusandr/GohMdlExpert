@@ -1,6 +1,7 @@
 ﻿using GohMdlExpert.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Properties;
+using System.ComponentModel;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -23,7 +24,21 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
             }
 
             foreach (var texture in MtlFile.Data) {
-                AddNextNode(new ModelsTreeTextureViewModel(texture, Tree, this));
+                var textureItem = new ModelsTreeTextureViewModel(texture, Tree, this);
+
+                textureItem.PropertyNotifyHandler.AddHandler(nameof(textureItem.IsApproved), TextureItemApprovedChange);
+
+                AddNextNode(textureItem);
+            }
+        }
+
+        private void TextureItemApprovedChange(object? sender, PropertyChangedEventArgs e) {
+            var textureItem = (ModelsTreeTextureViewModel)sender!;
+
+            foreach (var item in Items.OfType<ModelsTreeTextureViewModel>()) {
+                if (item != textureItem) {
+                    item.CancelApprove();
+                }
             }
         }
     }

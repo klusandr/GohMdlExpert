@@ -20,7 +20,16 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
         public ModelsTreeItemViewModel? SelectedItem {
             get => _selectedItem;
             private set {
+                if (_selectedItem != null && value != _selectedItem) {
+                    _selectedItem.IsSelected = false;
+                }
+
                 _selectedItem = value;
+
+                if (_selectedItem != null) {
+                    _selectedItem.IsSelected = true;
+                }
+
                 OnPropertyChanged();
             }
         }
@@ -42,7 +51,6 @@ namespace GohMdlExpert.ViewModels.ModelsTree {
 
         public void SelectedItemChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<object> e) {
             SelectedItem = e.NewValue as ModelsTreeItemViewModel;
-            new Binding();
         }
     }
 }

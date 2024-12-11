@@ -13,6 +13,7 @@ using System.Windows.Media;
 namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
     public abstract class ModelsLoadTreeItemViewModel : ModelsTreeItemViewModel {
         private bool _approved;
+        private bool _isButtonActive;
 
         public new ModelsLoadTreeViewModel Tree => (ModelsLoadTreeViewModel)base.Tree;
 
@@ -26,10 +27,24 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
             }
         }
 
+        public bool IsButtonActive {
+            get => _isButtonActive;
+            set {
+                _isButtonActive = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public virtual ICommand LoadCommand => CommandManager.GetCommand(() => { });
+        public virtual ICommand DeleteCommand => CommandManager.GetCommand(() => { });
+
         public ModelsLoadTreeItemViewModel(GohResourceElement resourceElement, ModelsLoadTreeViewModel modelsTree) : base(modelsTree) {
+            _isButtonActive = false;
+
             HeaderText = resourceElement.Name;
             ToolTip = resourceElement.GetFullPath();
             ResourceElement = resourceElement;
+            modelsTree.CreatedItemHandler(this, EventArgs.Empty);
         }
 
         public abstract void LoadData();

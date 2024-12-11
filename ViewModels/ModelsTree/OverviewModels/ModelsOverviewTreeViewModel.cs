@@ -12,12 +12,14 @@ using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Properties;
 
-namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
+namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels
+{
     public class ModelsOverviewTreeViewModel : ModelsTreeViewModel {
         private IEnumerable<MtlTexture>? _mtlTextures;
+        private PlyAggregateMtlFile? _selectedMtlFile;
 
         public Models3DViewModel Models3DViewModel { get; }
-
+        public TextureMaterialListViewModel MaterialList { get; }
         public ModelsOverviewTreeMdlViewModel MdlItem { get; }
         public ObservableCollection<ModelsTreeItemViewModel> PlyItems => MdlItem.Items;
 
@@ -30,45 +32,35 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
             }
         }
 
-        public ModelsOverviewTreeViewModel(Models3DViewModel models3DViewModel) {
+        public PlyAggregateMtlFile? SelectedMtlFile {
+            get => _selectedMtlFile;
+            set {
+                _selectedMtlFile = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ModelsOverviewTreeViewModel(Models3DViewModel models3DViewModel, TextureMaterialListViewModel materialList) {
             Models3DViewModel = models3DViewModel;
+            MaterialList = materialList;
             MtlTextures = [];
 
             MdlItem = new ModelsOverviewTreeMdlViewModel(new MdlFile("new_humanskin.mdl"), this);
 
             models3DViewModel.PlyModels.CollectionChanged += ModelsPlyChanged;
             models3DViewModel.AggregateMtlFiles.CollectionChanged += MtlFilesChanged;
+            models3DViewModel.UpdatedTextures += ModelsUpdatedTextures;
 
-            PropertyNotifyHandler.AddHandler(nameof(SelectedItem), () => {
-                if (SelectedItem is ModelsOverviewTreeMtlViewModel mtlItem) {
-                    SelectedMtlItem(mtlItem);
-                }
-            });
+            PropertyNotifyHandler.AddHandler(nameof(SelectedItem), (s, e) => SelectedMtlFile = (SelectedItem as ModelsOverviewTreeMtlViewModel)?.MtlFile);
 
             LoadData();
         }
 
-        private void SelectedMtlItem(ModelsOverviewTreeMtlViewModel mtlItem) {
-            MtlTextures = mtlItem.MtlFile.Data;
-        }
+        public override void LoadData() {
+            Items.Add(MdlItem);
 
-        private void MtlFilesChanged(object? sender, NotifyCollectionChangedEventArgs e) {
-            switch (e.Action) {
-                case NotifyCollectionChangedAction.Add:
-                    var newMtlFile = ((KeyValuePair<string, PlyAggregateMtlFile>)e.NewItems![0]!).Value;
-                    Items.Add(new ModelsOverviewTreeMtlViewModel(newMtlFile, this));
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    if (e.OldStartingIndex != -1) {
-                        PlyItems.RemoveAt(e.OldStartingIndex + 1);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    PlyItems?.Clear();
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                case NotifyCollectionChangedAction.Move:
-                    break;
+            foreach (var item in MtlFiles) {
+                Items.Add(new ModelsOverviewTreeMtlViewModel(item, this));
             }
         }
 
@@ -93,13 +85,28 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
 
         }
 
-        public override void LoadData() {
-            Items.Add(MdlItem);
-
-            foreach (var item in MtlFiles) {
-                Items.Add(new ModelsOverviewTreeMtlViewModel(item, this));
+        private void MtlFilesChanged(object? sender, NotifyCollectionChangedEventArgs e) {
+            switch (e.Action) {
+                case NotifyCollectionChangedAction.Add:
+                    var newMtlFile = ((KeyValuePair<string, PlyAggregateMtlFile>)e.NewItems![0]!).Value;
+                    Items.Add(new ModelsOverviewTreeMtlViewModel(newMtlFile, this));
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    if (e.OldStartingIndex != -1) {
+                        PlyItems.RemoveAt(e.OldStartingIndex + 1);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    PlyItems?.Clear();
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                case NotifyCollectionChangedAction.Move:
+                    break;
             }
+        }
 
+        private void ModelsUpdatedTextures(object? sender, EventArgs e) {
+            OnPropertyChanged(nameof(SelectedMtlFile));
         }
     }
 }

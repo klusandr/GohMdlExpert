@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Net.Sockets;
 using System.Windows.Input;
 using GohMdlExpert.Models.GatesOfHell.Resources;
@@ -9,7 +10,6 @@ using WpfMvvm.Collections.ObjectModel;
 namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
     public sealed class ModelsLoadTreeViewModel : ModelsTreeViewModel {
         private ModelsTreePlyFileViewModel? _approvedPlyItem;
-        private readonly ObservableCollection<ModelsTreeTextureViewModel> _approvedTexturesItems;
 
         public ModelAdderViewModel ModelsAdder { get; }
         public GohHumanskinResourceProvider SkinResourceProvider { get; }
@@ -19,15 +19,11 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
 
         public ModelsTreePlyFileViewModel? ApprovedPlyItem {
             get => _approvedPlyItem;
-            set {
-                _approvedPlyItem?.CancelApprove();
+            private set {
                 _approvedPlyItem = value;
-
                 OnPropertyChanged();
             }
         }
-
-        public ObservableCollection<ModelsTreeTextureViewModel> ApprovedTextureItems => _approvedTexturesItems;
 
         public ICommand NextModelCommand => CommandManager.GetCommand(NextPly);
         public ICommand PastModelCommand => CommandManager.GetCommand(PastPly);
@@ -36,11 +32,10 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
             ModelsAdder = modelsAdder;
             SkinResourceProvider = skinResourceProvider;
             TextureProvider = textureProvider;
-            _approvedTexturesItems = [];
 
-            ModelsAdder.ModelAdded += ModelAdded; ;
-            SkinResourceProvider.ResourceUpdated += HumanskinResourceUpdated;
-            _approvedTexturesItems.CollectionChanged += ApprovedTexturesItemsChanged; ;
+            ModelsAdder.ModelAdded += ModelAddedHandler;
+            ModelsAdder.CancelModelAdded += CancelModelAddedHandler;
+            SkinResourceProvider.ResourceUpdated += HumanskinResourceUpdatedHandler;
         }
 
         public override void LoadData() {
@@ -72,81 +67,36 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
             MovePlyApprove(-1);
         }
 
-        public void CancelApproveItems(IEnumerable<ModelsLoadTreeItemViewModel>? items = null) {
-            foreach (var item in items ?? ApprovedTextureItems) {
-                item.CancelApprove();
-            }
-
-            if (items == null) {
-                ApprovedPlyItem = null;
-                _approvedTexturesItems.Clear();
-            }
-        }
-
-        public void CreatedItem(object? sender, EventArgs e) {
-            if (sender is ModelsLoadTreeItemViewModel item) {
+        public void CreatedItemHandler(object? sender, EventArgs e) {
+            if (sender is ModelsTreePlyFileViewModel item) {
                 if (item.Tree == this) {
-                    item.PropertyChanged += ItemPropertyChanged;
+                    item.PropertyNotifyHandler.AddHandler(nameof(item.IsApproved), PlyFileApprovedChangeHandler);
                 }
             }
         }
 
-        private void ItemPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            var item = (ModelsLoadTreeItemViewModel)sender!;
+        private void PlyFileApprovedChangeHandler(object? sender, PropertyChangedEventArgs e) {
+            var plyItem = (ModelsTreePlyFileViewModel)sender!;
 
-            if (e.PropertyName == nameof(ModelsLoadTreeItemViewModel.IsApproved)) {
-                if (item.IsApproved) {
-                    ApprovedItem(item);
-                } else {
-                    CancelApprovedItem(item);
-                }
+            if (plyItem.IsApproved) {
+                ApprovedPlyItem?.CancelApprove();
+                ApprovedPlyItem = plyItem;
+            } else {
+                ApprovedPlyItem = null;
             }
         }
 
-        private void ApprovedItem(ModelsLoadTreeItemViewModel item) {
-            switch (item) {
-                case ModelsTreePlyFileViewModel plyItem:
-                    ApprovedPlyItem = plyItem;
-                    break;
-                case ModelsTreeTextureViewModel textureItem:
-                    _approvedTexturesItems.Add(textureItem);
-                    break;
-            }
-        }
-
-        private void CancelApprovedItem(ModelsLoadTreeItemViewModel item) {
-            switch (item) {
-                case ModelsTreePlyFileViewModel _:
-                    ApprovedPlyItem = null;
-                    break;
-                case ModelsTreeTextureViewModel textureItem:
-                    _approvedTexturesItems.Remove(textureItem);
-                    break;
-            }
-        }
-
-        private void HumanskinResourceUpdated(object? sender, EventArgs e) {
+        private void HumanskinResourceUpdatedHandler(object? sender, EventArgs e) {
             UpdateData();
         }
 
-        private void ModelAdded(object? sender, EventArgs e) {
-            CancelApproveItems();
+        private void ModelAddedHandler(object? sender, EventArgs e) {
+            ApprovedPlyItem?.CancelApprove();
         }
 
-        private void ApprovedTexturesItemsChanged(object? sender, NotifyCollectionChangedEventArgs e) {
-            switch (e.Action) {
-                case NotifyCollectionChangedAction.Add:
-                    ((ModelsTreeTextureViewModel)e.NewItems![0]!).Approve();
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    ((ModelsTreeTextureViewModel)e.OldItems![0]!).CancelApprove();
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                    ((ModelsTreeTextureViewModel)e.OldItems![0]!).CancelApprove();
-                    ((ModelsTreeTextureViewModel)e.NewItems![0]!).Approve();
-                    break;
-            }
-        }
 
+        private void CancelModelAddedHandler(object? sender, EventArgs e) {
+            ApprovedPlyItem?.CancelApprove();
+        }
     }
 }

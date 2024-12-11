@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using System.Xml.Serialization;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Media3D;
 using GohMdlExpert.Models.GatesOfHell.Resources;
@@ -9,14 +10,13 @@ using WpfMvvm.ViewModels.Commands;
 
 namespace GohMdlExpert.ViewModels {
     public class ModelAdderViewModel : BaseViewModel {
+        private readonly Models3DViewModel _models3DView;
         private PlyAggregateMtlFiles? _aggregateMtlFiles;
 
-        public Models3DViewModel Models3DView { get; }
-
         public PlyModel3D? AddedModel {
-            get { return Models3DView.AddedModel; }
+            get { return _models3DView.AddedModel; }
             private set {
-                Models3DView.AddedModel = value;
+                _models3DView.AddedModel = value;
                 OnPropertyChanged();
             }
         }
@@ -26,37 +26,62 @@ namespace GohMdlExpert.ViewModels {
         public bool IsAddedInProgress => AddedModel != null;
 
         public ICommand AddModelCommand => CommandManager.GetCommand(AddModel);
+        public ICommand ClearModelCommand => CommandManager.GetCommand(ClearModel);
 
         public event EventHandler? ModelAdded;
+        public event EventHandler? CancelModelAdded;
 
         public ModelAdderViewModel(Models3DViewModel models3DView) {
-            Models3DView = models3DView;
+            _models3DView = models3DView;
         }
 
-        public void SetModel(PlyFile plyFile, PlyAggregateMtlFiles? aggragateMtlFiles) {
-            if (aggragateMtlFiles != null && plyFile != aggragateMtlFiles.PlyFile) {
-                throw TextureException.NotBelongPlyModel(aggragateMtlFiles);
-            }
-    
+        public void SetModel(PlyFile plyFile, PlyAggregateMtlFiles? aggregateMtlFiles) {
             ClearModel();
 
-            AddedModel = new PlyModel3D(plyFile, aggragateMtlFiles);
-            AggregateMtlFiles = aggragateMtlFiles;
+            if (aggregateMtlFiles != null && aggregateMtlFiles.PlyFile != plyFile) {
+                throw TextureException.NotBelongPlyModel(aggregateMtlFiles);
+            }
+
+            AggregateMtlFiles = aggregateMtlFiles;
+            AddedModel = new PlyModel3D(plyFile, aggregateMtlFiles);
+        }
+
+        public void SetMtlFiles(PlyAggregateMtlFiles aggregateMtlFiles) {
+            if (!IsAddedInProgress) {
+                throw new InvalidOperationException("Error setting texture model. Model not added yet.");
+            }
+
+            if (aggregateMtlFiles.PlyFile != AddedModel!.PlyFile) {
+                throw TextureException.NotBelongPlyModel(aggregateMtlFiles);
+            }
+
+            foreach (var aggregateMtlFile in aggregateMtlFiles) {
+                AddedModel.SetMeshTexture(aggregateMtlFile.Name, aggregateMtlFile.Data.FirstOrDefault());
+            }
+
+            AggregateMtlFiles = aggregateMtlFiles;
         }
 
         public void ClearModel() {
             if (IsAddedInProgress) {
                 AggregateMtlFiles = null;
                 AddedModel = null;
+                CancelModelAdded?.Invoke(this, EventArgs.Empty);
             }
         }
 
         public void AddModel() {
             if (AddedModel != null) {
-                Models3DView.AddModel(AddedModel, AggregateMtlFiles);
-                AddedModel = null;
-                ModelAdded?.Invoke(this, EventArgs.Empty);
+                try {
+                    _models3DView.AddModel(AddedModel, AggregateMtlFiles);
+                    AddedModel = null;
+                    ModelAdded?.Invoke(this, EventArgs.Empty);
+                } catch (OperationCanceledException) { }   
             }
+        }
+
+        public void AddModel(PlyFile plyFile, PlyAggregateMtlFiles? aggregateMtlFiles) {
+            _models3DView.AddModel(new PlyModel3D(plyFile, aggregateMtlFiles), aggregateMtlFiles);
         }
 
         public void SelectModelMeshTexture(string mashTextureName, MtlTexture mtlTexture) {

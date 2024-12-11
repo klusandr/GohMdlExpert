@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class PlyFile : GohResourceFile {
-        public static PlySerializer? s_serializer;
+        private static PlySerializer? s_serializer;
 
-        public static PlySerializer Serializer => s_serializer ??= new PlySerializer();
+        private static PlySerializer Serializer => s_serializer ??= new PlySerializer();
 
         public new PlyModel Data { get => (PlyModel)base.Data; set => base.Data = value; }
 

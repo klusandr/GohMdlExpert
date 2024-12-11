@@ -108,8 +108,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D {
                 }
             );
 
-            diffuseMaterial.Freeze();
-            diffuseMaterial.Brush.Freeze();
+            //diffuseMaterial.Freeze();
+            //diffuseMaterial.Brush.Freeze();
 
             return diffuseMaterial;
         }

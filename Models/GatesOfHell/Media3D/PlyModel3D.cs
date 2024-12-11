@@ -2,23 +2,78 @@
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
-using WpfMvvm.Exceptions;
 
 namespace GohMdlExpert.Models.GatesOfHell.Media3D {
     public class PlyModel3D {
-        private readonly Dictionary<string, GeometryModel3D> _meshes;
-        private readonly Dictionary<string, MtlTexture?> _meshesTextures;
+        private class MeshData {
+            private readonly string _textureName;
+            private readonly GeometryModel3D _geometry;
+            private MtlTexture? _texture;
+            private bool _isVisible;
+
+            public string TextureName => _textureName;
+            public GeometryModel3D Mesh => _geometry;
+
+            public MtlTexture? Texture {
+                get => _texture;
+                set {
+                    if (_texture != value) {
+                        _texture = value;
+                        _geometry.Material = value?.Diffuse.Data;
+                    }
+                }
+            }
+
+            public bool IsVisible {
+                get => _isVisible;
+                set {
+                    _isVisible = value;
+                    VisibilityChange();
+                }
+            }
+
+            public MeshData(string textureName, GeometryModel3D geometry, MtlTexture? texture = null) {
+                _textureName = textureName;
+                _geometry = geometry;
+                _texture = texture;
+                _isVisible = true;
+            }
+
+            private void VisibilityChange() {
+                if (IsVisible) {
+                    ((DiffuseMaterial)Mesh.Material).Brush.Opacity = 1;
+                } else {
+                    ((DiffuseMaterial)Mesh.Material).Brush.Opacity = 0;
+                }
+            }
+        }
+
+        private readonly static Material s_transparentMaterial = new DiffuseMaterial();
+
+        private readonly Dictionary<string, MeshData> _meshes;
+        private bool _isVisible;
 
         public PlyFile PlyFile { get; }
         public Model3DGroup Model { get; }
         public IEnumerable<string> MeshesTextureNames => _meshes.Keys;
+        public bool IsVisible {
+            get => _isVisible;
+            set {
+                if (_isVisible != value) {
+                    _isVisible = value;
+                    VisibleChange();
+                }
+            }
+        }
 
         public PlyModel3D(PlyFile plyFile, Dictionary<string, MtlTexture?>? meshesTextures = null) {
+            _meshes = [];
             PlyFile = plyFile;
+            _isVisible = true;
+
             Model = ResourceConverts.PlyModelToModel3D(plyFile.Data, meshesTextures);
 
-            _meshesTextures = meshesTextures != null ? new(meshesTextures) : [];
-            _meshes = LoadMeshes(plyFile.Data, Model, PlyFile);
+            LoadMeshes(meshesTextures);
         }
 
         public PlyModel3D(PlyFile plyFile, PlyAggregateMtlFiles? mtlFiles) : this(plyFile, mtlFiles?.GetFirstMeshesTextures()) { }
@@ -27,39 +82,22 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D {
             return ply?.Model;
         }
 
-        public GeometryModel3D GetMesh(string meshTextureName) {
-            if (!_meshes.TryGetValue(meshTextureName, out var mesh)) {
-                throw PlyModelException.NoContainMeshTextureName(null, meshTextureName);
-            }
-
-            return mesh;
-        }
-
         public void SetMeshTexture(string meshTextureName, MtlTexture? texture) {
-            var mesh = GetMesh(meshTextureName);
-            _meshesTextures[meshTextureName] = texture;
-            mesh.Material = texture?.Diffuse.Data;
+            GetMesh(meshTextureName).Texture = texture;
         }
 
         public MtlTexture? GetMeshTexture(string meshTextureName) {
-            _ = GetMesh(meshTextureName);
-            return _meshesTextures[meshTextureName];
+            return GetMesh(meshTextureName).Texture;
         }
 
         public bool CheckNoMaterial(string? meshTextureName = null) {
-            if (_meshesTextures == null) {
-                return true;
-            }
-
             if (meshTextureName != null) {
-                _ = GetMesh(meshTextureName);
-
-                if (_meshesTextures[meshTextureName] == null) {
+                if (GetMesh(meshTextureName) == null) {
                     return true;
                 }
             } else {
-                foreach (var meshTextures in _meshesTextures) {
-                    if (meshTextures.Value == null) {
+                foreach (var mesh in _meshes.Values) {
+                    if (mesh.Texture == null) {
                         return true;
                     }
                 }
@@ -68,17 +106,46 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D {
             return false;
         }
 
-        private static Dictionary<string, GeometryModel3D> LoadMeshes(PlyModel plyModel, Model3DGroup model3DGroup, PlyFile? plyFile = null) {
+
+        public void SetMeshVisibility(string meshTextureName, bool visible) {
+            GetMesh(meshTextureName).IsVisible = visible;
+        }
+
+        public bool GetMeshVisibility(string meshTextureName) {
+            return GetMesh(meshTextureName).IsVisible;
+        }
+
+        private MeshData GetMesh(string meshTextureName) {
+            if (!_meshes.TryGetValue(meshTextureName, out var mesh)) {
+                throw PlyModelException.NoContainMeshTextureName(null, meshTextureName);
+            }
+
+            return mesh;
+        }
+
+        private Dictionary<string, GeometryModel3D> LoadMeshes(Dictionary<string, MtlTexture?>? meshesTextures) {
             var meshesGeometries = new Dictionary<string, GeometryModel3D>();
-            int meshIndex = 0;
 
-            foreach (var modelMeshGeometry in model3DGroup.Children) {
-                meshesGeometries.Add(plyModel.Meshes[meshIndex].TextureName, (GeometryModel3D)modelMeshGeometry);
+            var meshEnumerator = PlyFile.Data.Meshes.Select(m => m.TextureName).GetEnumerator();
+            meshEnumerator.MoveNext();
 
-                meshIndex++;
+            foreach (var model in Model.Children) {
+                string meshTextureName = meshEnumerator.Current;
+                var modelMeshGeometry = (GeometryModel3D)model;
+                var texture = meshesTextures?.GetValueOrDefault(meshTextureName);
+
+                _meshes.Add(meshTextureName, new MeshData(meshTextureName, modelMeshGeometry, texture));
+
+                meshEnumerator.MoveNext();
             }
 
             return meshesGeometries;
+        }
+
+        private void VisibleChange() {
+            foreach (var mesh in _meshes.Values) {
+                mesh.IsVisible = IsVisible;
+            }
         }
     }
 }

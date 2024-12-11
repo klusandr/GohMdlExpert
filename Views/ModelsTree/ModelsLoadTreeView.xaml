@@ -1,4 +1,4 @@
-﻿<baseviews:BaseView x:Class="GohMdlExpert.Views.ModelsTree.LoadModelsTreeView"
+﻿<baseviews:BaseView x:Class="GohMdlExpert.Views.ModelsTree.ModelsLoadTreeView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -16,10 +16,10 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <TextBlock Text="Загрузка моделей"/>
-        <TreeView Grid.Row="1" ItemsSource="{Binding Items}" MinWidth="150">
+        <TreeView x:Name="_tree" Grid.Row="1" ItemsSource="{Binding Items}" MinWidth="150">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Items}">
-                    <local:ModelsTreeItemView DataContext="{Binding}"/>
+                    <local:ModelsLoadTreeItemView DataContext="{Binding}" />
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>

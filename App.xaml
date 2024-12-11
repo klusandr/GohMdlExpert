@@ -3,14 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:wpfmvvm="clr-namespace:WpfMvvm;assembly=WpfMvvm" 
              xmlns:local="clr-namespace:GohMdlExpert"
-             xmlns:prop="clr-namespace:GohMdlExpert.Properties"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <!--<ResourceDictionary>
+        <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Styles/MainStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>-->
-        <prop:Resources x:Key="Resources"/>
+        </ResourceDictionary>
     </Application.Resources>
 </wpfmvvm:WpfApplication>

@@ -7,14 +7,10 @@ namespace GohMdlExpert.Views.ModelsTree
     /// <summary>
     /// Логика взаимодействия для ModelsTreeView.xaml
     /// </summary>
-    public partial class LoadModelsTreeView : BaseView {
-        public LoadModelsTreeView() {
+    public partial class ModelsLoadTreeView : BaseView {
+        public ModelsLoadTreeView() {
             InitializeComponent();
             ViewModel = ViewModelProvider.GetRequiredViewModel<ModelsLoadTreeViewModel>();
-        }
-
-        private void HierarchicalDataTemplate_Expanded(object sender, System.Windows.RoutedEventArgs e) {
-
         }
     }
 }

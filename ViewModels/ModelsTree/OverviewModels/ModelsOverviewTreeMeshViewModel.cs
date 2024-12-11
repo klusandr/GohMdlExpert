@@ -17,7 +17,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
             IconSource = s_iconSource;
             var texture = plyModel.GetMeshTexture(meshTextureName);
             HeaderText =  $"{meshTextureName} [{texture?.Diffuse.Name ?? "null"}]";
-            IsEnableActive = false;
+            IsEnableActive = false; 
         }
     }
 } 
