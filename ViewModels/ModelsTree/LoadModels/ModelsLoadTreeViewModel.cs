@@ -70,7 +70,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
         public void CreatedItemHandler(object? sender, EventArgs e) {
             if (sender is ModelsTreePlyFileViewModel item) {
                 if (item.Tree == this) {
-                    item.PropertyNotifyHandler.AddHandler(nameof(item.IsApproved), PlyFileApprovedChangeHandler);
+                    item.PropertyChangeHandler.AddHandler(nameof(item.IsApproved), PlyFileApprovedChangeHandler);
                 }
             }
         }

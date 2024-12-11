@@ -32,7 +32,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels
 
             HeaderText = GetFullHeaderText();
 
-            PropertyNotifyHandler.AddHandler(nameof(IsSelected), SelectedChangeHandler);
+            PropertyChangeHandler.AddHandler(nameof(IsSelected), SelectedChangeHandler);
             _models3DView.PlyModels.CollectionChanged += PlyModelsChanged;
             _models3DView.UpdatedTextures += Models3DViewModelUpdatedTextures;
         }
@@ -75,10 +75,10 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels
             if (IsSelected) {
                 _materialList.MtlFile = MtlFile;
                 _materialList.SelectedMaterialIndex = _models3DView.GetMtlFileMaterialIndex(MtlFile.Name);
-                _materialList.PropertyNotifyHandler.AddHandler(nameof(_materialList.SelectedMaterialIndex), SelectedMaterialIndexChangeHandeler);
+                _materialList.PropertyChangeHandler.AddHandler(nameof(_materialList.SelectedMaterialIndex), SelectedMaterialIndexChangeHandeler);
             } else {
                 _materialList.MtlFile = null;
-                _materialList.PropertyNotifyHandler.RemoveHandler(nameof(_materialList.SelectedMaterialIndex), SelectedMaterialIndexChangeHandeler);
+                _materialList.PropertyChangeHandler.RemoveHandler(nameof(_materialList.SelectedMaterialIndex), SelectedMaterialIndexChangeHandeler);
             }
         }
 

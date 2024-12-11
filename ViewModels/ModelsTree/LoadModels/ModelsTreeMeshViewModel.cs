@@ -26,7 +26,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
             foreach (var texture in MtlFile.Data) {
                 var textureItem = new ModelsTreeTextureViewModel(texture, Tree, this);
 
-                textureItem.PropertyNotifyHandler.AddHandler(nameof(textureItem.IsApproved), TextureItemApprovedChange);
+                textureItem.PropertyChangeHandler.AddHandler(nameof(textureItem.IsApproved), TextureItemApprovedChange);
 
                 AddNextNode(textureItem);
             }

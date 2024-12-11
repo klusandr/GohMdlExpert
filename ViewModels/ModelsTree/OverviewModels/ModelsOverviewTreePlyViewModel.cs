@@ -23,7 +23,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
             IconSource = s_iconSource;
             ContextMenuCommands.Add("Remove", RemoveCommand);
 
-            PropertyNotifyHandler.AddHandler(nameof(IsVisible), VisibleChangedHandler);
+            PropertyChangeHandler.AddHandler(nameof(IsVisible), VisibleChangedHandler);
 
             foreach (var meshTextureName in plyModel.MeshesTextureNames) {
                 AddNextNode(new ModelsOverviewTreeMeshViewModel(plyModel, meshTextureName, Tree));

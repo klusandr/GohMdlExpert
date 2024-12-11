@@ -51,7 +51,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels
             models3DViewModel.AggregateMtlFiles.CollectionChanged += MtlFilesChanged;
             models3DViewModel.UpdatedTextures += ModelsUpdatedTextures;
 
-            PropertyNotifyHandler.AddHandler(nameof(SelectedItem), (s, e) => SelectedMtlFile = (SelectedItem as ModelsOverviewTreeMtlViewModel)?.MtlFile);
+            PropertyChangeHandler.AddHandler(nameof(SelectedItem), (s, e) => SelectedMtlFile = (SelectedItem as ModelsOverviewTreeMtlViewModel)?.MtlFile);
 
             LoadData();
         }
