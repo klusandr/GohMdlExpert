@@ -6,14 +6,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
-    public class ModelsTreeMeshViewModel : ModelsLoadTreeItemViewModel {
-        private static readonly ImageSource s_iconSource = new BitmapImage().FromByteArray(Resources.MeshIcon);
+    public class ModelsLoadTreeMeshViewModel : ModelsLoadTreeItemViewModel {
+        private static readonly ImageSource s_icon = new BitmapImage().FromByteArray(Resources.MeshIcon);
 
         public PlyAggregateMtlFile MtlFile { get; }
 
-        public ModelsTreeMeshViewModel(PlyAggregateMtlFile mtlFile, ModelsLoadTreeViewModel modelsTree) : base(mtlFile, modelsTree) {
-            HeaderText = mtlFile.Name;
-            IconSource = s_iconSource;
+        public ModelsLoadTreeMeshViewModel(PlyAggregateMtlFile mtlFile, ModelsLoadTreeViewModel modelsTree) : base(mtlFile, modelsTree) {
+            Text = mtlFile.Name;
+            Icon = s_icon;
             MtlFile = mtlFile;
             LoadData();
         }
@@ -24,22 +24,24 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
             }
 
             foreach (var texture in MtlFile.Data) {
-                var textureItem = new ModelsTreeTextureViewModel(texture, Tree, this);
+                var textureItem = new ModelsLoadTreeTextureViewModel(texture, Tree, this);
 
                 textureItem.PropertyChangeHandler.AddHandler(nameof(textureItem.IsApproved), TextureItemApprovedChange);
 
-                AddNextNode(textureItem);
+                AddItem(textureItem);
             }
         }
 
         private void TextureItemApprovedChange(object? sender, PropertyChangedEventArgs e) {
-            var textureItem = (ModelsTreeTextureViewModel)sender!;
+            var textureItem = (ModelsLoadTreeTextureViewModel)sender!;
 
-            foreach (var item in Items.OfType<ModelsTreeTextureViewModel>()) {
+            foreach (var item in Items.OfType<ModelsLoadTreeTextureViewModel>()) {
                 if (item != textureItem) {
                     item.CancelApprove();
                 }
             }
         }
+
+        public override void Approve() { }
     }
 }

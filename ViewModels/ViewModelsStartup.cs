@@ -15,7 +15,7 @@ namespace GohMdlExpert.ViewModels
                 provider.Add<ModelsOverviewTreeViewModel>();
                 provider.Add<TextureMaterialListViewModel>();
             } else {
-                throw new ViewModelsException($"Error startup viewmodels. Expected type was not {nameof(ViewModelsProvider)}");
+                //throw new ViewModelsException($"Error startup viewmodels. Expected type was not {nameof(ViewModelsProvider)}");
             }
         }
     }

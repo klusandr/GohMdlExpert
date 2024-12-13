@@ -1,12 +1,13 @@
-﻿<baseviews:BaseView x:Class="GohMdlExpert.Views.ModelsTree.ModelsLoadTreeView"
+﻿<bv:BaseView x:Class="GohMdlExpert.Views.ModelsTree.ModelsLoadTreeView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:local="clr-namespace:GohMdlExpert.Views.ModelsTree"
-    xmlns:baseviews="clr-namespace:WpfMvvm.Views;assembly=WpfMvvm" 
-    xmlns:modelstree="clr-namespace:GohMdlExpert.ViewModels.ModelsTree" 
-    d:DataContext="{d:DesignInstance Type=modelstree:ModelsTreeViewModel}"
+    xmlns:bv="clr-namespace:WpfMvvm.Views;assembly=WpfMvvm" 
+    xmlns:bvc="clr-namespace:WpfMvvm.Views.Controls;assembly=WpfMvvm" 
+    xmlns:vm="clr-namespace:GohMdlExpert.ViewModels.ModelsTree.LoadModels" 
+    d:DataContext="{d:DesignInstance Type=vm:ModelsLoadTreeViewModel}"
     d:DesignHeight="450"
     mc:Ignorable="d">
     <Grid>
@@ -16,13 +17,13 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <TextBlock Text="Загрузка моделей"/>
-        <TreeView x:Name="_tree" Grid.Row="1" ItemsSource="{Binding Items}" MinWidth="150">
-            <TreeView.ItemTemplate>
+        <bvc:TreeView Name="_tree" Grid.Row="1" MinWidth="150">
+            <bvc:TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Items}">
-                    <local:ModelsLoadTreeItemView DataContext="{Binding}" />
+                    <local:ModelsLoadTreeItemView DataContext="{Binding}"/>
                 </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
-        </TreeView>
+            </bvc:TreeView.ItemTemplate>
+        </bvc:TreeView>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -32,4 +33,4 @@
             <Button Grid.Column="1" Content="&gt;" Command="{Binding NextModelCommand}"/>
         </Grid>
     </Grid>
-</baseviews:BaseView>
+</bv:BaseView>

@@ -1,28 +1,27 @@
-﻿using GohMdlExpert.ViewModels.ModelsTree;
-using System.ComponentModel;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
+﻿using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Media;
+using GohMdlExpert.ViewModels.ModelsTree.LoadModels;
+using WpfMvvm.Views.Attributes;
+using WpfMvvm.Views.Controls;
+
 
 namespace GohMdlExpert.Views.ModelsTree {
     /// <summary>
     /// Логика взаимодействия для ModelTreeItemView.xaml
     /// </summary>
-    public partial class ModelsLoadTreeItemView : UserControl {
-        public ModelsTreeItemViewModel ViewModel {
-            get => (ModelsTreeItemViewModel)DataContext;
-            init => DataContext = value;
-        }
+    [BindingViewModel<ModelsLoadTreeItemViewModel>]
+    public partial class ModelsLoadTreeItemView : TreeItemView {
+
+        public new ModelsLoadTreeItemViewModel ViewModel => (ModelsLoadTreeItemViewModel)base.ViewModel;
 
         public ModelsLoadTreeItemView() {
             InitializeComponent();
         }
 
-        private void IsMouseDoubleClick(object sender, MouseButtonEventArgs e) {
+        private void MouseDoubleClickHandler(object sender, MouseButtonEventArgs e) {
             if (sender == this) {
-                ViewModel.DoubleClickCommand?.Execute(null);
+                ViewModel.ApproveCommand.Execute(null);
             }
         }
     }

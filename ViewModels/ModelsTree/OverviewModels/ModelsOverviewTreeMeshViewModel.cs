@@ -11,13 +11,13 @@ using GohMdlExpert.Extensions;
 
 namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
     public class ModelsOverviewTreeMeshViewModel : ModelsOverviewTreeItemViewModel {
-        private static readonly ImageSource s_iconSource = new BitmapImage().FromByteArray(Resources.MeshIcon);
+        private static readonly ImageSource s_icon = new BitmapImage().FromByteArray(Resources.MeshIcon);
 
         public ModelsOverviewTreeMeshViewModel(PlyModel3D plyModel, string meshTextureName, ModelsOverviewTreeViewModel modelsTree) : base(modelsTree) {
-            IconSource = s_iconSource;
+            Icon = s_icon;
             var texture = plyModel.GetMeshTexture(meshTextureName);
-            HeaderText =  $"{meshTextureName} [{texture?.Diffuse.Name ?? "null"}]";
-            IsEnableActive = false; 
+            Text =  $"{meshTextureName} [{texture?.Diffuse.Name ?? "null"}]";
+            IsVisibleActive = true;
         }
     }
 } 

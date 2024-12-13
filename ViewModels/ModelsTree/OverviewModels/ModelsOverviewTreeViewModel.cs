@@ -1,27 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
-using GohMdlExpert.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Media3D;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
-using GohMdlExpert.Properties;
+using WpfMvvm.ViewModels.Controls;
 
-namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels
-{
-    public class ModelsOverviewTreeViewModel : ModelsTreeViewModel {
+namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
+    public class ModelsOverviewTreeViewModel : TreeViewModel {
         private IEnumerable<MtlTexture>? _mtlTextures;
         private PlyAggregateMtlFile? _selectedMtlFile;
 
         public Models3DViewModel Models3DViewModel { get; }
         public TextureMaterialListViewModel MaterialList { get; }
         public ModelsOverviewTreeMdlViewModel MdlItem { get; }
-        public ObservableCollection<ModelsTreeItemViewModel> PlyItems => MdlItem.Items;
+        public ObservableCollection<TreeItemViewModel> PlyItems => MdlItem.Items;
 
         public IEnumerable<PlyAggregateMtlFile> MtlFiles => Models3DViewModel.AggregateMtlFiles.Values;
         public IEnumerable<MtlTexture>? MtlTextures {

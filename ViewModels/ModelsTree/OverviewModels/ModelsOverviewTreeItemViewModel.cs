@@ -1,26 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files;
-using WpfMvvm.ViewModels.Commands;
+﻿using WpfMvvm.ViewModels.Controls;
 
 namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
-    public class ModelsOverviewTreeItemViewModel : ModelsTreeItemViewModel {
+    public class ModelsOverviewTreeItemViewModel : TreeItemViewModel {
         private bool _isVisible;
-        private bool _isEnable;
+        private bool _isEnableCheck;
 
         public new ModelsOverviewTreeViewModel Tree => (ModelsOverviewTreeViewModel)base.Tree;
-
-        public bool IsEnable {
-            get => _isEnable;
-            set {
-                _isEnable = value;
-                OnPropertyChanged();
-            }
-        }
 
         public bool IsVisible {
             get => _isVisible;
@@ -30,15 +15,24 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
             }
         }
 
-        public bool IsEnableActive { get; init; }
+        public bool IsEnableCheck {
+            get => _isEnableCheck;
+            set {
+                _isEnableCheck = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        public bool IsEnableCheckActive { get; init; }
         public bool IsVisibleActive { get; init; }
 
         public ModelsOverviewTreeItemViewModel(ModelsOverviewTreeViewModel modelsTree) : base(modelsTree) {
-            _isEnable = true;
+            _isEnableCheck = true;
             _isVisible = true;
 
-            IsVisibleActive = true;
-            IsEnableActive = true;
+            IsVisibleActive = false;
+            IsEnableCheckActive = false;
         }
     }
 }

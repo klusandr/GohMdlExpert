@@ -12,13 +12,11 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 
 namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
     public class ModelsOverviewTreeMdlViewModel : ModelsOverviewTreeItemViewModel {
-        private static readonly ImageSource s_iconSource = new BitmapImage().FromByteArray(Resources.MdlIcon);
+        private static readonly ImageSource s_icon = new BitmapImage().FromByteArray(Resources.MdlIcon);
 
         public ModelsOverviewTreeMdlViewModel(MdlFile mdlFile, ModelsOverviewTreeViewModel modelsTree) : base(modelsTree) {
-            HeaderText = mdlFile.Name;
-            IconSource = s_iconSource;
-            IsEnableActive = false;
-            IsVisibleActive = false;
+            Text = mdlFile.Name;
+            Icon = s_icon;
         }
     }
 } 

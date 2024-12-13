@@ -29,5 +29,9 @@
             <Image Source="/Resources/check.ico" Width="20"/>
         </Grid>
     </ControlTemplate>
+
+    <ControlTemplate x:Key="ContextMenuItem" TargetType="MenuItem">
+        <Label Content="{TemplateBinding Header}" Margin="0"/>
+    </ControlTemplate>
 </ResourceDictionary>
     

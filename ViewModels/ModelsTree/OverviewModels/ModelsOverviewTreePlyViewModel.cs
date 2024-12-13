@@ -10,23 +10,27 @@ using GohMdlExpert.Properties;
 using GohMdlExpert.Extensions;
 using System.Windows.Input;
 using System.ComponentModel;
+using WpfMvvm.Collections;
+using WpfMvvm.ViewModels.Controls;
 
 namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
     public class ModelsOverviewTreePlyViewModel : ModelsOverviewTreeItemViewModel {
-        private static readonly ImageSource s_iconSource = new BitmapImage().FromByteArray(Resources.PlyIcon);
+        private static readonly ImageSource s_icon = new BitmapImage().FromByteArray(Resources.PlyIcon);
 
         public ICommand RemoveCommand => CommandManager.GetCommand(RemoveModel);
 
         public ModelsOverviewTreePlyViewModel(PlyModel3D plyModel, ModelsOverviewTreeViewModel modelsTree) : base(modelsTree) {
-            HeaderText = plyModel.PlyFile.Name;
+            Text = plyModel.PlyFile.Name;
             ToolTip = plyModel.PlyFile.GetFullPath();
-            IconSource = s_iconSource;
-            ContextMenuCommands.Add("Remove", RemoveCommand);
+            Icon = s_icon;
+            ContextMenuViewModel.AddItem(new MenuItemViewModel(RemoveCommand, "Remove"));
+            IsVisibleActive = true;
+            IsEnableCheckActive = true;
 
             PropertyChangeHandler.AddHandler(nameof(IsVisible), VisibleChangedHandler);
 
             foreach (var meshTextureName in plyModel.MeshesTextureNames) {
-                AddNextNode(new ModelsOverviewTreeMeshViewModel(plyModel, meshTextureName, Tree));
+                AddItem(new ModelsOverviewTreeMeshViewModel(plyModel, meshTextureName, Tree));
             }
 
             PlyModel = plyModel;

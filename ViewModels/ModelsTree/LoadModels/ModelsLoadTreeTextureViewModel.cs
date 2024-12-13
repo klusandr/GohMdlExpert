@@ -8,16 +8,14 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Properties;
 
 namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
-    public class ModelsTreeTextureViewModel : ModelsLoadTreeItemViewModel {
-        private static readonly ImageSource s_iconSource = new BitmapImage().FromByteArray(Resources.TextureIcon);
-
-        public override ICommand DoubleClickCommand => CommandManager.GetCommand(Approve);
+    public class ModelsLoadTreeTextureViewModel : ModelsLoadTreeItemViewModel {
+        private static readonly ImageSource s_icon = new BitmapImage().FromByteArray(Resources.TextureIcon);
 
         public MtlTexture MtlTexture { get; }
-        public ModelsTreeMeshViewModel Mesh => (ModelsTreeMeshViewModel)Parent!;
+        public ModelsLoadTreeMeshViewModel Mesh => (ModelsLoadTreeMeshViewModel)Parent!;
 
-        public ModelsTreeTextureViewModel(MtlTexture mtlTexture, ModelsLoadTreeViewModel modelsTree, ModelsTreeMeshViewModel parent) : base(mtlTexture.Diffuse, modelsTree) {
-            IconSource = s_iconSource;
+        public ModelsLoadTreeTextureViewModel(MtlTexture mtlTexture, ModelsLoadTreeViewModel modelsTree, ModelsLoadTreeMeshViewModel parent) : base(mtlTexture.Diffuse, modelsTree) {
+            Icon = s_icon;
             MtlTexture = mtlTexture;
             Parent = parent;
         }

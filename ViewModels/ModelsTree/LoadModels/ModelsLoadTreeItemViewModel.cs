@@ -9,9 +9,10 @@ using GohMdlExpert.Properties;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
+using WpfMvvm.ViewModels.Controls;
 
 namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
-    public abstract class ModelsLoadTreeItemViewModel : ModelsTreeItemViewModel {
+    public abstract class ModelsLoadTreeItemViewModel : TreeItemViewModel {
         private bool _approved;
         private bool _isButtonActive;
 
@@ -35,13 +36,14 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
             }
         }
 
-        public virtual ICommand LoadCommand => CommandManager.GetCommand(() => { });
-        public virtual ICommand DeleteCommand => CommandManager.GetCommand(() => { });
+        public virtual ICommand ApproveCommand => CommandManager.GetCommand(Approve);
+        public virtual ICommand? LoadCommand => null;
+        public virtual ICommand? DeleteCommand => null;
 
         public ModelsLoadTreeItemViewModel(GohResourceElement resourceElement, ModelsLoadTreeViewModel modelsTree) : base(modelsTree) {
             _isButtonActive = false;
 
-            HeaderText = resourceElement.Name;
+            Text = resourceElement.Name;
             ToolTip = resourceElement.GetFullPath();
             ResourceElement = resourceElement;
             modelsTree.CreatedItemHandler(this, EventArgs.Empty);

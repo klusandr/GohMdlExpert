@@ -14,8 +14,8 @@ using System.ComponentModel;
 namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels
 {
     public class ModelsOverviewTreeMtlViewModel : ModelsOverviewTreeItemViewModel {
-        private static readonly ImageSource s_iconSource = new BitmapImage().FromByteArray(Resources.TextureIcon);
-        private static readonly ImageSource s_plyIconSource = new BitmapImage().FromByteArray(Resources.PlyIcon);
+        private static readonly ImageSource s_icon = new BitmapImage().FromByteArray(Resources.TextureIcon);
+        private static readonly ImageSource s_plyIcon = new BitmapImage().FromByteArray(Resources.PlyIcon);
         private readonly Models3DViewModel _models3DView;
         private readonly TextureMaterialListViewModel _materialList;
 
@@ -25,12 +25,10 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels
             _models3DView = Tree.Models3DViewModel;
             _materialList = Tree.MaterialList;
 
-            IconSource = s_iconSource;
+            Icon = s_icon;
             MtlFile = aggregateMtlFile;
-            IsEnableActive = false;
-            IsVisibleActive = false;
 
-            HeaderText = GetFullHeaderText();
+            Text = GetFullText();
 
             PropertyChangeHandler.AddHandler(nameof(IsSelected), SelectedChangeHandler);
             _models3DView.PlyModels.CollectionChanged += PlyModelsChanged;
@@ -40,10 +38,10 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels
         public void LoadData() {
             if (Items.Count == 0) {
                 foreach (var plyModel in Tree.Models3DViewModel.GetMtlFilePlyModels(MtlFile.Name)) {
-                    AddNextNode(new ModelsOverviewTreeItemViewModel(Tree) {
-                        HeaderText = plyModel.PlyFile.Name,
-                        IconSource = s_plyIconSource,
-                        IsEnableActive = false,
+                    AddItem(new ModelsOverviewTreeItemViewModel(Tree) {
+                        Text = plyModel.PlyFile.Name,
+                        Icon = s_plyIcon,
+                        IsEnableCheckActive = false,
                         IsVisibleActive = false
                     });
                 }
@@ -59,12 +57,12 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels
             LoadData();
         }
 
-        private string GetFullHeaderText() {
+        private string GetFullText() {
             return $"{MtlFile.Name} [{Tree.Models3DViewModel.GetCurrentMtlFileTexture(MtlFile.Name).Diffuse.Name}]";
         }
 
         private void Models3DViewModelUpdatedTextures(object? sender, EventArgs e) {
-            HeaderText = GetFullHeaderText();
+            Text = GetFullText();
         }
 
         private void PlyModelsChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {

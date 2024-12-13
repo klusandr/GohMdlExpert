@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.ComponentModel;
+using System.Text.RegularExpressions;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -7,8 +8,8 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Properties;
 
 namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
-    public class ModelsTreeDirectoryViewModel : ModelsLoadTreeItemViewModel {
-        private static ImageSource s_iconSource = new BitmapImage().FromByteArray(Resources.DirectoryIcon);
+    public class ModelsLoadTreeDirectoryViewModel : ModelsLoadTreeItemViewModel {
+        private static ImageSource s_icon = new BitmapImage().FromByteArray(Resources.DirectoryIcon);
 
         private readonly GohResourceDirectory _directory;
 
@@ -17,11 +18,9 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
             @"^(?!.*#)",
         ];
 
-        public override ICommand? DoubleClickCommand => CommandManager.GetCommand(LoadData);
-
-        public ModelsTreeDirectoryViewModel(GohResourceDirectory directory, ModelsLoadTreeViewModel modelsTree) : base(directory, modelsTree) {
+        public ModelsLoadTreeDirectoryViewModel(GohResourceDirectory directory, ModelsLoadTreeViewModel modelsTree) : base(directory, modelsTree) {
             _directory = directory;
-            IconSource = s_iconSource;
+            Icon = s_icon;
         }
 
         public override void LoadData() {
@@ -33,12 +32,16 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
             var files = _directory.GetFiles().OfType<PlyFile>().Where(f => FileFilters.All(ff => Regex.IsMatch(f.Name, ff)));
 
             foreach (var directory in directories) {
-                AddNextNode(new ModelsTreeDirectoryViewModel(directory, Tree));
+                AddItem(new ModelsLoadTreeDirectoryViewModel(directory, Tree));
             }
 
             foreach (var plyFile in files) {
-                AddNextNode(new ModelsTreePlyFileViewModel(plyFile, Tree));
+                AddItem(new ModelsLoadTreePlyFileViewModel(plyFile, Tree));
             }
+        }
+
+        public override void Approve() {
+            LoadData();
         }
     }
 }

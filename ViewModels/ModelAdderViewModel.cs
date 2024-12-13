@@ -25,14 +25,19 @@ namespace GohMdlExpert.ViewModels {
 
         public bool IsAddedInProgress => AddedModel != null;
 
-        public ICommand AddModelCommand => CommandManager.GetCommand(AddModel);
-        public ICommand ClearModelCommand => CommandManager.GetCommand(ClearModel);
+        public ICommand AddModelCommand => CommandManager.GetCommand(AddModel, canExecute: (_) => IsAddedInProgress);
+        public ICommand ClearModelCommand => CommandManager.GetCommand(ClearModel, canExecute: (_) => IsAddedInProgress);
 
         public event EventHandler? ModelAdded;
         public event EventHandler? CancelModelAdded;
 
         public ModelAdderViewModel(Models3DViewModel models3DView) {
             _models3DView = models3DView;
+
+            PropertyChangeHandler.AddHandler(nameof(AddedModel), (_, _) => { 
+                ((Command)AddModelCommand).OnCanExecuteChanged();
+                ((Command)ClearModelCommand).OnCanExecuteChanged();
+            });
         }
 
         public void SetModel(PlyFile plyFile, PlyAggregateMtlFiles? aggregateMtlFiles) {

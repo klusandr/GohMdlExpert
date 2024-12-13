@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:baseviews="clr-namespace:WpfMvvm.Views;assembly=WpfMvvm"
              xmlns:local="clr-namespace:GohMdlExpert.Views.ModelsTree" 
-             xmlns:vm="clr-namespace:GohMdlExpert.ViewModels.ModelsTree.OverviewModels" 
+             xmlns:vm="clr-namespace:GohMdlExpert.ViewModels.ModelsTree.OverviewModels"
+             xmlns:vbc="clr-namespace:WpfMvvm.Views.Controls;assembly=WpfMvvm"
              xmlns:tml="clr-namespace:GohMdlExpert.Views"
              d:DataContext="{d:DesignInstance Type=vm:ModelsOverviewTreeViewModel}"
              mc:Ignorable="d" 
@@ -17,13 +18,13 @@
             <RowDefinition Height=".3*"/>
         </Grid.RowDefinitions>
         <TextBlock Text="Обозреватель содержимого"/>
-        <TreeView x:Name="_tree" Grid.Row="1" ItemsSource="{Binding Items}" MinWidth="150">
-            <TreeView.ItemTemplate>
+        <vbc:TreeView Grid.Row="1" MinWidth="150">
+            <vbc:TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Items}">
-                    <local:ModelsOverviewTreeItemView DataContext="{Binding}"/>
+                    <local:ModelsOverviewTreeItemView/>
                 </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
-        </TreeView>
+            </vbc:TreeView.ItemTemplate>
+        </vbc:TreeView>
         <tml:TextureMaterialListView Grid.Row="2"/>
     </Grid>
 </baseviews:BaseView>

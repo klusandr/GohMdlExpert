@@ -13,21 +13,17 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using GohMdlExpert.ViewModels.ModelsTree.OverviewModels;
+using WpfMvvm.Views.Attributes;
+using WpfMvvm.Views.Controls;
 
 namespace GohMdlExpert.Views.ModelsTree {
     /// <summary>
     /// Логика взаимодействия для ModelsOverviewTreeItemView.xaml
     /// </summary>
-    public partial class ModelsOverviewTreeItemView : UserControl {
-
-        public ModelsOverviewTreeItemViewModel? ViewModel => DataContext as ModelsOverviewTreeItemViewModel;
-
+    [BindingViewModel<ModelsOverviewTreeItemViewModel>]
+    public partial class ModelsOverviewTreeItemView : TreeItemView {
         public ModelsOverviewTreeItemView() {
             InitializeComponent();
-        }
-
-        private void MouseLeftClick(object sender, MouseButtonEventArgs e) {
-            ViewModel?.MouseLeftClickCommand?.Execute(null);
         }
     }
 }

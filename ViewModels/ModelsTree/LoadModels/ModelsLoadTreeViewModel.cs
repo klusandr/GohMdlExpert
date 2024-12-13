@@ -6,10 +6,11 @@ using System.Windows.Input;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 using WpfMvvm.Collections.ObjectModel;
+using WpfMvvm.ViewModels.Controls;
 
 namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
-    public sealed class ModelsLoadTreeViewModel : ModelsTreeViewModel {
-        private ModelsTreePlyFileViewModel? _approvedPlyItem;
+    public sealed class ModelsLoadTreeViewModel : TreeViewModel {
+        private ModelsLoadTreePlyFileViewModel? _approvedPlyItem;
 
         public ModelAdderViewModel ModelsAdder { get; }
         public GohHumanskinResourceProvider SkinResourceProvider { get; }
@@ -17,7 +18,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
 
         public GohFactionHumanskinResource? HumanskinResource => SkinResourceProvider.Current;
 
-        public ModelsTreePlyFileViewModel? ApprovedPlyItem {
+        public ModelsLoadTreePlyFileViewModel? ApprovedPlyItem {
             get => _approvedPlyItem;
             private set {
                 _approvedPlyItem = value;
@@ -44,7 +45,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
             }
 
             if (HumanskinResource != null) {
-                Items.Add(new ModelsTreeDirectoryViewModel(HumanskinResource.Source, this));
+                Items.Add(new ModelsLoadTreeDirectoryViewModel(HumanskinResource.Source, this));
             }
         }
 
@@ -54,7 +55,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
 
                 int newIndex = currentList.IndexOf(ApprovedPlyItem) + offset;
 
-                var newApproveItem = currentList.ElementAtOrDefault(newIndex) as ModelsTreePlyFileViewModel;
+                var newApproveItem = currentList.ElementAtOrDefault(newIndex) as ModelsLoadTreePlyFileViewModel;
                 newApproveItem?.Approve();
             }
         }
@@ -68,7 +69,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
         }
 
         public void CreatedItemHandler(object? sender, EventArgs e) {
-            if (sender is ModelsTreePlyFileViewModel item) {
+            if (sender is ModelsLoadTreePlyFileViewModel item) {
                 if (item.Tree == this) {
                     item.PropertyChangeHandler.AddHandler(nameof(item.IsApproved), PlyFileApprovedChangeHandler);
                 }
@@ -76,7 +77,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
         }
 
         private void PlyFileApprovedChangeHandler(object? sender, PropertyChangedEventArgs e) {
-            var plyItem = (ModelsTreePlyFileViewModel)sender!;
+            var plyItem = (ModelsLoadTreePlyFileViewModel)sender!;
 
             if (plyItem.IsApproved) {
                 ApprovedPlyItem?.CancelApprove();
