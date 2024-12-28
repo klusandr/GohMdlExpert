@@ -42,6 +42,12 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
             }
         }
 
+        public void SetTexturesMaterialsFullPath(IEnumerable<MtlTexture> mtlTextures) {
+            foreach (var mtlTexture in mtlTextures) {
+                SetTextureMaterialsFullPath(mtlTexture);
+            }
+        }
+
         private MaterialFile SetMaterialFullPath(MaterialFile materialFile) {
             if (TextureDirectory == null) {
                 throw TextureException.DirectoryNotSpecified();

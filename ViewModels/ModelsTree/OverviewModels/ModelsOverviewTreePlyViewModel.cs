@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
+﻿using System.ComponentModel;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using GohMdlExpert.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Media3D;
 using GohMdlExpert.Properties;
-using GohMdlExpert.Extensions;
-using System.Windows.Input;
-using System.ComponentModel;
-using WpfMvvm.Collections;
 using WpfMvvm.ViewModels.Controls;
+using WpfMvvm.ViewModels.Controls.Menu;
 
 namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
     public class ModelsOverviewTreePlyViewModel : ModelsOverviewTreeItemViewModel {
@@ -23,11 +18,12 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
             Text = plyModel.PlyFile.Name;
             ToolTip = plyModel.PlyFile.GetFullPath();
             Icon = s_icon;
-            ContextMenuViewModel.AddItem(new MenuItemViewModel(RemoveCommand, "Remove"));
+            ContextMenuViewModel.AddItem(new MenuItemViewModel("Remove", RemoveCommand));
             IsVisibleActive = true;
             IsEnableCheckActive = true;
 
             PropertyChangeHandler.AddHandler(nameof(IsVisible), VisibleChangedHandler);
+            PropertyChangeHandler.AddHandler(nameof(IsSelected), IsSelectedChangeHandler);
 
             foreach (var meshTextureName in plyModel.MeshesTextureNames) {
                 AddItem(new ModelsOverviewTreeMeshViewModel(plyModel, meshTextureName, Tree));
@@ -42,8 +38,16 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
             Tree.Models3DViewModel.RemoveModel(PlyModel);
         }
 
+        private void IsSelectedChangeHandler(object? sender, PropertyChangedEventArgs e) {
+            if (IsSelected) {
+                Tree.LodList.SetItems(Tree.Models3DViewModel.GetPlyModelLodFiles(PlyModel));
+            } else {
+                Tree.LodList.SetItems(null);
+            }
+        }
+
         private void VisibleChangedHandler(object? sender, PropertyChangedEventArgs e) {
             PlyModel.IsVisible = IsVisible;
         }
     }
-} 
+}

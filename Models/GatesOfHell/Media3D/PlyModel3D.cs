@@ -2,12 +2,15 @@
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
 
-namespace GohMdlExpert.Models.GatesOfHell.Media3D {
+namespace GohMdlExpert.Models.GatesOfHell.Media3D
+{
     public class PlyModel3D {
         private class MeshData {
             private readonly string _textureName;
             private readonly GeometryModel3D _geometry;
+            private readonly ScaleTransform3D _scaleTransform;
             private MtlTexture? _texture;
             private bool _isVisible;
 
@@ -35,15 +38,28 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D {
             public MeshData(string textureName, GeometryModel3D geometry, MtlTexture? texture = null) {
                 _textureName = textureName;
                 _geometry = geometry;
+                _geometry.Transform = _scaleTransform = new ScaleTransform3D();
                 _texture = texture;
                 _isVisible = true;
             }
 
+            public void Hide() {
+                _scaleTransform.ScaleX = 0;
+                _scaleTransform.ScaleY = 0;
+                _scaleTransform.ScaleZ = 0;
+            }
+
+            public void Show() {
+                _scaleTransform.ScaleX = 1;
+                _scaleTransform.ScaleY = 1;
+                _scaleTransform.ScaleZ = 1;
+            }
+
             private void VisibilityChange() {
                 if (IsVisible) {
-                    ((DiffuseMaterial)Mesh.Material).Brush.Opacity = 1;
+                    Hide();
                 } else {
-                    ((DiffuseMaterial)Mesh.Material).Brush.Opacity = 0;
+                   Show();
                 }
             }
         }
@@ -65,6 +81,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D {
                 }
             }
         }
+        public bool IsEnable { get; set; }
 
         public PlyModel3D(PlyFile plyFile, Dictionary<string, MtlTexture?>? meshesTextures = null) {
             _meshes = [];
@@ -76,7 +93,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D {
             LoadMeshes(meshesTextures);
         }
 
-        public PlyModel3D(PlyFile plyFile, PlyAggregateMtlFiles? mtlFiles) : this(plyFile, mtlFiles?.GetFirstMeshesTextures()) { }
+        public PlyModel3D(PlyFile plyFile, AggregateMtlFiles? mtlFiles) : this(plyFile, mtlFiles?.GetFirstMeshesTextures()) { }
 
         public static implicit operator Model3D?(PlyModel3D? ply) {
             return ply?.Model;
@@ -144,7 +161,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D {
 
         private void VisibleChange() {
             foreach (var mesh in _meshes.Values) {
-                mesh.IsVisible = IsVisible;
+                if (IsVisible) {
+                    mesh.Show();
+                } else {
+                    mesh.Hide();
+                }
             }
         }
     }

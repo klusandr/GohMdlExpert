@@ -4,6 +4,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GohMdlExpert.Extensions;
+using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Properties;
 
@@ -12,11 +13,6 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
         private static ImageSource s_icon = new BitmapImage().FromByteArray(Resources.DirectoryIcon);
 
         private readonly GohResourceDirectory _directory;
-
-        private static IEnumerable<string> FileFilters { get; } = [
-            @"^(?!.*_lod\d*\.)",
-            @"^(?!.*#)",
-        ];
 
         public ModelsLoadTreeDirectoryViewModel(GohResourceDirectory directory, ModelsLoadTreeViewModel modelsTree) : base(directory, modelsTree) {
             _directory = directory;
@@ -29,7 +25,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
             }
 
             var directories = _directory.GetDirectories();
-            var files = _directory.GetFiles().OfType<PlyFile>().Where(f => FileFilters.All(ff => Regex.IsMatch(f.Name, ff)));
+            var files = ResourceLoading.FilterPlyFiles(_directory.GetFiles().OfType<PlyFile>());
 
             foreach (var directory in directories) {
                 AddItem(new ModelsLoadTreeDirectoryViewModel(directory, Tree));

@@ -27,14 +27,24 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             var plyFiles = new List<PlyFile>();
             var textureNames = new List<string>();
 
-            var plySkinsParameter = (IEnumerable<ModelDataParameter>)ModelDataSerializer.FindParameterByName(parameters, "skin")?.Data!;
+            var plyLodModels = (IEnumerable<ModelDataParameter>)ModelDataSerializer.FindParameterByName(parameters, "skin")?.Data!;
 
-            foreach (var plySkinParameter in plySkinsParameter) {
-                foreach (var plyFileName in ((IEnumerable<ModelDataParameter>)plySkinParameter.Data!).Select(p => (string)p.Data!)) {
-                    var plyFile = new PlyFile(plyFileName, relativePathPoint: Path);
-                    textureNames.AddRange(plyFile.Data!.Meshes!.Select(m => m.TextureName));
-                    plyFiles.Add(plyFile);
-                }
+            foreach (var plyLodModel in plyLodModels) {
+                var plyFile = new PlyFile(GetPlyModel(plyLodModel), relativePathPoint: Path);
+                textureNames.AddRange(plyFile.Data!.Meshes!.Select(m => m.TextureName));
+                plyFiles.Add(plyFile);
+
+                //var d = plySkinParameter.Data
+
+                //var plyFile = new PlyFile(plySkinParameter.Data, relativePathPoint: Path);
+                //textureNames.AddRange(plyFile.Data!.Meshes!.Select(m => m.TextureName));
+                //plyFiles.Add(plyFile);
+
+                ////foreach (var plyFileName in ((IEnumerable<ModelDataParameter>)plySkinParameter.Data!).Select(p => (string)p.Data!)) {
+                ////    var plyFile = new PlyFile(plyFileName, relativePathPoint: Path);
+                ////    textureNames.AddRange(plyFile.Data!.Meshes!.Select(m => m.TextureName));
+                ////    plyFiles.Add(plyFile);
+                ////}
             }
 
             var textures = textureNames.Distinct().Select(t => new MtlFile(t, Path));
@@ -42,9 +52,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             Data = new MdlModel(parameters, plyFiles, textures);
         }
 
-        private void GetPlyFileNames() {
-            var mdlParameters = Serializer.Deserialize(GetAllText());
-            var plySkinsParameter = (IEnumerable<ModelDataParameter>)ModelDataSerializer.FindParameter(mdlParameters, MdlSerializer.MdlTypes.Bone.ToString(), "skin")?.Data!;
+        private string GetPlyModel(ModelDataParameter plyLodModel) {
+            return (string)((IEnumerable<ModelDataParameter>)plyLodModel.Data!).First().Data!;
         }
     }
 }

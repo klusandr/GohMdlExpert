@@ -17,7 +17,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
                 throw new GohResourceFileException("The path to the material file was incomplete.", GetFullPath());
             }
 
-            return ResourceConverts.GetMaterial(this);
+            return ResourceLoading.LoadMaterial(this);
         }
     }
 }

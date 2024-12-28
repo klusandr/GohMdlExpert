@@ -17,25 +17,24 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 namespace GohMdlExpert.ViewModels
 {
     public class ApplicationViewModel : BaseViewModel {
-        private MdlSerializer _mdlSerialize = new MdlSerializer();
+        private readonly GohResourceProvider _gohResourceProvider;
+        private readonly Models3DViewModel _models3DView;
+        
+        public ICommand OpenResourceCommand => CommandManager.GetCommand(OpenResourceDirectory);
+        public ICommand OpenFileCommand => CommandManager.GetCommand(OpenFile);
 
-        public string Path { get; set; } = "F:\\SDK\\Content\\goh\\entity\\Humanskin\\[germans]";
-
-        public ICommand OpenFileCommand => CommandManager.GetCommand(OpenResourceDirectory);
-
-        public GohResourceProvider GohResourceProvider { get; }
-
-        public ApplicationViewModel(GohResourceProvider gohResourceProvider) {
-            GohResourceProvider = gohResourceProvider;
+        public ApplicationViewModel(GohResourceProvider gohResourceProvider, Models3DViewModel models3DView) {
+            _gohResourceProvider = gohResourceProvider;
+            _models3DView = models3DView;
         }
 
         public void OpenFile() {
-            var fileDialog = new OpenFileDialog();
-
-            fileDialog.Filter = "Mdl files (*.mdl)|*.mdl";
+            var fileDialog = new OpenFileDialog {
+                Filter = "Mdl files (*.mdl)|*.mdl"
+            };
 
             if (fileDialog.ShowDialog() ?? false) {
-                
+                _models3DView.SetMtlFile(new MdlFile(fileDialog.FileName));
             }
         }
 
@@ -43,7 +42,7 @@ namespace GohMdlExpert.ViewModels
             var folderDialog = new OpenFolderDialog();
 
             if (folderDialog.ShowDialog() ?? false) {
-                GohResourceProvider.OpenResources(folderDialog.FolderName);
+                _gohResourceProvider.OpenResources(folderDialog.FolderName);
             }
         }
     }

@@ -1,8 +1,10 @@
 ﻿using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
 using System.IO;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins
+{
     public class GohFactionHumanskinResource {
         public string Name { get; }
         public GohResourceDirectory Root { get; }
@@ -39,11 +41,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
             return mdlFiles;
         }
 
-        public IEnumerable<PlyAggregateMtlFile> GetPlyAggregateMtlFiles(PlyFile plyFile) {
-            var mtlFiles = new List<PlyAggregateMtlFile>();
+        public IEnumerable<AggregateMtlFile> GetPlyAggregateMtlFiles(PlyFile plyFile) {
+            var mtlFiles = new List<AggregateMtlFile>();
 
             foreach (var mesh in plyFile.Data.Meshes) {
-                mtlFiles.Add(new PlyAggregateMtlFile(mesh.TextureName, plyFile, this));
+                mtlFiles.Add(new AggregateMtlFile(mesh.TextureName, plyFile, this));
             }
 
             return mtlFiles;
@@ -66,6 +68,20 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
             }
 
             return mtlTextures;
+        }
+
+        public IEnumerable<PlyFile> GetPlyLodFiles(PlyFile plyFile) {
+            var lodFiles = Source.FindResourceElements<PlyFile>(searchPattern: @$"{plyFile.Name[..^4]}_lod\d*\.");
+
+            if (!lodFiles.Any()) {
+                lodFiles = [GetNullForPlyFile(plyFile)];
+            }
+
+            return lodFiles;
+        }
+
+        private PlyFile GetNullForPlyFile(PlyFile plyFile) {
+            return new PlyFile(@"F:\SDK\Content\goh\entity\humanskin\[germans]\[ger_source]\ger_null.ply");
         }
     }
 }

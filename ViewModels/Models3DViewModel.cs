@@ -1,30 +1,45 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Windows.Controls;
+using System.ComponentModel;
 using System.Windows.Media.Media3D;
 using GohMdlExpert.Extensions;
-using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Media3D;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
+using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 using WpfMvvm.Collections.ObjectModel;
+using WpfMvvm.Data;
 using WpfMvvm.ViewModels;
 using WpfMvvm.Views.Dialogs;
 
 namespace GohMdlExpert.ViewModels {
     public sealed class Models3DViewModel : BaseViewModel {
         private readonly ObservableCollection<PlyModel3D> _plyModels;
-        private readonly ObservableDictionary<string, PlyAggregateMtlFile> _aggregateMtlFiles;
-        private readonly Dictionary<string, int> _currentMtlFilesTexturesIndex;
         private readonly Model3DCollection _models;
+        private readonly ObservableDictionary<string, AggregateMtlFile> _aggregateMtlFiles;
+        private readonly Dictionary<string, int> _currentMtlFilesTexturesIndex;
+        private readonly Dictionary<PlyModel3D, IEnumerable<PlyFile>> _lodPlyFiles;
+        private readonly CollectionChangeBinder<Model3D> _modelCollectionBinder;
+        private readonly CollectionChangeHandler _plyModelsChangeHandler;
+        private MdlFile? _mdlFile;
         private PlyModel3D? _addedModel;
 
         private readonly IUserDialogProvider _userDialog;
+        private readonly GohTextureProvider _gohTextureProvider;
+        private readonly GohHumanskinResourceProvider _humanskinProvider;
+
+        public MdlFile? MdlFile {
+            get => _mdlFile;
+            set {
+                _mdlFile = value;
+                OnPropertyChanged();
+            }
+        }
 
         public ObservableCollection<PlyModel3D> PlyModels => _plyModels;
-        public ObservableDictionary<string, PlyAggregateMtlFile> AggregateMtlFiles => _aggregateMtlFiles;
         public Model3DCollection Models => _models;
+        public ObservableDictionary<string, AggregateMtlFile> AggregateMtlFiles => _aggregateMtlFiles;
 
         public PlyModel3D? AddedModel {
             get => _addedModel;
@@ -38,22 +53,63 @@ namespace GohMdlExpert.ViewModels {
 
         public event EventHandler? UpdatedTextures;
 
-        public Models3DViewModel(IUserDialogProvider userDialog) {
+        public Models3DViewModel(IUserDialogProvider userDialog, GohTextureProvider gohTextureProvider, GohHumanskinResourceProvider humanskinProvider) {
             _models = [];
             _plyModels = [];
+            _lodPlyFiles = [];
             _aggregateMtlFiles = [];
             _currentMtlFilesTexturesIndex = [];
 
-            _plyModels.CollectionChanged += PlyModelsChanged;
             _userDialog = userDialog;
+            _gohTextureProvider = gohTextureProvider;
+            _humanskinProvider = humanskinProvider;
+
+            _modelCollectionBinder = new CollectionChangeBinder<Model3D>(_plyModels, _models, (i) => ((PlyModel3D)i!).Model );
+            _plyModelsChangeHandler = new CollectionChangeHandler(_plyModels)
+                .AddHandlerBuilder(NotifyCollectionChangedAction.Remove, PlyModelRemoveHandler)
+                .AddHandlerBuilder(NotifyCollectionChangedAction.Reset, PlyModelRemoveHandler);
         }
 
-        public void AddModel(PlyModel3D modelPly, PlyAggregateMtlFiles? aggregateMtlFiles) {
+        public void SetMtlFile(MdlFile mdlFile) {
+            PlyModels.Clear();
+            MdlFile = mdlFile;
+            var plyFiles = ResourceLoading.FilterPlyFiles(mdlFile.Data.PlyModelFiles);
+            var mtlFiles = mdlFile.Data.Textures;
+            var missTexture = new List<MtlFile>();
+
+            _gohTextureProvider.SetTexturesMaterialsFullPath(mtlFiles.Select(m => m.Data));
+
+            foreach (var plyFile in plyFiles) {
+                AddModel(new PlyModel3D(plyFile));
+            }
+
+            foreach (var mtlFile in mtlFiles) {
+                var plyFile = plyFiles.FirstOrDefault(p => p.Data.Meshes.Select(m => m.TextureName).Contains(mtlFile.Name));
+
+                if (plyFile != null) {
+                    AddAggregateMtlFile(new AggregateMtlFile(mtlFile, plyFile));
+                } else {
+                    missTexture.Add(mtlFile);
+                }
+            }
+
+            UpdateTexture();
+
+            if (missTexture.Count != 0) {
+                _userDialog.ShowWarning($"Loaded .mdl file {mdlFile.GetFullPath()}, contains unclaimed textures: [{string.Join(", ", missTexture.Select(m => m.Name))}] that have been removed.", "Miss textures");
+            }
+        }
+
+        public void AddModel(PlyModel3D modelPly, AggregateMtlFiles? aggregateMtlFiles = null) {
+            MdlFile ??= CreateMdlFile();
+
             if (aggregateMtlFiles != null) {
                 foreach (var aggregateMtlFile in aggregateMtlFiles) {
                     AddAggregateMtlFile(aggregateMtlFile);
                 }
             }
+
+            _lodPlyFiles.Add(modelPly, _humanskinProvider.Current!.GetPlyLodFiles(modelPly.PlyFile));
 
             _plyModels.Add(modelPly);
             UpdateTexture();
@@ -63,17 +119,29 @@ namespace GohMdlExpert.ViewModels {
             _plyModels.Remove(modelPly);
         }
 
-        public void Clear() {
+        public void ClearModels() {
             _plyModels.Clear();
         }
 
-        public void AddAggregateMtlFile(PlyAggregateMtlFile aggregateMtlFile) {
+        public void AddAggregateMtlFile(AggregateMtlFile aggregateMtlFile) {
             if (_aggregateMtlFiles.TryGetValue(aggregateMtlFile.Name, out var usedAggregateFile)) {
                 MergeAggregateTextures(usedAggregateFile, aggregateMtlFile);
             } else {
                 _currentMtlFilesTexturesIndex.Add(aggregateMtlFile.Name, 0);
                 _aggregateMtlFiles.Add(aggregateMtlFile.Name, aggregateMtlFile);
             }
+        }
+
+        public void RemoveAggregateFile(string aggregateMtlFileName) {
+            _aggregateMtlFiles.Remove(aggregateMtlFileName);
+            _currentMtlFilesTexturesIndex.Remove(aggregateMtlFileName);
+            UpdateTexture();
+        }
+
+        public void ClearAggregateFiles() {
+            _aggregateMtlFiles.Clear();
+            _currentMtlFilesTexturesIndex.Clear();
+            UpdateTexture();
         }
 
         public void SetMtlFileTextureByIndex(string meshTextureName, int index) {
@@ -123,7 +191,19 @@ namespace GohMdlExpert.ViewModels {
             return _plyModels.Where(p => p.MeshesTextureNames.Contains(mtlFileName));
         }
 
-        private void MergeAggregateTextures(PlyAggregateMtlFile oldMtlFile, PlyAggregateMtlFile newMtlFile) {
+        public IEnumerable<PlyFile> GetPlyModelLodFiles(PlyModel3D modelPly) {
+            if (!_lodPlyFiles.TryGetValue(modelPly, out var value)) {
+                throw new Exception("Модель говно");
+            } else {
+                return value;
+            }
+        }
+
+        private MdlFile? CreateMdlFile() {
+            return new MdlFile("new_humanskin.mdl");
+        }
+
+        private void MergeAggregateTextures(AggregateMtlFile oldMtlFile, AggregateMtlFile newMtlFile) {
             var differenceMaterials = oldMtlFile.Data.Where(t => !newMtlFile.Data.Contains(t));
 
             if (differenceMaterials.Count() == oldMtlFile.Data.Count) {
@@ -135,16 +215,17 @@ namespace GohMdlExpert.ViewModels {
                 }
             } else if (differenceMaterials.Any()) {
                 var result = _userDialog.Ask(
-                    string.Format("Added texture \"{0}\" don't contains \"{1}\" materials which are contains in used textures." +
+                    string.Format("Added texture \"{0}\" don't contains: [{1}] materials which are contains in used textures." +
                         "Delete uncontained materials in used textures.",
                         newMtlFile.Name,
-                        string.Join("; ", differenceMaterials.Select(t => t.Diffuse.Name))),
+                        string.Join(", ", differenceMaterials.Select(t => t.Diffuse.Name))),
                     "Texture combined", QuestionType.YesNoCancel);
 
                 if (result == QuestionResult.Cancel) {
                     throw new OperationCanceledException();
                 } else if (result == QuestionResult.Yes) {
                     oldMtlFile.Data = new MtlTextureCollection(oldMtlFile.Data.Intersect(newMtlFile.Data));
+                    _currentMtlFilesTexturesIndex[oldMtlFile.Name] = 0;
                 }
             }
         }
@@ -162,6 +243,8 @@ namespace GohMdlExpert.ViewModels {
                 foreach (var meshTextureName in model.MeshesTextureNames) {
                     if (_aggregateMtlFiles.ContainsKey(meshTextureName)) {
                         model.SetMeshTexture(meshTextureName, GetCurrentMtlFileTexture(meshTextureName));
+                    } else {
+                        model.SetMeshTexture(meshTextureName, null);
                     }
                 }
             }
@@ -169,29 +252,18 @@ namespace GohMdlExpert.ViewModels {
             UpdatedTextures?.Invoke(this, EventArgs.Empty);
         }
 
-        private void PlyModelsChanged(object? sender, NotifyCollectionChangedEventArgs e) {
-            switch (e.Action) {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (var newItem in e.NewItems!.OfType<PlyModel3D>()) {
-                        _models.Add(newItem);
+        private void PlyModelRemoveHandler(object? sender, NotifyCollectionChangedEventArgs e) {
+            if (_plyModels.Count == 0) {
+                ClearAggregateFiles();
+                
+            } else {
+                _lodPlyFiles.Remove(e.GetItem<PlyModel3D>()!);
+
+                foreach (var aggregateMtlFile in _aggregateMtlFiles.Values) {
+                    if (!GetMtlFilePlyModels(aggregateMtlFile.Name).Any()) {
+                        RemoveAggregateFile(aggregateMtlFile.Name);
                     }
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (var oldItem in e.OldItems!.OfType<PlyModel3D>()) {
-                        _models.Remove(oldItem);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                    _models[e.NewStartingIndex] = (PlyModel3D?)e.NewItems?[0];
-                    break;
-                case NotifyCollectionChangedAction.Move:
-                    var item = (PlyModel3D?)e.NewItems?[0];
-                    _models.Remove(item);
-                    _models.Insert(e.NewStartingIndex, item);
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    _models.Clear();
-                    break;
+                }
             }
         }
     }

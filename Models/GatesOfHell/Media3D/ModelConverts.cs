@@ -90,31 +90,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D {
         }
 
         /// <summary>
-        /// Возвращает материал текстуры из файла материала в виде изображения.
-        /// </summary>
-        /// <param name="materialFile">Файл материала.</param>
-        /// <returns>Материал.</returns>
-        public static Material GetMaterial(MaterialFile materialFile) {
-            string fullPath = materialFile.GetFullPath();
-            DiffuseMaterial diffuseMaterial;
-
-            if (!materialFile.Exists()) {
-                throw GohResourceFileException.IsNotExists(materialFile);  
-            }
-
-            diffuseMaterial = new DiffuseMaterial(
-                new ImageBrush(new BitmapImage(new Uri(fullPath))) {
-                    ViewportUnits = BrushMappingMode.Absolute,
-                }
-            );
-
-            //diffuseMaterial.Freeze();
-            //diffuseMaterial.Brush.Freeze();
-
-            return diffuseMaterial;
-        }
-
-        /// <summary>
         /// Проверяет, является ли материал загруженной текстурой.
         /// </summary>
         /// <param name="material"></param>

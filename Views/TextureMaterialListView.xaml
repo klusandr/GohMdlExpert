@@ -9,7 +9,7 @@
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=vm:TextureMaterialListViewModel}">
     <DockPanel>
-        <TextBlock d:Text="Обозреватель материалов текстуры: texture.mtl" Text="{Binding MtlFile.Name, StringFormat='Обозреватель материалов текстуры: {0}'}" Grid.Row="2" DockPanel.Dock="Top"/>
+        <TextBlock d:Text="Обозреватель материалов текстуры: texture.mtl" Text="{Binding MtlFile.Name, StringFormat='Texture materials overview: {0}'}" DockPanel.Dock="Top"/>
         <ListView Grid.Row="1" ItemsSource="{Binding Items, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="{Binding SelectedMaterialIndex}">
             <ListView.ItemTemplate>
                 <DataTemplate>

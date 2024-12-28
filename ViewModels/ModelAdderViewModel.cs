@@ -4,14 +4,16 @@ using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Media3D;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 using WpfMvvm.ViewModels;
 using WpfMvvm.ViewModels.Commands;
 
-namespace GohMdlExpert.ViewModels {
+namespace GohMdlExpert.ViewModels
+{
     public class ModelAdderViewModel : BaseViewModel {
         private readonly Models3DViewModel _models3DView;
-        private PlyAggregateMtlFiles? _aggregateMtlFiles;
+        private AggregateMtlFiles? _aggregateMtlFiles;
 
         public PlyModel3D? AddedModel {
             get { return _models3DView.AddedModel; }
@@ -21,7 +23,7 @@ namespace GohMdlExpert.ViewModels {
             }
         }
 
-        public PlyAggregateMtlFiles? AggregateMtlFiles { get => _aggregateMtlFiles; set => _aggregateMtlFiles = value; }
+        public AggregateMtlFiles? AggregateMtlFiles { get => _aggregateMtlFiles; set => _aggregateMtlFiles = value; }
 
         public bool IsAddedInProgress => AddedModel != null;
 
@@ -40,7 +42,7 @@ namespace GohMdlExpert.ViewModels {
             });
         }
 
-        public void SetModel(PlyFile plyFile, PlyAggregateMtlFiles? aggregateMtlFiles) {
+        public void SetModel(PlyFile plyFile, AggregateMtlFiles? aggregateMtlFiles) {
             ClearModel();
 
             if (aggregateMtlFiles != null && aggregateMtlFiles.PlyFile != plyFile) {
@@ -51,7 +53,7 @@ namespace GohMdlExpert.ViewModels {
             AddedModel = new PlyModel3D(plyFile, aggregateMtlFiles);
         }
 
-        public void SetMtlFiles(PlyAggregateMtlFiles aggregateMtlFiles) {
+        public void SetMtlFiles(AggregateMtlFiles aggregateMtlFiles) {
             if (!IsAddedInProgress) {
                 throw new InvalidOperationException("Error setting texture model. Model not added yet.");
             }
@@ -85,7 +87,7 @@ namespace GohMdlExpert.ViewModels {
             }
         }
 
-        public void AddModel(PlyFile plyFile, PlyAggregateMtlFiles? aggregateMtlFiles) {
+        public void AddModel(PlyFile plyFile, AggregateMtlFiles? aggregateMtlFiles) {
             _models3DView.AddModel(new PlyModel3D(plyFile, aggregateMtlFiles), aggregateMtlFiles);
         }
 

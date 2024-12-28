@@ -22,7 +22,8 @@
                 </Style>
             </Menu.Resources>
             <MenuItem Header="Файл">
-                <MenuItem Header="Открыть" Command="{Binding OpenFileCommand}"/>
+                <MenuItem Header="Открыть ресурс" Command="{Binding OpenResourceCommand}"/>
+                <MenuItem Header="Открыть файл" Command="{Binding OpenFileCommand}"/>
                 <MenuItem Header="Выход" Click="MenuItemExitClick"/>
             </MenuItem>
             <MenuItem Header="Правка">

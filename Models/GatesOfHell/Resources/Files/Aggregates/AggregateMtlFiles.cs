@@ -1,32 +1,27 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
-    public class PlyAggregateMtlFiles : IEnumerable<PlyAggregateMtlFile> {
-        protected readonly Dictionary<string, PlyAggregateMtlFile> _files;
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates {
+    public class AggregateMtlFiles : IEnumerable<AggregateMtlFile> {
+        protected readonly Dictionary<string, AggregateMtlFile> _files;
 
         public PlyFile PlyFile { get; }
 
         public IEnumerable<string> FilesNames => _files.Keys;
 
-        public PlyAggregateMtlFile this[string key] {
+        public AggregateMtlFile this[string key] {
             get {
                 ResourceChecking.ThrowCheckPlyFileMeshTextureName(PlyFile, key);
                 return _files[key];
             }
         }
 
-        public PlyAggregateMtlFiles(PlyFile plyFile, GohFactionHumanskinResource humanskinResource, GohTextureProvider? textureProvider = null) {
+        public AggregateMtlFiles(PlyFile plyFile, GohFactionHumanskinResource humanskinResource, GohTextureProvider? textureProvider = null) {
             _files = [];
             PlyFile = plyFile;
 
             foreach (var mesh in plyFile.Data.Meshes) {
-                _files.Add(mesh.TextureName, new PlyAggregateMtlFile(mesh.TextureName, plyFile, humanskinResource));
+                _files.Add(mesh.TextureName, new AggregateMtlFile(mesh.TextureName, plyFile, humanskinResource));
             }
 
             if (textureProvider != null) {
@@ -44,7 +39,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             return new Dictionary<string, MtlTexture?>(_files.Select(kv => new KeyValuePair<string, MtlTexture?>(kv.Key, kv.Value.Data.FirstOrDefault())));
         }
 
-        public IEnumerator<PlyAggregateMtlFile> GetEnumerator() {
+        public IEnumerator<AggregateMtlFile> GetEnumerator() {
             return _files.Values.GetEnumerator();
         }
 

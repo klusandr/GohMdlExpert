@@ -1,17 +1,18 @@
 ﻿using GohMdlExpert.Extensions;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
 using GohMdlExpert.Properties;
 using System.ComponentModel;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
+namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels
+{
     public class ModelsLoadTreeMeshViewModel : ModelsLoadTreeItemViewModel {
         private static readonly ImageSource s_icon = new BitmapImage().FromByteArray(Resources.MeshIcon);
 
-        public PlyAggregateMtlFile MtlFile { get; }
+        public AggregateMtlFile MtlFile { get; }
 
-        public ModelsLoadTreeMeshViewModel(PlyAggregateMtlFile mtlFile, ModelsLoadTreeViewModel modelsTree) : base(mtlFile, modelsTree) {
+        public ModelsLoadTreeMeshViewModel(AggregateMtlFile mtlFile, ModelsLoadTreeViewModel modelsTree) : base(mtlFile, modelsTree) {
             Text = mtlFile.Name;
             Icon = s_icon;
             MtlFile = mtlFile;

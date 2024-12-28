@@ -10,6 +10,9 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using WpfMvvm.ViewModels.Controls;
+using System.Diagnostics;
+using System.IO;
+using WpfMvvm.ViewModels.Controls.Menu;
 
 namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
     public abstract class ModelsLoadTreeItemViewModel : TreeItemViewModel {
@@ -37,6 +40,8 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
         }
 
         public virtual ICommand ApproveCommand => CommandManager.GetCommand(Approve);
+        public virtual ICommand OpenInExplorerCommand => CommandManager.GetCommand(OpenInExplorer);
+
         public virtual ICommand? LoadCommand => null;
         public virtual ICommand? DeleteCommand => null;
 
@@ -46,6 +51,8 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
             Text = resourceElement.Name;
             ToolTip = resourceElement.GetFullPath();
             ResourceElement = resourceElement;
+            ContextMenuViewModel.AddItem(new MenuItemViewModel("Open in explorer", OpenInExplorerCommand));
+
             modelsTree.CreatedItemHandler(this, EventArgs.Empty);
         }
 
@@ -70,6 +77,11 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
             if (IsApproved) {
                 IsApproved = false;
             }
+        }
+
+        private void OpenInExplorer() {
+            #warning Вынести куда нибудб открытие файла в проводника
+            Process.Start("explorer.exe", $"/select, {ResourceElement.GetFullPath()}");
         }
     }
 }

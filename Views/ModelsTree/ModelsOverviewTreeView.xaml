@@ -16,6 +16,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition/>
             <RowDefinition Height=".3*"/>
+            <RowDefinition Height=".3*"/>
         </Grid.RowDefinitions>
         <TextBlock Text="Обозреватель содержимого"/>
         <vbc:TreeView Grid.Row="1" MinWidth="150">
@@ -25,6 +26,7 @@
                 </HierarchicalDataTemplate>
             </vbc:TreeView.ItemTemplate>
         </vbc:TreeView>
-        <tml:TextureMaterialListView Grid.Row="2"/>
+        <tml:PlyModelLodListView Grid.Row="2"/>
+        <tml:TextureMaterialListView Grid.Row="3"/>
     </Grid>
 </baseviews:BaseView>

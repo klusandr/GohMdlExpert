@@ -1,21 +1,33 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using GohMdlExpert.Models.GatesOfHell.Media3D;
 using GohMdlExpert.Models.GatesOfHell.Resources;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
+using WpfMvvm.Data;
 using WpfMvvm.ViewModels.Controls;
 
 namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
     public class ModelsOverviewTreeViewModel : TreeViewModel {
         private IEnumerable<MtlTexture>? _mtlTextures;
-        private PlyAggregateMtlFile? _selectedMtlFile;
+        private AggregateMtlFile? _selectedMtlFile;
 
         public Models3DViewModel Models3DViewModel { get; }
         public TextureMaterialListViewModel MaterialList { get; }
-        public ModelsOverviewTreeMdlViewModel MdlItem { get; }
-        public ObservableCollection<TreeItemViewModel> PlyItems => MdlItem.Items;
+        public PlyModelLodListViewModel LodList { get; }
 
-        public IEnumerable<PlyAggregateMtlFile> MtlFiles => Models3DViewModel.AggregateMtlFiles.Values;
+        public ModelsOverviewTreeMdlViewModel? MdlItem {
+            get => Items.ElementAtOrDefault(0) as ModelsOverviewTreeMdlViewModel;
+            private set {
+                ClearData();
+                if (value != null) {
+                    Items.Insert(0, value);
+                    LoadData();
+                }
+            }
+        }
+        public ObservableCollection<TreeItemViewModel>? PlyItems => MdlItem?.Items;
+
         public IEnumerable<MtlTexture>? MtlTextures {
             get => _mtlTextures;
             private set {
@@ -24,81 +36,49 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
             }
         }
 
-        public PlyAggregateMtlFile? SelectedMtlFile {
-            get => _selectedMtlFile;
-            set {
-                _selectedMtlFile = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public ModelsOverviewTreeViewModel(Models3DViewModel models3DViewModel, TextureMaterialListViewModel materialList) {
+        public ModelsOverviewTreeViewModel(Models3DViewModel models3DViewModel, TextureMaterialListViewModel materialList, PlyModelLodListViewModel lodList) {
             Models3DViewModel = models3DViewModel;
             MaterialList = materialList;
+            LodList = lodList;
             MtlTextures = [];
 
-            MdlItem = new ModelsOverviewTreeMdlViewModel(new MdlFile("new_humanskin.mdl"), this);
-
+            models3DViewModel.PropertyChangeHandler.AddHandler(nameof(Models3DViewModel.MdlFile), MdlFileChangeHandler);
             models3DViewModel.PlyModels.CollectionChanged += ModelsPlyChanged;
             models3DViewModel.AggregateMtlFiles.CollectionChanged += MtlFilesChanged;
-            models3DViewModel.UpdatedTextures += ModelsUpdatedTextures;
-
-            PropertyChangeHandler.AddHandler(nameof(SelectedItem), (s, e) => SelectedMtlFile = (SelectedItem as ModelsOverviewTreeMtlViewModel)?.MtlFile);
-
-            LoadData();
         }
 
         public override void LoadData() {
-            Items.Add(MdlItem);
+            foreach (var mtlFile in Models3DViewModel.AggregateMtlFiles.Values) {
+                AddItem(new ModelsOverviewTreeMtlViewModel(mtlFile, this));
+            }
+        }
 
-            foreach (var item in MtlFiles) {
-                Items.Add(new ModelsOverviewTreeMtlViewModel(item, this));
+        private void MdlFileChangeHandler(object? sender, PropertyChangedEventArgs e) {
+            if (Models3DViewModel.MdlFile != MdlItem?.MdlFile) {
+                MdlItem = Models3DViewModel.MdlFile != null ? new ModelsOverviewTreeMdlViewModel(Models3DViewModel.MdlFile, this) : null;
             }
         }
 
         private void ModelsPlyChanged(object? sender, NotifyCollectionChangedEventArgs e) {
-            switch (e.Action) {
-                case NotifyCollectionChangedAction.Add:
-                    var newPlyModel = (PlyModel3D)e.NewItems![0]!;
-                    PlyItems.Add(new ModelsOverviewTreePlyViewModel(newPlyModel, this));
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    if (e.OldStartingIndex != -1) {
-                        PlyItems.RemoveAt(e.OldStartingIndex);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    PlyItems?.Clear();
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                case NotifyCollectionChangedAction.Move:
-                    break;
+            if (PlyItems != null) {
+                switch (e.Action) {
+                    case NotifyCollectionChangedAction.Add: PlyItems.Add(new ModelsOverviewTreePlyViewModel(e.GetItem<PlyModel3D>()!, this)); break;
+                    case NotifyCollectionChangedAction.Remove: PlyItems.RemoveAt(e.GetIndex()); break;
+                    case NotifyCollectionChangedAction.Reset: PlyItems.Clear(); break;
+                }
             }
-
         }
 
         private void MtlFilesChanged(object? sender, NotifyCollectionChangedEventArgs e) {
             switch (e.Action) {
-                case NotifyCollectionChangedAction.Add:
-                    var newMtlFile = ((KeyValuePair<string, PlyAggregateMtlFile>)e.NewItems![0]!).Value;
-                    Items.Add(new ModelsOverviewTreeMtlViewModel(newMtlFile, this));
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    if (e.OldStartingIndex != -1) {
-                        PlyItems.RemoveAt(e.OldStartingIndex + 1);
-                    }
-                    break;
+                case NotifyCollectionChangedAction.Add: Items.Add(new ModelsOverviewTreeMtlViewModel(e.GetItem<KeyValuePair<string, AggregateMtlFile>>().Value, this)); break;
+                case NotifyCollectionChangedAction.Remove: Items.RemoveAt(e.GetIndex() + 1); break;
                 case NotifyCollectionChangedAction.Reset:
-                    PlyItems?.Clear();
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                case NotifyCollectionChangedAction.Move:
-                    break;
+                    while (Items.Count > 1) {
+                        Items.RemoveAt(1);
+                    }
+                break;
             }
-        }
-
-        private void ModelsUpdatedTextures(object? sender, EventArgs e) {
-            OnPropertyChanged(nameof(SelectedMtlFile));
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using GohMdlExpert.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
 using GohMdlExpert.Properties;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -8,13 +9,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using WpfMvvm.Collections;
 using WpfMvvm.ViewModels.Controls;
+using WpfMvvm.ViewModels.Controls.Menu;
 
-namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
+namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels
+{
     public class ModelsLoadTreePlyFileViewModel : ModelsLoadTreeItemViewModel {
         private static readonly ImageSource s_icon = new BitmapImage().FromByteArray(Resources.PlyIcon);
 
         public PlyFile PlyFile { get; }
-        public PlyAggregateMtlFiles? AggregateMtlFiles { get; private set; }
+        public AggregateMtlFiles? AggregateMtlFiles { get; private set; }
 
         public override ICommand LoadCommand => Tree.ModelsAdder.AddModelCommand;
         public override ICommand DeleteCommand => Tree.ModelsAdder.ClearModelCommand;
@@ -23,7 +26,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
         private void AddPlyModel() {
             if (Tree.HumanskinResource != null) {
                 try {
-                    Tree.ModelsAdder.AddModel(PlyFile, new PlyAggregateMtlFiles(PlyFile, Tree.HumanskinResource, Tree.TextureProvider));
+                    Tree.ModelsAdder.AddModel(PlyFile, new AggregateMtlFiles(PlyFile, Tree.HumanskinResource, Tree.TextureProvider));
                 } catch (OperationCanceledException) { }
             }
         }
@@ -32,8 +35,8 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
             PlyFile = plyFile;
             Icon = s_icon;
             ContextMenuViewModel
-                .AddItemBuilder(new MenuItemViewModel(AddCommand, "Add") { Icon = new Image() { Source = s_icon } })
-                .AddItemBuilder(new MenuItemViewModel(DeleteCommand, "Cancel"));
+                .InsertItemBuilder(0, new MenuItemViewModel("Add", AddCommand) { Icon = new Image() { Source = s_icon } })
+                .InsertItemBuilder(1, new MenuItemViewModel("Cancel", DeleteCommand) { EnableToVisible = true });
         }
 
         public override void LoadData() {
@@ -41,7 +44,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
                 return;
             }
 
-            AggregateMtlFiles = new PlyAggregateMtlFiles(PlyFile, Tree.HumanskinResource, Tree.TextureProvider);
+            AggregateMtlFiles = new AggregateMtlFiles(PlyFile, Tree.HumanskinResource, Tree.TextureProvider);
 
             foreach (var mtlFile in AggregateMtlFiles) {
                 AddItem(new ModelsLoadTreeMeshViewModel(mtlFile, Tree));
