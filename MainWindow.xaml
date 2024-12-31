@@ -44,8 +44,6 @@
                 <ColumnDefinition Width=".3*" MinWidth="100"/>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width=".3*" MinWidth="100"/>
             </Grid.ColumnDefinitions>
             <Grid Margin="5">
                 <Grid.RowDefinitions>
@@ -55,12 +53,10 @@
                 </Grid.RowDefinitions>
                 <modelstree:ModelsLoadTreeView />
                 <GridSplitter Height="3" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
-                <views:ModelAdderView Grid.Row="2"/>
+                <views:PlyModelAdderView Grid.Row="2"/>
             </Grid>
             <GridSplitter Width="3" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
-            <views:Models3DView Grid.Column="2"/>
-            <GridSplitter Width="3" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
-            <modelstree:ModelsOverviewTreeView Margin="5" Grid.Column="4"/>
+            <views:HumanskinMdlOverviewView Grid.Column="2"/>
         </Grid>
     </Grid>
 </Window>

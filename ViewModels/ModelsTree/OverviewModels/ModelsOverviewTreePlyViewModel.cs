@@ -18,12 +18,13 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
             Text = plyModel.PlyFile.Name;
             ToolTip = plyModel.PlyFile.GetFullPath();
             Icon = s_icon;
-            ContextMenuViewModel.AddItem(new MenuItemViewModel("Remove", RemoveCommand));
             IsVisibleActive = true;
             IsEnableCheckActive = true;
+            ContextMenuViewModel.AddItem(new MenuItemViewModel("Remove", RemoveCommand));
 
-            PropertyChangeHandler.AddHandler(nameof(IsVisible), VisibleChangedHandler);
-            PropertyChangeHandler.AddHandler(nameof(IsSelected), IsSelectedChangeHandler);
+            PropertyChangeHandler
+                .AddHandlerBuilder(nameof(IsVisible), VisibleChangedHandler)
+                .AddHandlerBuilder(nameof(IsSelected), IsSelectedChangeHandler);
 
             foreach (var meshTextureName in plyModel.MeshesTextureNames) {
                 AddItem(new ModelsOverviewTreeMeshViewModel(plyModel, meshTextureName, Tree));
@@ -40,9 +41,9 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
 
         private void IsSelectedChangeHandler(object? sender, PropertyChangedEventArgs e) {
             if (IsSelected) {
-                Tree.LodList.SetItems(Tree.Models3DViewModel.GetPlyModelLodFiles(PlyModel));
+                Tree.LodListViewModel.SetItems(Tree.Models3DViewModel.GetPlyModelLodFiles(PlyModel));
             } else {
-                Tree.LodList.SetItems(null);
+                Tree.LodListViewModel.SetItems(null);
             }
         }
 

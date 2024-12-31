@@ -11,8 +11,8 @@ using WpfMvvm.ViewModels.Commands;
 
 namespace GohMdlExpert.ViewModels
 {
-    public class ModelAdderViewModel : BaseViewModel {
-        private readonly Models3DViewModel _models3DView;
+    public class PlyModelAdderViewModel : BaseViewModel {
+        private readonly HumanskinMdlOverviewViewModel _models3DView;
         private AggregateMtlFiles? _aggregateMtlFiles;
 
         public PlyModel3D? AddedModel {
@@ -33,7 +33,7 @@ namespace GohMdlExpert.ViewModels
         public event EventHandler? ModelAdded;
         public event EventHandler? CancelModelAdded;
 
-        public ModelAdderViewModel(Models3DViewModel models3DView) {
+        public PlyModelAdderViewModel(HumanskinMdlOverviewViewModel models3DView) {
             _models3DView = models3DView;
 
             PropertyChangeHandler.AddHandler(nameof(AddedModel), (_, _) => { 

@@ -8,28 +8,28 @@ using WpfMvvm.DependencyInjection;
 using WpfMvvm.Diagnostics;
 using WpfMvvm.ViewModels;
 using WpfMvvm.Views;
+using WpfMvvm.Views.Attributes;
 
 namespace GohMdlExpert.Views {
     /// <summary>
     /// Логика взаимодействия для Models3dView.xaml
     /// </summary>
-    public partial class Models3DView : BaseView {
+    [BindingViewModel<HumanskinMdlOverviewViewModel>]
+    [BindingViewModelViaDI]
+    public partial class HumanskinMdlOverviewView : BaseView {
         private MouseDownHolder _mouseCameraRotatedMover;
         private MouseDownHolder _mouseCameraPositionMover;
         private PerspectiveCameraPositioner _cameraPositioner;
 
 #if DEBUG //Используется для правильного отображения компонентов использующих объекты предоставленные DI
-        static Models3DView() {
+        static HumanskinMdlOverviewView() {
             XamlDesigner.Startup += AppStartup.Startup;
         }
 #endif
-        private Models3DViewModel Models3DViewModel => (Models3DViewModel)ViewModel!;
+        private new HumanskinMdlOverviewViewModel ViewModel => (HumanskinMdlOverviewViewModel)base.ViewModel!;
 
-        public Models3DView() {
-
+        public HumanskinMdlOverviewView() {
             InitializeComponent();
-
-            ViewModel = ViewModelProvider.GetRequiredViewModel<Models3DViewModel>();
 
             _mouseCameraRotatedMover = new(_sceneBackground, MouseButton.Left);
             _mouseCameraPositionMover = new(_sceneBackground, MouseButton.Middle);
@@ -38,7 +38,7 @@ namespace GohMdlExpert.Views {
             _mouseCameraRotatedMover.MouseDownMove += OnMouseCameraRotationMove;
             _mouseCameraPositionMover.MouseDownMove += OnMouseCameraPositionMover;
 
-            _cameraPositioner.SetCameraFocus(Models3DViewModel.ModelsCenter ?? new Point3D());
+            _cameraPositioner.SetCameraFocus(new Point3D());
 
             //Models3DViewModel.Models.Changed += ((_, _) => _cameraPositioner.SetCameraFocus(Models3DViewModel.ModelsCenter ?? new Point3D()));
 

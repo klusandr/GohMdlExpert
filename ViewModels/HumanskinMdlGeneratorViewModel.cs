@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace GohMdlExpert.ViewModels {
     public class HumanskinMdlGeneratorViewModel {
-        private readonly Models3DViewModel _models3DView;
+        private readonly HumanskinMdlOverviewViewModel _models3DView;
 
-        public HumanskinMdlGeneratorViewModel(Models3DViewModel models3DView) {
+        public HumanskinMdlGeneratorViewModel(HumanskinMdlOverviewViewModel models3DView) {
             _models3DView = models3DView;
         }
 

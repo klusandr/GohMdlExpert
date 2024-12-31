@@ -12,9 +12,9 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
         private IEnumerable<MtlTexture>? _mtlTextures;
         private AggregateMtlFile? _selectedMtlFile;
 
-        public Models3DViewModel Models3DViewModel { get; }
-        public TextureMaterialListViewModel MaterialList { get; }
-        public PlyModelLodListViewModel LodList { get; }
+        public HumanskinMdlOverviewViewModel Models3DViewModel { get; }
+        public TextureMaterialListViewModel MaterialListViewModel { get; }
+        public PlyModelLodListViewModel LodListViewModel { get; }
 
         public ModelsOverviewTreeMdlViewModel? MdlItem {
             get => Items.ElementAtOrDefault(0) as ModelsOverviewTreeMdlViewModel;
@@ -36,10 +36,10 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
             }
         }
 
-        public ModelsOverviewTreeViewModel(Models3DViewModel models3DViewModel, TextureMaterialListViewModel materialList, PlyModelLodListViewModel lodList) {
+        public ModelsOverviewTreeViewModel(HumanskinMdlOverviewViewModel models3DViewModel) {
             Models3DViewModel = models3DViewModel;
-            MaterialList = materialList;
-            LodList = lodList;
+            MaterialListViewModel = new TextureMaterialListViewModel();
+            LodListViewModel = new PlyModelLodListViewModel();
             MtlTextures = [];
 
             models3DViewModel.PropertyChangeHandler.AddHandler(nameof(Models3DViewModel.MdlFile), MdlFileChangeHandler);

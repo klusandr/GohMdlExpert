@@ -12,7 +12,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
     public sealed class ModelsLoadTreeViewModel : TreeViewModel {
         private ModelsLoadTreePlyFileViewModel? _approvedPlyItem;
 
-        public ModelAdderViewModel ModelsAdder { get; }
+        public PlyModelAdderViewModel ModelsAdder { get; }
         public GohHumanskinResourceProvider SkinResourceProvider { get; }
         public GohTextureProvider TextureProvider { get; }
 
@@ -29,7 +29,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
         public ICommand NextModelCommand => CommandManager.GetCommand(NextPly);
         public ICommand PastModelCommand => CommandManager.GetCommand(PastPly);
 
-        public ModelsLoadTreeViewModel(ModelAdderViewModel modelsAdder, GohHumanskinResourceProvider skinResourceProvider, GohTextureProvider textureProvider) {
+        public ModelsLoadTreeViewModel(PlyModelAdderViewModel modelsAdder, GohHumanskinResourceProvider skinResourceProvider, GohTextureProvider textureProvider) {
             ModelsAdder = modelsAdder;
             SkinResourceProvider = skinResourceProvider;
             TextureProvider = textureProvider;

@@ -21,7 +21,6 @@ namespace GohMdlExpert.Views {
     /// Логика взаимодействия для PlyModelLodList.xaml
     /// </summary>
     [BindingViewModel<PlyModelLodListViewModel>]
-    [BindingViewModelViaDI]
     public partial class PlyModelLodListView : BaseView {
         public PlyModelLodListView() {
             InitializeComponent();

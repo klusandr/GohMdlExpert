@@ -16,14 +16,14 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels
     public class ModelsOverviewTreeMtlViewModel : ModelsOverviewTreeItemViewModel {
         private static readonly ImageSource s_icon = new BitmapImage().FromByteArray(Resources.TextureIcon);
         private static readonly ImageSource s_plyIcon = new BitmapImage().FromByteArray(Resources.PlyIcon);
-        private readonly Models3DViewModel _models3DView;
+        private readonly HumanskinMdlOverviewViewModel _models3DView;
         private readonly TextureMaterialListViewModel _materialList;
 
         public AggregateMtlFile MtlFile { get; }
 
         public ModelsOverviewTreeMtlViewModel(AggregateMtlFile aggregateMtlFile, ModelsOverviewTreeViewModel modelsTree) : base(modelsTree) {
             _models3DView = Tree.Models3DViewModel;
-            _materialList = Tree.MaterialList;
+            _materialList = Tree.MaterialListViewModel;
 
             Icon = s_icon;
             MtlFile = aggregateMtlFile;

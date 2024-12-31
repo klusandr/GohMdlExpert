@@ -26,7 +26,7 @@
                 </HierarchicalDataTemplate>
             </vbc:TreeView.ItemTemplate>
         </vbc:TreeView>
-        <tml:PlyModelLodListView Grid.Row="2"/>
-        <tml:TextureMaterialListView Grid.Row="3"/>
+        <tml:PlyModelLodListView Grid.Row="2" DataContext="{Binding LodListViewModel}"/>
+        <tml:TextureMaterialListView Grid.Row="3" DataContext="{Binding MaterialListViewModel}"/>
     </Grid>
 </baseviews:BaseView>

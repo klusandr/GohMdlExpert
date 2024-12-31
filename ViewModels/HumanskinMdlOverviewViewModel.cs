@@ -8,19 +8,20 @@ using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
+using GohMdlExpert.ViewModels.ModelsTree.OverviewModels;
 using WpfMvvm.Collections.ObjectModel;
 using WpfMvvm.Data;
 using WpfMvvm.ViewModels;
 using WpfMvvm.Views.Dialogs;
 
 namespace GohMdlExpert.ViewModels {
-    public sealed class Models3DViewModel : BaseViewModel {
+    public sealed class HumanskinMdlOverviewViewModel : BaseViewModel {
         private readonly ObservableCollection<PlyModel3D> _plyModels;
         private readonly Model3DCollection _models;
         private readonly ObservableDictionary<string, AggregateMtlFile> _aggregateMtlFiles;
         private readonly Dictionary<string, int> _currentMtlFilesTexturesIndex;
         private readonly Dictionary<PlyModel3D, IEnumerable<PlyFile>> _lodPlyFiles;
-        private readonly CollectionChangeBinder<Model3D> _modelCollectionBinder;
+        private readonly CollectionChangeBinder<Model3D> _modelsCollectionBinder;
         private readonly CollectionChangeHandler _plyModelsChangeHandler;
         private MdlFile? _mdlFile;
         private PlyModel3D? _addedModel;
@@ -28,6 +29,8 @@ namespace GohMdlExpert.ViewModels {
         private readonly IUserDialogProvider _userDialog;
         private readonly GohTextureProvider _gohTextureProvider;
         private readonly GohHumanskinResourceProvider _humanskinProvider;
+
+        private readonly ModelsOverviewTreeViewModel _modelsOverviewTreeViewModel;
 
         public MdlFile? MdlFile {
             get => _mdlFile;
@@ -38,7 +41,6 @@ namespace GohMdlExpert.ViewModels {
         }
 
         public ObservableCollection<PlyModel3D> PlyModels => _plyModels;
-        public Model3DCollection Models => _models;
         public ObservableDictionary<string, AggregateMtlFile> AggregateMtlFiles => _aggregateMtlFiles;
 
         public PlyModel3D? AddedModel {
@@ -49,11 +51,13 @@ namespace GohMdlExpert.ViewModels {
             }
         }
 
-        public Point3D? ModelsCenter => ((GeometryModel3D?)Models.FirstOrDefault())?.GetCentrPoint();
+        public ModelsOverviewTreeViewModel ModelsOverviewTreeViewModel => _modelsOverviewTreeViewModel;
+
+        public Model3DCollection Models => _models;
 
         public event EventHandler? UpdatedTextures;
 
-        public Models3DViewModel(IUserDialogProvider userDialog, GohTextureProvider gohTextureProvider, GohHumanskinResourceProvider humanskinProvider) {
+        public HumanskinMdlOverviewViewModel(IUserDialogProvider userDialog, GohTextureProvider gohTextureProvider, GohHumanskinResourceProvider humanskinProvider) {
             _models = [];
             _plyModels = [];
             _lodPlyFiles = [];
@@ -64,7 +68,9 @@ namespace GohMdlExpert.ViewModels {
             _gohTextureProvider = gohTextureProvider;
             _humanskinProvider = humanskinProvider;
 
-            _modelCollectionBinder = new CollectionChangeBinder<Model3D>(_plyModels, _models, (i) => ((PlyModel3D)i!).Model );
+            _modelsOverviewTreeViewModel = new ModelsOverviewTreeViewModel(this);
+
+            _modelsCollectionBinder = new CollectionChangeBinder<Model3D>(_plyModels, _models, (i) => ((PlyModel3D)i!).Model);
             _plyModelsChangeHandler = new CollectionChangeHandler(_plyModels)
                 .AddHandlerBuilder(NotifyCollectionChangedAction.Remove, PlyModelRemoveHandler)
                 .AddHandlerBuilder(NotifyCollectionChangedAction.Reset, PlyModelRemoveHandler);
@@ -228,14 +234,6 @@ namespace GohMdlExpert.ViewModels {
                     _currentMtlFilesTexturesIndex[oldMtlFile.Name] = 0;
                 }
             }
-        }
-
-        private Point3D GetPointsCenter(params Point3D[] points3D) {
-            return new Point3D() {
-                X = points3D.Average(p => p.X),
-                Y = points3D.Average(p => p.Y),
-                Z = points3D.Average(p => p.Z),
-            };
         }
 
         private void UpdateTexture() {
