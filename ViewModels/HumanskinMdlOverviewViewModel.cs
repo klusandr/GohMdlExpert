@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows.Media.Media3D;
 using GohMdlExpert.Extensions;
+using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Media3D;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
@@ -20,14 +21,14 @@ namespace GohMdlExpert.ViewModels {
         private readonly Model3DCollection _models;
         private readonly ObservableDictionary<string, AggregateMtlFile> _aggregateMtlFiles;
         private readonly Dictionary<string, int> _currentMtlFilesTexturesIndex;
-        private readonly Dictionary<PlyModel3D, IEnumerable<PlyFile>> _lodPlyFiles;
+        private readonly Dictionary<PlyModel3D, ObservableCollection<PlyFile>> _lodPlyFiles;
         private readonly CollectionChangeBinder<Model3D> _modelsCollectionBinder;
         private readonly CollectionChangeHandler _plyModelsChangeHandler;
         private MdlFile? _mdlFile;
-        private PlyModel3D? _addedModel;
 
         private readonly IUserDialogProvider _userDialog;
-        private readonly GohTextureProvider _gohTextureProvider;
+        private readonly GohResourceProvider _resourceProvider;
+        private readonly GohTextureProvider _textureProvider;
         private readonly GohHumanskinResourceProvider _humanskinProvider;
 
         private readonly ModelsOverviewTreeViewModel _modelsOverviewTreeViewModel;
@@ -43,21 +44,13 @@ namespace GohMdlExpert.ViewModels {
         public ObservableCollection<PlyModel3D> PlyModels => _plyModels;
         public ObservableDictionary<string, AggregateMtlFile> AggregateMtlFiles => _aggregateMtlFiles;
 
-        public PlyModel3D? AddedModel {
-            get => _addedModel;
-            set {
-                _addedModel = value;
-                OnPropertyChanged();
-            }
-        }
-
         public ModelsOverviewTreeViewModel ModelsOverviewTreeViewModel => _modelsOverviewTreeViewModel;
 
         public Model3DCollection Models => _models;
 
         public event EventHandler? UpdatedTextures;
 
-        public HumanskinMdlOverviewViewModel(IUserDialogProvider userDialog, GohTextureProvider gohTextureProvider, GohHumanskinResourceProvider humanskinProvider) {
+        public HumanskinMdlOverviewViewModel(IUserDialogProvider userDialog, GohResourceProvider resourceProvider, GohHumanskinResourceProvider humanskinProvider, GohTextureProvider textureProvider) {
             _models = [];
             _plyModels = [];
             _lodPlyFiles = [];
@@ -65,8 +58,9 @@ namespace GohMdlExpert.ViewModels {
             _currentMtlFilesTexturesIndex = [];
 
             _userDialog = userDialog;
-            _gohTextureProvider = gohTextureProvider;
+            _resourceProvider = resourceProvider;
             _humanskinProvider = humanskinProvider;
+            _textureProvider = textureProvider;
 
             _modelsOverviewTreeViewModel = new ModelsOverviewTreeViewModel(this);
 
@@ -83,7 +77,7 @@ namespace GohMdlExpert.ViewModels {
             var mtlFiles = mdlFile.Data.Textures;
             var missTexture = new List<MtlFile>();
 
-            _gohTextureProvider.SetTexturesMaterialsFullPath(mtlFiles.Select(m => m.Data));
+            _textureProvider.SetTexturesMaterialsFullPath(mtlFiles.Select(m => m.Data));
 
             foreach (var plyFile in plyFiles) {
                 AddModel(new PlyModel3D(plyFile));
@@ -115,7 +109,11 @@ namespace GohMdlExpert.ViewModels {
                 }
             }
 
-            _lodPlyFiles.Add(modelPly, _humanskinProvider.Current!.GetPlyLodFiles(modelPly.PlyFile));
+            if (_humanskinProvider.Current == null) {
+                throw GohResourcesException.DirectoryNotSpecified();
+            }
+
+            _lodPlyFiles.Add(modelPly, new ObservableCollection<PlyFile>(ResourceLoading.GetPlyLodFiles(modelPly.PlyFile, _humanskinProvider.Current, _resourceProvider)));
 
             _plyModels.Add(modelPly);
             UpdateTexture();
@@ -197,7 +195,7 @@ namespace GohMdlExpert.ViewModels {
             return _plyModels.Where(p => p.MeshesTextureNames.Contains(mtlFileName));
         }
 
-        public IEnumerable<PlyFile> GetPlyModelLodFiles(PlyModel3D modelPly) {
+        public ObservableCollection<PlyFile> GetPlyModelLodFiles(PlyModel3D modelPly) {
             if (!_lodPlyFiles.TryGetValue(modelPly, out var value)) {
                 throw new Exception("Модель говно");
             } else {

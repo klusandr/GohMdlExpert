@@ -42,15 +42,28 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
         }
 
         public GohResourceDirectory GetLocationDirectory(string location) {
-            string locationPath = ResourceLocations.GetLocationPath(location);
-
             if (ResourceDictionary == null) {
                 throw GohResourcesException.DirectoryNotSpecified();
             }
 
+            string locationPath = ResourceLocations.GetLocationPath(location);
             var findDirectory = ResourceDictionary.AlongPath(locationPath);
 
             return findDirectory ?? throw GohResourcesException.LocationNotFound(location, locationPath);
+        }
+
+        public GohResourceDirectory GetResourceDirectory(GohResourceElement resourceElement) {
+            if (ResourceDictionary == null) {
+                throw GohResourcesException.DirectoryNotSpecified();
+            }
+
+            var path = resourceElement.GetDirectoryPath() ?? throw GohResourcesException.PathIsNull(resourceElement);
+
+            if (ResourceDictionary.GetFullPath().Contains(path)) {
+                throw GohResourcesException.ElementNotInResource(resourceElement);
+            }
+
+            return ResourceDictionary.AlongPath(path.Replace(ResourceDictionary.GetFullPath(), string.Empty)) ?? throw GohResourcesException.PathIsNull(resourceElement);
         }
 
         public static GohResourceFile GetResourceFile(string fileName, string? path = null) {

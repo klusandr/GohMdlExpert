@@ -9,7 +9,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using WpfMvvm.Collections;
 using WpfMvvm.ViewModels.Controls;
-using WpfMvvm.ViewModels.Controls.Menu;
 
 namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels
 {

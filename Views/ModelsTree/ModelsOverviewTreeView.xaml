@@ -16,7 +16,6 @@
             <RowDefinition Height="auto"/>
             <RowDefinition/>
             <RowDefinition Height=".3*"/>
-            <RowDefinition Height=".3*"/>
         </Grid.RowDefinitions>
         <TextBlock Text="Обозреватель содержимого"/>
         <vbc:TreeView Grid.Row="1" MinWidth="150">
@@ -26,7 +25,7 @@
                 </HierarchicalDataTemplate>
             </vbc:TreeView.ItemTemplate>
         </vbc:TreeView>
-        <tml:PlyModelLodListView Grid.Row="2" DataContext="{Binding LodListViewModel}"/>
-        <tml:TextureMaterialListView Grid.Row="3" DataContext="{Binding MaterialListViewModel}"/>
+        <tml:PlyModelLodListView x:Name="_lodList" Grid.Row="2" DataContext="{Binding LodListViewModel}" Visibility="Collapsed"/>
+        <tml:TextureMaterialListView x:Name="_materialList" Grid.Row="2" DataContext="{Binding MaterialListViewModel}" Visibility="Collapsed"/>
     </Grid>
 </baseviews:BaseView>

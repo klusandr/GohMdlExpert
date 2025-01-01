@@ -10,7 +10,8 @@ using WpfMvvm.ViewModels.Controls;
 namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
     public class ModelsOverviewTreeViewModel : TreeViewModel {
         private IEnumerable<MtlTexture>? _mtlTextures;
-        private AggregateMtlFile? _selectedMtlFile;
+        private ModelsOverviewTreeMtlViewModel? _selectedMtlItem;
+        private ModelsOverviewTreePlyViewModel? _selectedPlyItem;
 
         public HumanskinMdlOverviewViewModel Models3DViewModel { get; }
         public TextureMaterialListViewModel MaterialListViewModel { get; }
@@ -28,19 +29,10 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
         }
         public ObservableCollection<TreeItemViewModel>? PlyItems => MdlItem?.Items;
 
-        public IEnumerable<MtlTexture>? MtlTextures {
-            get => _mtlTextures;
-            private set {
-                _mtlTextures = value;
-                OnPropertyChanged();
-            }
-        }
-
         public ModelsOverviewTreeViewModel(HumanskinMdlOverviewViewModel models3DViewModel) {
             Models3DViewModel = models3DViewModel;
             MaterialListViewModel = new TextureMaterialListViewModel();
             LodListViewModel = new PlyModelLodListViewModel();
-            MtlTextures = [];
 
             models3DViewModel.PropertyChangeHandler.AddHandler(nameof(Models3DViewModel.MdlFile), MdlFileChangeHandler);
             models3DViewModel.PlyModels.CollectionChanged += ModelsPlyChanged;
@@ -77,7 +69,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
                     while (Items.Count > 1) {
                         Items.RemoveAt(1);
                     }
-                break;
+                    break;
             }
         }
     }

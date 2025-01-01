@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 
 namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
     public class GohResourcesException : GohException {
@@ -24,6 +25,14 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
 
         public static GohResourcesException LocationNotFound(string location, string path) {
             return new GohResourcesException($"Resource location \"{location}\" on \"{path}\" not found.");
+        }
+
+        public static GohResourcesException PathIsNull(GohResourceElement resourceElement) {
+            return new GohResourcesException($"Resource element \"{resourceElement.Name}\" path has be null.");
+        }
+
+        public static GohResourcesException ElementNotInResource(GohResourceElement resourceElement) {
+            return new GohResourcesException($"Resource element \"{resourceElement.Name}\" is not in resource folder or subfolders.");
         }
 
         private static string GetFullErrorMessage(string? message = null) {

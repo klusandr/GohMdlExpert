@@ -70,17 +70,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins
             return mtlTextures;
         }
 
-        public IEnumerable<PlyFile> GetPlyLodFiles(PlyFile plyFile) {
-            var lodFiles = Source.FindResourceElements<PlyFile>(searchPattern: @$"{plyFile.Name[..^4]}_lod\d*\.");
-
-            if (!lodFiles.Any()) {
-                lodFiles = [GetNullForPlyFile(plyFile)];
-            }
-
-            return lodFiles;
-        }
-
-        private PlyFile GetNullForPlyFile(PlyFile plyFile) {
+        public PlyFile GetNullPlyFile(PlyFile plyFile) {
             return new PlyFile(@"F:\SDK\Content\goh\entity\humanskin\[germans]\[ger_source]\ger_null.ply");
         }
     }

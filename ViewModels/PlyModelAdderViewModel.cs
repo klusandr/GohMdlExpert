@@ -14,11 +14,12 @@ namespace GohMdlExpert.ViewModels
     public class PlyModelAdderViewModel : BaseViewModel {
         private readonly HumanskinMdlOverviewViewModel _models3DView;
         private AggregateMtlFiles? _aggregateMtlFiles;
+        private PlyModel3D? _addedModel;
 
         public PlyModel3D? AddedModel {
-            get { return _models3DView.AddedModel; }
+            get { return _addedModel; }
             private set {
-                _models3DView.AddedModel = value;
+                _addedModel = value;
                 OnPropertyChanged();
             }
         }

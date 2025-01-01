@@ -6,7 +6,6 @@ using GohMdlExpert.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Media3D;
 using GohMdlExpert.Properties;
 using WpfMvvm.ViewModels.Controls;
-using WpfMvvm.ViewModels.Controls.Menu;
 
 namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
     public class ModelsOverviewTreePlyViewModel : ModelsOverviewTreeItemViewModel {
@@ -41,9 +40,9 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
 
         private void IsSelectedChangeHandler(object? sender, PropertyChangedEventArgs e) {
             if (IsSelected) {
-                Tree.LodListViewModel.SetItems(Tree.Models3DViewModel.GetPlyModelLodFiles(PlyModel));
+                Tree.LodListViewModel.Items = Tree.Models3DViewModel.GetPlyModelLodFiles(PlyModel);
             } else {
-                Tree.LodListViewModel.SetItems(null);
+                Tree.LodListViewModel.Items = null;
             }
         }
 

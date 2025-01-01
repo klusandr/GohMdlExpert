@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files;
-using GohMdlExpert.Properties;
+﻿using System.Diagnostics;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
-using System.Windows.Media;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using WpfMvvm.ViewModels.Controls;
-using System.Diagnostics;
-using System.IO;
-using WpfMvvm.ViewModels.Controls.Menu;
 
 namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
     public abstract class ModelsLoadTreeItemViewModel : TreeItemViewModel {
@@ -80,7 +69,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
         }
 
         private void OpenInExplorer() {
-            #warning Вынести куда нибудб открытие файла в проводника
+#warning Вынести куда нибудб открытие файла в проводника
             Process.Start("explorer.exe", $"/select, {ResourceElement.GetFullPath()}");
         }
     }

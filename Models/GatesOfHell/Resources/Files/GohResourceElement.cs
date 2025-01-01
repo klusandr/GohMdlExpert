@@ -25,8 +25,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             return SystemPath.Join(path, Name);
         }
 
-        public string GetDirectoryPath() {
-            return SystemPath.GetDirectoryName(GetFullPath())!; 
+        public string? GetDirectoryPath() {
+            string? path = SystemPath.GetDirectoryName(GetFullPath());
+
+            return path != string.Empty ? path : null; 
         }
     }
 }

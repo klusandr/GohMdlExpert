@@ -11,7 +11,15 @@ using WpfMvvm.Views.Dialogs;
 
 namespace GohMdlExpert.ViewModels {
     public class PlyModelLodListViewModel : BaseViewModel {
-        public IEnumerable<PlyFile>? Items { get; private set; }
+        private ObservableCollection<PlyFile>? _items;
+
+        public ObservableCollection<PlyFile>? Items {
+            get => _items;
+            set {
+                _items = value;
+                OnPropertyChanged();
+            }
+        }
         public PlyFile? SelectedItem { get; set; }
         public int SelectedIndex { get; set; }
 
@@ -31,25 +39,14 @@ namespace GohMdlExpert.ViewModels {
 
         public ICommand RemoveCommand => CommandManager.GetCommand(RemoveSelectedLod);
 
-        public event NotifyCollectionChangedEventHandler? CollectionChange;
-
         public PlyModelLodListViewModel() { }
 
-        public void SetItems(IEnumerable<PlyFile>? plyFiles) {
-            Items = plyFiles;
-            OnPropertyChanged(nameof(Items));
-        }
-
         public void AddLod(PlyFile plyFile) {
-            CollectionChange?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, plyFile));
-            OnPropertyChanged(nameof(Items));
+            Items?.Add(plyFile);
         }
 
         public void RemoveSelectedLod() {
-            if (SelectedItem != null) {
-                CollectionChange?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, SelectedItem, SelectedIndex));
-                OnPropertyChanged(nameof(Items));
-            }
+            Items?.RemoveAt(SelectedIndex);
         }
     }
 }

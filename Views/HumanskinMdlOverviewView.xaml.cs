@@ -1,7 +1,10 @@
-﻿using GohMdlExpert.ViewModels;
+﻿using GohMdlExpert.Models.GatesOfHell.Media3D;
+using GohMdlExpert.ViewModels;
 using GohMdlExpert.Views.Camera3D;
 using GohMdlExpert.Views.Models3D;
 using GohMdlExpert.Views.MouseHandlers;
+using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using WpfMvvm.DependencyInjection;
@@ -21,15 +24,20 @@ namespace GohMdlExpert.Views {
         private MouseDownHolder _mouseCameraPositionMover;
         private PerspectiveCameraPositioner _cameraPositioner;
 
-#if DEBUG //Используется для правильного отображения компонентов использующих объекты предоставленные DI
-        static HumanskinMdlOverviewView() {
-            XamlDesigner.Startup += AppStartup.Startup;
-        }
-#endif
         private new HumanskinMdlOverviewViewModel ViewModel => (HumanskinMdlOverviewViewModel)base.ViewModel!;
 
         public HumanskinMdlOverviewView() {
             InitializeComponent();
+
+            BindingOperations.SetBinding(
+                _addedModel,
+                ModelVisual3D.ContentProperty,
+                new Binding(nameof(PlyModelAdderViewModel.AddedModel)) {
+                    Source = ViewModelProvider.GetRequiredViewModel<PlyModelAdderViewModel>(),
+                    Mode = BindingMode.OneWay,
+                    Converter = new PlyModel3DToModel3DConverter()
+                }
+            );
 
             _mouseCameraRotatedMover = new(_sceneBackground, MouseButton.Left);
             _mouseCameraPositionMover = new(_sceneBackground, MouseButton.Middle);

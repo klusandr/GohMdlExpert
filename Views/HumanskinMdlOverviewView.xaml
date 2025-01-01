@@ -41,7 +41,7 @@
                             <Model3DGroup Children="{Binding Models, Mode=OneWay}"/>
                         </ModelVisual3D.Content>
                     </ModelVisual3D>
-                    <ModelVisual3D Content="{Binding AddedModel, Mode=OneWay, Converter={StaticResource PlyModel3DToModel3DConverter}}"/>
+                    <ModelVisual3D x:Name="_addedModel"/>
                 </Viewport3D.Children>
             </Viewport3D>
         </Grid>

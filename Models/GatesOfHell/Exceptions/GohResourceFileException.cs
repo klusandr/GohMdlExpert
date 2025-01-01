@@ -44,6 +44,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
             return new GohResourceFileException($"File has an invalid format. Expected {formatName}", fileName);
         }
 
+        public static GohResourceFileException PathIsNull(GohResourceFile file) {
+            return new GohResourceFileException($"File path has be null.", file);
+        }
+
         private static string GetFullErrorMessage(string? message = null, string? fileName = null) {
             var fullMessage = new StringBuilder();
 

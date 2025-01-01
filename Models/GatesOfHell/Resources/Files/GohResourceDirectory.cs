@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Shapes;
+using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using SystemPath = System.IO.Path;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
@@ -38,7 +39,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             }
         }
 
-        public GohResourceDirectory(GohResourceElement resourceElement) : this(resourceElement.GetDirectoryPath()) { }
+        public GohResourceDirectory(GohResourceElement resourceElement) : this(resourceElement.GetDirectoryPath() ?? throw GohResourcesException.PathIsNull(resourceElement)) { }
 
         public void LoadData() {
             if (_items != null) {
