@@ -9,7 +9,9 @@ using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
+using GohMdlExpert.ViewModels.ModelsTree.LoadModels;
 using GohMdlExpert.ViewModels.ModelsTree.OverviewModels;
+using GohMdlExpert.Views.ModelsTree;
 using WpfMvvm.Collections.ObjectModel;
 using WpfMvvm.Data;
 using WpfMvvm.ViewModels;
@@ -17,6 +19,7 @@ using WpfMvvm.Views.Dialogs;
 
 namespace GohMdlExpert.ViewModels {
     public sealed class HumanskinMdlOverviewViewModel : BaseViewModel {
+        private MdlFile? _mdlFile;
         private readonly ObservableCollection<PlyModel3D> _plyModels;
         private readonly Model3DCollection _models;
         private readonly ObservableDictionary<string, AggregateMtlFile> _aggregateMtlFiles;
@@ -24,7 +27,6 @@ namespace GohMdlExpert.ViewModels {
         private readonly Dictionary<PlyModel3D, ObservableCollection<PlyFile>> _lodPlyFiles;
         private readonly CollectionChangeBinder<Model3D> _modelsCollectionBinder;
         private readonly CollectionChangeHandler _plyModelsChangeHandler;
-        private MdlFile? _mdlFile;
 
         private readonly IUserDialogProvider _userDialog;
         private readonly GohResourceProvider _resourceProvider;
@@ -32,6 +34,8 @@ namespace GohMdlExpert.ViewModels {
         private readonly GohHumanskinResourceProvider _humanskinProvider;
 
         private readonly ModelsOverviewTreeViewModel _modelsOverviewTreeViewModel;
+        private readonly PlyModelAdderViewModel _modelAdderViewModel;
+        private readonly ModelsLoadTreeViewModel _modelsLoadTreeViewModel;
 
         public MdlFile? MdlFile {
             get => _mdlFile;
@@ -45,6 +49,8 @@ namespace GohMdlExpert.ViewModels {
         public ObservableDictionary<string, AggregateMtlFile> AggregateMtlFiles => _aggregateMtlFiles;
 
         public ModelsOverviewTreeViewModel ModelsOverviewTreeViewModel => _modelsOverviewTreeViewModel;
+        public ModelsLoadTreeViewModel ModelsLoadTreeViewModel => _modelsLoadTreeViewModel;
+        public PlyModelAdderViewModel ModelAdderViewModel => _modelAdderViewModel;
 
         public Model3DCollection Models => _models;
 
@@ -62,6 +68,8 @@ namespace GohMdlExpert.ViewModels {
             _humanskinProvider = humanskinProvider;
             _textureProvider = textureProvider;
 
+            _modelAdderViewModel = new PlyModelAdderViewModel(this);
+            _modelsLoadTreeViewModel = new ModelsLoadTreeViewModel(_modelAdderViewModel, humanskinProvider, textureProvider);
             _modelsOverviewTreeViewModel = new ModelsOverviewTreeViewModel(this);
 
             _modelsCollectionBinder = new CollectionChangeBinder<Model3D>(_plyModels, _models, (i) => ((PlyModel3D)i!).Model);
@@ -136,7 +144,7 @@ namespace GohMdlExpert.ViewModels {
             }
         }
 
-        public void RemoveAggregateFile(string aggregateMtlFileName) {
+        public void RemoveAggregateMtlFile(string aggregateMtlFileName) {
             _aggregateMtlFiles.Remove(aggregateMtlFileName);
             _currentMtlFilesTexturesIndex.Remove(aggregateMtlFileName);
             UpdateTexture();
@@ -146,6 +154,10 @@ namespace GohMdlExpert.ViewModels {
             _aggregateMtlFiles.Clear();
             _currentMtlFilesTexturesIndex.Clear();
             UpdateTexture();
+        }
+
+        public void SaveMtlFile() {
+
         }
 
         public void SetMtlFileTextureByIndex(string meshTextureName, int index) {
@@ -251,13 +263,12 @@ namespace GohMdlExpert.ViewModels {
         private void PlyModelRemoveHandler(object? sender, NotifyCollectionChangedEventArgs e) {
             if (_plyModels.Count == 0) {
                 ClearAggregateFiles();
-                
             } else {
                 _lodPlyFiles.Remove(e.GetItem<PlyModel3D>()!);
 
                 foreach (var aggregateMtlFile in _aggregateMtlFiles.Values) {
                     if (!GetMtlFilePlyModels(aggregateMtlFile.Name).Any()) {
-                        RemoveAggregateFile(aggregateMtlFile.Name);
+                        RemoveAggregateMtlFile(aggregateMtlFile.Name);
                     }
                 }
             }

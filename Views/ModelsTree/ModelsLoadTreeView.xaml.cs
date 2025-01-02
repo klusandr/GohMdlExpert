@@ -8,7 +8,6 @@ namespace GohMdlExpert.Views.ModelsTree {
     /// Логика взаимодействия для ModelsTreeView.xaml
     /// </summary>
     [BindingViewModel<ModelsLoadTreeViewModel>]
-    [BindingViewModelViaDI]
     public partial class ModelsLoadTreeView : BaseView {
         public ModelsLoadTreeView() {
             InitializeComponent();

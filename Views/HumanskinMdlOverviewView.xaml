@@ -20,11 +20,23 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width=".3*"/>
             <ColumnDefinition/>
             <ColumnDefinition Width=".3*"/>
         </Grid.ColumnDefinitions>
-        
-        <Grid x:Name="_sceneBackground" Background="AliceBlue" MouseWheel="OnMouseWheel">
+
+        <Grid Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition MinHeight="50"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height=".3*" MinHeight="40"/>
+            </Grid.RowDefinitions>
+            <modelstree:ModelsLoadTreeView DataContext="{Binding ModelsLoadTreeViewModel}"/>
+            <GridSplitter Height="3" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+            <local:PlyModelAdderView Grid.Row="2" DataContext="{Binding ModelAdderViewModel}"/>
+        </Grid>
+
+        <Grid x:Name="_sceneBackground" Background="AliceBlue" MouseWheel="OnMouseWheel" Grid.Column="1">
             <Viewport3D x:Name="_scene">
                 <Viewport3D.Camera>
                     <PerspectiveCamera x:Name="_perspectivCamera"/>
@@ -41,7 +53,7 @@
                             <Model3DGroup Children="{Binding Models, Mode=OneWay}"/>
                         </ModelVisual3D.Content>
                     </ModelVisual3D>
-                    <ModelVisual3D x:Name="_addedModel"/>
+                    <ModelVisual3D x:Name="_addedModel" Content="{Binding ModelAdderViewModel.AddedModel, Converter={StaticResource PlyModel3DToModel3DConverter}}"/>
                 </Viewport3D.Children>
             </Viewport3D>
         </Grid>
@@ -58,7 +70,7 @@
                 <TextBlock Text="{Binding Position.Z, StringFormat = Z : {0}.00}"/>
             </StackPanel>
         </StackPanel>
-        <modelstree:ModelsOverviewTreeView Margin="5" Grid.Column="1" DataContext="{Binding ModelsOverviewTreeViewModel}"/>
+        <modelstree:ModelsOverviewTreeView Margin="5" Grid.Column="2" DataContext="{Binding ModelsOverviewTreeViewModel}"/>
     </Grid>
     
     

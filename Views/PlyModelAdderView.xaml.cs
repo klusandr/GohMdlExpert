@@ -8,7 +8,6 @@ namespace GohMdlExpert.Views
     /// Логика взаимодействия для ModelAdderView.xaml
     /// </summary>
     [BindingViewModel<PlyModelAdderViewModel>]
-    [BindingViewModelViaDI]
     public partial class PlyModelAdderView : BaseView {
         public PlyModelAdderView() {
             InitializeComponent();

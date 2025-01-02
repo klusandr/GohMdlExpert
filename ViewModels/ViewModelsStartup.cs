@@ -10,8 +10,6 @@ namespace GohMdlExpert.ViewModels
             if (sender is ViewModelsProvider provider) {
                 provider.Add<ApplicationViewModel>();
                 provider.Add<HumanskinMdlOverviewViewModel>();
-                provider.Add<PlyModelAdderViewModel>();
-                provider.Add<ModelsLoadTreeViewModel>();
             } else {
                 //throw new ViewModelsException($"Error startup viewmodels. Expected type was not {nameof(ViewModelsProvider)}");
             }

@@ -29,16 +29,6 @@ namespace GohMdlExpert.Views {
         public HumanskinMdlOverviewView() {
             InitializeComponent();
 
-            BindingOperations.SetBinding(
-                _addedModel,
-                ModelVisual3D.ContentProperty,
-                new Binding(nameof(PlyModelAdderViewModel.AddedModel)) {
-                    Source = ViewModelProvider.GetRequiredViewModel<PlyModelAdderViewModel>(),
-                    Mode = BindingMode.OneWay,
-                    Converter = new PlyModel3DToModel3DConverter()
-                }
-            );
-
             _mouseCameraRotatedMover = new(_sceneBackground, MouseButton.Left);
             _mouseCameraPositionMover = new(_sceneBackground, MouseButton.Middle);
             _cameraPositioner = new(_perspectivCamera);
