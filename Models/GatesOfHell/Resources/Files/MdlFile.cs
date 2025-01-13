@@ -4,10 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using ModelDataParameter = GohMdlExpert.Models.GatesOfHell.Serialization.ModelDataSerializer.ModelDataParameter;
 using SystemPath = System.IO.Path;
+using DataList = System.Collections.Generic.IList<GohMdlExpert.Models.GatesOfHell.Serialization.ModelDataSerializer.ModelDataParameter>;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class MdlFile : GohResourceFile {
@@ -23,37 +25,73 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             : base(name, path, relativePathPoint) { }
 
         public override void LoadData() {
-            var parameters = (IEnumerable<ModelDataParameter>)Serializer.Deserialize(GetAllText()).Data!;
+            var parameter = Serializer.Deserialize(GetAllText());
             var plyFiles = new List<PlyFile>();
             var textureNames = new List<string>();
+            var plyLodFiles = new Dictionary<PlyFile, PlyFile[]>();
 
-            var plyLodModels = (IEnumerable<ModelDataParameter>)ModelDataSerializer.FindParameterByName(parameters, "skin")?.Data!;
+            var plyLodModels = (IEnumerable<ModelDataParameter>)ModelDataSerializer.FindParameterByName(parameter, "skin")?.Data!;
 
             foreach (var plyLodModel in plyLodModels) {
-                var plyFile = new PlyFile(GetPlyModel(plyLodModel), relativePathPoint: Path);
+                var lodParameters = (IEnumerable<ModelDataParameter>)plyLodModel.Data!;
+                
+                var plyModelParameter = lodParameters.First();
+                var lodModelsParameters = lodParameters.Skip(1);
+
+                var plyFile = new PlyFile((string)plyModelParameter.Data!, relativePathPoint: Path);
+                var lodFiles = new List<PlyFile>();
                 textureNames.AddRange(plyFile.Data!.Meshes!.Select(m => m.TextureName));
                 plyFiles.Add(plyFile);
 
-                //var d = plySkinParameter.Data
 
-                //var plyFile = new PlyFile(plySkinParameter.Data, relativePathPoint: Path);
-                //textureNames.AddRange(plyFile.Data!.Meshes!.Select(m => m.TextureName));
-                //plyFiles.Add(plyFile);
+                foreach (var lodParameter in lodModelsParameters) {
+                    lodFiles.Add(new PlyFile((string)lodParameter.Data!, relativePathPoint: Path));
+                }
 
-                ////foreach (var plyFileName in ((IEnumerable<ModelDataParameter>)plySkinParameter.Data!).Select(p => (string)p.Data!)) {
-                ////    var plyFile = new PlyFile(plyFileName, relativePathPoint: Path);
-                ////    textureNames.AddRange(plyFile.Data!.Meshes!.Select(m => m.TextureName));
-                ////    plyFiles.Add(plyFile);
-                ////}
+                plyLodFiles.Add(plyFile, [..lodFiles]);
             }
 
             var textures = textureNames.Distinct().Select(t => new MtlFile(t, Path));
 
-            Data = new MdlModel(parameters, plyFiles, textures);
+            Data = new MdlModel(parameter, plyFiles, textures, plyLodFiles);
         }
 
-        private string GetPlyModel(ModelDataParameter plyLodModel) {
-            return (string)((IEnumerable<ModelDataParameter>)plyLodModel.Data!).First().Data!;
+        public override void SaveData() {
+            var parameters = Data.Parameters;
+            var skinParameter = new ModelDataParameter() { 
+                Type = MdlSerializer.MdlTypes.Bone.ToString(),
+                Name = "skin"
+            };
+
+            var lodViews = new List<ModelDataParameter>();
+
+            foreach (var plyFile in Data.PlyModel) {
+                var volumeViews = new List<ModelDataParameter>() {
+                    new(MdlSerializer.MdlTypes.VolumeView.ToString()) {
+                        Data = plyFile.GetFullPath()
+                    }
+                };
+
+                foreach (var plyLodFile in Data.PlyModelLods[plyFile]) {
+                    volumeViews.Add(new ModelDataParameter(MdlSerializer.MdlTypes.VolumeView.ToString()) {
+                        Data = plyLodFile.GetFullPath()
+                    }); 
+                }
+
+                lodViews.Add(new ModelDataParameter(MdlSerializer.MdlTypes.LODView.ToString()) {
+                    Data = volumeViews
+                });
+            }
+
+            skinParameter.Data = lodViews;
+
+            ((DataList)((DataList)parameters.Data!)[0].Data!)[13] = skinParameter;
+                
+            var str = Serializer.Serialize(Data.Parameters);
+
+            using var stream = new StreamWriter(GetFullPath());
+
+            stream.Write(str);
         }
     }
 }

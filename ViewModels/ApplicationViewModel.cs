@@ -1,6 +1,8 @@
-﻿using System.Windows.Input;
+﻿using System.IO;
+using System.Windows.Input;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+using GohMdlExpert.Properties;
 using Microsoft.Win32;
 using WpfMvvm.ViewModels;
 using WpfMvvm.ViewModels.Commands;
@@ -20,18 +22,23 @@ namespace GohMdlExpert.ViewModels {
 
         public void OpenFile() {
             var fileDialog = new OpenFileDialog {
-                Filter = "Mdl files (*.mdl)|*.mdl"
+                Filter = ResourceLoading.MdlFileOpenFilter,
+                InitialDirectory = Path.GetDirectoryName(Settings.Default.LastOpenedFile)
             };
 
             if (fileDialog.ShowDialog() ?? false) {
+                Settings.Default.LastOpenedFile = fileDialog.FileName;
                 _models3DView.SetMtlFile(new MdlFile(fileDialog.FileName));
             }
         }
 
         public void OpenResourceDirectory() {
-            var folderDialog = new OpenFolderDialog();
+            var folderDialog = new OpenFolderDialog() {
+                InitialDirectory = Settings.Default.LastOpenedResource
+            };
 
             if (folderDialog.ShowDialog() ?? false) {
+                Settings.Default.LastOpenedResource = folderDialog.FolderName;
                 _gohResourceProvider.OpenResources(folderDialog.FolderName);
             }
         }

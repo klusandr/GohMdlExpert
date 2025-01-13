@@ -9,14 +9,16 @@ using System.Threading.Tasks;
 namespace GohMdlExpert.Models.GatesOfHell.Resources
 {
     public class MdlModel {
-        public ModelDataSerializer.ModelDataParameter[] Parameters { get; set; }
-        public PlyFile[] PlyModelFiles { get; private set; }
+        public ModelDataSerializer.ModelDataParameter Parameters { get; set; }
+        public PlyFile[] PlyModel { get; private set; }
         public MtlFile[] Textures { get; private set; }
+        public Dictionary<PlyFile, PlyFile[]> PlyModelLods { get; private set; }
 
-        public MdlModel(IEnumerable<ModelDataSerializer.ModelDataParameter> parameters, IEnumerable<PlyFile> plyFiles, IEnumerable<MtlFile> textures) {
-            Parameters = parameters.ToArray();
-            PlyModelFiles = plyFiles.ToArray();
+        public MdlModel(ModelDataSerializer.ModelDataParameter parameters, IEnumerable<PlyFile> plyFiles, IEnumerable<MtlFile> textures, Dictionary<PlyFile, PlyFile[]> plyModelLods) {
+            Parameters = parameters;
+            PlyModel = plyFiles.ToArray();
             Textures = textures.ToArray();
+            PlyModelLods = plyModelLods;
         }
     }
 }

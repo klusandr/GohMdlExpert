@@ -10,12 +10,16 @@ using System.Windows.Media.Media3D;
 using System.Windows.Media;
 using System.Text.RegularExpressions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
+using GohMdlExpert.Models.GatesOfHell.Serialization;
+using System.IO;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources {
     /// <summary>
     /// Предоставляет методы для загрузки различных ресурсов.
     /// </summary>
     public static class ResourceLoading {
+        public static MdlSerializer MdlSerializer { get; } = new MdlSerializer();
+
         /// <summary>
         /// Фильтр загрузки .ply файлов.
         /// </summary>
@@ -25,6 +29,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
             @"^(?!.*null\.)",
         ];
 
+        public static string HumanskinMdl { get; } = @"\Templates\humanskin_tamplate.mdl";
+
+        public static string MdlFileOpenFilter { get; } = "Mdl files (*.mdl)|*.mdl";
 
         /// <summary>
         /// Возвращает материал текстуры из файла материала в виде изображения.
@@ -73,6 +80,12 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
             }
 
             return lodFiles;
+        }
+
+        public static ModelDataSerializer.ModelDataParameter GetHumanskinMdlParametersTemplate() {
+            var templateFile = new StreamReader(Path.Join(Environment.CurrentDirectory, HumanskinMdl));
+
+            return MdlSerializer.Deserialize(templateFile.ReadToEnd());
         }
     }
 }

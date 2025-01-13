@@ -10,6 +10,7 @@ using GohMdlExpert.Models.GatesOfHell.Resources;
 using WpfMvvm.Diagnostics;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+using GohMdlExpert.Properties;
 
 namespace GohMdlExpert {
     /// <summary>
@@ -22,6 +23,11 @@ namespace GohMdlExpert {
 #warning переработать startup приложения.
         protected override void OnStartup(StartupEventArgs e) {
             base.OnStartup(e);
+        }
+
+        protected override void OnExit(ExitEventArgs e) {
+            base.OnExit(e);
+            Settings.Default.Save();
         }
     }
 }

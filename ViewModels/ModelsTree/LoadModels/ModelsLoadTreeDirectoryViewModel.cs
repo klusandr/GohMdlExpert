@@ -20,7 +20,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
         }
 
         public override void LoadData() {
-            if (Items.Count != 0) {
+            if (Items.Any()) {
                 return;
             }
 

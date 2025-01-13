@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Windows.Input;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
+using WpfMvvm.Collections;
 using WpfMvvm.Collections.ObjectModel;
 using WpfMvvm.ViewModels.Controls;
 
@@ -40,12 +41,12 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
         }
 
         public override void LoadData() {
-            if (Items.Count != 0) {
+            if (Items.Any()) {
                 return;
             }
 
             if (HumanskinResource != null) {
-                Items.Add(new ModelsLoadTreeDirectoryViewModel(HumanskinResource.Source, this));
+                _items.Add(new ModelsLoadTreeDirectoryViewModel(HumanskinResource.Source, this));
             }
         }
 
@@ -53,7 +54,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
             if (ApprovedPlyItem != null && ApprovedPlyItem.Parent != null) {
                 var currentList = ApprovedPlyItem.Parent.Items;
 
-                int newIndex = currentList.IndexOf(ApprovedPlyItem) + offset;
+                int newIndex = currentList.FindIndex(ApprovedPlyItem) + offset;
 
                 var newApproveItem = currentList.ElementAtOrDefault(newIndex) as ModelsLoadTreePlyFileViewModel;
                 newApproveItem?.Approve();

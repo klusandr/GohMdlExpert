@@ -36,7 +36,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels
         }
 
         public void LoadData() {
-            if (Items.Count == 0) {
+            if (!Items.Any()) {
                 foreach (var plyModel in Tree.Models3DViewModel.GetMtlFilePlyModels(MtlFile.Name)) {
                     AddItem(new ModelsOverviewTreeItemViewModel(Tree) {
                         Text = plyModel.PlyFile.Name,
@@ -49,7 +49,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels
         }
 
         public void ClearData() {
-            Items.Clear();
+            _items.Clear();
         }
 
         public void UpdateData() {

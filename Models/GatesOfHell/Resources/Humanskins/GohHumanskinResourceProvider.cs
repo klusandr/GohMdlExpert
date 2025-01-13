@@ -9,6 +9,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
         private readonly GohResourceProvider _resourceProvider;
 
         public GohFactionHumanskinResource? Current { get; private set; }
+        public GohFactionHumanskinResource OutputResource;
 
         public event EventHandler? ResourceUpdated;
 

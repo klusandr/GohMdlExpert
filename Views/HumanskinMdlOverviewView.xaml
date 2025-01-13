@@ -71,6 +71,7 @@
             </StackPanel>
         </StackPanel>
         <modelstree:ModelsOverviewTreeView Margin="5" Grid.Column="2" DataContext="{Binding ModelsOverviewTreeViewModel}"/>
+        <Button Content="Сохранить" Padding="5 3" HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding SaveMdlCommand}" Grid.Column="2" Grid.Row="1"/>
     </Grid>
     
     

@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using WpfMvvm.Collections;
 using WpfMvvm.ViewModels.Controls;
+using WpfMvvm.ViewModels.Controls.Menu;
 
 namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels
 {
@@ -39,7 +40,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels
         }
 
         public override void LoadData() {
-            if (Items.Count != 0 || Tree.HumanskinResource == null) {
+            if (Items.Any() || Tree.HumanskinResource == null) {
                 return;
             }
 

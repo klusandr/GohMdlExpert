@@ -4,6 +4,7 @@ using System.ComponentModel;
 using GohMdlExpert.Models.GatesOfHell.Media3D;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
+using WpfMvvm.Collections.ObjectModel;
 using WpfMvvm.Data;
 using WpfMvvm.ViewModels.Controls;
 
@@ -22,12 +23,12 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
             private set {
                 ClearData();
                 if (value != null) {
-                    Items.Insert(0, value);
+                    _items.Insert(0, value);
                     LoadData();
                 }
             }
         }
-        public ObservableCollection<TreeItemViewModel>? PlyItems => MdlItem?.Items;
+        public IObservableEnumerable<TreeItemViewModel>? PlyItems => MdlItem?.Items;
 
         public ModelsOverviewTreeViewModel(HumanskinMdlOverviewViewModel models3DViewModel) {
             Models3DViewModel = models3DViewModel;
@@ -52,22 +53,30 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
         }
 
         private void ModelsPlyChanged(object? sender, NotifyCollectionChangedEventArgs e) {
+            if (MdlItem == null) {
+                return;
+            }
+
             if (PlyItems != null) {
                 switch (e.Action) {
-                    case NotifyCollectionChangedAction.Add: PlyItems.Add(new ModelsOverviewTreePlyViewModel(e.GetItem<PlyModel3D>()!, this)); break;
-                    case NotifyCollectionChangedAction.Remove: PlyItems.RemoveAt(e.GetIndex()); break;
-                    case NotifyCollectionChangedAction.Reset: PlyItems.Clear(); break;
+                    case NotifyCollectionChangedAction.Add: MdlItem.AddItem(new ModelsOverviewTreePlyViewModel(e.GetItem<PlyModel3D>()!, this)); break;
+                    case NotifyCollectionChangedAction.Remove: MdlItem.RemoveItemAt(e.GetIndex()); break;
+                    case NotifyCollectionChangedAction.Reset: MdlItem.ClearItems(); break;
                 }
             }
         }
 
         private void MtlFilesChanged(object? sender, NotifyCollectionChangedEventArgs e) {
+            if (MdlItem == null) {
+                return;
+            }
+
             switch (e.Action) {
-                case NotifyCollectionChangedAction.Add: Items.Add(new ModelsOverviewTreeMtlViewModel(e.GetItem<KeyValuePair<string, AggregateMtlFile>>().Value, this)); break;
-                case NotifyCollectionChangedAction.Remove: Items.RemoveAt(e.GetIndex() + 1); break;
+                case NotifyCollectionChangedAction.Add: _items.Add(new ModelsOverviewTreeMtlViewModel(e.GetItem<KeyValuePair<string, AggregateMtlFile>>().Value, this)); break;
+                case NotifyCollectionChangedAction.Remove: _items.RemoveAt(e.GetIndex() + 1); break;
                 case NotifyCollectionChangedAction.Reset:
-                    while (Items.Count > 1) {
-                        Items.RemoveAt(1);
+                    while (Items.Count() > 1) {
+                        _items.RemoveAt(1);
                     }
                     break;
             }

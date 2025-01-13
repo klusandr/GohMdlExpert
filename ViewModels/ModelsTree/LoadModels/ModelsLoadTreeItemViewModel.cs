@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using WpfMvvm.ViewModels.Controls;
+using WpfMvvm.ViewModels.Controls.Menu;
 
 namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
     public abstract class ModelsLoadTreeItemViewModel : TreeItemViewModel {
@@ -53,7 +54,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
         }
 
         public virtual void ClearData() {
-            Items.Clear();
+            _items.Clear();
         }
 
         public virtual void Approve() {
@@ -69,7 +70,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.LoadModels {
         }
 
         private void OpenInExplorer() {
-#warning Вынести куда нибудб открытие файла в проводника
+#warning Вынести куда нибудь открытие файла в проводника
             Process.Start("explorer.exe", $"/select, {ResourceElement.GetFullPath()}");
         }
     }

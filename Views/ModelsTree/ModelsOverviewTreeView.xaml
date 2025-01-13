@@ -18,7 +18,7 @@
             <RowDefinition Height=".3*"/>
         </Grid.RowDefinitions>
         <TextBlock Text="Обозреватель содержимого"/>
-        <vbc:TreeView Grid.Row="1" MinWidth="150">
+        <vbc:TreeView Grid.Row="1">
             <vbc:TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Items}">
                     <local:ModelsOverviewTreeItemView/>
