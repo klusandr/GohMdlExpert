@@ -19,7 +19,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
         public MaterialFile Diffuse { get; set; } = diffuse;
         public MaterialFile? Bump { get; set; }
         public MaterialFile? Specular { get; set; }
-        public Colors? Color { get; set; }
+        public Color? Color { get; set; }
 
         public static IEqualityComparer<MtlTexture> GetEqualityComparer() => new EqualsCompare();
 

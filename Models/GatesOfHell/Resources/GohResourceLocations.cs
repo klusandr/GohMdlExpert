@@ -14,7 +14,13 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
         private readonly Dictionary<string, string> _locationsPaths = new() {
             ["texture"] = @"\texture\common",
             ["ger_humanskin"] = @"\entity\humanskin\[germans]",
+            ["ger_humanskin_source"] = @"\entity\humanskin\[germans]\[ger_source]",
             ["base"] = ""
+        };
+
+        private readonly Dictionary<string, string[]> _aggregateLocationsPaths = new() {
+            ["source"] = ["ger_humanskin_source"],
+            ["humanskin_root"] = ["ger_humanskin"]
         };
 
         public GohResourceLocations() { }
@@ -24,6 +30,24 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
                 throw GohResourcesException.LocationNotDefined(location);
             } else {
                 return path;
+            }
+        }
+
+        public IEnumerable<string> GetAggregateLocationPaths(string aggregateLocations) {
+            if (_aggregateLocationsPaths.TryGetValue(aggregateLocations, out string[]? locations)) {
+                var paths = new List<string>();
+
+                foreach (var location in locations) {
+                    if (!_locationsPaths.TryGetValue(location, out string? path)) {
+                        path = location;
+                    }
+
+                    paths.Add(path);
+                }
+
+                return paths;
+            } else {
+                throw GohResourcesException.AggregateLocationNotDefined(aggregateLocations);
             }
         }
     }

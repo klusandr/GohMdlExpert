@@ -70,8 +70,11 @@
                 <TextBlock Text="{Binding Position.Z, StringFormat = Z : {0}.00}"/>
             </StackPanel>
         </StackPanel>
-        <modelstree:ModelsOverviewTreeView Margin="5" Grid.Column="2" DataContext="{Binding ModelsOverviewTreeViewModel}"/>
-        <Button Content="Сохранить" Padding="5 3" HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding SaveMdlCommand}" Grid.Column="2" Grid.Row="1"/>
+        <DockPanel Grid.Column="2">
+            <Button Content="Create new humanskin" Command="{Binding NewMdlCommand}" Padding="5 3" HorizontalAlignment="Center" VerticalAlignment="Center" DockPanel.Dock="Top"/>
+            <Button Content="Save humanskin" Padding="5 3" HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding SaveMdlCommand}" DockPanel.Dock="Bottom"/>
+            <modelstree:ModelsOverviewTreeView Margin="5" DataContext="{Binding ModelsOverviewTreeViewModel}" DockPanel.Dock="Left"/>
+        </DockPanel>
     </Grid>
     
     

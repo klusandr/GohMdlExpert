@@ -58,6 +58,7 @@ namespace GohMdlExpert.ViewModels {
         public Model3DCollection Models => _models;
 
         public ICommand SaveMdlCommand => CommandManager.GetCommand(SaveMtlFile);
+        public ICommand NewMdlCommand => CommandManager.GetCommand(CreateMdlFile);
 
         public event EventHandler? UpdatedTextures;
 
@@ -81,6 +82,10 @@ namespace GohMdlExpert.ViewModels {
             _plyModelsChangeHandler = new CollectionChangeHandler(_plyModels)
                 .AddHandlerBuilder(NotifyCollectionChangedAction.Remove, PlyModelRemoveHandler)
                 .AddHandlerBuilder(NotifyCollectionChangedAction.Reset, PlyModelRemoveHandler);
+        }
+
+        public void CreateMdlFile() {
+            MdlFile = new MdlFile("new_humanskin.mdl");
         }
 
         public void SetMtlFile(MdlFile mdlFile) {
@@ -137,7 +142,9 @@ namespace GohMdlExpert.ViewModels {
         }
 
         public void AddModel(PlyModel3D modelPly, AggregateMtlFiles? aggregateMtlFiles = null, IEnumerable<PlyFile>? lodModels = null) {
-            MdlFile ??= CreateMdlFile();
+            if (MdlFile == null) {
+                CreateMdlFile();
+            }
 
             if (aggregateMtlFiles != null) {
                 foreach (var aggregateMtlFile in aggregateMtlFiles) {
@@ -246,10 +253,6 @@ namespace GohMdlExpert.ViewModels {
             } else {
                 return value;
             }
-        }
-
-        private MdlFile? CreateMdlFile() {
-            return new MdlFile("new_humanskin.mdl");
         }
 
         private void MergeAggregateTextures(AggregateMtlFile oldMtlFile, AggregateMtlFile newMtlFile) {

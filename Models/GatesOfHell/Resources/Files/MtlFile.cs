@@ -1,14 +1,14 @@
-﻿using GohMdlExpert.Models.GatesOfHell.Exceptions;
+﻿using System.IO;
+using System.Windows.Media;
+using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using static GohMdlExpert.Models.GatesOfHell.Serialization.ModelDataSerializer;
+using static GohMdlExpert.Models.GatesOfHell.Serialization.MtlSerializer;
+using SystemPath = System.IO.Path;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class MtlFile : GohResourceFile {
-        public static MtlSerializer? s_serializer;
+        private static MtlSerializer? s_serializer;
 
         protected static MtlSerializer Serializer => s_serializer ??= new MtlSerializer();
 
@@ -16,23 +16,65 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
         public new MtlTexture Data { get => (MtlTexture)base.Data; set => base.Data = value; }
 
-        public MtlFile(string name, string? path = null, string? relativePathPoint = null) 
+        public MtlFile(string name, string? path = null, string? relativePathPoint = null)
             : base(name, path, relativePathPoint) { }
 
         public override void LoadData() {
             var parameters = Serializer.Deserialize(GetAllText());
+            var textureFilesPath = new List<string?>();
 
-            var diffuseParameter = ModelDataSerializer.FindParameter(parameters, "Diffuse");
+            foreach (var type in (IEnumerable<Types>)[Types.Diffuse, Types.Bump, Types.Specular]) {
+                string? value = FindParameter(parameters, type.ToString())?.Data as string;
 
-            if (diffuseParameter == null || diffuseParameter.Value.Data == null) {
-                throw new GohResourceFileException("Diffuse material parameter not found or be null.", GetFullPath());
+                if (value != null) {
+                    value = value.Replace("$", "");
+                }
+
+                textureFilesPath.Add(value);
             }
 
-            string diffusePath = (string)diffuseParameter.Value.Data;
+            var color = FindParameter(parameters, Types.Color.ToString())?.Data as Color?;
 
-            diffusePath = diffusePath.Replace("$", "");
+            if (textureFilesPath[0] == null) {
+                throw TextureException.TextureDiffuseMaterialIsNotDefine(this);
+            }
 
-            Data = new MtlTexture(new MaterialFile(diffusePath));
+            Data = new MtlTexture(new MaterialFile(textureFilesPath[0]!)) {
+                Bump = textureFilesPath[1] != null ? new MaterialFile(textureFilesPath[1]!) : null,
+                Specular = textureFilesPath[1] != null ? new MaterialFile(textureFilesPath[2]!) : null,
+                Color = color
+            };
+        }
+
+        public override void SaveData() {
+            string str = Serializer.Serialize(new ModelDataParameter() {
+                Type = Types.MaterialBump.ToString(),
+                Data = new ModelDataParameter[] {
+                    new() {
+                       Type = Types.Diffuse.ToString(),
+                       Data = '$' + SystemPath.Join(Data.Diffuse.Path, SystemPath.GetFileNameWithoutExtension(Data.Diffuse.Name)),
+                    },
+                    new() {
+                       Type = Types.Bump.ToString(),
+                       Data = '$' + SystemPath.Join(Data.Bump?.Path, SystemPath.GetFileNameWithoutExtension(Data.Bump?.Name)),
+                    },
+                    new() {
+                       Type = Types.Specular.ToString(),
+                       Data = '$' + SystemPath.Join(Data.Specular?.Path, SystemPath.GetFileNameWithoutExtension(Data.Specular?.Name)),
+                    },
+                    new() {
+                       Type = Types.Color.ToString(),
+                       Data = Data.Color,
+                    },
+                    new() {
+                       Type = Types.Blend.ToString(),
+                       Data = "none",
+                    },
+                }
+            });
+
+            using var stream = new StreamWriter(GetFullPath());
+            stream.Write(str);
         }
     }
 }

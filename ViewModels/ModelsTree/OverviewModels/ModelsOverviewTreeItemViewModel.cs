@@ -4,6 +4,7 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
     public class ModelsOverviewTreeItemViewModel : TreeItemViewModel {
         private bool _isVisible;
         private bool _isEnableCheck;
+        private bool _edit;
 
         public new ModelsOverviewTreeViewModel Tree => (ModelsOverviewTreeViewModel)base.Tree;
 
@@ -26,6 +27,13 @@ namespace GohMdlExpert.ViewModels.ModelsTree.OverviewModels {
 
         public bool IsEnableCheckActive { get; init; }
         public bool IsVisibleActive { get; init; }
+        public bool IsEdit {
+            get => _edit; 
+            set {
+                _edit = value;
+                OnPropertyChanged();
+            }
+        }
 
         public ModelsOverviewTreeItemViewModel(ModelsOverviewTreeViewModel modelsTree) : base(modelsTree) {
             _isEnableCheck = true;

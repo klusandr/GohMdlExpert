@@ -6,8 +6,8 @@ using SystemPath = System.IO.Path;
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class GohResourceElement {
 
-        public string Name { get; protected set; }
-        public string? Path { get; protected set; }
+        public string Name { get; set; }
+        public string? Path { get; set; }
         public string? RelativePathPoint { get; set; }
         public bool IsRelativePath => !SystemPath.IsPathFullyQualified(Path ?? string.Empty);
 

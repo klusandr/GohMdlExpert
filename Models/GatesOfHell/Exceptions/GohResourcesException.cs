@@ -23,6 +23,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
             return new GohResourcesException($"Resource location \"{location}\" is not defined.");
         }
 
+        internal static GohResourcesException AggregateLocationNotDefined(string aggregateLocations) {
+            return new GohResourcesException($"Resource aggregate location \"{aggregateLocations}\" is not defined.");
+        }
+
         public static GohResourcesException LocationNotFound(string location, string path) {
             return new GohResourcesException($"Resource location \"{location}\" on \"{path}\" not found.");
         }

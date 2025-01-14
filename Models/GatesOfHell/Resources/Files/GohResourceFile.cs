@@ -65,7 +65,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         }
 
         public bool Exists() {
-            return File.Exists(GetFullPath());
+            return Path != null && File.Exists(GetFullPath());
         }
 
         public override bool Equals(object? obj) {

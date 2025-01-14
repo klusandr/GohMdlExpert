@@ -46,5 +46,17 @@ namespace GohMdlExpert.Properties {
                 this["LastOpenedFile"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastSavedFile {
+            get {
+                return ((string)(this["LastSavedFile"]));
+            }
+            set {
+                this["LastSavedFile"] = value;
+            }
+        }
     }
 }

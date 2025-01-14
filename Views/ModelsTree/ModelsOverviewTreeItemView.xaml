@@ -21,9 +21,9 @@
         </Style>
         <cv:BoolToVisibilityConverter FalseToCollapsed="True" x:Key="VisibilityConverter"/>
     </vbc:TreeItemView.Resources>
-    <StackPanel Orientation="Horizontal">
+    <StackPanel x:Name="_stackPanel" Orientation="Horizontal">
         <Image d:Source="\Resources\mesh.ico" Source="{Binding Icon}" Width="20"/>
-        <TextBlock d:Text="Элемент дерева представления" Text="{Binding Text}"/>
+        <TextBlock x:Name="_textBlock" d:Text="Элемент дерева представления" Text="{Binding Text}"/>
         <CheckBox Margin="2" IsChecked="{Binding IsEnableCheck}" Visibility="{Binding IsEnableCheckActive, Converter={StaticResource VisibilityConverter}}"/>
         <CheckBox Template="{StaticResource ShowHideCheckBox}" IsChecked="{Binding IsVisible}" Visibility="{Binding IsVisibleActive, Converter={StaticResource VisibilityConverter}}"/>
     </StackPanel>

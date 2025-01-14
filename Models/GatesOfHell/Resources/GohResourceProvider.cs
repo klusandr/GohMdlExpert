@@ -82,6 +82,27 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
                 );
         }
 
+        public string? GetFullPathAtLocations(string name, string? path, string location) {
+            if (ResourceDictionary == null) {
+                throw GohResourcesException.DirectoryNotSpecified();
+            }
+
+            foreach (var item in ResourceLocations.GetAggregateLocationPaths(location)) {
+                var currentDirectory = ResourceDictionary.AlongPath(item)!;
+
+                if (path != null) {
+                    currentDirectory = currentDirectory.AlongPath(path);
+                }
+
+                var d = currentDirectory!.FindResourceElements(name, deepSearch: false, first: true).FirstOrDefault();
+                if (d != null) {
+                    return d.GetFullPath();
+                }
+            }
+
+            return null;
+        }
+
         private void OnResourceUpdated() {
             ResourceUpdated?.Invoke(this, EventArgs.Empty);
         }
