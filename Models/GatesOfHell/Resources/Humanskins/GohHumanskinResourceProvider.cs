@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GohMdlExpert.Models.GatesOfHell.Exceptions;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
     public class GohHumanskinResourceProvider {
         private readonly GohResourceProvider _resourceProvider;
+        private GohFactionHumanskinResource? _current;
 
-        public GohFactionHumanskinResource? Current { get; private set; }
+        public GohFactionHumanskinResource Current { get => _current ?? throw GohResourcesException.DirectoryNotSpecified(); private set => _current = value; }
         public GohFactionHumanskinResource OutputResource;
 
         public event EventHandler? ResourceUpdated;

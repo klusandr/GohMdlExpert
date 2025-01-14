@@ -1,4 +1,6 @@
 ﻿using GohMdlExpert.Models.GatesOfHell.Exceptions;
+using Microsoft.Extensions.DependencyInjection;
+using WpfMvvm.DependencyInjection;
 using SystemPath = System.IO.Path;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
@@ -16,19 +18,19 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         }
 
         public string GetFullPath() {
-            string path = Path ?? "";
-
-            if (IsRelativePath && RelativePathPoint != null) {
-                path = SystemPath.Join(RelativePathPoint, path);
-            }
-
-            return SystemPath.Join(path, Name);
+            return SystemPath.Join(GetDirectoryPath(), Name);
         }
 
         public string? GetDirectoryPath() {
-            string? path = SystemPath.GetDirectoryName(GetFullPath());
+            string? path;
 
-            return path != string.Empty ? path : null; 
+            if (IsRelativePath) {
+                path = SystemPath.Join(RelativePathPoint, Path);
+            } else {
+                path = Path;
+            }
+
+            return path; 
         }
     }
 }

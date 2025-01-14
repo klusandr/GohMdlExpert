@@ -70,6 +70,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins
             return mtlTextures;
         }
 
+        public void SetPlyFileFullPath(PlyFile plyFile) {
+            plyFile.RelativePathPoint = Root.GetFullPath();
+        }
+
         public PlyFile GetNullPlyFile(PlyFile plyFile) {
             return new PlyFile(@"F:\SDK\Content\goh\entity\humanskin\[germans]\[ger_source]\ger_null.ply");
         }

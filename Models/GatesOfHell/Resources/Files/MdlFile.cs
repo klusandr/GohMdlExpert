@@ -27,7 +27,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         public override void LoadData() {
             var parameter = Serializer.Deserialize(GetAllText());
             var plyFiles = new List<PlyFile>();
-            var textureNames = new List<string>();
             var plyLodFiles = new Dictionary<PlyFile, PlyFile[]>();
 
             var plyLodModels = (IEnumerable<ModelDataParameter>)ModelDataSerializer.FindParameterByName(parameter, "skin")?.Data!;
@@ -38,22 +37,19 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
                 var plyModelParameter = lodParameters.First();
                 var lodModelsParameters = lodParameters.Skip(1);
 
-                var plyFile = new PlyFile((string)plyModelParameter.Data!, relativePathPoint: Path);
+                var plyFile = new PlyFile(RelativePathRemove((string)plyModelParameter.Data!));
                 var lodFiles = new List<PlyFile>();
-                textureNames.AddRange(plyFile.Data!.Meshes!.Select(m => m.TextureName));
                 plyFiles.Add(plyFile);
 
 
                 foreach (var lodParameter in lodModelsParameters) {
-                    lodFiles.Add(new PlyFile((string)lodParameter.Data!, relativePathPoint: Path));
+                    lodFiles.Add(new PlyFile(RelativePathRemove((string)lodParameter.Data!)));
                 }
 
                 plyLodFiles.Add(plyFile, [..lodFiles]);
             }
 
-            var textures = textureNames.Distinct().Select(t => new MtlFile(t, Path));
-
-            Data = new MdlModel(parameter, plyFiles, textures, plyLodFiles);
+            Data = new MdlModel(parameter, plyFiles, plyLodFiles);
         }
 
         public override void SaveData() {
@@ -92,6 +88,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             using var stream = new StreamWriter(GetFullPath());
 
             stream.Write(str);
+        }
+
+        private string RelativePathRemove(string relativePath) {
+            return relativePath.Replace("../", null);
         }
     }
 }

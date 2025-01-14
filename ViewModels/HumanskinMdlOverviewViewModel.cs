@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.IO;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using GohMdlExpert.Extensions;
@@ -86,19 +87,32 @@ namespace GohMdlExpert.ViewModels {
             PlyModels.Clear();
             MdlFile = mdlFile;
             var plyFiles = mdlFile.Data.PlyModel;
-            var mtlFiles = mdlFile.Data.Textures;
             var lodFiles = mdlFile.Data.PlyModelLods;
+            var mtlFiles = new List<MtlFile>();
+
+
+            foreach ( var plyFile in plyFiles ) {
+                _humanskinProvider.Current.SetPlyFileFullPath(plyFile);
+
+                string? mdlFilePath = mdlFile.GetDirectoryPath();
+
+                if (mdlFilePath != null) {
+                    foreach (var mtlFilePath in Directory.GetFiles(mdlFilePath, "*.mtl")) {
+                        mtlFiles.Add(new MtlFile(mtlFilePath));
+                    }
+                }
+            }
 
             var missTexture = new List<MtlFile>();
 
             _textureProvider.SetTexturesMaterialsFullPath(mtlFiles.Select(m => m.Data));
 
             foreach (var item in mdlFile.Data.PlyModel) {
-                item.RelativePathPoint = _humanskinProvider.Current!.Source.Path;
+                item.RelativePathPoint = _humanskinProvider.Current.Source.Path;
             }
 
             foreach (var item in mdlFile.Data.PlyModelLods.Values.SelectMany(p => p)) {
-                item.RelativePathPoint = _humanskinProvider.Current!.Source.Path;
+                item.RelativePathPoint = _humanskinProvider.Current.Source.Path;
             }
 
             foreach (var plyFile in plyFiles) {
@@ -129,10 +143,6 @@ namespace GohMdlExpert.ViewModels {
                 foreach (var aggregateMtlFile in aggregateMtlFiles) {
                     AddAggregateMtlFile(aggregateMtlFile);
                 }
-            }
-
-            if (_humanskinProvider.Current == null) {
-                throw GohResourcesException.DirectoryNotSpecified();
             }
 
             _lodPlyFiles.Add(modelPly, new ObservableCollection<PlyFile>(lodModels ?? ResourceLoading.GetPlyLodFiles(modelPly.PlyFile, _humanskinProvider.Current, _resourceProvider)));
