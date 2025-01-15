@@ -27,12 +27,12 @@
 
         <Grid Margin="5">
             <Grid.RowDefinitions>
-                <RowDefinition MinHeight="50"/>
                 <RowDefinition Height="auto"/>
+                <RowDefinition/>
                 <RowDefinition Height=".3*" MinHeight="40"/>
             </Grid.RowDefinitions>
-            <modelstree:ModelsLoadTreeView DataContext="{Binding ModelsLoadTreeViewModel}"/>
-            <GridSplitter Height="3" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+            <local:HumanskinResourcesView/>
+            <modelstree:ModelsLoadTreeView DataContext="{Binding ModelsLoadTreeViewModel}" Grid.Row="1"/>
             <local:PlyModelAdderView Grid.Row="2" DataContext="{Binding ModelAdderViewModel}"/>
         </Grid>
 

@@ -14,6 +14,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
         private readonly Dictionary<string, string> _locationsPaths = new() {
             ["texture"] = @"\texture\common",
             ["ger_humanskin"] = @"\entity\humanskin\[germans]",
+            ["us_humanskin"] = @"\entity\humanskin\[united_states]",
             ["ger_humanskin_source"] = @"\entity\humanskin\[germans]\[ger_source]",
             ["base"] = ""
         };
