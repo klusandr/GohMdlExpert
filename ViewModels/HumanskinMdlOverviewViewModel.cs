@@ -11,9 +11,10 @@ using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
-using GohMdlExpert.ViewModels.ModelsTree.LoadModels;
-using GohMdlExpert.ViewModels.ModelsTree.OverviewModels;
-using GohMdlExpert.Views.ModelsTree;
+using GohMdlExpert.Services;
+using GohMdlExpert.ViewModels.Trees.LoadModels;
+using GohMdlExpert.ViewModels.Trees.OverviewModels;
+using GohMdlExpert.Views.Trees;
 using WpfMvvm.Collections.ObjectModel;
 using WpfMvvm.Data;
 using WpfMvvm.ViewModels;
@@ -39,6 +40,7 @@ namespace GohMdlExpert.ViewModels {
         private readonly PlyModelAdderViewModel _modelAdderViewModel;
         private readonly ModelsLoadTreeViewModel _modelsLoadTreeViewModel;
         private readonly HumanskinMdlGeneratorViewModel _humanskinMdlGeneratorViewModel;
+        private readonly DefaultMaterialViewModel _defaultMaterialViewModel;
 
         public MdlFile? MdlFile {
             get => _mdlFile;
@@ -54,6 +56,7 @@ namespace GohMdlExpert.ViewModels {
         public ModelsOverviewTreeViewModel ModelsOverviewTreeViewModel => _modelsOverviewTreeViewModel;
         public ModelsLoadTreeViewModel ModelsLoadTreeViewModel => _modelsLoadTreeViewModel;
         public PlyModelAdderViewModel ModelAdderViewModel => _modelAdderViewModel;
+        public DefaultMaterialViewModel DefaultMaterialViewModel => _defaultMaterialViewModel;
 
         public Model3DCollection Models => _models;
 
@@ -62,7 +65,7 @@ namespace GohMdlExpert.ViewModels {
 
         public event EventHandler? UpdatedTextures;
 
-        public HumanskinMdlOverviewViewModel(IUserDialogProvider userDialog, GohResourceProvider resourceProvider, GohHumanskinResourceProvider humanskinProvider, GohTextureProvider textureProvider, HumanskinMdlGeneratorViewModel humanskinMdlGeneratorViewModel) {
+        public HumanskinMdlOverviewViewModel(IUserDialogProvider userDialog, GohResourceProvider resourceProvider, GohHumanskinResourceProvider humanskinProvider, GohTextureProvider textureProvider, HumanskinMdlGeneratorViewModel humanskinMdlGeneratorViewModel, MaterialSelector materialSelector) {
             _models = [];
             _plyModels = [];
             _lodPlyFiles = [];
@@ -73,7 +76,9 @@ namespace GohMdlExpert.ViewModels {
             _resourceProvider = resourceProvider;
             _humanskinProvider = humanskinProvider;
             _textureProvider = textureProvider;
-            _modelAdderViewModel = new PlyModelAdderViewModel(this);
+            _defaultMaterialViewModel = new DefaultMaterialViewModel(materialSelector);
+            _modelAdderViewModel = new PlyModelAdderViewModel(this, _defaultMaterialViewModel);
+
             _modelsLoadTreeViewModel = new ModelsLoadTreeViewModel(_modelAdderViewModel, humanskinProvider, textureProvider);
             _modelsOverviewTreeViewModel = new ModelsOverviewTreeViewModel(this);
             _humanskinMdlGeneratorViewModel = humanskinMdlGeneratorViewModel;

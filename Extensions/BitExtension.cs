@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+#warning Старое пространство имён.
 namespace ParametrizerUSPDNext.Extensions {
     public static class BitExtension {
         /// <summary>

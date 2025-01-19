@@ -14,9 +14,13 @@ using GohMdlExpert.Models.GatesOfHell.Exceptions;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources {
     public class GohTextureProvider {
+        private GohResourceDirectory? _textureDirectory;
+
         public GohResourceProvider GohResourceProvider { get; }
 
-        public GohResourceDirectory? TextureDirectory { get; protected set; }
+        public GohResourceDirectory TextureDirectory => _textureDirectory ?? throw TextureException.DirectoryNotSpecified();
+
+        public bool IsResourceLoad => _textureDirectory != null;
 
         public event EventHandler? ResourceUpdated;
 
@@ -27,7 +31,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
 
         public void Update() {
             if (GohResourceProvider.IsResourceLoaded) { 
-                TextureDirectory = GohResourceProvider.GetLocationDirectory("texture");
+                _textureDirectory = GohResourceProvider.GetLocationDirectory("texture");
                 ResourceUpdated?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -49,10 +53,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
         }
 
         private MaterialFile SetMaterialFullPath(MaterialFile materialFile) {
-            if (TextureDirectory == null) {
-                throw TextureException.DirectoryNotSpecified();
-            }
-
             if (materialFile.IsRelativePath && materialFile.RelativePathPoint == null) {
                 materialFile.RelativePathPoint = TextureDirectory.GetFullPath();
             }

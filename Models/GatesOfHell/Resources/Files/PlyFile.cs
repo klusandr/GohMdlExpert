@@ -14,10 +14,14 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
         public new PlyModel Data { get => (PlyModel)base.Data; set => base.Data = value; }
 
-        public override string? Extension => ".ply";
+        public static string? Extension => ".ply";
 
         public PlyFile(string name, string? path = null, string? relativePathPoint = null) 
             : base(name, path, relativePathPoint) { }
+
+        public override string? GetExtension() {
+            return Extension;
+        }
 
         public override void LoadData() {
             Data = Serializer.Deserialize(GetStream());

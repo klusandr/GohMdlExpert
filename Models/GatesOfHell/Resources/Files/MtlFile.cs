@@ -12,12 +12,16 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
         protected static MtlSerializer Serializer => s_serializer ??= new MtlSerializer();
 
-        public override string? Extension => ".mtl";
+        public static string? Extension => ".mtl";
 
         public new MtlTexture Data { get => (MtlTexture)base.Data; set => base.Data = value; }
 
         public MtlFile(string name, string? path = null, string? relativePathPoint = null)
             : base(name, path, relativePathPoint) { }
+
+        public override string? GetExtension() {
+            return Extension;
+        }
 
         public override void LoadData() {
             var parameters = Serializer.Deserialize(GetAllText());

@@ -19,10 +19,14 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
         public new MdlModel Data { get => (MdlModel)base.Data; set => base.Data = value; }
 
-        public override string? Extension => ".mdl";
+        public static string? Extension => ".mdl";
 
         public MdlFile(string name, string? path = null, string? relativePathPoint = null) 
             : base(name, path, relativePathPoint) { }
+
+        public override string? GetExtension() {
+            return Extension;
+        }
 
         public override void LoadData() {
             var parameter = Serializer.Deserialize(GetAllText());

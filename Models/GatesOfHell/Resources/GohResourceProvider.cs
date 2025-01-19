@@ -15,6 +15,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
             [".mdl"] = typeof(MdlFile),
             [".ply"] = typeof(PlyFile),
             [".mtl"] = typeof(MtlFile),
+            [".dds"] = typeof(MaterialFile),
         };
 
         private static readonly string[] s_resourceNeedDirectories = {

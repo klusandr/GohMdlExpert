@@ -6,7 +6,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class GohResourceFile : GohResourceElement {
         private object? _data;
 
-        public virtual string? Extension => null;
         public object Data {
             get {
                 if (_data == null) {
@@ -19,8 +18,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         }
 
         public GohResourceFile(string name, string? path = null, string? relativePathPoint = null) : base(name, path, relativePathPoint) {
-            if (Extension != null && SystemPath.GetExtension(name) != Extension) {
-                throw GohResourceFileException.InvalidExtension(this, Extension);
+            if (GetExtension() != null && SystemPath.GetExtension(name) != GetExtension()) {
+                throw GohResourceFileException.InvalidExtension(this, GetExtension()!);
             }
 
             if (path == null) {
@@ -52,6 +51,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             return new FileStream(path, FileMode.Open);
         }
 
+        public virtual string? GetExtension() {
+            return null;
+        }
+
         public virtual void LoadData() {
             Data = GetAllText();
         }
@@ -63,7 +66,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         public virtual void SaveData() {
             throw new NotImplementedException();
         }
-
+#warning Слишком частый вызов при загрузке одной моделей или текстур к ней.
         public bool Exists() {
             return Path != null && File.Exists(GetFullPath());
         }
@@ -87,9 +90,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         public override int GetHashCode() {
             return Name.GetHashCode()
                 + Path?.GetHashCode() ?? 0
-                + RelativePathPoint?.GetHashCode() ?? 0
-                + Extension?.GetHashCode() ?? 0;
-
+                + RelativePathPoint?.GetHashCode() ?? 0;
         }
     }
 }

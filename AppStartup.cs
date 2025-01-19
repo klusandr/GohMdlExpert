@@ -1,5 +1,6 @@
 ﻿using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
+using GohMdlExpert.Services;
 using GohMdlExpert.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -26,6 +27,8 @@ namespace GohMdlExpert {
             e.Services.AddSingleton<GohResourceProvider>();
             e.Services.AddSingleton<GohHumanskinResourceProvider>();
             e.Services.AddSingleton<GohTextureProvider>();
+
+            e.Services.AddSingleton<MaterialSelector>();
 
             e.Services.AddSingleton(new CommandFactory(
                 exceptionHandler: (e) => {

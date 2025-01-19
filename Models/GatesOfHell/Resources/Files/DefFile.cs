@@ -10,9 +10,13 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
 {
     public class DefFile : GohResourceFile
     {
-        public override string? Extension => ".def";
+        public static string? Extension => ".def";
 
         public DefFile(string name, string? path = null, string? relativePathPoint = null) : base(name, path, relativePathPoint) { }
+
+        public override string? GetExtension() {
+            return Extension;
+        }
 
         public override void SaveData() {
             using var stream = new StreamWriter(GetFullPath());

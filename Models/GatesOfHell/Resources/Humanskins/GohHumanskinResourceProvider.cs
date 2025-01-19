@@ -41,6 +41,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
                 _humanskinResources.Clear();
                 _humanskinResources.Add(new GohFactionHumanskinResource("German", _resourceProvider.GetLocationDirectory("ger_humanskin")));
                 _humanskinResources.Add(new GohFactionHumanskinResource("United states", _resourceProvider.GetLocationDirectory("us_humanskin")));
+                _humanskinResources.Add(new GohFactionHumanskinResource("Soviets", _resourceProvider.GetLocationDirectory("sov_humanskin")));
 
                 OnResourceUpdated();
             }

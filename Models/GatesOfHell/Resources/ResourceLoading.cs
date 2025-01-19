@@ -38,7 +38,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
         /// </summary>
         /// <param name="materialFile">Файл материала.</param>
         /// <returns>Материал.</returns>
-        public static Material LoadMaterial(MaterialFile materialFile) {
+        public static DiffuseMaterial LoadMaterial(MaterialFile materialFile) {
             string fullPath = materialFile.GetFullPath();
             DiffuseMaterial diffuseMaterial;
 

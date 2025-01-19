@@ -22,7 +22,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D
                 set {
                     if (_texture != value) {
                         _texture = value;
-                        _geometry.Material = value?.Diffuse.Data;
+                        _geometry.Material = value?.Diffuse.Data ?? ResourceConverts.GetRandomTexture();
                     }
                 }
             }

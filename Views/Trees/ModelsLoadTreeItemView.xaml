@@ -1,0 +1,37 @@
+﻿<vbc:TreeItemView x:Class="GohMdlExpert.Views.Trees.ModelsLoadTreeItemView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GohMdlExpert.Views.Trees" 
+             xmlns:vm="clr-namespace:GohMdlExpert.ViewModels.Trees.LoadModels" 
+             xmlns:vbc="clr-namespace:WpfMvvm.Views.Controls;assembly=WpfMvvm"
+             xmlns:cv="clr-namespace:WpfMvvm.Converters;assembly=WpfMvvm"
+             d:DataContext="{d:DesignInstance Type=vm:ModelsLoadTreeItemViewModel}"
+             mc:Ignorable="d"
+             MouseDoubleClick="MouseDoubleClickHandler">
+    <vbc:TreeItemView.Resources>
+        <Style TargetType="local:ModelsLoadTreeItemView">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsApproved}" Value="True">
+                    <Setter Property="Background" Value="#99008000"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <cv:BoolToVisibilityConverter x:Key="VisibilityConverter"/>
+        <cv:BoolToVisibilityConverter FalseToCollapsed="True" x:Key="VisibilityCollapsedConverter"/>
+    </vbc:TreeItemView.Resources>
+
+    <StackPanel Orientation="Horizontal">
+        <Image d:Source="/Resources/folder.ico" Source="{Binding Icon}" Width="20"/>
+        <TextBlock d:Text="Элемент дерева загрузки моделей" Text="{Binding Text}"/>
+        <StackPanel Orientation="Horizontal" Margin="5 0" Visibility="{Binding IsButtonActive, Converter={StaticResource VisibilityConverter}}">
+            <Button Command="{Binding LoadCommand}"  Background="Transparent" BorderBrush="{x:Null}" Foreground="{x:Null}" Width="20">
+                <Image Source="/Resources/check.ico"/>
+            </Button>
+            <Button Command="{Binding DeleteCommand}" Background="Transparent" BorderBrush="{x:Null}" Foreground="{x:Null}" Width="20">
+                <Image Source="/Resources/cross.ico" Width="15"/>
+            </Button>
+        </StackPanel>
+    </StackPanel>
+</vbc:TreeItemView>

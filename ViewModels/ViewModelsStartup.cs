@@ -1,5 +1,6 @@
-﻿using GohMdlExpert.ViewModels.ModelsTree.LoadModels;
-using GohMdlExpert.ViewModels.ModelsTree.OverviewModels;
+﻿using GohMdlExpert.ViewModels.Trees.LoadModels;
+using GohMdlExpert.ViewModels.Trees.Materials;
+using GohMdlExpert.ViewModels.Trees.OverviewModels;
 using WpfMvvm.Exceptions;
 using WpfMvvm.ViewModels;
 
@@ -12,6 +13,7 @@ namespace GohMdlExpert.ViewModels
                 provider.Add<HumanskinMdlOverviewViewModel>();
                 provider.Add<HumanskinMdlGeneratorViewModel>();
                 provider.Add<HumanskinResourcesViewModel>();
+                provider.Add<MaterialLoadViewModel>();
             } else {
                 //throw new ViewModelsException($"Error startup viewmodels. Expected type was not {nameof(ViewModelsProvider)}");
             }

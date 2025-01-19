@@ -7,7 +7,7 @@
     xmlns:bv="clr-namespace:WpfMvvm.Views;assembly=WpfMvvm" 
     xmlns:vm="clr-namespace:GohMdlExpert.ViewModels" 
     xmlns:goh="clr-namespace:GohMdlExpert.Models.GatesOfHell.Media3D" 
-    xmlns:modelstree="clr-namespace:GohMdlExpert.Views.ModelsTree"
+    xmlns:trees="clr-namespace:GohMdlExpert.Views.Trees"
     d:DataContext="{d:DesignInstance Type=vm:HumanskinMdlOverviewViewModel}"
     mc:Ignorable="d" 
     d:DesignHeight="450" d:DesignWidth="800">
@@ -29,11 +29,13 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition/>
-                <RowDefinition Height=".3*" MinHeight="40"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <local:HumanskinResourcesView/>
-            <modelstree:ModelsLoadTreeView DataContext="{Binding ModelsLoadTreeViewModel}" Grid.Row="1"/>
-            <local:PlyModelAdderView Grid.Row="2" DataContext="{Binding ModelAdderViewModel}"/>
+            <trees:ModelsLoadTreeView DataContext="{Binding ModelsLoadTreeViewModel}" Grid.Row="1"/>
+            <local:PlyModelAdderView DataContext="{Binding ModelAdderViewModel}" Grid.Row="2" />
+            <local:DefaultMaterialView DataContext="{Binding DefaultMaterialViewModel}" Grid.Row="3"/>
         </Grid>
 
         <Grid x:Name="_sceneBackground" Background="AliceBlue" MouseWheel="OnMouseWheel" Grid.Column="1">
@@ -73,7 +75,7 @@
         <DockPanel Grid.Column="2">
             <Button Content="Create new humanskin" Command="{Binding NewMdlCommand}" Padding="5 3" HorizontalAlignment="Center" VerticalAlignment="Center" DockPanel.Dock="Top"/>
             <Button Content="Save humanskin" Padding="5 3" HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding SaveMdlCommand}" DockPanel.Dock="Bottom"/>
-            <modelstree:ModelsOverviewTreeView Margin="5" DataContext="{Binding ModelsOverviewTreeViewModel}" DockPanel.Dock="Left"/>
+            <trees:ModelsOverviewTreeView Margin="5" DataContext="{Binding ModelsOverviewTreeViewModel}" DockPanel.Dock="Left"/>
         </DockPanel>
     </Grid>
     

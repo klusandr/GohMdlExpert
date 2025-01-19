@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GohMdlExpert"
         xmlns:views="clr-namespace:GohMdlExpert.Views" 
-        xmlns:modelstree="clr-namespace:GohMdlExpert.Views.ModelsTree" 
+        xmlns:modelstree="clr-namespace:GohMdlExpert.Views.Trees" 
         xmlns:viewmodels="clr-namespace:GohMdlExpert.ViewModels" 
         d:DataContext="{d:DesignInstance Type=viewmodels:ApplicationViewModel}"
         mc:Ignorable="d"
