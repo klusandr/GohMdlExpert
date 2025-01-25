@@ -1,14 +1,13 @@
-﻿using GohMdlExpert.Extensions;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
-using GohMdlExpert.Properties;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using GohMdlExpert.Extensions;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
+using GohMdlExpert.Properties;
 using WpfMvvm.ViewModels.Controls.Menu;
 
-namespace GohMdlExpert.ViewModels.Trees.LoadModels
-{
+namespace GohMdlExpert.ViewModels.Trees.LoadModels {
     public class ModelsLoadTreeMeshViewModel : ModelsLoadTreeItemViewModel {
         private static readonly ImageSource s_icon = new BitmapImage().FromByteArray(Resources.MeshIcon);
 

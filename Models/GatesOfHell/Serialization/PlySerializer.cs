@@ -1,31 +1,30 @@
-﻿using GohMdlExpert.Models.GatesOfHell.Exceptions;
-using GohMdlExpert.Models.GatesOfHell.Resources;
-using System.Collections;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Media.Media3D;
+using GohMdlExpert.Models.GatesOfHell.Exceptions;
+using GohMdlExpert.Models.GatesOfHell.Resources;
 using static GohMdlExpert.Models.GatesOfHell.Resources.PlyModel;
 using Mesh = GohMdlExpert.Models.GatesOfHell.Resources.PlyModel.Mesh;
 
 namespace GohMdlExpert.Models.GatesOfHell.Serialization {
     public class PlySerializer {
         private enum MashFlags {
-            TwoSided    = 0x01,     // render this mesh without culling
-            useAlpha    = 0x02,     // (unused, compatibility mode)
-            Light       = 0x04,     // use realtime scene light (unused, compatibility mode)
+            TwoSided = 0x01,     // render this mesh without culling
+            useAlpha = 0x02,     // (unused, compatibility mode)
+            Light = 0x04,     // use realtime scene light (unused, compatibility mode)
             PlayerColor = 0x08,     // use player color light
-            Skinned     = 0x10,     // skinned mesh
-            Shadow      = 0x20,     // shadow volume mesh
-            Mirrored    = 0x40,     // has negative scaling
-            BlendTexture= 0x80,     // blend by second texture alpha
-            Bump        = 0x100,    // bump-mapped
-            Specular    = 0x200,    // specular color stored
-            Material    = 0x400,    // format with material, not textures
-            SubSkin     = 0x800,    // sub-skin feature
-            TwoTexture  = 0x1000,   // two textures with one texcoord
-            UseInGvd    = 0x2000,   // using vertex declaration instead of fvf
-            Lightmap    = 0x4000,   // has lightmap
+            Skinned = 0x10,     // skinned mesh
+            Shadow = 0x20,     // shadow volume mesh
+            Mirrored = 0x40,     // has negative scaling
+            BlendTexture = 0x80,     // blend by second texture alpha
+            Bump = 0x100,    // bump-mapped
+            Specular = 0x200,    // specular color stored
+            Material = 0x400,    // format with material, not textures
+            SubSkin = 0x800,    // sub-skin feature
+            TwoTexture = 0x1000,   // two textures with one texcoord
+            UseInGvd = 0x2000,   // using vertex declaration instead of fvf
+            Lightmap = 0x4000,   // has lightmap
         }
 
         private const int READ_BUFFER_SIZE = 64;
@@ -193,7 +192,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
             } finally {
                 modelFileStream.Dispose();
             }
-            
+
         }
     }
 }

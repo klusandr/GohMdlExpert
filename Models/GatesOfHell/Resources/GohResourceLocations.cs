@@ -1,11 +1,4 @@
 ﻿using GohMdlExpert.Models.GatesOfHell.Exceptions;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources {
     public class GohResourceLocations {

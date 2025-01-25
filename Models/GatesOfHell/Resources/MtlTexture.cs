@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Data;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Windows.Media;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 

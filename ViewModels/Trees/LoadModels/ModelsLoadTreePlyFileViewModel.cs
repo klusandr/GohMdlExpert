@@ -1,18 +1,15 @@
-﻿using GohMdlExpert.Extensions;
+﻿using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using GohMdlExpert.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
 using GohMdlExpert.Properties;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using WpfMvvm.Collections;
-using WpfMvvm.ViewModels.Controls;
 using WpfMvvm.ViewModels.Controls.Menu;
 
-namespace GohMdlExpert.ViewModels.Trees.LoadModels
-{
+namespace GohMdlExpert.ViewModels.Trees.LoadModels {
     public class ModelsLoadTreePlyFileViewModel : ModelsLoadTreeItemViewModel {
         private static readonly ImageSource s_icon = new BitmapImage().FromByteArray(Resources.PlyIcon);
 

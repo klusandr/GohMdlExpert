@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+﻿using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 
 namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
     public class GohResourcesException : GohException {
@@ -13,7 +8,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
 
         public static GohResourcesException IsNotGohResource(string path) {
             return new GohResourcesException($"\"{path}\" is not GoH resource directory");
-        } 
+        }
 
         public static GohResourcesException DirectoryNotSpecified() {
             return new GohResourcesException($"Resource directory is not specified.");

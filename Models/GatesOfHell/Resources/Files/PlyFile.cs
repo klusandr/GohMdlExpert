@@ -1,10 +1,4 @@
-﻿using GohMdlExpert.Models.GatesOfHell.Exceptions;
-using GohMdlExpert.Models.GatesOfHell.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GohMdlExpert.Models.GatesOfHell.Serialization;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class PlyFile : GohResourceFile {
@@ -16,7 +10,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
         public static string? Extension => ".ply";
 
-        public PlyFile(string name, string? path = null, string? relativePathPoint = null) 
+        public PlyFile(string name, string? path = null, string? relativePathPoint = null)
             : base(name, path, relativePathPoint) { }
 
         public override string? GetExtension() {

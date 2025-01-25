@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Resources;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
+﻿using System.Windows.Media.Imaging;
 using GohMdlExpert.Extensions;
 
 namespace GohMdlExpert.Properties {
@@ -26,7 +20,7 @@ namespace GohMdlExpert.Properties {
         }
 
         private static void ThrowCheckResource(string resourceName, Type type) {
-            if ( typeof(Resources).GetProperty(resourceName, type) == null) {
+            if (typeof(Resources).GetProperty(resourceName, type) == null) {
                 throw new Exception($"App resource load error. Resource \"{resourceName}\" with type \"{type.Name}\".");
             }
         }

@@ -1,9 +1,5 @@
-﻿using GohMdlExpert.Models.GatesOfHell.Resources.Files;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 
 namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
     public class GohResourceFileException : GohException {

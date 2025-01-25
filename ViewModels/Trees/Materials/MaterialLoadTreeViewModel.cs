@@ -1,5 +1,4 @@
-﻿using System.Windows.Documents;
-using GohMdlExpert.Models.GatesOfHell.Resources;
+﻿using GohMdlExpert.Models.GatesOfHell.Resources;
 using WpfMvvm.ViewModels.Controls;
 
 namespace GohMdlExpert.ViewModels.Trees.Materials {

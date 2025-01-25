@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 
 namespace GohMdlExpert.Models.GatesOfHell.Serialization {
     public class MtlSerializer : ModelDataSerializer {
@@ -21,7 +16,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
             AddType("Diffuse", "diffuse");
             AddType("Bump", "bump");
             AddType("Specular", "specular");
-            AddType("Color", "color", 
+            AddType("Color", "color",
                 (str) => {
                     var values = str.Split(' ').Select(v => Convert.ToByte(v)).ToArray();
                     return new Color() { A = values[0], R = values[1], G = values[2], B = values[3] };
@@ -32,7 +27,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
                     return $"\"{color.A} {color.R} {color.G} {color.B}\"";
                 }
             );
-            AddType("Blend", "blend", 
+            AddType("Blend", "blend",
                 (str) => {
                     return null;
                 },

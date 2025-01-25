@@ -2,8 +2,7 @@
 using WpfMvvm.Views;
 using WpfMvvm.Views.Attributes;
 
-namespace GohMdlExpert.Views
-{
+namespace GohMdlExpert.Views {
     /// <summary>
     /// Логика взаимодействия для ModelAdderView.xaml
     /// </summary>

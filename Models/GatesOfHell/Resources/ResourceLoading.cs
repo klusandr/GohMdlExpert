@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GohMdlExpert.Models.GatesOfHell.Exceptions;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+﻿using System.IO;
+using System.Text.RegularExpressions;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
-using System.Windows.Media;
-using System.Text.RegularExpressions;
+using GohMdlExpert.Models.GatesOfHell.Exceptions;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 using GohMdlExpert.Models.GatesOfHell.Serialization;
-using System.IO;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources {
     /// <summary>
@@ -54,7 +49,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
 
             return diffuseMaterial;
         }
-    
+
         /// <summary>
         /// Фильтрует коллекцию <see cref="PlyFile"/>, файлов в соответствии с фильтром загрузки .ply файлов.
         /// </summary>

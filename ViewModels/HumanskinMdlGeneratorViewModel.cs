@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
@@ -49,7 +44,7 @@ namespace GohMdlExpert.ViewModels {
                 } else {
                     return null;
                 }
-                    
+
                 parameters = ResourceLoading.GetHumanskinMdlParametersTemplate();
             }
 

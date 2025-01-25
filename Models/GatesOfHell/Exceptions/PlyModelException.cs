@@ -1,14 +1,9 @@
-﻿using GohMdlExpert.Models.GatesOfHell.Resources;
+﻿using System.Text;
+using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
-	public class PlyModelException : GohException {
+    public class PlyModelException : GohException {
         private const string MESSAGE = "Gates of hell ply model {0}error.";
         public PlyFile? PlyFile { get; }
 
@@ -16,7 +11,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
             PlyFile = plyFile;
         }
 
-        private static string GetFullErrorMessage(PlyFile? plyFile = null, string ? message = null) {
+        private static string GetFullErrorMessage(PlyFile? plyFile = null, string? message = null) {
             var fullMessage = new StringBuilder();
 
             if (plyFile != null) {

@@ -1,10 +1,8 @@
 ﻿using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
-using System.IO;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins
-{
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
     public class GohFactionHumanskinResource {
         public string Name { get; }
         public GohResourceDirectory Root { get; }
@@ -13,10 +11,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins
         public GohFactionHumanskinResource(string name, GohResourceDirectory factionRoot) {
             var source = factionRoot.FindResourceElements<GohResourceDirectory>(null, searchPattern: GohResourceLocations.HUMANSKIN_SOURCE_DIRECTORY_NAME_REG, first: true, deepSearch: false).FirstOrDefault();
 
-            if (source == null 
-                || !source.FindResourceElements<PlyFile>(first: true).Any() 
-                || !factionRoot.FindResourceElements<MdlFile>(first: true).Any())
-            {
+            if (source == null
+                || !source.FindResourceElements<PlyFile>(first: true).Any()
+                || !factionRoot.FindResourceElements<MdlFile>(first: true).Any()) {
                 throw new GohResourcesException($"Directory {factionRoot.GetFullPath} is not faction Humanskin directory");
             }
 

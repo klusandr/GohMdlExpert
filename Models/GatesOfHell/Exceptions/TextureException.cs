@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GohMdlExpert.Models.GatesOfHell.Resources;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+﻿using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
 
-namespace GohMdlExpert.Models.GatesOfHell.Exceptions
-{
+namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
     public class TextureException : GohException {
         private const string MESSAGE = "Gates of hell {0}texture {1}error.{2}";
         private const string MESSAGE_MATERIAL = "material {0} from ";
@@ -16,9 +9,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions
         public MtlFile? MtlFile { get; }
         public MaterialFile? MaterialFile { get; }
 
-        public TextureException(string? message = null, MtlFile? mtlFile = null, MaterialFile? materialFile = null, Exception? inner = null) 
-            : base(GetFullMessage(message, mtlFile, materialFile), inner)
-        {
+        public TextureException(string? message = null, MtlFile? mtlFile = null, MaterialFile? materialFile = null, Exception? inner = null)
+            : base(GetFullMessage(message, mtlFile, materialFile), inner) {
             MtlFile = mtlFile;
             MaterialFile = materialFile;
         }
@@ -28,8 +20,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions
         }
 
         public static TextureException NotBelongPlyModel(AggregateMtlFile mtlFile, PlyFile? plyFile = null) {
-            return new TextureException(string.Format("Aggregate texture \"{0}\" don't belong to the ply model{1}.", 
-                mtlFile.Name, 
+            return new TextureException(string.Format("Aggregate texture \"{0}\" don't belong to the ply model{1}.",
+                mtlFile.Name,
                 plyFile != null ? " \"" + plyFile.GetFullPath() + '"' : string.Empty));
         }
 

@@ -1,17 +1,13 @@
-﻿using System.ComponentModel;
-using System.Windows.Input;
-using System.Xml.Serialization;
+﻿using System.Windows.Input;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Media3D;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
-using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 using WpfMvvm.ViewModels;
 using WpfMvvm.ViewModels.Commands;
 
-namespace GohMdlExpert.ViewModels
-{
+namespace GohMdlExpert.ViewModels {
     public class PlyModelAdderViewModel : BaseViewModel {
         private readonly HumanskinMdlOverviewViewModel _models3DView;
         private readonly DefaultMaterialViewModel _defaultMaterialViewModel;

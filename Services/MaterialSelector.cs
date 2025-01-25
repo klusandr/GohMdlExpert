@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+﻿using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Views;
-using Microsoft.Win32;
 
 namespace GohMdlExpert.Services {
     public class MaterialSelector {
@@ -33,7 +27,7 @@ namespace GohMdlExpert.Services {
             return SelectedMaterialFile;
         }
 
-        
+
 
         private MaterialLoadView LoadView() {
             var view = new MaterialLoadView();

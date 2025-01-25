@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Data;
 using System.Windows.Media.Media3D;
 
 namespace GohMdlExpert.Views.Camera3D {
@@ -38,7 +32,7 @@ namespace GohMdlExpert.Views.Camera3D {
 
             _camera.Transform = new Transform3DGroup() {
                 Children = {
-                    _cameraRotationXTransform,              
+                    _cameraRotationXTransform,
                     _cameraRotationYTransform,
                 }
             };

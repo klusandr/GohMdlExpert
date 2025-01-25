@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
-using GohMdlExpert.Models.GatesOfHell.Exceptions;
+﻿using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using WpfMvvm.Collections.ObjectModel;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
@@ -14,7 +7,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
         private readonly ObservableList<GohFactionHumanskinResource> _humanskinResources;
         private int _selectedIndex;
 
-        public GohFactionHumanskinResource Current => _humanskinResources.ElementAtOrDefault(SelectedIndex) ?? throw GohResourcesException.DirectoryNotSpecified(); 
+        public GohFactionHumanskinResource Current => _humanskinResources.ElementAtOrDefault(SelectedIndex) ?? throw GohResourcesException.DirectoryNotSpecified();
         public IObservableEnumerable<GohFactionHumanskinResource> HumanskinResources => _humanskinResources;
         public int SelectedIndex {
             get => _selectedIndex;

@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 using SystemPath = System.IO.Path;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
-{
-    public class DefFile : GohResourceFile
-    {
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
+    public class DefFile : GohResourceFile {
         public static string? Extension => ".def";
 
         public DefFile(string name, string? path = null, string? relativePathPoint = null) : base(name, path, relativePathPoint) { }

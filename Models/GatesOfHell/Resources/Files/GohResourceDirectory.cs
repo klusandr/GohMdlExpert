@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Resources;
-using System.Security.AccessControl;
-using System.Text;
+﻿using System.IO;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Shapes;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
-using SystemPath = System.IO.Path;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class GohResourceDirectory : GohResourceElement {
@@ -25,7 +16,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             }
         }
 
-        public GohResourceDirectory(string name, string? path = null, string? relativePathPoint = null, string? location = null) 
+        public GohResourceDirectory(string name, string? path = null, string? relativePathPoint = null, string? location = null)
             : base(name, path, relativePathPoint) {
 
             if (path == null) {
@@ -60,7 +51,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         public IEnumerable<GohResourceFile> GetFiles() {
             if (Items == null) { LoadData(); }
 
-            return Items!.OfType<GohResourceFile>();   
+            return Items!.OfType<GohResourceFile>();
         }
 
         public IEnumerable<GohResourceDirectory> GetDirectories() {
@@ -133,7 +124,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
                 return false;
             }
-            
+
 
             return predicate;
         }

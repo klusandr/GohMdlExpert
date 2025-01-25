@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
+﻿using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 
 namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
     public class FractionHumanskinException : GohResourcesException {

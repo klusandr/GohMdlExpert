@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
+﻿using System.ComponentModel;
 using System.Windows.Media;
-using GohMdlExpert.Models.GatesOfHell.Media3D;
-using GohMdlExpert.Properties;
+using System.Windows.Media.Imaging;
 using GohMdlExpert.Extensions;
-using System.ComponentModel;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
+using GohMdlExpert.Properties;
 
-namespace GohMdlExpert.ViewModels.Trees.OverviewModels
-{
+namespace GohMdlExpert.ViewModels.Trees.OverviewModels {
     public class ModelsOverviewTreeMtlViewModel : ModelsOverviewTreeItemViewModel {
         private static readonly ImageSource s_icon = new BitmapImage().FromByteArray(Resources.TextureIcon);
         private static readonly ImageSource s_plyIcon = new BitmapImage().FromByteArray(Resources.PlyIcon);
@@ -88,4 +81,4 @@ namespace GohMdlExpert.ViewModels.Trees.OverviewModels
             }
         }
     }
-} 
+}

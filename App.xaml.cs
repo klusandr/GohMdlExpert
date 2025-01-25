@@ -1,18 +1,12 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System.Configuration;
-using System.Data;
-using System.Windows;
-using WpfMvvm.ViewModels;
-using WpfMvvm.DependencyInjection;
-using WpfMvvm;
-using GohMdlExpert.ViewModels;
+﻿using System.Windows;
 using GohMdlExpert.Models.GatesOfHell.Resources;
-using WpfMvvm.Diagnostics;
-using GohMdlExpert.Models.GatesOfHell.Exceptions;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files;
-using GohMdlExpert.Properties;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
+using GohMdlExpert.Properties;
 using GohMdlExpert.Services;
+using GohMdlExpert.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
+using WpfMvvm;
+using WpfMvvm.DependencyInjection;
 using WpfMvvm.ViewModels.Commands;
 using WpfMvvm.Views.Dialogs;
 
@@ -21,7 +15,7 @@ namespace GohMdlExpert {
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : WpfApplication {
-        public App() { } 
+        public App() { }
 
         protected override void OnExit(ExitEventArgs e) {
             base.OnExit(e);

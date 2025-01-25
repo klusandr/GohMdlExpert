@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using System.Windows.Controls;
 using System.Windows.Media.Media3D;
 
 namespace GohMdlExpert.Models.GatesOfHell.Serialization {
@@ -18,14 +17,14 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
         }
 
         public MdlSerializer() {
-            AddType("Skeleton", "skeleton");   
-            AddType("Bone", "bone");   
-            AddType("BoneRevolute", "bone revolute");   
+            AddType("Skeleton", "skeleton");
+            AddType("Bone", "bone");
+            AddType("BoneRevolute", "bone revolute");
             AddType("Limits", "limits",
                 (t) => t.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(d => Convert.ToInt32(d.Trim())),
                 (d) => string.Join(' ', (IEnumerable<int>)d)
-            ); 
-            AddType("Speed", "speed", (t) => Convert.ToSingle(t), (d) => d.ToString()!);   
+            );
+            AddType("Speed", "speed", (t) => Convert.ToSingle(t), (d) => d.ToString()!);
             AddType("Orientation", "orientation",
                 (t) => {
                     var data = t.Replace('\n', ' ').Replace('\r', ' ').Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -53,7 +52,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
 
                     return str.ToString();
                 }
-            );   
+            );
             AddType("Matrix34", "matrix34",
                 (t) => {
                     var data = t.Replace('\n', ' ').Replace('\r', ' ').Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -81,8 +80,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
 
                     return str.ToString();
                 }
-            );   
-            AddType("Position", "Position", 
+            );
+            AddType("Position", "Position",
                 (t) => {
                     var d = t.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(d => Convert.ToDouble(d)).ToArray();
 
@@ -93,8 +92,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
 
                     return string.Join(" \t ", point.X, point.Y, point.Z);
                 }
-            );   
-            AddType("LODView", "LODView");   
+            );
+            AddType("LODView", "LODView");
             AddType("VolumeView", "VolumeView");
         }
     }

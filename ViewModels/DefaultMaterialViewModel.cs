@@ -1,15 +1,8 @@
-﻿using System;
-using System.Buffers.Text;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Services;
 using WpfMvvm.Collections.ObjectModel;
 using WpfMvvm.ViewModels;
-using static GohMdlExpert.ViewModels.DefaultMaterialViewModel;
 
 namespace GohMdlExpert.ViewModels {
     public class DefaultMaterialViewModel : BaseViewModel {

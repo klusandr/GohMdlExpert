@@ -4,8 +4,7 @@ using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
 
-namespace GohMdlExpert.Models.GatesOfHell.Media3D
-{
+namespace GohMdlExpert.Models.GatesOfHell.Media3D {
     public class PlyModel3D {
         private class MeshData {
             private readonly string _textureName;
@@ -59,7 +58,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D
                 if (IsVisible) {
                     Hide();
                 } else {
-                   Show();
+                    Show();
                 }
             }
         }

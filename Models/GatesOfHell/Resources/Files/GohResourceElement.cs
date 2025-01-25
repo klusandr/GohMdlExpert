@@ -1,7 +1,4 @@
-﻿using GohMdlExpert.Models.GatesOfHell.Exceptions;
-using Microsoft.Extensions.DependencyInjection;
-using WpfMvvm.DependencyInjection;
-using SystemPath = System.IO.Path;
+﻿using SystemPath = System.IO.Path;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class GohResourceElement {
@@ -30,7 +27,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
                 path = Path;
             }
 
-            return path; 
+            return path;
         }
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media.Media3D;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources {
@@ -19,14 +14,14 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
 
             public Face() { }
         }
-        
+
         public Point3D[] Points { get; init; }
         public Face[] Faces { get; init; }
         public Vector3D[] Normalizes { get; init; }
         public Point[] UVPoints { get; init; }
         public Mesh[] Meshes { get; init; }
-        public Point3D? MinPoint {  get; init; }
-        public Point3D? MaxPoint {  get; init; }
+        public Point3D? MinPoint { get; init; }
+        public Point3D? MaxPoint { get; init; }
 
         public PlyModel(IEnumerable<Point3D> points, IEnumerable<Face> indicesList,
             IEnumerable<Vector3D> normalizes, IEnumerable<Point> uvPoints,

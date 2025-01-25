@@ -1,15 +1,7 @@
-﻿using GohMdlExpert.Models.GatesOfHell.Exceptions;
+﻿using System.IO;
 using GohMdlExpert.Models.GatesOfHell.Serialization;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-using ModelDataParameter = GohMdlExpert.Models.GatesOfHell.Serialization.ModelDataSerializer.ModelDataParameter;
-using SystemPath = System.IO.Path;
 using DataList = System.Collections.Generic.IList<GohMdlExpert.Models.GatesOfHell.Serialization.ModelDataSerializer.ModelDataParameter>;
+using ModelDataParameter = GohMdlExpert.Models.GatesOfHell.Serialization.ModelDataSerializer.ModelDataParameter;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class MdlFile : GohResourceFile {
@@ -21,7 +13,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
         public static string? Extension => ".mdl";
 
-        public MdlFile(string name, string? path = null, string? relativePathPoint = null) 
+        public MdlFile(string name, string? path = null, string? relativePathPoint = null)
             : base(name, path, relativePathPoint) { }
 
         public override string? GetExtension() {
@@ -37,7 +29,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
             foreach (var plyLodModel in plyLodModels) {
                 var lodParameters = (IEnumerable<ModelDataParameter>)plyLodModel.Data!;
-                
+
                 var plyModelParameter = lodParameters.First();
                 var lodModelsParameters = lodParameters.Skip(1);
 
@@ -50,7 +42,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
                     lodFiles.Add(new PlyFile(RelativePathRemove((string)lodParameter.Data!)));
                 }
 
-                plyLodFiles.Add(plyFile, [..lodFiles]);
+                plyLodFiles.Add(plyFile, [.. lodFiles]);
             }
 
             Data = new MdlModel(parameter, plyFiles, plyLodFiles);
@@ -58,7 +50,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
         public override void SaveData() {
             var parameters = Data.Parameters;
-            var skinParameter = new ModelDataParameter() { 
+            var skinParameter = new ModelDataParameter() {
                 Type = MdlSerializer.MdlTypes.Bone.ToString(),
                 Name = "skin"
             };
@@ -75,7 +67,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
                 foreach (var plyLodFile in Data.PlyModelLods[plyFile]) {
                     volumeViews.Add(new ModelDataParameter(MdlSerializer.MdlTypes.VolumeView.ToString()) {
                         Data = plyLodFile.GetFullPath()
-                    }); 
+                    });
                 }
 
                 lodViews.Add(new ModelDataParameter(MdlSerializer.MdlTypes.LODView.ToString()) {
@@ -86,7 +78,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             skinParameter.Data = lodViews;
 
             ((DataList)((DataList)parameters.Data!)[0].Data!)[13] = skinParameter;
-                
+
             var str = Serializer.Serialize(Data.Parameters);
 
             using var stream = new StreamWriter(GetFullPath());

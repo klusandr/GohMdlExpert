@@ -28,7 +28,7 @@ namespace GohMdlExpert.ViewModels.Trees.OverviewModels {
         public bool IsEnableCheckActive { get; init; }
         public bool IsVisibleActive { get; init; }
         public bool IsEdit {
-            get => _edit; 
+            get => _edit;
             set {
                 _edit = value;
                 OnPropertyChanged();

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GohMdlExpert.Extensions {
+﻿namespace GohMdlExpert.Extensions {
     public static class BitExtension {
         /// <summary>
         /// Возвращает значение указанного бита в байте.

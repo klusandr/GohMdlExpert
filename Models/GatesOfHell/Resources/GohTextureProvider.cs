@@ -1,16 +1,5 @@
-﻿using GohMdlExpert.Models.GatesOfHell.Resources.Files;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
-using System.Windows.Media;
-using System.IO;
-using GohMdlExpert.Models.GatesOfHell.Media3D;
-using System.Data;
-using GohMdlExpert.Models.GatesOfHell.Exceptions;
+﻿using GohMdlExpert.Models.GatesOfHell.Exceptions;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources {
     public class GohTextureProvider {
@@ -30,7 +19,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
         }
 
         public void Update() {
-            if (GohResourceProvider.IsResourceLoaded) { 
+            if (GohResourceProvider.IsResourceLoaded) {
                 _textureDirectory = GohResourceProvider.GetLocationDirectory("texture");
                 ResourceUpdated?.Invoke(this, EventArgs.Empty);
             }

@@ -1,15 +1,9 @@
-﻿using GohMdlExpert.Models.GatesOfHell.Media3D;
+﻿using System.Windows.Input;
+using System.Windows.Media.Media3D;
 using GohMdlExpert.ViewModels;
 using GohMdlExpert.Views.Camera3D;
 using GohMdlExpert.Views.Models3D;
 using GohMdlExpert.Views.MouseHandlers;
-using System.Windows;
-using System.Windows.Data;
-using System.Windows.Input;
-using System.Windows.Media.Media3D;
-using WpfMvvm.DependencyInjection;
-using WpfMvvm.Diagnostics;
-using WpfMvvm.ViewModels;
 using WpfMvvm.Views;
 using WpfMvvm.Views.Attributes;
 

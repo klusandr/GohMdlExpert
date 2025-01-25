@@ -5,7 +5,6 @@ using System.Windows.Media.Imaging;
 using GohMdlExpert.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Media3D;
 using GohMdlExpert.Properties;
-using WpfMvvm.ViewModels.Controls;
 using WpfMvvm.ViewModels.Controls.Menu;
 
 namespace GohMdlExpert.ViewModels.Trees.OverviewModels {

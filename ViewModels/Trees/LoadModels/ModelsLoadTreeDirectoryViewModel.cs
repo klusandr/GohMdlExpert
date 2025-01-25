@@ -1,7 +1,4 @@
-﻿using System.ComponentModel;
-using System.Text.RegularExpressions;
-using System.Windows.Input;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GohMdlExpert.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Resources;

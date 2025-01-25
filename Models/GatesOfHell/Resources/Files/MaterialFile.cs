@@ -1,13 +1,12 @@
 ﻿using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
-using GohMdlExpert.Models.GatesOfHell.Media3D;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class MaterialFile : GohResourceFile {
         public static string Extension => ".dds";
 
-        public MaterialFile(string name, string? path = null, string? relativePathPoint = null) : base(GetNameWithExtension(name), path, relativePathPoint) {}
+        public MaterialFile(string name, string? path = null, string? relativePathPoint = null) : base(GetNameWithExtension(name), path, relativePathPoint) { }
 
         public new DiffuseMaterial Data => GetMaterial();
         public ImageSource? ImageSource => (Data.Brush as ImageBrush)?.ImageSource;

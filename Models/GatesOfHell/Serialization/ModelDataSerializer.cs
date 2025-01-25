@@ -147,7 +147,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
                 }
 
                 buildString.Append('\t', level).Append('}');
-                
+
             } else {
                 var dataText = new StringBuilder();
 

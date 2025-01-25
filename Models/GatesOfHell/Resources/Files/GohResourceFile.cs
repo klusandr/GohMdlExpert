@@ -1,5 +1,5 @@
-﻿using GohMdlExpert.Models.GatesOfHell.Exceptions;
-using System.IO;
+﻿using System.IO;
+using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using SystemPath = System.IO.Path;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
@@ -10,7 +10,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             get {
                 if (_data == null) {
                     LoadData();
-                } 
+                }
 
                 return _data!;
             }

@@ -1,8 +1,4 @@
 ﻿using System.Collections;
-using System.Linq;
-using System.Windows.Input;
-using GohMdlExpert.Models.GatesOfHell.Exceptions;
-using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class PlyMtlFiles : IEnumerable<MtlFile> {
@@ -12,7 +8,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
         public IEnumerable<string> FilesNames => _files.Keys;
 
-        public MtlFile this[string key]  {
+        public MtlFile this[string key] {
             get {
                 ResourceChecking.ThrowCheckPlyFileMeshTextureName(PlyFile, key);
                 return _files[key];

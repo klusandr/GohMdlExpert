@@ -1,11 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.IO;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
-using GohMdlExpert.Extensions;
-using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Media3D;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
@@ -14,7 +11,6 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 using GohMdlExpert.Services;
 using GohMdlExpert.ViewModels.Trees.LoadModels;
 using GohMdlExpert.ViewModels.Trees.OverviewModels;
-using GohMdlExpert.Views.Trees;
 using WpfMvvm.Collections.ObjectModel;
 using WpfMvvm.Data;
 using WpfMvvm.ViewModels;
@@ -101,7 +97,7 @@ namespace GohMdlExpert.ViewModels {
             var mtlFiles = new List<MtlFile>();
 
 
-            foreach ( var plyFile in plyFiles ) {
+            foreach (var plyFile in plyFiles) {
                 _humanskinProvider.Current.SetPlyFileFullPath(plyFile);
 
                 string? mdlFilePath = mdlFile.GetDirectoryPath();
@@ -198,9 +194,9 @@ namespace GohMdlExpert.ViewModels {
             }
 
             _humanskinMdlGeneratorViewModel.CreateMtlFile(
-                MdlFile, 
-                PlyModels.Select(p => p.PlyFile), 
-                new Dictionary<string, MtlTexture>(AggregateMtlFiles.Values.Select(m => new KeyValuePair<string, MtlTexture>(m.Name, m.Data.ElementAt(GetMtlFileMaterialIndex(m.Name))))), 
+                MdlFile,
+                PlyModels.Select(p => p.PlyFile),
+                new Dictionary<string, MtlTexture>(AggregateMtlFiles.Values.Select(m => new KeyValuePair<string, MtlTexture>(m.Name, m.Data.ElementAt(GetMtlFileMaterialIndex(m.Name))))),
                 new Dictionary<PlyFile, PlyFile[]>(_lodPlyFiles.Select(l => new KeyValuePair<PlyFile, PlyFile[]>(l.Key.PlyFile, l.Value.ToArray())))
             );
         }

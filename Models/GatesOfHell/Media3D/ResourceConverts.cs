@@ -1,19 +1,6 @@
-﻿using GohMdlExpert.Extensions;
-using GohMdlExpert.Models.GatesOfHell.Exceptions;
-using GohMdlExpert.Models.GatesOfHell.Resources;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
+﻿using System.Windows.Media;
 using System.Windows.Media.Media3D;
-using WpfMvvm.DependencyInjection;
-using static GohMdlExpert.Models.GatesOfHell.Resources.PlyModel;
+using GohMdlExpert.Models.GatesOfHell.Resources;
 
 namespace GohMdlExpert.Models.GatesOfHell.Media3D {
     /// <summary>
