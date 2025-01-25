@@ -21,6 +21,8 @@ namespace GohMdlExpert.Services {
         public MaterialFile? GetMaterialDialog() {
             _materialLoad ??= LoadView();
 
+            _materialLoad.ViewModel.SelectedMaterialFile = SelectedMaterialFile;
+
             _childWindow = new ChildWindow() {
                 Title = $"Load materials",
                 Content = _materialLoad,

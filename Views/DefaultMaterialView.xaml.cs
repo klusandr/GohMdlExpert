@@ -21,6 +21,7 @@ namespace GohMdlExpert.Views {
     public partial class DefaultMaterialView : BaseView {
         public DefaultMaterialView() {
             InitializeComponent();
+            
         }
     }
 }

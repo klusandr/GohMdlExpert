@@ -9,9 +9,46 @@
              d:DesignHeight="200" d:DesignWidth="200">
     <StackPanel Margin="5">
         <TextBlock Text="Default material"/>
-        <Image Source="{Binding MaterialFile.ImageSource}" MaxWidth="150" MaxHeight="150"/>
-        <TextBlock Text="{Binding MaterialFile.Name}"/>
-        <Button Content="Select default material" Command="{Binding SelectMaterialCommand}" Margin="5" Padding="5"/>
+        <ListView ItemsSource="{Binding MaterialFiles}" SelectedItem="{Binding SelectedMaterial}" HorizontalContentAlignment="Stretch" MaxHeight="216">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <DockPanel>
+                        <Image Source="{Binding MaterialFile.ImageSource}" ToolTip="{Binding MaterialFile.Name}" DockPanel.Dock="Right" Width="50">
+                            <Image.InputBindings>
+                                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding Path=DataContext.EditMaterialFileSelectedMaterialCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"/>
+                            </Image.InputBindings>
+                        </Image>
+                        <TextBlock Text="{Binding TextureName}" TextTrimming="WordEllipsis" VerticalAlignment="Center"/>
+                    </DockPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <DockPanel>
+            <DockPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Margin" Value="2.5 5"/>
+                    <Setter Property="Width" Value="20"/>
+                    <Setter Property="Height" Value="20"/>
+                    <Setter Property="DockPanel.Dock" Value="Right"/>
+                    <Setter Property="Visibility" Value="{Binding IsShowEditButtons, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                </Style>
+            </DockPanel.Resources>
+            
+            <Button Command="{Binding RemoveSelectedMaterialCommand}">
+                <Path Data="M 0,10 L 20,10" Stroke="Black" StrokeThickness="2" Stretch="Fill"/>
+            </Button>
+            <Button Command="{Binding AddMaterialCommand}" Visibility="{Binding IsShowAddButtons, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Path Data="M 0,10 L 20,10 M 10,0 L 10,20" Stroke="Black" StrokeThickness="2" Stretch="Fill"/>
+            </Button>
+            <Button Command="{Binding ClearSelectCommand}">
+                <Image Source="/Resources/cross.ico"/>
+            </Button>
+            <Button Command="{Binding EditTextureNameSelectedMaterialCommand}">
+                <Image Source="/Resources/check.ico"/>
+            </Button>
+            <TextBox Text="{Binding TextureName, TargetNullValue=''}" Margin="2.5 5" MaxLength="30"/>
+        </DockPanel>
         <CheckBox Content="Use when no material" IsChecked="{Binding IsUse}"/>
         <CheckBox Content="Use always"  IsChecked="{Binding IsUseAlways}" IsEnabled="{Binding IsUse}"/>
     </StackPanel>

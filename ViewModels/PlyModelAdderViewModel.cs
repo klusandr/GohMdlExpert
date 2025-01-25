@@ -47,7 +47,8 @@ namespace GohMdlExpert.ViewModels
 
             _defaultMaterialViewModel.PropertyChangeHandler.AddHandlerBuilder(nameof(DefaultMaterialViewModel.IsUse), (_, _) => DefaultTextureUpdate());
             _defaultMaterialViewModel.PropertyChangeHandler.AddHandlerBuilder(nameof(DefaultMaterialViewModel.IsUseAlways), (_, _) => DefaultTextureUpdate());
-            _defaultMaterialViewModel.PropertyChangeHandler.AddHandlerBuilder(nameof(DefaultMaterialViewModel.MaterialFile), (_, _) => DefaultTextureUpdate());
+            //_defaultMaterialViewModel.PropertyChangeHandler.AddHandlerBuilder(nameof(DefaultMaterialViewModel.MaterialFile), (_, _) => DefaultTextureUpdate());
+            _defaultMaterialViewModel.MaterialsUpdate += (_, _) => DefaultTextureUpdate();
         }
 
         public void SetModel(PlyFile plyFile, AggregateMtlFiles? aggregateMtlFiles) {
@@ -135,8 +136,10 @@ namespace GohMdlExpert.ViewModels
             if (AddedModel != null) {
                 foreach (var textureName in AddedModel.MeshesTextureNames) {
                     if (AddedModel.GetMeshTexture(textureName) == null) {
-                        if (_defaultMaterialViewModel.IsUse && _defaultMaterialViewModel.MaterialFile != null) {
-                            AddedModel.SetMeshTexture(textureName, new MtlTexture(_defaultMaterialViewModel.MaterialFile));
+                        var material = _defaultMaterialViewModel.GetMaterialFileForTexture(textureName);
+
+                        if (material != null) {
+                            AddedModel.SetMeshTexture(textureName, new MtlTexture(material));
                         }
                     }
                 }
@@ -146,15 +149,17 @@ namespace GohMdlExpert.ViewModels
         private void SetDefaultTexture() {
             if (AddedModel != null) {
                 foreach (var textureName in AddedModel.MeshesTextureNames) {
-                    if (_defaultMaterialViewModel.IsUse && _defaultMaterialViewModel.MaterialFile != null) {
-                        AddedModel.SetMeshTexture(textureName, new MtlTexture(_defaultMaterialViewModel.MaterialFile));
+                    var material = _defaultMaterialViewModel.GetMaterialFileForTexture(textureName);
+
+                    if (material != null) {
+                        AddedModel.SetMeshTexture(textureName, new MtlTexture(material));
                     }
                 }
             }
         }
 
         private void DefaultTextureUpdate() {
-            if (_defaultMaterialViewModel.IsUse && _defaultMaterialViewModel.MaterialFile != null) {
+            if (_defaultMaterialViewModel.IsUse) {
                 if (!_defaultMaterialViewModel.IsUseAlways) {
                     SetTextureOnAggregateMtlFile();
                     ReplaceNullTextureOnDefault();

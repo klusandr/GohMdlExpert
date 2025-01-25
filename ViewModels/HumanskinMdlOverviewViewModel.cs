@@ -76,12 +76,12 @@ namespace GohMdlExpert.ViewModels {
             _resourceProvider = resourceProvider;
             _humanskinProvider = humanskinProvider;
             _textureProvider = textureProvider;
+            _humanskinMdlGeneratorViewModel = humanskinMdlGeneratorViewModel;
+
             _defaultMaterialViewModel = new DefaultMaterialViewModel(materialSelector);
             _modelAdderViewModel = new PlyModelAdderViewModel(this, _defaultMaterialViewModel);
-
             _modelsLoadTreeViewModel = new ModelsLoadTreeViewModel(_modelAdderViewModel, humanskinProvider, textureProvider);
             _modelsOverviewTreeViewModel = new ModelsOverviewTreeViewModel(this);
-            _humanskinMdlGeneratorViewModel = humanskinMdlGeneratorViewModel;
 
             _modelsCollectionBinder = new CollectionChangeBinder<Model3D>(_plyModels, _models, (i) => ((PlyModel3D)i!).Model);
             _plyModelsChangeHandler = new CollectionChangeHandler(_plyModels)
