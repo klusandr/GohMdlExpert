@@ -10,10 +10,6 @@ using WpfMvvm.ViewModels.Controls;
 
 namespace GohMdlExpert.ViewModels.Trees.OverviewModels {
     public class ModelsOverviewTreeViewModel : TreeViewModel {
-        private IEnumerable<MtlTexture>? _mtlTextures;
-        private ModelsOverviewTreeMtlViewModel? _selectedMtlItem;
-        private ModelsOverviewTreePlyViewModel? _selectedPlyItem;
-
         public HumanskinMdlOverviewViewModel Models3DViewModel { get; }
         public TextureMaterialListViewModel MaterialListViewModel { get; }
         public PlyModelLodListViewModel LodListViewModel { get; }

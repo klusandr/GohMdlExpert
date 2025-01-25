@@ -50,7 +50,7 @@ namespace GohMdlExpert.Services {
         }
 
         private void MaterialApproveHandler(object? sender, EventArgs e) {
-            SelectedMaterialFile = _materialLoad.ViewModel.SelectedMaterialFile;
+            SelectedMaterialFile = _materialLoad?.ViewModel.SelectedMaterialFile;
             _childWindow?.Close();
         }
     }

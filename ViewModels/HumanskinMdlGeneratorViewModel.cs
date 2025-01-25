@@ -31,7 +31,7 @@ namespace GohMdlExpert.ViewModels {
 
         public string? CreateMtlFile(MdlFile? mdlFile, IEnumerable<PlyFile> plyFiles, Dictionary<string, MtlTexture> mtlTextures, Dictionary<PlyFile, PlyFile[]> lodFiles) {
             _fileDialog.InitialDirectory = Path.GetDirectoryName(Settings.Default.LastSavedFile);
-            _fileDialog.FileName = mdlFile.Name;
+            _fileDialog.FileName = mdlFile?.Name ?? "";
 
             string fileName;
             ModelDataSerializer.ModelDataParameter parameters;

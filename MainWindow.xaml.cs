@@ -24,7 +24,7 @@ namespace GohMdlExpert {
         public MainWindow() {
             InitializeComponent();
 
-            DataContext = ViewModelsProvider.Instance.GetViewModel<ApplicationViewModel>();
+            DataContext = App.Current.ServiceProvider.GetRequiredService<ApplicationViewModel>();
         }
 
         private void MenuItemExitClick(object sender, RoutedEventArgs e) {

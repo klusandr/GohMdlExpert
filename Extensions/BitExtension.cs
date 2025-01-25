@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-#warning Старое пространство имён.
-namespace ParametrizerUSPDNext.Extensions {
+
+namespace GohMdlExpert.Extensions {
     public static class BitExtension {
         /// <summary>
         /// Возвращает значение указанного бита в байте.
@@ -18,7 +18,7 @@ namespace ParametrizerUSPDNext.Extensions {
                 throw new IndexOutOfRangeException("Индекс бита не может быть больше 7 или меньше 0.");
             }
 
-            return ((0x01 << index) & value) != 0;
+            return (0x01 << index & value) != 0;
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace ParametrizerUSPDNext.Extensions {
             }
 
             if (bitValue) {
-                return (byte)(value | (0x01 << (byte)index));
+                return (byte)(value | 0x01 << (byte)index);
             } else {
                 return (byte)(value & ~(0x01 << (byte)index));
             }
@@ -59,7 +59,7 @@ namespace ParametrizerUSPDNext.Extensions {
             int byteIndex = index / 8;
             int bitIndex = index % 8;
 
-            return GetBit(bytes[byteIndex], bitIndex);
+            return bytes[byteIndex].GetBit(bitIndex);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace ParametrizerUSPDNext.Extensions {
             int byteIndex = index / 8;
             int bitIndex = index % 8;
 
-            bytes[byteIndex] = SetBit(bytes[byteIndex], bitIndex, bitValue);
+            bytes[byteIndex] = bytes[byteIndex].SetBit(bitIndex, bitValue);
         }
     }
 }
