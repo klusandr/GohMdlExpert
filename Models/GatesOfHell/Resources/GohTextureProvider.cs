@@ -1,7 +1,9 @@
 ﻿using GohMdlExpert.Models.GatesOfHell.Exceptions;
+using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources {
+namespace GohMdlExpert.Models.GatesOfHell.Resources
+{
     public class GohTextureProvider {
         private GohResourceDirectory? _textureDirectory;
 

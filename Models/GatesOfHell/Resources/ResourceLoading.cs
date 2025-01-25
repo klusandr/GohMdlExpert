@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
+using GohMdlExpert.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
@@ -34,16 +35,20 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
         /// <param name="materialFile">Файл материала.</param>
         /// <returns>Материал.</returns>
         public static DiffuseMaterial LoadMaterial(MaterialFile materialFile) {
-            string fullPath = materialFile.GetFullPath();
             DiffuseMaterial diffuseMaterial;
 
             if (!materialFile.Exists()) {
                 throw GohResourceFileException.IsNotExists(materialFile);
             }
 
+            using var stream = materialFile.GetStream();
+            byte[] buffer = new byte[stream.Length];
+
+            stream.Read(buffer, 0, buffer.Length);
+
             diffuseMaterial = new DiffuseMaterial(
-                new ImageBrush(new BitmapImage(new Uri(fullPath))) {
-                    ViewportUnits = BrushMappingMode.Absolute,
+                new ImageBrush(new BitmapImage().FromByteArray(buffer)) {
+                    ViewportUnits = BrushMappingMode.Absolute
                 }
             );
 
@@ -75,6 +80,32 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
             }
 
             return lodFiles;
+        }
+
+        public static void LoadHumanskinFile(MdlFile mdlFile, out IEnumerable<MtlFile> mtlFiles, GohHumanskinResourceProvider humanskinResourceProvider, GohTextureProvider textureProvider) {
+            var plyFiles = mdlFile.Data.PlyModel;
+            var lodFiles = mdlFile.Data.PlyModelLods;
+            var mtlFilesList = new List<MtlFile>();
+
+            foreach (var plyFile in plyFiles) {
+                humanskinResourceProvider.Current.SetPlyFileFullPath(plyFile);
+
+                foreach (var lodFile in lodFiles[plyFile]) {
+                    humanskinResourceProvider.Current.SetPlyFileFullPath(lodFile);
+                }
+
+                string? mdlFilePath = mdlFile.GetDirectoryPath();
+
+                if (mdlFilePath != null) {
+                    foreach (var mtlFilePath in Directory.GetFiles(mdlFilePath, "*.mtl")) {
+                        mtlFilesList.Add(new MtlFile(mtlFilePath));
+                    }
+                }
+            }
+
+            textureProvider.SetTexturesMaterialsFullPath(mtlFilesList.Select(m => m.Data));
+
+            mtlFiles = mtlFilesList;
         }
 
         public static ModelDataSerializer.ModelDataParameter GetHumanskinMdlParametersTemplate() {

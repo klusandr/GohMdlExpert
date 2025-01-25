@@ -5,6 +5,7 @@ using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using GohMdlExpert.Models.GatesOfHell.Media3D;
 using GohMdlExpert.Models.GatesOfHell.Resources;
+using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
@@ -16,7 +17,8 @@ using WpfMvvm.Data;
 using WpfMvvm.ViewModels;
 using WpfMvvm.Views.Dialogs;
 
-namespace GohMdlExpert.ViewModels {
+namespace GohMdlExpert.ViewModels
+{
     public sealed class HumanskinMdlOverviewViewModel : BaseViewModel {
         private MdlFile? _mdlFile;
         private readonly ObservableCollection<PlyModel3D> _plyModels;
@@ -91,35 +93,14 @@ namespace GohMdlExpert.ViewModels {
 
         public void SetMtlFile(MdlFile mdlFile) {
             PlyModels.Clear();
+
+            ResourceLoading.LoadHumanskinFile(mdlFile, out var mtlFiles, _humanskinProvider, _textureProvider);
+
             MdlFile = mdlFile;
             var plyFiles = mdlFile.Data.PlyModel;
             var lodFiles = mdlFile.Data.PlyModelLods;
-            var mtlFiles = new List<MtlFile>();
-
-
-            foreach (var plyFile in plyFiles) {
-                _humanskinProvider.Current.SetPlyFileFullPath(plyFile);
-
-                string? mdlFilePath = mdlFile.GetDirectoryPath();
-
-                if (mdlFilePath != null) {
-                    foreach (var mtlFilePath in Directory.GetFiles(mdlFilePath, "*.mtl")) {
-                        mtlFiles.Add(new MtlFile(mtlFilePath));
-                    }
-                }
-            }
 
             var missTexture = new List<MtlFile>();
-
-            _textureProvider.SetTexturesMaterialsFullPath(mtlFiles.Select(m => m.Data));
-
-            foreach (var item in mdlFile.Data.PlyModel) {
-                item.RelativePathPoint = _humanskinProvider.Current.Source.Path;
-            }
-
-            foreach (var item in mdlFile.Data.PlyModelLods.Values.SelectMany(p => p)) {
-                item.RelativePathPoint = _humanskinProvider.Current.Source.Path;
-            }
 
             foreach (var plyFile in plyFiles) {
                 AddModel(new PlyModel3D(plyFile), lodModels: lodFiles[plyFile]);

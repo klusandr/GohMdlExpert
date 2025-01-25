@@ -1,7 +1,9 @@
 ﻿using GohMdlExpert.Models.GatesOfHell.Exceptions;
+using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates {
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates
+{
     public class AggregateMtlFile : GohResourceFile {
         private readonly PlyFile _plyFile;
         private readonly GohFactionHumanskinResource? _humanskinResource;

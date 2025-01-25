@@ -1,10 +1,14 @@
 ﻿using System.IO;
 using System.Text.RegularExpressions;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class GohResourceDirectory : GohResourceElement {
         private List<GohResourceElement>? _items;
+
+        private IDirectoryLoader? _directoryLoader;
 
         public List<GohResourceElement> Items {
             get {
@@ -16,7 +20,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             }
         }
 
-        public GohResourceDirectory(string name, string? path = null, string? relativePathPoint = null, string? location = null)
+        public IDirectoryLoader DirectoryLoader { get => _directoryLoader ?? GohServicesProvider.Instance.GetRequiredService<IDirectoryLoader>(); init => _directoryLoader = value; }
+
+        public GohResourceDirectory(string name, string? path = null, string? relativePathPoint = null)
             : base(name, path, relativePathPoint) {
 
             if (path == null) {
@@ -39,12 +45,12 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
                 _items = [];
             }
 
-            foreach (var directoryNames in Directory.GetDirectories(GetFullPath())) {
-                _items.Add(new GohResourceDirectory(directoryNames));
+            foreach (var directory in DirectoryLoader.GetDirectories(GetFullPath())) {
+                _items.Add(directory);
             }
 
-            foreach (var fileFullPath in Directory.GetFiles(GetFullPath())) {
-                _items.Add(GohResourceProvider.GetResourceFile(fileFullPath));
+            foreach (var file in DirectoryLoader.GetFiles(GetFullPath())) {
+                _items.Add(file);
             }
         }
 

@@ -1,6 +1,8 @@
-﻿using GohMdlExpert.Models.GatesOfHell.Serialization;
+﻿using GohMdlExpert.Models.GatesOfHell.Resources.Data;
+using GohMdlExpert.Models.GatesOfHell.Serialization;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
+{
     public class PlyFile : GohResourceFile {
         private static PlySerializer? s_serializer;
 
@@ -18,7 +20,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         }
 
         public override void LoadData() {
-            Data = Serializer.Deserialize(GetStream());
+            using var stream = GetStream();
+
+            Data = Serializer.Deserialize(stream);
         }
     }
 }

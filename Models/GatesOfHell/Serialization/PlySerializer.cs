@@ -3,11 +3,12 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media.Media3D;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
-using GohMdlExpert.Models.GatesOfHell.Resources;
-using static GohMdlExpert.Models.GatesOfHell.Resources.PlyModel;
-using Mesh = GohMdlExpert.Models.GatesOfHell.Resources.PlyModel.Mesh;
+using GohMdlExpert.Models.GatesOfHell.Resources.Data;
+using static GohMdlExpert.Models.GatesOfHell.Resources.Data.PlyModel;
+using Mesh = GohMdlExpert.Models.GatesOfHell.Resources.Data.PlyModel.Mesh;
 
-namespace GohMdlExpert.Models.GatesOfHell.Serialization {
+namespace GohMdlExpert.Models.GatesOfHell.Serialization
+{
     public class PlySerializer {
         private enum MashFlags {
             TwoSided = 0x01,     // render this mesh without culling
@@ -41,7 +42,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
             return Deserialize(new FileStream(fileName, FileMode.Open));
         }
 
-        public PlyModel Deserialize(FileStream modelFileStream) {
+        public PlyModel Deserialize(Stream modelFileStream) {
             try {
                 Point3D minPoint, maxPoint;
                 List<Mesh> meshes = [];
@@ -57,7 +58,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
                 var fileHeader = Encoding.ASCII.GetString(readBytes, 0, 8);
 
                 if (!fileHeader.Contains("EPLY")) {
-                    throw GohResourceFileException.InvalidFormat(modelFileStream.Name, "EPLY");
+#warning Вынасти проверку формата файла куда-нибудь.
+                    throw GohResourceFileException.InvalidFormat("!!!", "EPLY");
                 }
 
                 modelFileStream.Read(readBytes, 0, 24);

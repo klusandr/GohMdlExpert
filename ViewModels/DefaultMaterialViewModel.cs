@@ -104,8 +104,8 @@ namespace GohMdlExpert.ViewModels {
 
                 if (materialFile != null && CheckTextureNameUniqueness(TextureName)) {
                     _materialFiles.Add(new DefaultMaterialItemViewModel(TextureName, materialFile));
-                    OnMaterialUpdate();
                     TextureName = null;
+                    OnMaterialUpdate();
                 }
             }
         }
@@ -113,8 +113,8 @@ namespace GohMdlExpert.ViewModels {
         private void EditTextureNameSelectedMaterial() {
             if (SelectedMaterial != null && TextureName != null && CheckTextureNameUniqueness(TextureName)) {
                 SelectedMaterial.TextureName = TextureName;
-                OnMaterialUpdate();
                 ClearSelect();
+                OnMaterialUpdate();
             }
         }
 
@@ -126,8 +126,8 @@ namespace GohMdlExpert.ViewModels {
 
                 if (materialFile != null) {
                     SelectedMaterial.MaterialFile = SelectedMaterial.MaterialFile = materialFile;
-                    OnMaterialUpdate();
                     ClearSelect();
+                    OnMaterialUpdate();
                 }
             }
         }
@@ -135,8 +135,8 @@ namespace GohMdlExpert.ViewModels {
         private void RemoveSelectedMaterial() {
             if (SelectedMaterial != null) {
                 _materialFiles.Remove(SelectedMaterial);
-                OnMaterialUpdate();
                 ClearSelect();
+                OnMaterialUpdate();
             }
         }
 

@@ -1,8 +1,10 @@
 ﻿using GohMdlExpert.Models.GatesOfHell.Exceptions;
+using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins
+{
     public class GohFactionHumanskinResource {
         public string Name { get; }
         public GohResourceDirectory Root { get; }

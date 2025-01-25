@@ -1,12 +1,14 @@
 ﻿using System.IO;
 using System.Windows.Media;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
+using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Serialization;
 using static GohMdlExpert.Models.GatesOfHell.Serialization.ModelDataSerializer;
 using static GohMdlExpert.Models.GatesOfHell.Serialization.MtlSerializer;
 using SystemPath = System.IO.Path;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
+{
     public class MtlFile : GohResourceFile {
         private static MtlSerializer? s_serializer;
 

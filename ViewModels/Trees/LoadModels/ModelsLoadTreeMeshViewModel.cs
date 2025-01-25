@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GohMdlExpert.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
 using GohMdlExpert.Properties;
+using WpfMvvm.ViewModels.Commands;
 using WpfMvvm.ViewModels.Controls.Menu;
 
 namespace GohMdlExpert.ViewModels.Trees.LoadModels {
@@ -13,15 +15,14 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
 
         public AggregateMtlFile MtlFile { get; }
 
-        public ICommand SetDefaultMaterialCommand => CommandManager.GetCommand(SetDefaultMaterial);
-
         public ModelsLoadTreeMeshViewModel(AggregateMtlFile mtlFile, ModelsLoadTreeViewModel modelsTree) : base(mtlFile, modelsTree) {
             Text = mtlFile.Name;
             Icon = s_icon;
             MtlFile = mtlFile;
 
             ContextMenuViewModel.ClearItems();
-            ContextMenuViewModel.AddItem(new MenuItemViewModel("Set default texture", SetDefaultMaterialCommand));
+            ContextMenuViewModel
+                .AddItemBuilder(new MenuItemViewModel("Copy name in buffer", new Command(() => Clipboard.SetData(DataFormats.Text, Text))));
 
             LoadData();
         }

@@ -1,7 +1,9 @@
 ﻿using GohMdlExpert.Models.GatesOfHell.Exceptions;
+using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources {
+namespace GohMdlExpert.Models.GatesOfHell.Resources
+{
     public static class ResourceChecking {
         public static void ThrowCheckPlyFileMeshTextureName(PlyFile plyFile, string meshTextureName) {
             if (!CheckPlyModelMeshTextureName(plyFile.Data, meshTextureName)) {

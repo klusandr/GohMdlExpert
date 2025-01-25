@@ -22,21 +22,20 @@ namespace GohMdlExpert {
             Settings.Default.Save();
         }
 
-        protected override void OnServicesStartup(object? sender, DependencyInjectionStatupArgs e) {
+        protected override void OnServicesStartup(object? sender, ServicesStartupArgs e) {
             base.OnServicesStartup(sender, e);
 
-            e.Services.AddSingleton<GohResourceLocations>();
-            e.Services.AddSingleton<GohResourceProvider>();
-            e.Services.AddSingleton<GohHumanskinResourceProvider>();
-            e.Services.AddSingleton<GohTextureProvider>();
-
-            e.Services.AddSingleton<MaterialSelector>();
-
-            e.Services.AddSingleton(new CommandFactory(
-                exceptionHandler: (e) => {
-                    ServiceProvider.GetRequiredService<IUserDialogProvider>().ShowError("", exception: e);
-                }
-            ));
+            e.Services
+                .AddSingleton<GohResourceLocations>()
+                .AddSingleton<GohResourceProvider>()
+                .AddSingleton<GohHumanskinResourceProvider>()
+                .AddSingleton<GohTextureProvider>()
+                .AddSingleton<MaterialSelector>()
+                .AddSingleton((sp) => new CommandFactory(
+                    exceptionHandler: (e) => {
+                        sp.GetRequiredService<IUserDialogProvider>().ShowError("", exception: e);
+                    }
+                ));
 
             ViewModelsStartup.Startup(sender, e);
         }

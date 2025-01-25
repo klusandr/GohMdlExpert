@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using GohMdlExpert.Models.GatesOfHell.Resources;
+using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 using GohMdlExpert.Models.GatesOfHell.Serialization;
@@ -8,7 +9,8 @@ using Microsoft.Win32;
 using WpfMvvm.ViewModels;
 using WpfMvvm.Views.Dialogs;
 
-namespace GohMdlExpert.ViewModels {
+namespace GohMdlExpert.ViewModels
+{
     public class HumanskinMdlGeneratorViewModel : BaseViewModel {
         private readonly SaveFileDialog _fileDialog;
         private readonly GohHumanskinResourceProvider _humanskinResourceProvider;

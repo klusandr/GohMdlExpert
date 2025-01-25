@@ -1,8 +1,9 @@
-﻿using GohMdlExpert.Models.GatesOfHell.Resources;
+﻿using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
 using WpfMvvm.ViewModels;
 
-namespace GohMdlExpert.ViewModels {
+namespace GohMdlExpert.ViewModels
+{
     public class TextureMaterialListViewModel : BaseViewModel {
         private AggregateMtlFile? _mtlFile;
         private int _selectedMaterialIndex;
