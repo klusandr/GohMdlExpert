@@ -2,16 +2,22 @@
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins
 {
     public class GohFactionHumanskinResource {
+        private const string HUMANSKIN_SOURCE_DIRECTORY_NAME_REG = @"\[.*_source\]";
+
+        private readonly GohResourceProvider _resourceProvider;
+
         public string Name { get; }
         public GohResourceDirectory Root { get; }
         public GohResourceDirectory Source { get; }
 
-        public GohFactionHumanskinResource(string name, GohResourceDirectory factionRoot) {
-            var source = factionRoot.FindResourceElements<GohResourceDirectory>(null, searchPattern: GohResourceLocations.HUMANSKIN_SOURCE_DIRECTORY_NAME_REG, first: true, deepSearch: false).FirstOrDefault();
+        public GohFactionHumanskinResource(string name, GohResourceDirectory factionRoot, GohResourceProvider resourceProvider) {
+            var source = factionRoot.FindResourceElements<GohResourceDirectory>(null, searchPattern: HUMANSKIN_SOURCE_DIRECTORY_NAME_REG, first: true, deepSearch: false).FirstOrDefault();
 
             if (source == null
                 || !source.FindResourceElements<PlyFile>(first: true).Any()
@@ -19,6 +25,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins
                 throw new GohResourcesException($"Directory {factionRoot.GetFullPath} is not faction Humanskin directory");
             }
 
+            _resourceProvider = resourceProvider;
             Name = name;
             Root = factionRoot;
             Source = source;
@@ -57,7 +64,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins
             var mtlTextures = new MtlTextureCollection();
 
             foreach (var mdlFile in mdlFiles) {
-                var directory = new GohResourceDirectory(mdlFile);
+                var directory = _resourceProvider.GetResourceDirectory(mdlFile);
 
                 foreach (var mtlFile in directory.GetFiles().OfType<MtlFile>()) {
                     if (mtlFile.Name == meshTextureName) {

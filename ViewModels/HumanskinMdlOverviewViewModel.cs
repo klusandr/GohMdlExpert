@@ -94,7 +94,7 @@ namespace GohMdlExpert.ViewModels
         public void SetMtlFile(MdlFile mdlFile) {
             PlyModels.Clear();
 
-            ResourceLoading.LoadHumanskinFile(mdlFile, out var mtlFiles, _humanskinProvider, _textureProvider);
+            GohResourceLoading.LoadHumanskinFile(mdlFile, out var mtlFiles, _humanskinProvider, _textureProvider);
 
             MdlFile = mdlFile;
             var plyFiles = mdlFile.Data.PlyModel;
@@ -134,7 +134,7 @@ namespace GohMdlExpert.ViewModels
                 }
             }
 
-            _lodPlyFiles.Add(modelPly, new ObservableCollection<PlyFile>(lodModels ?? ResourceLoading.GetPlyLodFiles(modelPly.PlyFile, _humanskinProvider.Current, _resourceProvider)));
+            _lodPlyFiles.Add(modelPly, new ObservableCollection<PlyFile>(lodModels ?? GohResourceLoading.GetPlyLodFiles(modelPly.PlyFile, _humanskinProvider.Current, _resourceProvider)));
 
             _plyModels.Add(modelPly);
             UpdateTexture();

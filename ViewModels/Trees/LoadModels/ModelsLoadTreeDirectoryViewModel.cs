@@ -22,7 +22,7 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
             }
 
             var directories = _directory.GetDirectories();
-            var files = ResourceLoading.FilterPlyFiles(_directory.GetFiles().OfType<PlyFile>());
+            var files = GohResourceLoading.FilterPlyFiles(_directory.GetFiles().OfType<PlyFile>());
 
             foreach (var directory in directories) {
                 AddItem(new ModelsLoadTreeDirectoryViewModel(directory, Tree));

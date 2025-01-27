@@ -22,7 +22,7 @@ namespace GohMdlExpert.ViewModels {
 
         public void OpenFile() {
             var fileDialog = new OpenFileDialog {
-                Filter = ResourceLoading.MdlFileOpenFilter,
+                Filter = GohResourceLoading.MdlFileOpenFilter,
                 InitialDirectory = Path.GetDirectoryName(Settings.Default.LastOpenedFile)
             };
 

@@ -1,5 +1,5 @@
-﻿using System.IO;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+using System.Xml.Linq;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,7 +8,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class GohResourceDirectory : GohResourceElement {
         private List<GohResourceElement>? _items;
 
-        private IDirectoryLoader? _directoryLoader;
+        private IDirectoryLoader? _loader;
 
         public List<GohResourceElement> Items {
             get {
@@ -20,7 +20,13 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             }
         }
 
-        public IDirectoryLoader DirectoryLoader { get => _directoryLoader ?? GohServicesProvider.Instance.GetRequiredService<IDirectoryLoader>(); init => _directoryLoader = value; }
+        public IDirectoryLoader Loader {
+            get => _loader ?? GohServicesProvider.Instance.GetRequiredService<IDirectoryLoader>();
+            set {
+                if (_loader != null) throw new InvalidOperationException($"Cannot reinitialize property {nameof(Loader)}.");
+                _loader = value;
+            }
+        }
 
         public GohResourceDirectory(string name, string? path = null, string? relativePathPoint = null)
             : base(name, path, relativePathPoint) {
@@ -45,11 +51,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
                 _items = [];
             }
 
-            foreach (var directory in DirectoryLoader.GetDirectories(GetFullPath())) {
+            foreach (var directory in Loader.GetDirectories(GetFullPath())) {
                 _items.Add(directory);
             }
 
-            foreach (var file in DirectoryLoader.GetFiles(GetFullPath())) {
+            foreach (var file in Loader.GetFiles(GetFullPath())) {
                 _items.Add(file);
             }
         }
@@ -74,7 +80,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             GohResourceDirectory? currentDirectory = null;
 
             if (pathDirectoryNames.Any()) {
-                currentDirectory = GetDirectories().FirstOrDefault(d => d.Name == pathDirectoryNames.First());
+                currentDirectory = GetDirectory(pathDirectoryNames.First());
 
                 if (currentDirectory != null && pathDirectoryNames.Count() > 1) {
                     currentDirectory = currentDirectory.AlongPath(pathDirectoryNames.Skip(1));
@@ -82,6 +88,14 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             }
 
             return currentDirectory;
+        }
+
+        public GohResourceDirectory? GetDirectory(string name) {
+            return Items.FirstOrDefault(d => d.Name == name) as GohResourceDirectory;
+        }
+
+        public GohResourceFile? GetFile(string name) {
+            return Items.FirstOrDefault(d => d.Name == name) as GohResourceFile;
         }
 
         public IEnumerable<GohResourceElement> FindResourceElements(string? resourceName = null, string? searchPattern = null, bool deepSearch = true, bool first = false) {

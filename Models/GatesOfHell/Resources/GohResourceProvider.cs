@@ -1,6 +1,9 @@
 ﻿using System.IO;
+using System.Reflection;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files.BaseDirectories;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources {
     public class GohResourceProvider {
@@ -11,69 +14,52 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
             [".dds"] = typeof(MaterialFile),
         };
 
-        private static readonly string[] s_resourceNeedDirectories = {
-            "entity", "texture"
-        };
+        private static readonly IEnumerable<IBaseResourceDirectory> s_baseResourceDirectories = [
+            new DefaultBaseResourceDirectory()
+        ];
 
-        public GohResourceLocations ResourceLocations { get; }
+        private IBaseResourceDirectory? _baseResourceDirectory;
 
-        public GohResourceDirectory? ResourceDictionary { get; private set; }
-        public bool IsResourceLoaded => ResourceDictionary != null;
+        public IBaseResourceDirectory BaseResourceDirectory => _baseResourceDirectory ?? throw GohResourcesException.DirectoryNotSpecified();
+        public GohResourceDirectory ResourceDirectory => BaseResourceDirectory?.Root ?? throw GohResourcesException.DirectoryNotSpecified();
+        public bool IsResourceLoaded => ResourceDirectory != null;
 
         public event EventHandler? ResourceUpdated;
 
-        public GohResourceProvider(GohResourceLocations resourceLocations) {
-            ResourceLocations = resourceLocations;
-        }
+        public GohResourceProvider() { }
 
         public void OpenResources(string path) {
-            if (!CheckGohResourceDirectory(path)) {
-                throw GohResourcesException.IsNotGohResource(path);
+            foreach (var resourceDirectory in s_baseResourceDirectories) {
+                if (resourceDirectory.CheckBasePath(path)) {
+                    _baseResourceDirectory = resourceDirectory;
+                    _baseResourceDirectory.LoadData(path);
+                    OnResourceUpdated();
+                    return;
+                }
             }
 
-            ResourceDictionary = new GohResourceDirectory(path);
-            OnResourceUpdated();
+            throw GohResourcesException.IsNotGohResource(path);
         }
 
         public GohResourceDirectory GetLocationDirectory(string location) {
-            if (ResourceDictionary == null) {
-                throw GohResourcesException.DirectoryNotSpecified();
-            }
-
-            string locationPath = ResourceLocations.GetLocationPath(location);
-            var findDirectory = ResourceDictionary.AlongPath(locationPath);
-
-            return findDirectory ?? throw GohResourcesException.LocationNotFound(location, locationPath);
+            return BaseResourceDirectory.GetLocationDirectory(location);
         }
 
         public GohResourceDirectory GetResourceDirectory(GohResourceElement resourceElement) {
-            if (ResourceDictionary == null) {
-                throw GohResourcesException.DirectoryNotSpecified();
+            string? path = resourceElement.GetDirectoryPath();
+            GohResourceDirectory? resourceDirectory;
+
+            if (path != null) {
+                resourceDirectory = BaseResourceDirectory.GetDirectory(path);
+            } else {
+                resourceDirectory = ResourceDirectory;
             }
 
-            var path = resourceElement.GetDirectoryPath() ?? throw GohResourcesException.PathIsNull(resourceElement);
-
-            if (ResourceDictionary.GetFullPath().Contains(path)) {
+            if (resourceDirectory == null || resourceDirectory.GetFile(resourceElement.Name) == null) {
                 throw GohResourcesException.ElementNotInResource(resourceElement);
             }
 
-            return ResourceDictionary.AlongPath(path.Replace(ResourceDictionary.GetFullPath(), string.Empty)) ?? throw GohResourcesException.PathIsNull(resourceElement);
-        }
-
-        public static GohResourceFile GetResourceFile(string fileName, string? path = null) {
-            if (s_fileTypes.TryGetValue(Path.GetExtension(fileName), out var fileType)) {
-                return (GohResourceFile)fileType.GetConstructors()[0].Invoke([fileName, path, null])!;
-            } else {
-                return new GohResourceFile(fileName, path);
-            }
-        }
-
-        private static bool CheckGohResourceDirectory(string path) {
-            var directories = Directory.GetDirectories(path).Select(d => d[(d.LastIndexOf('\\') + 1)..]);
-            return s_resourceNeedDirectories
-                .All((d) => directories
-                    .Contains(d)
-                );
+            return resourceDirectory;
         }
 
         private void OnResourceUpdated() {

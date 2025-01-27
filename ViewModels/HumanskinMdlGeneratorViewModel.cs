@@ -20,7 +20,7 @@ namespace GohMdlExpert.ViewModels
             _humanskinResourceProvider = humanskinResourceProvider;
             _userDialog = userDialog;
             _fileDialog = new SaveFileDialog() {
-                Filter = ResourceLoading.MdlFileOpenFilter,
+                Filter = GohResourceLoading.MdlFileOpenFilter,
                 AddExtension = true,
                 DefaultExt = "mdl"
             };
@@ -47,7 +47,7 @@ namespace GohMdlExpert.ViewModels
                     return null;
                 }
 
-                parameters = ResourceLoading.GetHumanskinMdlParametersTemplate();
+                parameters = GohResourceLoading.GetHumanskinMdlParametersTemplate();
             }
 
             var newMdlFile = new MdlFile(fileName);

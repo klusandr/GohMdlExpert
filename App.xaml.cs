@@ -26,7 +26,6 @@ namespace GohMdlExpert {
             base.OnServicesStartup(sender, e);
 
             e.Services
-                .AddSingleton<GohResourceLocations>()
                 .AddSingleton<GohResourceProvider>()
                 .AddSingleton<GohHumanskinResourceProvider>()
                 .AddSingleton<GohTextureProvider>()

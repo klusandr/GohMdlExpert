@@ -34,6 +34,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
             return new GohResourcesException($"Resource element \"{resourceElement.Name}\" is not in resource folder or subfolders.");
         }
 
+        public static GohResourcesException ElementNotInResource(string resourceElementName) {
+            return new GohResourcesException($"Resource element \"{resourceElementName}\" is not in resource folder or subfolders.");
+        }
+
         private static string GetFullErrorMessage(string? message = null) {
             if (message == null) {
                 return s_message;

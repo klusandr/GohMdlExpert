@@ -4,6 +4,8 @@ using GohMdlExpert.Models.GatesOfHell.Exceptions;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
     public class DefaultFileLoader : IFileLoader {
+        public bool IsReadOnly => false;
+
         public bool Exists(string path) {
             return File.Exists(path);
         }

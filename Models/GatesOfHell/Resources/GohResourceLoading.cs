@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Immutable;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -6,6 +7,7 @@ using System.Windows.Media.Media3D;
 using GohMdlExpert.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 using GohMdlExpert.Models.GatesOfHell.Serialization;
 
@@ -13,7 +15,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
     /// <summary>
     /// Предоставляет методы для загрузки различных ресурсов.
     /// </summary>
-    public static class ResourceLoading {
+    public static class GohResourceLoading {
         public static MdlSerializer MdlSerializer { get; } = new MdlSerializer();
 
         /// <summary>
@@ -25,9 +27,14 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
             @"^(?!.*null\.)",
         ];
 
-        public static string HumanskinMdl { get; } = @"\Templates\humanskin_tamplate.mdl";
-
+        public static string HumanskinMdl { get; } = @"\Templates\humanskin_template.mdl";
         public static string MdlFileOpenFilter { get; } = "Mdl files (*.mdl)|*.mdl";
+        public static IReadOnlyDictionary<string, Type> ResourcesFilesTypes { get; } = new Dictionary<string, Type>() {
+            [".mdl"] = typeof(MdlFile),
+            [".ply"] = typeof(PlyFile),
+            [".mtl"] = typeof(MtlFile),
+            [".dds"] = typeof(MaterialFile)
+        };
 
         /// <summary>
         /// Возвращает материал текстуры из файла материала в виде изображения.
@@ -82,6 +89,13 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
             return lodFiles;
         }
 
+        /// <summary>
+        /// Загружает humanskin, прописывая для .ply файлов полные пути, а так же заполняет список .mtl файлов используемых в моделях.
+        /// </summary>
+        /// <param name="mdlFile">humanskin .mdl файл.</param>
+        /// <param name="mtlFiles">Список .mtl файлов.</param>
+        /// <param name="humanskinResourceProvider">Провайдер humanskin.</param>
+        /// <param name="textureProvider">Провайдер текстур.</param>
         public static void LoadHumanskinFile(MdlFile mdlFile, out IEnumerable<MtlFile> mtlFiles, GohHumanskinResourceProvider humanskinResourceProvider, GohTextureProvider textureProvider) {
             var plyFiles = mdlFile.Data.PlyModel;
             var lodFiles = mdlFile.Data.PlyModelLods;
@@ -113,5 +127,20 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
 
             return MdlSerializer.Deserialize(templateFile.ReadToEnd());
         }
+
+        public static GohResourceFile GetResourceFile(string fileName, string? path = null, IFileLoader? fileLoader = null) {
+            GohResourceFile? file = null;
+
+            if (ResourcesFilesTypes.TryGetValue(Path.GetExtension(fileName), out var fileType)) {
+                file = (GohResourceFile)fileType.GetConstructors()[0].Invoke([fileName, path, null]);
+
+                if (fileLoader != null) {
+                    file.Loader = fileLoader;
+                }
+            }
+
+            return file ?? new GohResourceFile(fileName, path);
+        }
+
     }
 }

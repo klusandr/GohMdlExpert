@@ -9,9 +9,15 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
 {
     public class GohResourceFile : GohResourceElement {
         private object? _data;
-        private IFileLoader? _fileLoader;
+        private IFileLoader? _loader;
 
-        public IFileLoader FileLoader { get => _fileLoader ?? GohServicesProvider.Instance.GetRequiredService<IFileLoader>(); init => _fileLoader = value; }
+        public IFileLoader Loader {
+            get => _loader ?? GohServicesProvider.Instance.GetRequiredService<IFileLoader>();
+            set {
+                if (_loader != null) throw new InvalidOperationException($"Cannot reinitialize property {nameof(Loader)}.");
+                _loader = value;
+            }
+        }
 
         public object Data {
             get {
@@ -39,16 +45,16 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
         }
 
         public string GetAllText() {
-            return FileLoader.GetAllText(GetFullPath());
+            return Loader.GetAllText(GetFullPath());
         }
 
         public Stream GetStream() {
-            return FileLoader.GetStream(GetFullPath());
+            return Loader.GetStream(GetFullPath());
         }
 
 #warning Слишком частый вызов при загрузке одной моделей или текстур к ней.
         public bool Exists() {
-            return Path != null && FileLoader.Exists(GetFullPath()); ;
+            return Path != null && Loader.Exists(GetFullPath()); ;
         }
 
         public virtual string? GetExtension() {
