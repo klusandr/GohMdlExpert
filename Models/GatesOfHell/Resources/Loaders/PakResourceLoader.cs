@@ -1,12 +1,13 @@
 ﻿using System.IO;
+using System.IO.Compression;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
-using System.Windows;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.BaseDirectories {
-    public class DefaultBaseResourceDirectory : IBaseResourceDirectory {
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
+    public class PakResourceLoader : IGohResourceLoader {
         private static readonly string[] s_resourceNeedDirectories = {
-            "entity", "texture"
+            "entity", "texture", "interface"
         };
 
         private static readonly Dictionary<string, string> s_locationsPaths = new() {
@@ -16,7 +17,15 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.BaseDirectories {
             ["sov_humanskin"] = @"\entity\humanskin\[soviets]",
         };
 
+        private static readonly List<(string Path, string InsidePath)> s_resourcePakArchives = [
+            (@"\entity\humanskin.pak", @"\entity\"),
+            (@"\texture\common\_hum.pak", @"\texture\common\")
+        ];
+
+
         public GohResourceDirectory? Root { get; private set; }
+
+        public PakResourceLoader() {}
 
         public bool CheckBasePath(string path) {
             var directories = Directory.GetDirectories(path).Select(d => d[(d.LastIndexOf('\\') + 1)..]);
@@ -28,7 +37,30 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.BaseDirectories {
                 throw GohResourcesException.IsNotGohResource(path);
             }
 
-            Root = new GohResourceDirectory(path) { Loader = new DefaultDirectoryLoader() };
+            var rootDirectory = new GohResourceDirectory("resource") { Items = [] };
+
+            foreach (var archive in s_resourcePakArchives) {
+                var pathDirectories = archive.InsidePath.Split('\\', StringSplitOptions.RemoveEmptyEntries);
+                GohResourceDirectory? currentDirectory = null;
+
+                foreach (var directoryName in pathDirectories) {
+                    var directory = new GohResourceDirectory(directoryName) { Items = [] };
+
+                    if (currentDirectory == null) {
+                        rootDirectory.Items.Add(directory);
+                    } else {
+                        currentDirectory.Items.Add(directory);
+                    }
+
+                    currentDirectory = directory;
+                }
+
+                var directoryLoad = new PakDirectoryLoader(ZipFile.OpenRead(Path.Join(path, archive.Path)));
+                currentDirectory!.ClearData();
+                currentDirectory!.Loader = directoryLoad;
+            }
+
+            Root = rootDirectory;
         }
 
         public GohResourceDirectory GetLocationDirectory(string location) {

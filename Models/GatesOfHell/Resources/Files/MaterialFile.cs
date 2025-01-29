@@ -22,10 +22,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         }
 
         private DiffuseMaterial GetMaterial() {
-            if (IsRelativePath && RelativePathPoint == null) {
-                throw new GohResourceFileException("The path to the material file was incomplete.", GetFullPath());
-            }
-
             return GohResourceLoading.LoadMaterial(this);
         }
     }

@@ -2,10 +2,10 @@
 using System.Reflection;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files.BaseDirectories;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
+using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources {
+namespace GohMdlExpert.Models.GatesOfHell.Resources
+{
     public class GohResourceProvider {
         private static readonly Dictionary<string, Type> s_fileTypes = new() {
             [".mdl"] = typeof(MdlFile),
@@ -14,13 +14,14 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
             [".dds"] = typeof(MaterialFile),
         };
 
-        private static readonly IEnumerable<IBaseResourceDirectory> s_baseResourceDirectories = [
-            new DefaultBaseResourceDirectory()
+        private static readonly IEnumerable<IGohResourceLoader> s_baseResourceDirectories = [
+            //new DefaultResourceLoader(),
+            new PakResourceLoader()
         ];
 
-        private IBaseResourceDirectory? _baseResourceDirectory;
+        private IGohResourceLoader? _baseResourceDirectory;
 
-        public IBaseResourceDirectory BaseResourceDirectory => _baseResourceDirectory ?? throw GohResourcesException.DirectoryNotSpecified();
+        public IGohResourceLoader BaseResourceDirectory => _baseResourceDirectory ?? throw GohResourcesException.DirectoryNotSpecified();
         public GohResourceDirectory ResourceDirectory => BaseResourceDirectory?.Root ?? throw GohResourcesException.DirectoryNotSpecified();
         public bool IsResourceLoaded => ResourceDirectory != null;
 

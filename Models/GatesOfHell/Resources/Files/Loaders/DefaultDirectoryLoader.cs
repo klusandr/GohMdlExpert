@@ -14,6 +14,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
             _fileLoader = new DefaultFileLoader();
         }
 
+        public IFileLoader FileLoader => _fileLoader;
+
         public IEnumerable<GohResourceDirectory> GetDirectories(string path) {
             var directories = new List<GohResourceDirectory>();
 

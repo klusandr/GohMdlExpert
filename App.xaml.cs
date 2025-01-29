@@ -31,7 +31,8 @@ namespace GohMdlExpert {
                 .AddSingleton<GohTextureProvider>()
                 .AddSingleton<MaterialSelector>()
                 .AddSingleton((sp) => new CommandFactory(
-                    exceptionHandler: (e) => {
+                    exceptionHandler:
+                    (e) => {
                         sp.GetRequiredService<IUserDialogProvider>().ShowError("", exception: e);
                     }
                 ));

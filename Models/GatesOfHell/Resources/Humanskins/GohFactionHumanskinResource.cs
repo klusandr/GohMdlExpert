@@ -19,11 +19,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins
         public GohFactionHumanskinResource(string name, GohResourceDirectory factionRoot, GohResourceProvider resourceProvider) {
             var source = factionRoot.FindResourceElements<GohResourceDirectory>(null, searchPattern: HUMANSKIN_SOURCE_DIRECTORY_NAME_REG, first: true, deepSearch: false).FirstOrDefault();
 
-            if (source == null
-                || !source.FindResourceElements<PlyFile>(first: true).Any()
-                || !factionRoot.FindResourceElements<MdlFile>(first: true).Any()) {
-                throw new GohResourcesException($"Directory {factionRoot.GetFullPath} is not faction Humanskin directory");
-            }
+            //if (source == null
+            //    || !source.FindResourceElements<PlyFile>(first: true).Any()
+            //    || !factionRoot.FindResourceElements<MdlFile>(first: true).Any()) {
+            //    throw new GohResourcesException($"Directory {factionRoot.GetFullPath} is not faction Humanskin directory");
+            //}
 
             _resourceProvider = resourceProvider;
             Name = name;

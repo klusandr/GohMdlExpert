@@ -44,7 +44,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
         }
 
         private MaterialFile SetMaterialFullPath(MaterialFile materialFile) {
-            if (materialFile.IsRelativePath && materialFile.RelativePathPoint == null) {
+            if (materialFile.RelativePathPoint == null) {
+                materialFile.Loader = TextureDirectory.Loader.FileLoader;
                 materialFile.RelativePathPoint = TextureDirectory.GetFullPath();
             }
 

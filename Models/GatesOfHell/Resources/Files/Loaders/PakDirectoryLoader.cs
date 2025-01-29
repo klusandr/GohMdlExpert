@@ -4,55 +4,46 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GohMdlExpert.Models.GatesOfHell.Extensions;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
     public class PakDirectoryLoader : IDirectoryLoader {
-        private ZipArchive _archive;
+        private readonly ZipArchive _archive;
         private readonly IFileLoader _fileLoader;
 
-        public PakDirectoryLoader(IFileLoader fileLoader) {
-            _archive = ZipFile.OpenRead(@"F:\Steam Game\steamapps\common\Call to Arms - Gates of Hell\resource\entity\humanskin.pak");
-            _fileLoader = fileLoader;
+        public PakDirectoryLoader(ZipArchive resourceArchive) {
+            _archive = resourceArchive;
+            _fileLoader = new PakFileLoader(resourceArchive);
         }
 
+        public IFileLoader FileLoader => _fileLoader;
+
         public IEnumerable<GohResourceDirectory> GetDirectories(string path) {
-            path = path.Replace("\\", "/");
+            string archivePath = _archive.GetArchiveDirectoryPath(path);
             var directories = new List<GohResourceDirectory>();
+            int pathDeep = archivePath != "" ? ZipArchiveExtensions.GetDeep(archivePath) + 1 : 0;
 
-            var directoriesEntries = _archive.Entries
-                .Where(e => e.FullName.Contains(path) 
-                    && CheckDirectory(e.FullName) 
-                    && CheckDeep(path, e.FullName) == 1);
+            var directoriesPaths = _archive.GetDirectoriesPathsByDeep(pathDeep).Where(p => p.Contains(archivePath));
 
-            foreach (var entry in directoriesEntries) {
-                directories.Add(new GohResourceDirectory(entry.FullName.Trim('/')) { Loader = this });
+            foreach (var directoryPath in directoriesPaths) {
+                directories.Add(new GohResourceDirectory(ZipArchiveExtensions.GetFullPath(path, archivePath, directoryPath)) { Loader = this });
             }
 
             return directories;
         }
 
         public IEnumerable<GohResourceFile> GetFiles(string path) {
-            path = path.Replace("\\", "/");
+            string archivePath = _archive.GetArchiveDirectoryPath(path);
             var files = new List<GohResourceFile>();
+            int pathDeep = archivePath != "" ? ZipArchiveExtensions.GetDeep(archivePath) + 1 : 0;
 
-            var directoriesEntries = _archive.Entries
-                .Where(e => e.FullName.Contains(path)
-                    && !CheckDirectory(e.FullName)
-                    && CheckDeep(path, e.FullName) == 0);
+            var filesEntries = _archive.Entries.Where(e => ZipArchiveExtensions.GetDeep(e.FullName) == pathDeep && !ZipArchiveExtensions.CheckDirectory(e.FullName) && e.FullName.Contains(archivePath));
 
-            foreach (var entry in directoriesEntries) {
-                files.Add(GohResourceLoading.GetResourceFile(entry.FullName, fileLoader: _fileLoader));
+            foreach (var entry in filesEntries) {
+                files.Add(GohResourceLoading.GetResourceFile(ZipArchiveExtensions.GetFullPath(path, archivePath, entry.FullName), fileLoader: _fileLoader));
             }
 
             return files;
-        }
-
-        private static bool CheckDirectory(string entryName) {
-            return entryName[^1] == '/';
-        }
-
-        private static int CheckDeep(string path, string entryName) {
-            return entryName.Replace(path, string.Empty).Count((c) => c == '/') - 1;
         }
     }
 }

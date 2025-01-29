@@ -18,6 +18,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
                 return _items!;
             }
+            set {
+                _items = value;
+            }
         }
 
         public IDirectoryLoader Loader {
@@ -44,7 +47,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
         public GohResourceDirectory(GohResourceElement resourceElement) : this(resourceElement.GetDirectoryPath() ?? throw GohResourcesException.PathIsNull(resourceElement)) { }
 
-        public void LoadData() {
+        public virtual void LoadData() {
             if (_items != null) {
                 Items.Clear();
             } else {
@@ -58,6 +61,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             foreach (var file in Loader.GetFiles(GetFullPath())) {
                 _items.Add(file);
             }
+        }
+
+
+        public virtual void ClearData() {
+            _items = null;
         }
 
         public IEnumerable<GohResourceFile> GetFiles() {

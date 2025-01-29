@@ -2,6 +2,7 @@
 using System.IO.Compression;
 using System.Text;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
+using GohMdlExpert.Models.GatesOfHell.Extensions;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
     public class PakFileLoader : IFileLoader {
@@ -9,13 +10,12 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
 
         public bool IsReadOnly => true;
 
-        public PakFileLoader() {
-            _archive = ZipFile.OpenRead(@"F:\Steam Game\steamapps\common\Call to Arms - Gates of Hell\resource\entity\humanskin.pak");
+        public PakFileLoader(ZipArchive archive) {
+            _archive = archive;
         }
 
         public bool Exists(string path) {
-            path = path.Replace("\\", "/");
-            return _archive.GetEntry(path) != null;
+            return _archive.GetEntry(_archive.GetArchiveFilePath(path)) != null;
         }
 
         public string GetAllText(string path) {
@@ -28,8 +28,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
         }
 
         public Stream GetStream(string path) {
-            path = path.Replace("\\", "/");
-            var entry = _archive.GetEntry(path) ?? throw GohResourceFileException.IsNotExists(path);
+            var entry = _archive.GetEntry(_archive.GetArchiveFilePath(path)) ?? throw GohResourceFileException.IsNotExists(path);
 
             return entry.Open();
         }
