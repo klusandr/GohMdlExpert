@@ -88,6 +88,7 @@ namespace GohMdlExpert.ViewModels
         }
 
         public void CreateMdlFile() {
+            PlyModels.Clear();
             MdlFile = new MdlFile("new_humanskin.mdl");
         }
 
@@ -281,6 +282,7 @@ namespace GohMdlExpert.ViewModels
         private void PlyModelRemoveHandler(object? sender, NotifyCollectionChangedEventArgs e) {
             if (_plyModels.Count == 0) {
                 ClearAggregateFiles();
+                _lodPlyFiles.Clear();
             } else {
                 _lodPlyFiles.Remove(e.GetItem<PlyModel3D>()!);
 

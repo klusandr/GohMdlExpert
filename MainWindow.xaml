@@ -14,6 +14,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition />
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Menu Margin="2 0 2 5" Background="{x:Null}">
             <Menu.Resources>
@@ -27,7 +28,7 @@
                 <MenuItem Header="Выход" Click="MenuItemExitClick"/>
             </MenuItem>
             <MenuItem Header="Правка">
-
+                <MenuItem Header="Кеш" Command="{Binding CacheCommand}"/>
             </MenuItem>
         </Menu>
         <!--<StackPanel HorizontalAlignment="Right">
@@ -46,5 +47,11 @@
             
             <views:HumanskinMdlOverviewView Grid.Column="2"/>
         </Grid>
+        <StatusBar Grid.Row="2" Height="15">
+            <StatusBarItem>
+                <ProgressBar Value="{Binding CompletionPercentage}" Width="100" Margin="0 -5"/>
+            </StatusBarItem>
+            <StatusBarItem/>
+        </StatusBar>
     </Grid>
 </Window>

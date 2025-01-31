@@ -8,10 +8,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
 {
     public class GohResourceProvider {
         private static readonly Dictionary<string, Type> s_fileTypes = new() {
-            [".mdl"] = typeof(MdlFile),
-            [".ply"] = typeof(PlyFile),
-            [".mtl"] = typeof(MtlFile),
-            [".dds"] = typeof(MaterialFile),
+            [MtlFile.Extension] = typeof(MdlFile),
+            [PlyFile.Extension] = typeof(PlyFile),
+            [MtlFile.Extension] = typeof(MtlFile),
+            [MaterialFile.Extension] = typeof(MaterialFile),
         };
 
         private static readonly IEnumerable<IGohResourceLoader> s_baseResourceDirectories = [
@@ -19,10 +19,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             new PakResourceLoader()
         ];
 
-        private IGohResourceLoader? _baseResourceDirectory;
+        private IGohResourceLoader? _resourceLoader;
 
-        public IGohResourceLoader BaseResourceDirectory => _baseResourceDirectory ?? throw GohResourcesException.DirectoryNotSpecified();
-        public GohResourceDirectory ResourceDirectory => BaseResourceDirectory?.Root ?? throw GohResourcesException.DirectoryNotSpecified();
+        public IGohResourceLoader ResourceLoader => _resourceLoader ?? throw GohResourcesException.DirectoryNotSpecified();
+        public GohResourceDirectory ResourceDirectory => ResourceLoader?.Root ?? throw GohResourcesException.DirectoryNotSpecified();
         public bool IsResourceLoaded => ResourceDirectory != null;
 
         public event EventHandler? ResourceUpdated;
@@ -32,8 +32,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
         public void OpenResources(string path) {
             foreach (var resourceDirectory in s_baseResourceDirectories) {
                 if (resourceDirectory.CheckBasePath(path)) {
-                    _baseResourceDirectory = resourceDirectory;
-                    _baseResourceDirectory.LoadData(path);
+                    _resourceLoader = resourceDirectory;
+                    _resourceLoader.LoadData(path);
                     OnResourceUpdated();
                     return;
                 }
@@ -43,7 +43,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
         }
 
         public GohResourceDirectory GetLocationDirectory(string location) {
-            return BaseResourceDirectory.GetLocationDirectory(location);
+            return ResourceLoader.GetLocationDirectory(location);
         }
 
         public GohResourceDirectory GetResourceDirectory(GohResourceElement resourceElement) {
@@ -51,7 +51,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             GohResourceDirectory? resourceDirectory;
 
             if (path != null) {
-                resourceDirectory = BaseResourceDirectory.GetDirectory(path);
+                resourceDirectory = ResourceLoader.GetDirectory(path);
             } else {
                 resourceDirectory = ResourceDirectory;
             }
@@ -61,6 +61,57 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             }
 
             return resourceDirectory;
+        }
+
+        public GohResourceDirectory? GetDirectory(string path) {
+            if (ResourceDirectory == null) {
+                throw GohResourcesException.DirectoryNotSpecified();
+            }
+
+            if (Path.IsPathFullyQualified(path)) {
+                if (path.Contains(ResourceDirectory.GetFullPath())) {
+                    path = path.Replace(ResourceDirectory.GetFullPath(), null);
+                } else {
+                    throw GohResourcesException.ElementNotInResource(path);
+                }
+            }
+
+            return ResourceDirectory.AlongPath(path);
+        }
+
+        public GohResourceFile? GetFile(string fullName) {
+            if (ResourceDirectory == null) {
+                throw GohResourcesException.DirectoryNotSpecified();
+            }
+
+            string? path = Path.GetDirectoryName(fullName);
+            GohResourceDirectory? directory;
+
+            if (path != null) {
+                try {
+                    directory = GetDirectory(path);
+                } catch (GohResourcesException) {
+                    throw GohResourcesException.ElementNotInResource(fullName);
+                }
+            } else {
+                directory = ResourceDirectory;
+            }
+
+            string name = Path.GetFileName(fullName);
+
+            return directory?.GetFile(name);
+        }
+
+        public string GetInsidePath(string path) {
+            string insidePath = path;
+
+            if (Path.IsPathFullyQualified(path)) {
+                if (path.Contains(ResourceDirectory.GetFullPath())) {
+                    insidePath = path.Replace(ResourceDirectory.GetFullPath(), null);
+                }
+            }
+
+            return insidePath;
         }
 
         private void OnResourceUpdated() {

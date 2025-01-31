@@ -13,7 +13,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
 
         public new MdlModel Data { get => (MdlModel)base.Data; set => base.Data = value; }
 
-        public static string? Extension => ".mdl";
+        public static string Extension => ".mdl";
 
         public MdlFile(string name, string? path = null, string? relativePathPoint = null)
             : base(name, path, relativePathPoint) { }
@@ -44,7 +44,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
                     lodFiles.Add(new PlyFile(RelativePathRemove((string)lodParameter.Data!)));
                 }
 
-                plyLodFiles.Add(plyFile, [.. lodFiles]);
+                plyLodFiles.TryAdd(plyFile, [.. lodFiles]);
             }
 
             Data = new MdlModel(parameter, plyFiles, plyLodFiles);

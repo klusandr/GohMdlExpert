@@ -2,7 +2,6 @@
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class GohResourceElement {
-
         public string Name { get; set; }
         public string? Path { get; set; }
         public string? RelativePathPoint { get; set; }
@@ -28,6 +27,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             }
 
             return path;
+        }
+
+        public override string ToString() {
+            return GetFullPath();
         }
     }
 }

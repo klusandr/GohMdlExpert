@@ -6,16 +6,21 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using GohMdlExpert.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
+using GohMdlExpert.Models.GatesOfHell.Media3D;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 using GohMdlExpert.Models.GatesOfHell.Serialization;
+using GohMdlExpert.Models.GatesOfHell.Сaches;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources {
     /// <summary>
     /// Предоставляет методы для загрузки различных ресурсов.
     /// </summary>
     public static class GohResourceLoading {
+        
+        private static GohMaterialCache _materialCache = new();
+
         public static MdlSerializer MdlSerializer { get; } = new MdlSerializer();
 
         /// <summary>
@@ -42,22 +47,28 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
         /// <param name="materialFile">Файл материала.</param>
         /// <returns>Материал.</returns>
         public static DiffuseMaterial LoadMaterial(MaterialFile materialFile) {
-            DiffuseMaterial diffuseMaterial;
-
-            if (!materialFile.Exists()) {
-                throw GohResourceFileException.IsNotExists(materialFile);
-            }
-
-            using var stream = materialFile.GetStream();
-            byte[] buffer = new byte[stream.Length];
-
-            stream.Read(buffer, 0, buffer.Length);
-
-            diffuseMaterial = new DiffuseMaterial(
-                new ImageBrush(new BitmapImage().FromByteArray(buffer)) {
-                    ViewportUnits = BrushMappingMode.Absolute
+            if (!_materialCache.TryGetMaterial(materialFile.Name, out DiffuseMaterial? diffuseMaterial)) {
+                if (!materialFile.Exists()) {
+                    throw GohResourceFileException.IsNotExists(materialFile);
                 }
-            );
+
+                using var stream = materialFile.GetStream();
+                byte[] buffer = new byte[stream.Length];
+
+                stream.Read(buffer, 0, buffer.Length);
+
+                var bitmap = new BitmapImage().FromByteArray(buffer);
+
+                diffuseMaterial = new DiffuseMaterial(
+                    new ImageBrush(bitmap) {
+                        ViewportUnits = BrushMappingMode.Absolute
+                    }
+                );
+
+                diffuseMaterial.Freeze();
+
+                _materialCache.SetMaterial(materialFile.Name, diffuseMaterial);
+            }
 
             return diffuseMaterial;
         }
@@ -108,12 +119,14 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
                     humanskinResourceProvider.Current.SetPlyFileFullPath(lodFile);
                 }
 
-                string? mdlFilePath = mdlFile.GetDirectoryPath();
+                
+            }
 
-                if (mdlFilePath != null) {
-                    foreach (var mtlFilePath in Directory.GetFiles(mdlFilePath, "*.mtl")) {
-                        mtlFilesList.Add(new MtlFile(mtlFilePath));
-                    }
+            string? mdlFilePath = mdlFile.GetDirectoryPath();
+
+            if (mdlFilePath != null) {
+                foreach (var mtlFilePath in Directory.GetFiles(mdlFilePath, "*.mtl")) {
+                    mtlFilesList.Add(new MtlFile(mtlFilePath));
                 }
             }
 

@@ -14,7 +14,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
 
         protected static MtlSerializer Serializer => s_serializer ??= new MtlSerializer();
 
-        public static string? Extension => ".mtl";
+        public static string Extension => ".mtl";
 
         public new MtlTexture Data { get => (MtlTexture)base.Data; set => base.Data = value; }
 

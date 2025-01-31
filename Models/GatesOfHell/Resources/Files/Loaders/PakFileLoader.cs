@@ -29,10 +29,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
 
         public Stream GetStream(string path) {
             var entry = _archive.GetEntry(_archive.GetArchiveFilePath(path)) ?? throw GohResourceFileException.IsNotExists(path);
-
+            
             return entry.Open();
         }
-
         
     }
 }

@@ -70,7 +70,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Extensions {
                 fullElementPath = fullElementPath.Replace(archivePath, null);
             }
 
-            return $"{path}\\{fullElementPath}";
+            return @$"{path}\{fullElementPath}";
         }
     }
 }
