@@ -12,7 +12,7 @@ namespace GohMdlExpert.ViewModels
 {
     public class PlyModelAdderViewModel : BaseViewModel {
         private readonly HumanskinMdlOverviewViewModel _models3DView;
-        private readonly DefaultMaterialViewModel _defaultMaterialViewModel;
+        private readonly DefaultTextureViewModel _defaultMaterialViewModel;
         private AggregateMtlFiles? _aggregateMtlFiles;
         private PlyModel3D? _addedModel;
 
@@ -34,7 +34,7 @@ namespace GohMdlExpert.ViewModels
         public event EventHandler? ModelAdded;
         public event EventHandler? CancelModelAdded;
 
-        public PlyModelAdderViewModel(HumanskinMdlOverviewViewModel models3DView, DefaultMaterialViewModel defaultMaterialViewModel) {
+        public PlyModelAdderViewModel(HumanskinMdlOverviewViewModel models3DView, DefaultTextureViewModel defaultMaterialViewModel) {
             _models3DView = models3DView;
             _defaultMaterialViewModel = defaultMaterialViewModel;
 
@@ -43,10 +43,10 @@ namespace GohMdlExpert.ViewModels
                 ((Command)ClearModelCommand).OnCanExecuteChanged();
             });
 
-            _defaultMaterialViewModel.PropertyChangeHandler.AddHandlerBuilder(nameof(DefaultMaterialViewModel.IsUse), (_, _) => DefaultTextureUpdate());
-            _defaultMaterialViewModel.PropertyChangeHandler.AddHandlerBuilder(nameof(DefaultMaterialViewModel.IsUseAlways), (_, _) => DefaultTextureUpdate());
+            _defaultMaterialViewModel.PropertyChangeHandler.AddHandlerBuilder(nameof(DefaultTextureViewModel.IsUse), (_, _) => DefaultTextureUpdate());
+            _defaultMaterialViewModel.PropertyChangeHandler.AddHandlerBuilder(nameof(DefaultTextureViewModel.IsUseAlways), (_, _) => DefaultTextureUpdate());
             //_defaultMaterialViewModel.PropertyChangeHandler.AddHandlerBuilder(nameof(DefaultMaterialViewModel.MaterialFile), (_, _) => DefaultTextureUpdate());
-            _defaultMaterialViewModel.MaterialsUpdate += (_, _) => DefaultTextureUpdate();
+            _defaultMaterialViewModel.TexturesUpdate += (_, _) => DefaultTextureUpdate();
         }
 
         public void SetModel(PlyFile plyFile, AggregateMtlFiles? aggregateMtlFiles) {
@@ -134,10 +134,10 @@ namespace GohMdlExpert.ViewModels
             if (AddedModel != null) {
                 foreach (var textureName in AddedModel.MeshesTextureNames) {
                     if (AddedModel.GetMeshTexture(textureName) == null) {
-                        var material = _defaultMaterialViewModel.GetMaterialFileForTexture(textureName);
+                        var texture = _defaultMaterialViewModel.GetTextureFile(textureName);
 
-                        if (material != null) {
-                            AddedModel.SetMeshTexture(textureName, new MtlTexture(material));
+                        if (texture != null) {
+                            AddedModel.SetMeshTexture(textureName, texture);
                         }
                     }
                 }
@@ -147,10 +147,10 @@ namespace GohMdlExpert.ViewModels
         private void SetDefaultTexture() {
             if (AddedModel != null) {
                 foreach (var textureName in AddedModel.MeshesTextureNames) {
-                    var material = _defaultMaterialViewModel.GetMaterialFileForTexture(textureName);
+                    var texture = _defaultMaterialViewModel.GetTextureFile(textureName);
 
-                    if (material != null) {
-                        AddedModel.SetMeshTexture(textureName, new MtlTexture(material));
+                    if (texture != null) {
+                        AddedModel.SetMeshTexture(textureName, texture);
                     }
                 }
             }

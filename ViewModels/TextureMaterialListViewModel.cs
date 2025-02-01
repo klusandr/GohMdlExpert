@@ -1,5 +1,6 @@
 ﻿using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
+using GohMdlExpert.Services;
 using WpfMvvm.ViewModels;
 
 namespace GohMdlExpert.ViewModels
@@ -7,6 +8,7 @@ namespace GohMdlExpert.ViewModels
     public class TextureMaterialListViewModel : BaseViewModel {
         private AggregateMtlFile? _mtlFile;
         private int _selectedMaterialIndex;
+        private readonly TextureSelectorService _materialSelector;
 
         public AggregateMtlFile? MtlFile {
             get => _mtlFile;
@@ -27,6 +29,16 @@ namespace GohMdlExpert.ViewModels
             }
         }
 
-        public TextureMaterialListViewModel() { }
+        public TextureMaterialListViewModel(TextureSelectorService materialSelector) {
+            _materialSelector = materialSelector;
+        }
+
+        public void AddMaterial() {
+            var newMaterial = _materialSelector.GetMaterialDialog();
+
+            //if (newMaterial != null) {
+            //    MtlFile.Data.Add(newMaterial);
+            //}
+        }
     }
 }

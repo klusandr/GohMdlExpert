@@ -38,7 +38,7 @@ namespace GohMdlExpert.ViewModels
         private readonly PlyModelAdderViewModel _modelAdderViewModel;
         private readonly ModelsLoadTreeViewModel _modelsLoadTreeViewModel;
         private readonly HumanskinMdlGeneratorViewModel _humanskinMdlGeneratorViewModel;
-        private readonly DefaultMaterialViewModel _defaultMaterialViewModel;
+        private readonly DefaultTextureViewModel _defaultMaterialViewModel;
 
         public MdlFile? MdlFile {
             get => _mdlFile;
@@ -54,7 +54,7 @@ namespace GohMdlExpert.ViewModels
         public ModelsOverviewTreeViewModel ModelsOverviewTreeViewModel => _modelsOverviewTreeViewModel;
         public ModelsLoadTreeViewModel ModelsLoadTreeViewModel => _modelsLoadTreeViewModel;
         public PlyModelAdderViewModel ModelAdderViewModel => _modelAdderViewModel;
-        public DefaultMaterialViewModel DefaultMaterialViewModel => _defaultMaterialViewModel;
+        public DefaultTextureViewModel DefaultMaterialViewModel => _defaultMaterialViewModel;
 
         public Model3DCollection Models => _models;
 
@@ -63,7 +63,7 @@ namespace GohMdlExpert.ViewModels
 
         public event EventHandler? UpdatedTextures;
 
-        public HumanskinMdlOverviewViewModel(IUserDialogProvider userDialog, GohResourceProvider resourceProvider, GohHumanskinResourceProvider humanskinProvider, GohTextureProvider textureProvider, HumanskinMdlGeneratorViewModel humanskinMdlGeneratorViewModel, MaterialSelector materialSelector) {
+        public HumanskinMdlOverviewViewModel(IUserDialogProvider userDialog, GohResourceProvider resourceProvider, GohHumanskinResourceProvider humanskinProvider, GohTextureProvider textureProvider, HumanskinMdlGeneratorViewModel humanskinMdlGeneratorViewModel, TextureSelectorService materialSelector) {
             _models = [];
             _plyModels = [];
             _lodPlyFiles = [];
@@ -76,7 +76,7 @@ namespace GohMdlExpert.ViewModels
             _textureProvider = textureProvider;
             _humanskinMdlGeneratorViewModel = humanskinMdlGeneratorViewModel;
 
-            _defaultMaterialViewModel = new DefaultMaterialViewModel(materialSelector);
+            _defaultMaterialViewModel = new DefaultTextureViewModel(materialSelector);
             _modelAdderViewModel = new PlyModelAdderViewModel(this, _defaultMaterialViewModel);
             _modelsLoadTreeViewModel = new ModelsLoadTreeViewModel(_modelAdderViewModel, humanskinProvider, textureProvider);
             _modelsOverviewTreeViewModel = new ModelsOverviewTreeViewModel(this);

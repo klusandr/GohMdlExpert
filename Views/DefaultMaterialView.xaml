@@ -4,18 +4,18 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GohMdlExpert.Views"
-             xmlns:bv="clr-namespace:WpfMvvm.Views;assembly=WpfMvvm" xmlns:viewmodels="clr-namespace:GohMdlExpert.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:DefaultMaterialViewModel}"
+             xmlns:bv="clr-namespace:WpfMvvm.Views;assembly=WpfMvvm" xmlns:viewmodels="clr-namespace:GohMdlExpert.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:DefaultTextureViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="200">
     <StackPanel Margin="5">
         <TextBlock Text="Default material"/>
-        <ListView ItemsSource="{Binding MaterialFiles}" SelectedItem="{Binding SelectedMaterial}" HorizontalContentAlignment="Stretch" MaxHeight="216">
+        <ListView ItemsSource="{Binding Textures}" SelectedItem="{Binding SelectedTexture}" HorizontalContentAlignment="Stretch" MaxHeight="216">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <DockPanel>
-                        <Image Source="{Binding MaterialFile.ImageSource}" ToolTip="{Binding MaterialFile.Name}" DockPanel.Dock="Right" Width="50">
+                        <Image Source="{Binding Texture.Diffuse.ImageSource}" ToolTip="{Binding TextureName}" DockPanel.Dock="Right" Width="50">
                             <Image.InputBindings>
-                                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding Path=DataContext.EditMaterialFileSelectedMaterialCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"/>
+                                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding Path=DataContext.EditSelectedTextureCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"/>
                             </Image.InputBindings>
                         </Image>
                         <TextBlock Text="{Binding TextureName}" TextTrimming="WordEllipsis" VerticalAlignment="Center"/>
@@ -35,16 +35,16 @@
                 </Style>
             </DockPanel.Resources>
             
-            <Button Command="{Binding RemoveSelectedMaterialCommand}">
+            <Button Command="{Binding RemoveSelectedTextureCommand}">
                 <Path Data="M 0,10 L 20,10" Stroke="Black" StrokeThickness="2" Stretch="Fill"/>
             </Button>
-            <Button Command="{Binding AddMaterialCommand}" Visibility="{Binding IsShowAddButtons, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Button Command="{Binding AddTextureCommand}" Visibility="{Binding IsShowAddButtons, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Path Data="M 0,10 L 20,10 M 10,0 L 10,20" Stroke="Black" StrokeThickness="2" Stretch="Fill"/>
             </Button>
             <Button Command="{Binding ClearSelectCommand}">
                 <Image Source="/Resources/cross.ico"/>
             </Button>
-            <Button Command="{Binding EditTextureNameSelectedMaterialCommand}">
+            <Button Command="{Binding EditTextureNameSelectedTextureCommand}">
                 <Image Source="/Resources/check.ico"/>
             </Button>
             <TextBox Text="{Binding TextureName, TargetNullValue=''}" Margin="2.5 5" MaxLength="30"/>

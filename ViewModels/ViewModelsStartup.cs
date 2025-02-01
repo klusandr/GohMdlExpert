@@ -8,7 +8,7 @@ namespace GohMdlExpert.ViewModels {
             e.Services.AddSingleton<HumanskinMdlOverviewViewModel>();
             e.Services.AddSingleton<HumanskinMdlGeneratorViewModel>();
             e.Services.AddSingleton<HumanskinResourcesViewModel>();
-            e.Services.AddSingleton<MaterialLoadViewModel>();
+            e.Services.AddSingleton<TextureLoadViewModel>();
         }
     }
 }

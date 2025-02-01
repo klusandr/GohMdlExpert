@@ -29,7 +29,7 @@ namespace GohMdlExpert {
                 .AddSingleton<GohResourceProvider>()
                 .AddSingleton<GohHumanskinResourceProvider>()
                 .AddSingleton<GohTextureProvider>()
-                .AddSingleton<MaterialSelector>()
+                .AddSingleton<TextureSelectorService>()
                 .AddSingleton((sp) => new CommandFactory(
                     exceptionHandler:
                     (e) => {

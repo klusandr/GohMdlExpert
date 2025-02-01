@@ -26,7 +26,7 @@ namespace GohMdlExpert.ViewModels.Trees.OverviewModels {
 
         public ModelsOverviewTreeViewModel(HumanskinMdlOverviewViewModel models3DViewModel) {
             Models3DViewModel = models3DViewModel;
-            MaterialListViewModel = new TextureMaterialListViewModel();
+            //MaterialListViewModel = new TextureMaterialListViewModel();
             LodListViewModel = new PlyModelLodListViewModel();
 
             models3DViewModel.PropertyChangeHandler.AddHandler(nameof(Models3DViewModel.MdlFile), MdlFileChangeHandler);
