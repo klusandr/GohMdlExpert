@@ -19,6 +19,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
             }
         }
 
+        public bool IsLoaderInitialize => _loader != null;
+
         public object Data {
             get {
                 if (_data == null) {

@@ -119,7 +119,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins
         }
 
         public void SetPlyFileFullPath(PlyFile plyFile) {
-            plyFile.Loader = Root.Loader.FileLoader;
+            if (!plyFile.IsLoaderInitialize) {
+                plyFile.Loader = Root.Loader.FileLoader;
+            }
+
             plyFile.RelativePathPoint = Root.GetFullPath();
         }
 

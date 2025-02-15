@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Extensions;
@@ -15,7 +16,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
         }
 
         public bool Exists(string path) {
-            return _archive.GetEntry(_archive.GetArchiveFilePath(path)) != null;
+            return GetEntry(path) != null;
         }
 
         public string GetAllText(string path) {
@@ -28,10 +29,17 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
         }
 
         public Stream GetStream(string path) {
-            var entry = _archive.GetEntry(_archive.GetArchiveFilePath(path)) ?? throw GohResourceFileException.IsNotExists(path);
+            var entry = GetEntry(path) ?? throw GohResourceFileException.IsNotExists(path);
             
             return entry.Open();
         }
-        
+
+
+        private ZipArchiveEntry? GetEntry(string path) {
+            string fullPath = _archive.GetArchiveFilePath(path).ToLower();
+
+            return _archive.Entries.FirstOrDefault(e => e.FullName.ToLower() == fullPath);
+            //return _archive.GetEntry(_archive.GetArchiveFilePath(path)) != null;
+        }
     }
 }

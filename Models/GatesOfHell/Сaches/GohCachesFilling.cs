@@ -26,30 +26,32 @@ namespace GohMdlExpert.Models.GatesOfHell.Caches {
                     foreach (var mdlFile in directory.GetFiles().OfType<MdlFile>()) {
                         foreach (var plyFile in mdlFile.Data.PlyModel) {
                             humanskinResource.SetPlyFileFullPath(plyFile);
-                            var loadPlyFile = (PlyFile)resourceProvider.ResourceLoader.GetFile(plyFile.GetFullPath())!;
+                            var loadPlyFile = (PlyFile)resourceProvider.ResourceLoader.GetFile(plyFile.GetFullPath().ToLower())!;
 
-                            if (!cacheValues.TryGetValue(plyFile.Name, out var cacheValue)) {
-                                cacheValue = [];
-                                cacheValues[plyFile.Name] = cacheValue;
-                            }
-
-                            foreach (var mesh in loadPlyFile.Data.Meshes) {
-                                var mtlFile = directory.FindResourceElements<MtlFile>(searchPattern: mesh.TextureName, deepSearch: false, first: true).FirstOrDefault();
-
-                                if (mtlFile != null) {
-                                    string insidePath = resourceProvider.GetInsidePath(mtlFile!.GetFullPath());
-                                    cacheValue.Add(insidePath);
+                            if (loadPlyFile != null) {
+                                if (!cacheValues.TryGetValue(plyFile.Name, out var cacheValue)) {
+                                    cacheValue = [];
+                                    cacheValues[plyFile.Name] = cacheValue;
                                 }
-                            }
 
-                            loadPlyFile.UnloadData();
+                                foreach (var mesh in loadPlyFile.Data.Meshes) {
+                                    var mtlFile = directory.FindResourceElements<MtlFile>(searchPattern: mesh.TextureName, deepSearch: false, first: true).FirstOrDefault();
+
+                                    if (mtlFile != null) {
+                                        string insidePath = resourceProvider.GetInsidePath(mtlFile!.GetFullPath());
+                                        cacheValue.Add(insidePath);
+                                    }
+                                }
+
+                                loadPlyFile.UnloadData();
+                            }
                         }
                     }
 
                     completionPercentage += percentageSteep;
                 }
 
-                break;
+                completionPercentage = 100;
             }
 
             var cache = new Dictionary<string, string[]>();
