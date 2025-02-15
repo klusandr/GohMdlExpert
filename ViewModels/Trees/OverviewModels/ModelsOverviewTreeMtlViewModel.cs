@@ -10,13 +10,13 @@ namespace GohMdlExpert.ViewModels.Trees.OverviewModels {
         private static readonly ImageSource s_icon = new BitmapImage().FromByteArray(Resources.TextureIcon);
         private static readonly ImageSource s_plyIcon = new BitmapImage().FromByteArray(Resources.PlyIcon);
         private readonly HumanskinMdlOverviewViewModel _models3DView;
-        private readonly TextureMaterialListViewModel _materialList;
+        private readonly AggregateTextureListViewModel _aggregateTextureList;
 
         public AggregateMtlFile MtlFile { get; }
 
         public ModelsOverviewTreeMtlViewModel(AggregateMtlFile aggregateMtlFile, ModelsOverviewTreeViewModel modelsTree) : base(modelsTree) {
             _models3DView = Tree.Models3DViewModel;
-            _materialList = Tree.MaterialListViewModel;
+            _aggregateTextureList = Tree.AggregateTextureListViewModel;
 
             Icon = s_icon;
             MtlFile = aggregateMtlFile;
@@ -66,19 +66,19 @@ namespace GohMdlExpert.ViewModels.Trees.OverviewModels {
 
         private void SelectedChangeHandler(object? sender, PropertyChangedEventArgs e) {
             if (IsSelected) {
-                _materialList.MtlFile = MtlFile;
-                _materialList.SelectedMaterialIndex = _models3DView.GetMtlFileMaterialIndex(MtlFile.Name);
-                _materialList.PropertyChangeHandler.AddHandler(nameof(_materialList.SelectedMaterialIndex), SelectedMaterialIndexChangeHandler);
+                _aggregateTextureList.MtlFile = MtlFile;
+                _aggregateTextureList.SelectedTextureIndex = _models3DView.GetMtlFileMaterialIndex(MtlFile.Name);
+                _aggregateTextureList.SelectedTextureUpdate -= TextureListSelectedTextureUpdateHandler;
+                _aggregateTextureList.SelectedTextureUpdate += TextureListSelectedTextureUpdateHandler;
+
             } else {
-                _materialList.MtlFile = null;
-                _materialList.PropertyChangeHandler.RemoveHandler(nameof(_materialList.SelectedMaterialIndex), SelectedMaterialIndexChangeHandler);
+                _aggregateTextureList.SelectedTextureUpdate -= TextureListSelectedTextureUpdateHandler;
+                _aggregateTextureList.MtlFile = null;
             }
         }
 
-        private void SelectedMaterialIndexChangeHandler(object? sender, PropertyChangedEventArgs e) {
-            if (_materialList.SelectedMaterialIndex != -1 && _materialList.SelectedMaterialIndex != _models3DView.GetMtlFileMaterialIndex(MtlFile.Name)) {
-                _models3DView.SetMtlFileTextureByIndex(MtlFile.Name, _materialList.SelectedMaterialIndex);
-            }
+        private void TextureListSelectedTextureUpdateHandler(object? sender, EventArgs e) {
+            _models3DView.SetMtlFileTextureByIndex(MtlFile.Name, _aggregateTextureList.SelectedTextureIndex);
         }
     }
 }

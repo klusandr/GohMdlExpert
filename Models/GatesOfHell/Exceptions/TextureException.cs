@@ -1,4 +1,5 @@
-﻿using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+﻿using GohMdlExpert.Models.GatesOfHell.Resources.Data;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
 
 namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
@@ -38,6 +39,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
 
         public static TextureException TextureDiffuseMaterialIsNotDefine(MtlFile? mtlFile = null) {
             return new TextureException("Diffuse material parameter not define.", mtlFile);
+        }
+
+        public static TextureException TextureAlreadyContained(MtlTexture mtlTexture) {
+            return new TextureException("The texture is already contained in the texture collection.", materialFile: mtlTexture.Diffuse);
         }
 
         private static string GetFullMessage(string? message = null, MtlFile? mtlFile = null, MaterialFile? materialFile = null) {

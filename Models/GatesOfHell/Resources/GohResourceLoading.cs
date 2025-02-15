@@ -7,6 +7,7 @@ using System.Windows.Media.Media3D;
 using GohMdlExpert.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Media3D;
+using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
@@ -53,11 +54,15 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
                 }
 
                 using var stream = materialFile.GetStream();
-                byte[] buffer = new byte[stream.Length];
 
-                stream.Read(buffer, 0, buffer.Length);
+                var bitmap = new BitmapImage();
 
-                var bitmap = new BitmapImage().FromByteArray(buffer);
+                bitmap.BeginInit();
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.StreamSource = new MemoryStream();
+                stream.CopyTo(bitmap.StreamSource);
+                bitmap.EndInit();
+
 
                 diffuseMaterial = new DiffuseMaterial(
                     new ImageBrush(bitmap) {
@@ -66,6 +71,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
                 );
 
                 diffuseMaterial.Freeze();
+                bitmap.Freeze();
 
                 _materialCache.SetMaterial(materialFile.Name, diffuseMaterial);
             }
@@ -126,7 +132,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
 
             if (mdlFilePath != null) {
                 foreach (var mtlFilePath in Directory.GetFiles(mdlFilePath, "*.mtl")) {
-                    mtlFilesList.Add(new MtlFile(mtlFilePath));
+                    if (ResourceChecking.CheckMdlModelMeshTextureName(mdlFile.Data, Path.GetFileName(mtlFilePath))) {
+                        mtlFilesList.Add(new MtlFile(mtlFilePath));
+                    }
                 }
             }
 

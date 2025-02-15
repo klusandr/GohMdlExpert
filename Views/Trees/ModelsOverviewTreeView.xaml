@@ -17,7 +17,7 @@
             <RowDefinition/>
             <RowDefinition Height=".3*"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="Обозреватель содержимого" TextTrimming="CharacterEllipsis"/>
+        <TextBlock Text="Humanskin overview" TextTrimming="CharacterEllipsis"/>
         <vbc:TreeView Grid.Row="1">
             <vbc:TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Items}">
@@ -26,6 +26,6 @@
             </vbc:TreeView.ItemTemplate>
         </vbc:TreeView>
         <tml:PlyModelLodListView x:Name="_lodList" Grid.Row="2" DataContext="{Binding LodListViewModel}" Visibility="Collapsed"/>
-        <tml:TextureMaterialListView x:Name="_materialList" Grid.Row="2" DataContext="{Binding MaterialListViewModel}" Visibility="Collapsed"/>
+        <tml:TextureMaterialListView x:Name="_materialList" Grid.Row="2" DataContext="{Binding AggregateTextureListViewModel}" Visibility="Collapsed"/>
     </Grid>
 </baseviews:BaseView>

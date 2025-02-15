@@ -22,7 +22,9 @@ namespace GohMdlExpert.ViewModels.Trees.Materials {
         }
 
         public override void LoadData() {
-            AddItem(new MaterialLoadTreeDirectoryItemViewModel(_textureProvider.TextureDirectory, this));
+            if (_textureProvider.IsResourceLoad) {
+                AddItem(new MaterialLoadTreeDirectoryItemViewModel(_textureProvider.TextureDirectory, this));
+            }
         }
 
         private void TextureResourceUpdatedHandler(object? sender, EventArgs e) {

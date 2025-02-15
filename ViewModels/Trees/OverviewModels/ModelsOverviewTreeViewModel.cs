@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using GohMdlExpert.Models.GatesOfHell.Media3D;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
+using GohMdlExpert.Services;
 using WpfMvvm.Collections.ObjectModel;
 using WpfMvvm.Data;
 using WpfMvvm.ViewModels.Controls;
@@ -9,7 +10,7 @@ using WpfMvvm.ViewModels.Controls;
 namespace GohMdlExpert.ViewModels.Trees.OverviewModels {
     public class ModelsOverviewTreeViewModel : TreeViewModel {
         public HumanskinMdlOverviewViewModel Models3DViewModel { get; }
-        public TextureMaterialListViewModel MaterialListViewModel { get; }
+        public AggregateTextureListViewModel AggregateTextureListViewModel { get; }
         public PlyModelLodListViewModel LodListViewModel { get; }
 
         public ModelsOverviewTreeMdlViewModel? MdlItem {
@@ -24,9 +25,9 @@ namespace GohMdlExpert.ViewModels.Trees.OverviewModels {
         }
         public IObservableEnumerable<TreeItemViewModel>? PlyItems => MdlItem?.Items;
 
-        public ModelsOverviewTreeViewModel(HumanskinMdlOverviewViewModel models3DViewModel) {
+        public ModelsOverviewTreeViewModel(HumanskinMdlOverviewViewModel models3DViewModel, TextureSelectorService textureSelector) {
             Models3DViewModel = models3DViewModel;
-            //MaterialListViewModel = new TextureMaterialListViewModel();
+            AggregateTextureListViewModel = new AggregateTextureListViewModel(textureSelector);
             LodListViewModel = new PlyModelLodListViewModel();
 
             models3DViewModel.PropertyChangeHandler.AddHandler(nameof(Models3DViewModel.MdlFile), MdlFileChangeHandler);

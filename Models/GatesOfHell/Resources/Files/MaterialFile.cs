@@ -21,7 +21,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             return name.Contains(Extension) ? name : name + Extension;
         }
 
-        private DiffuseMaterial GetMaterial() {
+        protected virtual DiffuseMaterial GetMaterial() {
             return GohResourceLoading.LoadMaterial(this);
         }
     }

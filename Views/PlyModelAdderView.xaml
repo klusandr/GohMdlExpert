@@ -9,7 +9,6 @@
              d:DataContext="{d:DesignInstance Type=viewmodels:PlyModelAdderViewModel}"
              mc:Ignorable="d">
     <StackPanel>
-        <Button Content="Добавить выбранную модель" Command="{Binding AddModelCommand}" Margin="5" Padding="5"/>
-        <TextBlock TextWrapping="Wrap">Типо интересная информация или что-нибудь в этом духе</TextBlock>
+        <Button Content="Add selected model" Command="{Binding AddModelCommand}" Margin="5" Padding="5"/>
     </StackPanel>
 </wpfmvvm:BaseView>

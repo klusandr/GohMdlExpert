@@ -11,6 +11,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             }
         }
 
+        public static bool CheckMdlModelMeshTextureName(MdlModel mdlModel, string meshTextureName) {
+            return mdlModel.PlyModel.Any(pf => CheckPlyModelMeshTextureName(pf.Data, meshTextureName));
+        }
+
         public static void ThrowCheckPlyModelMeshTextureName(PlyModel plyModel, string meshTextureName) {
             if (!CheckPlyModelMeshTextureName(plyModel, meshTextureName)) {
                 throw PlyModelException.NoContainMeshTextureName(null, meshTextureName);

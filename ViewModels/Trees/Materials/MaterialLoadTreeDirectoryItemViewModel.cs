@@ -1,4 +1,5 @@
-﻿using System.Windows.Media;
+﻿using System.ComponentModel;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GohMdlExpert.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
@@ -12,7 +13,13 @@ namespace GohMdlExpert.ViewModels.Trees.Materials {
 
         public MaterialLoadTreeDirectoryItemViewModel(GohResourceDirectory resourceDirectory, TreeViewModel modelsTree) : base(resourceDirectory, modelsTree) {
             Icon = s_icon;
-            LoadData();
+            PropertyChangeHandler.AddHandler(nameof(IsExpanded), ExpendedHandler);
+        }
+
+        private void ExpendedHandler(object? sender, PropertyChangedEventArgs e) {
+            if (!Items.Any()) {
+                LoadData();
+            }
         }
 
         private void LoadData() {

@@ -4,7 +4,7 @@ using System.Windows.Media;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Data {
-    public class MtlTexture(MaterialFile diffuse) {
+    public class MtlTexture {
         private class EqualsCompare : IEqualityComparer<MtlTexture> {
             public bool Equals(MtlTexture? x, MtlTexture? y) {
                 return x?.Equals(y) ?? y == null;
@@ -15,12 +15,18 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Data {
             }
         }
 
-        public MaterialFile Diffuse { get; set; } = diffuse;
+        public MaterialFile Diffuse { get; set; }
         public MaterialFile? Bump { get; set; }
         public MaterialFile? Specular { get; set; }
         public Color? Color { get; set; }
 
+        public MtlTexture(MaterialFile diffuse) {
+            Diffuse = diffuse;
+        }
+
         public static IEqualityComparer<MtlTexture> GetEqualityComparer() => new EqualsCompare();
+
+        public static MtlTexture NullTexture { get; } = new MtlTexture(new NullMaterialFile() { Name = string.Empty });
 
         public override bool Equals(object? obj) {
             if (obj == null) {
@@ -46,6 +52,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Data {
                 + (Bump?.GetHashCode() ?? 0)
                 + (Specular?.GetHashCode() ?? 0)
                 + (Color?.GetHashCode() ?? 0);
+        }
+
+        public MtlTexture Clone() {
+            return (MtlTexture)MemberwiseClone();
         }
     }
 }

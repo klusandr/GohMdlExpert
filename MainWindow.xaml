@@ -22,13 +22,13 @@
                     <Setter Property="Padding" Value="10 2"/>
                 </Style>
             </Menu.Resources>
-            <MenuItem Header="Файл">
-                <MenuItem Header="Открыть ресурс" Command="{Binding OpenResourceCommand}"/>
-                <MenuItem Header="Открыть файл" Command="{Binding OpenFileCommand}"/>
-                <MenuItem Header="Выход" Click="MenuItemExitClick"/>
+            <MenuItem Header="File">
+                <MenuItem Header="Open resource" Command="{Binding OpenResourceCommand}"/>
+                <MenuItem Header="Open file" Command="{Binding OpenFileCommand}"/>
+                <MenuItem Header="Exit" Click="MenuItemExitClick"/>
             </MenuItem>
-            <MenuItem Header="Правка">
-                <MenuItem Header="Кеш" Command="{Binding CacheCommand}"/>
+            <MenuItem Header="Edit">
+                <MenuItem Header="Cache" Command="{Binding CacheCommand}"/>
             </MenuItem>
         </Menu>
         <!--<StackPanel HorizontalAlignment="Right">
@@ -40,7 +40,7 @@
                 </Path>
             </Button>
         </StackPanel>-->
-        <Grid Grid.Row="1" Cursor="">
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>

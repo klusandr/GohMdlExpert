@@ -17,24 +17,19 @@ namespace GohMdlExpert.ViewModels {
             typeof(TextureLoadViewModel).GetProperty(nameof(TextureSpecular))!
         ];
 
-        private readonly GohTextureProvider _textureProvider;
         private readonly SolidColorBrush _textureColorBrush;
         private MtlTexture? _texture;
         private PropertyInfo? _selectFieldBindingProperty;
-        private MaterialFile? _selectedMaterialFile;
 
-        public MaterialFile? SelectedMaterialFile {
-            get => _selectedMaterialFile;
-            set {
-                _selectedMaterialFile = value;
-                OnPropertyChanged();
-            }
-        }
+        public MaterialFile? SelectedMaterialFile => MaterialTree.SelectedMaterialItem?.MaterialFile;
 
-        public MtlTexture? Texture {
-            get => _texture;
+        public MtlTexture Texture {
+            get => _texture ??= MtlTexture.NullTexture.Clone();
             set {
+                MaterialTree.ClearSelect();
+
                 _texture = value;
+
                 OnPropertyChanged();
             }
         }
@@ -43,11 +38,7 @@ namespace GohMdlExpert.ViewModels {
             get => Texture?.Diffuse;
             set {
                 if (value != null) {
-                    if (Texture == null) {
-                        Texture = new MtlTexture(value);
-                    } else {
-                        Texture.Diffuse = value;
-                    }
+                    Texture.Diffuse = value;
                     OnPropertyChanged();
                 }
             }
@@ -56,7 +47,7 @@ namespace GohMdlExpert.ViewModels {
         public MaterialFile? TextureSpecular {
             get => Texture?.Specular;
             set {
-                if (Texture != null && value != null) {
+                if (value != null) {
                     Texture.Specular = value;
                 }
                 OnPropertyChanged();
@@ -66,7 +57,7 @@ namespace GohMdlExpert.ViewModels {
         public MaterialFile? TextureBump {
             get => Texture?.Bump;
             set {
-                if (Texture != null && value != null) {
+                if (value != null) {
                     Texture.Bump = value;
                 }
                 OnPropertyChanged();
@@ -76,7 +67,7 @@ namespace GohMdlExpert.ViewModels {
         public Color? TextureColor {
             get => Texture?.Color;
             set {
-                if (Texture != null && value.HasValue) {
+                if (value.HasValue) {
                     Texture.Color = value.Value;
                     _textureColorBrush.Color = value.Value;
                 }
@@ -143,16 +134,11 @@ namespace GohMdlExpert.ViewModels {
         public event EventHandler? TextureApply;
 
         public TextureLoadViewModel(GohTextureProvider textureProvider) {
-            _textureProvider = textureProvider;
             MaterialTree = new MaterialLoadTreeViewModel(textureProvider);
             _textureColorBrush = new SolidColorBrush();
 
             _selectFieldBindingProperty = s_fieldBindingProperties[0];
 
-            if (textureProvider.IsResourceLoad) {
-                MaterialTree.LoadData();
-            }
-            
             MaterialTree.PropertyChangeHandler.AddHandler(nameof(MaterialLoadTreeViewModel.SelectedMaterialItem), SelectedMaterialHandler);
             PropertyChangeHandler
                 .AddHandlerBuilder(nameof(TextureColor), (_, _) => {
@@ -168,6 +154,7 @@ namespace GohMdlExpert.ViewModels {
                     OnPropertyChanged(nameof(TextureColor));
                 });
 
+            MaterialTree.LoadData();
         }
 
         public void SetSelectFieldIndex(int index) {
@@ -176,6 +163,12 @@ namespace GohMdlExpert.ViewModels {
             } else {
                 _selectFieldBindingProperty = null;
             }
+        }
+
+        public void ClearTexture() {
+            _texture = null;
+            MaterialTree.ClearSelect();
+            OnPropertyChanged(nameof(Texture));
         }
 
         private void Approve() {
@@ -193,8 +186,7 @@ namespace GohMdlExpert.ViewModels {
 
         private void SelectedMaterialHandler(object? sender, PropertyChangedEventArgs e) {
             _selectFieldBindingProperty?.SetValue(this, MaterialTree.SelectedMaterialItem?.MaterialFile);
-
-            SelectedMaterialFile = MaterialTree.SelectedMaterialItem?.MaterialFile;
+            OnPropertyChanged(nameof(SelectedMaterialFile));
         }
     }
 }

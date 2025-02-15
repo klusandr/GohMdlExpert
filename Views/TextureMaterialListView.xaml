@@ -7,18 +7,37 @@
              xmlns:local="clr-namespace:GohMdlExpert.Views"
              xmlns:vm="clr-namespace:GohMdlExpert.ViewModels" 
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance Type=vm:TextureMaterialListViewModel}">
-    <DockPanel>
-        <TextBlock d:Text="Обозреватель материалов текстуры: texture.mtl" Text="{Binding MtlFile.Name, StringFormat='Texture materials overview: {0}'}" DockPanel.Dock="Top"/>
-        <ListView Grid.Row="1" ItemsSource="{Binding Items, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="{Binding SelectedMaterialIndex}">
+             d:DataContext="{d:DesignInstance Type=vm:AggregateTextureListViewModel}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <TextBlock d:Text="Обозреватель материалов текстуры: texture.mtl" Text="{Binding MtlFile.Name, StringFormat='Texture materials overview: {0}'}"/>
+        <ListView ItemsSource="{Binding Items}" SelectedIndex="{Binding SelectedTextureIndex}" SelectionMode="Single" Grid.Row="1" MinHeight="72">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
+                        <StackPanel.InputBindings>
+                            <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding Path=DataContext.EditCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"/>
+                        </StackPanel.InputBindings>
                         <Image Source="/Resources/texture.ico" Width="20" />
                         <TextBlock Text="{Binding Diffuse.Name}"/>
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-    </DockPanel>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button Content="Add" Command="{Binding AddCommand}" Padding="3" Margin="5"/>
+            <Button Content="Remove" Command="{Binding RemoveCommand}" Padding="3" Margin="5" Grid.Column="1"/>
+        </Grid>
+    </Grid>
 </bv:BaseView>

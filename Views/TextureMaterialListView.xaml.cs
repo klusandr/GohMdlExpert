@@ -6,7 +6,7 @@ namespace GohMdlExpert.Views {
     /// <summary>
     /// Логика взаимодействия для TextureMaterialListView.xaml
     /// </summary>
-    [BindingViewModel<TextureMaterialListViewModel>]
+    [BindingViewModel<AggregateTextureListViewModel>]
     public partial class TextureMaterialListView : BaseView {
         public TextureMaterialListView() {
             InitializeComponent();
