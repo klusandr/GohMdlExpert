@@ -13,6 +13,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Сaches {
         public ICacheLoader CacheLoader { get; }
 
         public Dictionary<string, string[]>? PlyTexturesCache { get => GetCache<string[]>(); set => SetCache(value); }
+        public Dictionary<string, string[]>? TexturesCache { get => GetCache<string[]>(); set => SetCache(value); }
 
         public GohCacheProvider(ICacheLoader cacheLoader) {
             _cache = [];

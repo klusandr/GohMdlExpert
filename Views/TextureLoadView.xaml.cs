@@ -12,13 +12,13 @@ namespace GohMdlExpert.Views {
     /// </summary>
     [BindingViewModel<TextureLoadViewModel>]
     [BindingViewModelViaDI]
-    public partial class TextureOverviewView : BaseView {
+    public partial class TextureLoadView : BaseView {
         private readonly IEnumerable<TextBox> _selectedTextBlokGroup;
         private readonly Style _selectTextBoxStyle;
 
         public new TextureLoadViewModel ViewModel => (TextureLoadViewModel)base.ViewModel;
 
-        public TextureOverviewView() {
+        public TextureLoadView() {
             InitializeComponent();
 
             _selectTextBoxStyle = new Style();

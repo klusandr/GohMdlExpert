@@ -25,7 +25,7 @@ namespace GohMdlExpert.ViewModels.Trees.OverviewModels {
         }
         public IObservableEnumerable<TreeItemViewModel>? PlyItems => MdlItem?.Items;
 
-        public ModelsOverviewTreeViewModel(HumanskinMdlOverviewViewModel models3DViewModel, TextureSelectorService textureSelector) {
+        public ModelsOverviewTreeViewModel(HumanskinMdlOverviewViewModel models3DViewModel, TextureLoadService textureSelector) {
             Models3DViewModel = models3DViewModel;
             AggregateTextureListViewModel = new AggregateTextureListViewModel(textureSelector);
             LodListViewModel = new PlyModelLodListViewModel();

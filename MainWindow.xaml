@@ -28,7 +28,10 @@
                 <MenuItem Header="Exit" Click="MenuItemExitClick"/>
             </MenuItem>
             <MenuItem Header="Edit">
-                <MenuItem Header="Cache" Command="{Binding CacheCommand}"/>
+                <MenuItem Header="Caches">
+                    <MenuItem Header="Load PLY model textures" Command="{Binding LoadPlyTexturesCacheCommand}"/>
+                    <MenuItem Header="Load textures" Command="{Binding LoadTexturesCacheCommand}"/>
+                </MenuItem>
             </MenuItem>
         </Menu>
         <!--<StackPanel HorizontalAlignment="Right">

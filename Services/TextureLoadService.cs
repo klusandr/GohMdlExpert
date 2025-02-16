@@ -4,15 +4,15 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Views;
 
 namespace GohMdlExpert.Services {
-    public class TextureSelectorService {
-        private TextureOverviewView? _materialLoad;
+    public class TextureLoadService {
+        private TextureLoadView? _materialLoad;
         private ChildWindow? _childWindow;
 
         public MtlTexture? SelectedTexture { get; set; }
 
         public event EventHandler? SelectedTextureChange;
 
-        public TextureSelectorService() { }
+        public TextureLoadService() { }
 
         public MtlTexture? GetMaterialDialog() {
             _materialLoad ??= LoadView();
@@ -35,8 +35,8 @@ namespace GohMdlExpert.Services {
             return texture;
         }
 
-        private TextureOverviewView LoadView() {
-            var view = new TextureOverviewView();
+        private TextureLoadView LoadView() {
+            var view = new TextureLoadView();
 
             view.ViewModel.TextureApprove += MaterialApproveHandler;
             view.ViewModel.TextureApply += MaterialApplyHandler;

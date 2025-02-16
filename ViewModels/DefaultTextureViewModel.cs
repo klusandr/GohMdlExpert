@@ -33,7 +33,7 @@ namespace GohMdlExpert.ViewModels {
             }
         }
 
-        private readonly TextureSelectorService _textureSelector;
+        private readonly TextureLoadService _textureSelector;
         private readonly ObservableList<DefaultTextureItemViewModel> _textures;
         private DefaultTextureItemViewModel? _selectedMaterial;
         private bool _isUse = true;
@@ -88,7 +88,7 @@ namespace GohMdlExpert.ViewModels {
 
         public event EventHandler? TexturesUpdate;
 
-        public DefaultTextureViewModel(TextureSelectorService materialSelector) {
+        public DefaultTextureViewModel(TextureLoadService materialSelector) {
             _textureSelector = materialSelector;
             _textures = [];
 

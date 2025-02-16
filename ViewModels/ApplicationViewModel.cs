@@ -23,7 +23,8 @@ namespace GohMdlExpert.ViewModels {
 
         public ICommand OpenResourceCommand => CommandManager.GetCommand(OpenResourceDirectory);
         public ICommand OpenFileCommand => CommandManager.GetCommand(OpenFile);
-        public ICommand CacheCommand => CommandManager.GetCommand(LoadCaches);
+        public ICommand LoadPlyTexturesCacheCommand => CommandManager.GetCommand(LoadPlyTexturesCache);
+        public ICommand LoadTexturesCacheCommand => CommandManager.GetCommand(LoadTexturesCache);
 
         public ApplicationViewModel(GohResourceProvider gohResourceProvider, GohHumanskinResourceProvider gohHumanskinResourceProvider, HumanskinMdlOverviewViewModel models3DView) {
             _gohResourceProvider = gohResourceProvider;
@@ -54,7 +55,7 @@ namespace GohMdlExpert.ViewModels {
             }
         }
 
-        public void LoadCaches() {
+        public void LoadPlyTexturesCache() {
             float completionPercentage = 0;
 
             var timer = new System.Timers.Timer(1000);
@@ -72,6 +73,24 @@ namespace GohMdlExpert.ViewModels {
             }).ContinueWith((t) => timer.Dispose());
 
             //var d =  GohServicesProvider.Instance.GetRequiredService<GohCacheProvider>().PlyMtlsCache;
+        }
+
+        private void LoadTexturesCache(object? obj) {
+            float completionPercentage = 0;
+
+            var timer = new System.Timers.Timer(1000);
+            timer.Elapsed += (_, _) => {
+                CompletionPercentage = completionPercentage;
+                OnPropertyChanged(nameof(CompletionPercentage));
+            };
+
+            timer.AutoReset = true;
+            timer.Enabled = true;
+
+            Task.Factory.StartNew(() => {
+                GohCachesFilling.FillTexturesCache(_gohResourceProvider, _gohHumanskinResourceProvider, ref completionPercentage);
+                completionPercentage = 0;
+            }).ContinueWith((t) => timer.Dispose());
         }
     }
 }

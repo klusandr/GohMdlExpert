@@ -13,7 +13,7 @@ using WpfMvvm.ViewModels;
 namespace GohMdlExpert.ViewModels
 {
     public class AggregateTextureListViewModel : BaseViewModel {
-        private readonly TextureSelectorService _materialSelector;
+        private readonly TextureLoadService _materialSelector;
         private readonly ObservableTargetList<MtlTexture> _items;
         private AggregateMtlFile? _mtlFile;
         private int _selectedTextureIndex;
@@ -46,7 +46,7 @@ namespace GohMdlExpert.ViewModels
 
         public event EventHandler? SelectedTextureUpdate;
 
-        public AggregateTextureListViewModel(TextureSelectorService materialSelector) {
+        public AggregateTextureListViewModel(TextureLoadService materialSelector) {
             _materialSelector = materialSelector;
             _items = [];
         }

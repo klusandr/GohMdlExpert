@@ -7,6 +7,7 @@ using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.ViewModels.Trees.Materials;
+using GohMdlExpert.ViewModels.Trees.Textures;
 using WpfMvvm.ViewModels;
 
 namespace GohMdlExpert.ViewModels {
@@ -21,7 +22,7 @@ namespace GohMdlExpert.ViewModels {
         private MtlTexture? _texture;
         private PropertyInfo? _selectFieldBindingProperty;
 
-        public MaterialFile? SelectedMaterialFile => MaterialTree.SelectedMaterialItem?.MaterialFile;
+        public MaterialFile? SelectedMaterialFile { get; private set; }
 
         public MtlTexture Texture {
             get => _texture ??= MtlTexture.NullTexture.Clone();
@@ -125,6 +126,7 @@ namespace GohMdlExpert.ViewModels {
         public SolidColorBrush? TextureColorBrush => _textureColorBrush;
 
         public MaterialLoadTreeViewModel MaterialTree { get; }
+        public TextureLoadTreeViewModel TextureTree { get; }
 
         public ICommand ApproveCommand => CommandManager.GetCommand(Approve);
         public ICommand ApplyCommand => CommandManager.GetCommand(Apply);
@@ -133,28 +135,34 @@ namespace GohMdlExpert.ViewModels {
         public event EventHandler? TextureApprove;
         public event EventHandler? TextureApply;
 
-        public TextureLoadViewModel(GohTextureProvider textureProvider) {
+        public TextureLoadViewModel(GohResourceProvider resourceProvider, GohTextureProvider textureProvider) {
             MaterialTree = new MaterialLoadTreeViewModel(textureProvider);
+            TextureTree = new TextureLoadTreeViewModel(resourceProvider, textureProvider);
             _textureColorBrush = new SolidColorBrush();
 
             _selectFieldBindingProperty = s_fieldBindingProperties[0];
 
             MaterialTree.PropertyChangeHandler.AddHandler(nameof(MaterialLoadTreeViewModel.SelectedMaterialItem), SelectedMaterialHandler);
+            TextureTree.PropertyChangeHandler.AddHandler(nameof(TextureLoadTreeViewModel.SelectedTextureItem), SelectedTextureHandler);
             PropertyChangeHandler
                 .AddHandlerBuilder(nameof(TextureColor), (_, _) => {
                     OnPropertyChanged(nameof(TextureColorRedValue));
                     OnPropertyChanged(nameof(TextureColorGreenValue));
                     OnPropertyChanged(nameof(TextureColorBlueValue));
                     OnPropertyChanged(nameof(TextureColorAlphaValue));
+                    UpdateColorBrush();
                 })
                 .AddHandlerBuilder(nameof(Texture), (_, _) => {
                     OnPropertyChanged(nameof(TextureDiffuse));
                     OnPropertyChanged(nameof(TextureBump));
                     OnPropertyChanged(nameof(TextureSpecular));
                     OnPropertyChanged(nameof(TextureColor));
+                    SelectedMaterialFile = _texture?.Diffuse;
+                    OnPropertyChanged(nameof(SelectedMaterialFile));
                 });
 
             MaterialTree.LoadData();
+            TextureTree.LoadData();
         }
 
         public void SetSelectFieldIndex(int index) {
@@ -184,8 +192,22 @@ namespace GohMdlExpert.ViewModels {
             Approve();
         }
 
+        private void UpdateColorBrush() {
+            if (TextureColor.HasValue) {
+                _textureColorBrush.Color = TextureColor.Value;
+            }
+        }
+
+        private void SelectedTextureHandler(object? sender, PropertyChangedEventArgs e) {
+            _texture = TextureTree.SelectedTextureItem?.MtlFile.Data.Clone();
+            SelectedMaterialFile = _texture?.Diffuse;
+            OnPropertyChanged(nameof(SelectedMaterialFile));
+            OnPropertyChanged(nameof(Texture));
+        }
+
         private void SelectedMaterialHandler(object? sender, PropertyChangedEventArgs e) {
             _selectFieldBindingProperty?.SetValue(this, MaterialTree.SelectedMaterialItem?.MaterialFile);
+            SelectedMaterialFile = MaterialTree.SelectedMaterialItem?.MaterialFile;
             OnPropertyChanged(nameof(SelectedMaterialFile));
         }
     }

@@ -9,6 +9,7 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 using GohMdlExpert.Models.GatesOfHell.Сaches;
 using Microsoft.Extensions.DependencyInjection;
+using static GohMdlExpert.Models.GatesOfHell.Resources.Data.PlyModel;
 
 namespace GohMdlExpert.Models.GatesOfHell.Caches {
     public static class GohCachesFilling {
@@ -61,6 +62,24 @@ namespace GohMdlExpert.Models.GatesOfHell.Caches {
             }
 
             GohServicesProvider.Instance.GetRequiredService<GohCacheProvider>().PlyTexturesCache = cache;
+        }
+
+        public static void FillTexturesCache(GohResourceProvider resourceProvider, GohHumanskinResourceProvider humanskinProvider, ref float completionPercentage) {
+            var cache = new Dictionary<string, string[]>();
+
+            foreach (var humanskinResource in humanskinProvider.HumanskinResources) {
+                var loadMtlFiles = humanskinResource.Root.FindResourceElements<MtlFile>();
+
+                var mtlFiles = loadMtlFiles
+                    .GroupBy(mf => new { mf.Name, mf.Data.Diffuse })
+                    .Select(mfg => mfg.First())
+                    .Select(mf => mf.GetFullPath().ToLower());
+                cache.Add(humanskinResource.Name, mtlFiles.ToArray());
+
+                completionPercentage = 100;
+            }
+
+            GohServicesProvider.Instance.GetRequiredService<GohCacheProvider>().TexturesCache = cache;
         }
     }
 }

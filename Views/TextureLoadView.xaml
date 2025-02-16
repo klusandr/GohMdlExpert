@@ -1,11 +1,13 @@
-﻿<bv:BaseView x:Class="GohMdlExpert.Views.TextureOverviewView"
+﻿<bv:BaseView x:Class="GohMdlExpert.Views.TextureLoadView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GohMdlExpert.Views"
              xmlns:bv="clr-namespace:WpfMvvm.Views;assembly=WpfMvvm"
-             xmlns:trees="clr-namespace:GohMdlExpert.Views.Trees" xmlns:viewmodels="clr-namespace:GohMdlExpert.ViewModels" 
+             xmlns:controls="clr-namespace:WpfMvvm.Views.Controls;assembly=WpfMvvm"
+             xmlns:trees="clr-namespace:GohMdlExpert.Views.Trees" 
+             xmlns:viewmodels="clr-namespace:GohMdlExpert.ViewModels" 
              d:DataContext="{d:DesignInstance Type=viewmodels:TextureLoadViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:Background ="White">
@@ -19,10 +21,18 @@
             <RowDefinition/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <trees:MaterialLoadTreeView DataContext="{Binding MaterialTree}"/>
+        
+        <TabControl>
+            <TabItem Header="Materials">
+                <trees:MaterialLoadTreeView DataContext="{Binding MaterialTree}"/>
+            </TabItem>
+            <TabItem Header="Textures">
+                <controls:TreeView DataContext="{Binding TextureTree}"/>
+            </TabItem>
+        </TabControl>
+        
         <GridSplitter Width="3"/>
         <Image Source="{Binding SelectedMaterialFile.ImageSource}" Grid.Column="1"/>
-
         <StackPanel Grid.Column="2" Margin="5">
             <TextBlock Text="Texture"/>
             <TextBlock Text="Diffuse:" Margin="5"/>
@@ -32,7 +42,7 @@
             <TextBlock Text="Specular:" Margin="5"/>
             <TextBox x:Name="_textureSpecularTextBox"  Text="{Binding TextureSpecular.Name}" IsReadOnly="True" Margin="5 0"/>
 
-            <GroupBox Margin="0 5">
+            <GroupBox Margin="0 5" IsEnabled="False">
                 <GroupBox.Header>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Color"/>

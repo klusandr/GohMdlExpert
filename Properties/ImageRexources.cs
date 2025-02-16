@@ -1,28 +1,31 @@
-﻿using System.Windows.Media.Imaging;
+﻿using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using GohMdlExpert.Extensions;
 
 namespace GohMdlExpert.Properties {
-    internal static class ImageResources {
-        private static readonly Dictionary<string, BitmapImage> s_imageSources;
+    public class IconResources {
+        private readonly Dictionary<string, BitmapImage> _imageSources;
+        private static IconResources? s_instance;
 
-        static ImageResources() {
-            s_imageSources = [];
+        public static IconResources Instance => s_instance ??= new IconResources();
+
+        private IconResources() {
+            _imageSources = [];
         }
 
-        public static BitmapImage GetIcon(string resourceName) {
-            if (!s_imageSources.TryGetValue(resourceName, out BitmapImage? bitmapImage)) {
-                ThrowCheckResource(resourceName, typeof(byte[]));
-                bitmapImage = new BitmapImage().FromByteArray((byte[])Resources.ResourceManager.GetObject(resourceName)!);
-                s_imageSources.Add(resourceName, bitmapImage);
+        public ImageSource GetIcon(string resourceName) {
+            if (!_imageSources.TryGetValue(resourceName, out BitmapImage? bitmapImage)) {
+                var resource = Resources.ResourceManager.GetObject(resourceName);
+
+                if (resource is byte[] iconResource) {
+                    bitmapImage = new BitmapImage().FromByteArray(iconResource);
+                    _imageSources.Add(resourceName, bitmapImage);
+                } else {
+                    throw new Exception($"App resource load error. Resource \"{resourceName}\" with type \"{typeof(byte[]).Name}\".");
+                }
             }
 
             return bitmapImage;
-        }
-
-        private static void ThrowCheckResource(string resourceName, Type type) {
-            if (typeof(Resources).GetProperty(resourceName, type) == null) {
-                throw new Exception($"App resource load error. Resource \"{resourceName}\" with type \"{type.Name}\".");
-            }
         }
     }
 }

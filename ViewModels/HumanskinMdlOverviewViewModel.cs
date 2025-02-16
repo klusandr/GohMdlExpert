@@ -63,7 +63,7 @@ namespace GohMdlExpert.ViewModels
 
         public event EventHandler? UpdatedTextures;
 
-        public HumanskinMdlOverviewViewModel(IUserDialogProvider userDialog, GohResourceProvider resourceProvider, GohHumanskinResourceProvider humanskinProvider, GohTextureProvider textureProvider, HumanskinMdlGeneratorViewModel humanskinMdlGeneratorViewModel, TextureSelectorService textureSelector) {
+        public HumanskinMdlOverviewViewModel(IUserDialogProvider userDialog, GohResourceProvider resourceProvider, GohHumanskinResourceProvider humanskinProvider, GohTextureProvider textureProvider, HumanskinMdlGeneratorViewModel humanskinMdlGeneratorViewModel, TextureLoadService textureSelector) {
             _models = [];
             _plyModels = [];
             _lodPlyFiles = [];
