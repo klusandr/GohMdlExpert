@@ -33,7 +33,7 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
             Icon = s_icon;
             ContextMenuViewModel
                 .InsertItemBuilder(0, new MenuItemViewModel("Add", AddCommand) { Icon = new Image() { Source = s_icon } })
-                .InsertItemBuilder(1, new MenuItemViewModel("Cancel", DeleteCommand) { EnableToVisible = true });
+                .InsertItemBuilder(1, new MenuItemViewModel("Cancel", DeleteCommand) { VisibleFromEnable = true });
         }
 
         public override void LoadData() {

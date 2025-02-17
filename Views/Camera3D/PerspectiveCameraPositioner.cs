@@ -50,7 +50,7 @@ namespace GohMdlExpert.Views.Camera3D {
             };
         }
 
-        public void RotationCameraAroundFocus(double angle) {
+        public void RotationYCameraAroundFocus(double angle) {
             _cameraYRotation.Angle += angle * -1;
         }
 
@@ -71,9 +71,10 @@ namespace GohMdlExpert.Views.Camera3D {
         }
 
         public void SetCameraFocus(Point3D point) {
-            Focus = _camera.Position = point;
-            _camera.Position += new Vector3D(0, 0, -20);
-            RotationXCameraAroundFocus(10);
+            var d = _camera.Position;
+            Focus = point;
+            _camera.Position = new Point3D(point.X, point.Y, d.Z);
+            //RotationXCameraAroundFocus(10);
             UpdateCameraLookDirection();
 
         }

@@ -60,6 +60,7 @@ namespace GohMdlExpert.ViewModels
             AddedModel = new PlyModel3D(plyFile, aggregateMtlFiles);
 
             DefaultTextureUpdate();
+            _models3DView.FocusablePlyModel = _addedModel;
         }
 
         public void SetMtlFiles(AggregateMtlFiles aggregateMtlFiles) {
@@ -83,6 +84,7 @@ namespace GohMdlExpert.ViewModels
                 AggregateMtlFiles = null;
                 AddedModel = null;
                 CancelModelAdded?.Invoke(this, EventArgs.Empty);
+                _models3DView.FocusablePlyModel = null;
             }
         }
 
@@ -93,6 +95,8 @@ namespace GohMdlExpert.ViewModels
                     AddedModel = null;
                     ModelAdded?.Invoke(this, EventArgs.Empty);
                 } catch (OperationCanceledException) { }
+
+                _models3DView.FocusablePlyModel = null;
             }
         }
 

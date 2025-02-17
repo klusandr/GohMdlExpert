@@ -1,5 +1,7 @@
 ﻿using System.Windows.Media.Media3D;
+using GohMdlExpert.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
+using GohMdlExpert.Models.GatesOfHell.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
@@ -130,6 +132,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D
 
         public bool GetMeshVisibility(string meshTextureName) {
             return GetMesh(meshTextureName).IsVisible;
+        }
+
+        public Point3D GetCenterPoint() {
+            return PlyFile.Data.Points.SwapYZ().SwapXZ().GetCenterPoint();
         }
 
         private MeshData GetMesh(string meshTextureName) {

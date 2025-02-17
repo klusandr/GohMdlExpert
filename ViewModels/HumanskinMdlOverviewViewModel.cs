@@ -21,6 +21,7 @@ namespace GohMdlExpert.ViewModels
 {
     public sealed class HumanskinMdlOverviewViewModel : BaseViewModel {
         private MdlFile? _mdlFile;
+        private PlyModel3D? _focusablePlyModel;
         private readonly ObservableCollection<PlyModel3D> _plyModels;
         private readonly Model3DCollection _models;
         private readonly ObservableDictionary<string, AggregateMtlFile> _aggregateMtlFiles;
@@ -57,6 +58,14 @@ namespace GohMdlExpert.ViewModels
         public DefaultTextureViewModel DefaultMaterialViewModel => _defaultMaterialViewModel;
 
         public Model3DCollection Models => _models;
+
+        public PlyModel3D? FocusablePlyModel {
+            get => _focusablePlyModel;
+            set {
+                _focusablePlyModel = value;
+                OnPropertyChanged();
+            }
+        }
 
         public ICommand SaveMdlCommand => CommandManager.GetCommand(SaveMtlFile);
         public ICommand NewMdlCommand => CommandManager.GetCommand(CreateMdlFile);
@@ -122,6 +131,8 @@ namespace GohMdlExpert.ViewModels
             if (missTexture.Count != 0) {
                 _userDialog.ShowWarning($"Loaded .mdl file {mdlFile.GetFullPath()}, contains unclaimed textures: [{string.Join(", ", missTexture.Select(m => m.Name))}] that have been removed.", "Miss textures");
             }
+
+            FocusablePlyModel = null;
         }
 
         public void AddModel(PlyModel3D modelPly, AggregateMtlFiles? aggregateMtlFiles = null, IEnumerable<PlyFile>? lodModels = null) {

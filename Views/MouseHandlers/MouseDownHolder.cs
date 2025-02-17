@@ -30,17 +30,15 @@ namespace GohMdlExpert.Views.MouseHandlers {
 
         private void OnMouseButtonDown(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == NeedMouseButton) {
-                _mousePosition = _startMousePosition = e.GetPosition(Application.Current.MainWindow);
-                Mouse.OverrideCursor = Cursors.None;
-                Mouse.Capture(_frameworkElement);
+                _mousePosition = _startMousePosition = e.GetPosition(_frameworkElement);
+                _frameworkElement.Cursor = Cursors.None;
             }
         }
 
         private void OnMouseButtonUp(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == NeedMouseButton) {
-                Mouse.OverrideCursor = Cursors.Arrow;
                 SetCursorPos((int)(FrameworkElementPosition.X + _startMousePosition.X), (int)(FrameworkElementPosition.Y + _startMousePosition.Y));
-                Mouse.Capture(null);
+                _frameworkElement.Cursor = Cursors.Cross;
             }
         }
 

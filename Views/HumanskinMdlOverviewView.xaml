@@ -38,7 +38,7 @@
             <local:DefaultMaterialView DataContext="{Binding DefaultMaterialViewModel}" Grid.Row="3"/>
         </Grid>
 
-        <Grid x:Name="_sceneBackground" Background="AliceBlue" MouseWheel="OnMouseWheel" Grid.Column="1">
+        <Grid x:Name="_sceneBackground" Background="AliceBlue" MouseWheel="OnMouseWheel" Grid.Column="1" Cursor="Cross">
             <Viewport3D x:Name="_scene">
                 <Viewport3D.Camera>
                     <PerspectiveCamera x:Name="_perspectivCamera"/>
@@ -46,8 +46,14 @@
 
                 <Viewport3D.Children>
                     <ModelVisual3D>
+
                         <ModelVisual3D.Content>
-                            <DirectionalLight Color="White" Direction="-1,-1,-2" />
+                            <Model3DGroup>
+                                <DirectionalLight Color="White" Direction="0,-1,-2" />
+                                <DirectionalLight Color="White" Direction="1,-1,0" />
+                                <DirectionalLight Color="White" Direction="-1,-1,0" />
+                                <DirectionalLight Color="White" Direction="0,-1,2" />
+                            </Model3DGroup>
                         </ModelVisual3D.Content>
                     </ModelVisual3D>
                     <ModelVisual3D>
@@ -59,19 +65,6 @@
                 </Viewport3D.Children>
             </Viewport3D>
         </Grid>
-        <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <StackPanel Orientation="Horizontal" DataContext="{Binding ElementName=_perspectivCamera}" Background="White">
-                <StackPanel.Resources>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="VerticalAlignment" Value="Center"/>
-                        <Setter Property="Margin" Value="10 0"/>
-                    </Style>
-                </StackPanel.Resources>
-                <TextBlock Text="{Binding Position.X, StringFormat = X : {0}.00}"/>
-                <TextBlock Text="{Binding Position.Y, StringFormat = Y : {0}.00}"/>
-                <TextBlock Text="{Binding Position.Z, StringFormat = Z : {0}.00}"/>
-            </StackPanel>
-        </StackPanel>
         <DockPanel Grid.Column="2">
             <Button Content="Create new humanskin" Command="{Binding NewMdlCommand}" Padding="5 3" HorizontalAlignment="Center" VerticalAlignment="Center" DockPanel.Dock="Top"/>
             <Button Content="Save humanskin" Padding="5 3" HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding SaveMdlCommand}" DockPanel.Dock="Bottom"/>

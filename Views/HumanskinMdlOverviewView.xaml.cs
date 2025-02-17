@@ -1,9 +1,14 @@
-﻿using System.Windows.Input;
+﻿using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Windows.Input;
 using System.Windows.Media.Media3D;
+using GohMdlExpert.Models.GatesOfHell.Extensions;
+using GohMdlExpert.Models.GatesOfHell.Media3D;
 using GohMdlExpert.ViewModels;
 using GohMdlExpert.Views.Camera3D;
 using GohMdlExpert.Views.Models3D;
 using GohMdlExpert.Views.MouseHandlers;
+using WpfMvvm.Data;
 using WpfMvvm.Views;
 using WpfMvvm.Views.Attributes;
 
@@ -30,9 +35,20 @@ namespace GohMdlExpert.Views {
             _mouseCameraRotatedMover.MouseDownMove += OnMouseCameraRotationMove;
             _mouseCameraPositionMover.MouseDownMove += OnMouseCameraPositionMover;
 
+            _perspectivCamera.Position = new Point3D(0, 0, 40);
             _cameraPositioner.SetCameraFocus(new Point3D());
 
-            //Models3DViewModel.Models.Changed += ((_, _) => _cameraPositioner.SetCameraFocus(Models3DViewModel.ModelsCenter ?? new Point3D()));
+            //ViewModel.Models.Changed += ((_, _) => _cameraPositioner.SetCameraFocus(ViewModel.Models.First(). ?? new Point3D()));
+
+            ViewModel.PropertyChangeHandler.AddHandler(nameof(HumanskinMdlOverviewViewModel.FocusablePlyModel), (_, _) => {
+                if (ViewModel.FocusablePlyModel != null) {
+                    var point = ViewModel.FocusablePlyModel.GetCenterPoint();
+                    _cameraPositioner.SetCameraFocus(point);
+                } else {
+                    var point = ViewModel.PlyModels.Select(pm => pm.GetCenterPoint()).GetCenterPoint();
+                    _cameraPositioner.SetCameraFocus(point);
+                }
+            });
 
             var tr = new TranslateTransform3D(_cameraPositioner.Focus - new Point3D());
 
@@ -45,7 +61,7 @@ namespace GohMdlExpert.Views {
             };
 
             _scene.Children.Add(new ModelVisual3D() {
-                Content = Geometry3DDrawinger.DrowCube(0.1),
+                Content = Geometry3DDrawinger.DrowCube(1),
                 Transform = tr
             });
         }
@@ -53,12 +69,12 @@ namespace GohMdlExpert.Views {
         public PerspectiveCamera Camera => _perspectivCamera;
 
         private void OnMouseCameraPositionMover(object sender, MouseDownHolder.MouseMoveArgs e) {
-            _cameraPositioner.MoveCamera(new Vector3D(e.Vector.X, e.Vector.Y, 0) / 100);
+            _cameraPositioner.MoveCamera(new Vector3D(-e.Vector.X, e.Vector.Y, 0) / 100);
         }
 
         private void OnMouseCameraRotationMove(object sender, MouseDownHolder.MouseMoveArgs e) {
-            _cameraPositioner.RotationCameraAroundFocus(e.Vector.X * 0.5);
-            _cameraPositioner.RotationXCameraAroundFocus(e.Vector.Y * 0.5);
+            _cameraPositioner.RotationYCameraAroundFocus(e.Vector.X);
+            _cameraPositioner.RotationXCameraAroundFocus(e.Vector.Y * -0.5);
         }
 
         private void OnMouseWheel(object sender, MouseWheelEventArgs e) {
