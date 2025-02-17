@@ -1,4 +1,7 @@
-﻿using System.Windows.Input;
+﻿using System.Collections;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows.Input;
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Services;
@@ -6,7 +9,7 @@ using WpfMvvm.Collections.ObjectModel;
 using WpfMvvm.ViewModels;
 
 namespace GohMdlExpert.ViewModels {
-    public class DefaultTextureViewModel : BaseViewModel {
+    public class DefaultTextureViewModel : BaseViewModel, INotifyDataErrorInfo {
         public class DefaultTextureItemViewModel : BaseViewModel {
             private string _textureName;
             private MtlTexture _texture;
@@ -35,6 +38,7 @@ namespace GohMdlExpert.ViewModels {
 
         private readonly TextureLoadService _textureSelector;
         private readonly ObservableList<DefaultTextureItemViewModel> _textures;
+        private readonly Dictionary<string, Exception?> _errors;
         private DefaultTextureItemViewModel? _selectedMaterial;
         private bool _isUse = true;
         private bool _isUseAlways;
@@ -61,6 +65,7 @@ namespace GohMdlExpert.ViewModels {
             set {
                 _textureName = value;
                 OnPropertyChanged();
+                ClearError();
             }
         }
 
@@ -86,11 +91,15 @@ namespace GohMdlExpert.ViewModels {
         public ICommand RemoveSelectedTextureCommand => CommandManager.GetCommand(RemoveSelectedTexture);
         public ICommand ClearSelectCommand => CommandManager.GetCommand(ClearSelect);
 
+        public bool HasErrors => _errors.Count != 0;
+
         public event EventHandler? TexturesUpdate;
+        public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
         public DefaultTextureViewModel(TextureLoadService materialSelector) {
             _textureSelector = materialSelector;
             _textures = [];
+            _errors = [];
 
             materialSelector.SelectedTextureChange += MaterialSelectorMaterialFileChangeHandler;
         }
@@ -99,7 +108,7 @@ namespace GohMdlExpert.ViewModels {
             return _textures.FirstOrDefault(m => m.TextureName == textureName)?.Texture;
         }
 
-        private void AddMaterial() {
+        public void AddMaterial() {
             if (TextureName != null) {
                 var materialFile = _textureSelector.GetMaterialDialog();
 
@@ -108,10 +117,12 @@ namespace GohMdlExpert.ViewModels {
                     TextureName = null;
                     OnTexturesUpdate();
                 }
+            } else {
+                SetError(new Exception(), nameof(TextureName));
             }
         }
 
-        private void EditTextureNameSelectedTexture() {
+        public void EditTextureNameSelectedTexture() {
             if (SelectedTexture != null && TextureName != null && CheckTextureNameUniqueness(TextureName)) {
                 SelectedTexture.TextureName = TextureName;
                 ClearSelect();
@@ -119,7 +130,7 @@ namespace GohMdlExpert.ViewModels {
             }
         }
 
-        private void EditSelectedTexture() {
+        public void EditSelectedTexture() {
             if (SelectedTexture != null) {
                 _textureSelector.SelectedTexture = SelectedTexture.Texture;
 
@@ -133,7 +144,7 @@ namespace GohMdlExpert.ViewModels {
             }
         }
 
-        private void RemoveSelectedTexture() {
+        public void RemoveSelectedTexture() {
             if (SelectedTexture != null) {
                 _textures.Remove(SelectedTexture);
                 ClearSelect();
@@ -141,7 +152,19 @@ namespace GohMdlExpert.ViewModels {
             }
         }
 
-        private void ClearSelect() {
+        public IEnumerable GetErrors(string? propertyName) {
+            if (propertyName != null) {
+                if (_errors.TryGetValue(propertyName, out var error)) {
+                    return (IEnumerable<Exception?>)[error];
+                } else {
+                    return Enumerable.Empty<Exception>();
+                }
+            } else {
+                return _errors.Values;
+            }
+        }
+
+        public void ClearSelect() {
             SelectedTexture = null;
         }
 
@@ -149,6 +172,23 @@ namespace GohMdlExpert.ViewModels {
             return !_textures.Any(dm => dm.TextureName == textureName);
         }
 
+        private void SetError(Exception? exception, [CallerMemberName]string? propertyName = null) {
+            if (propertyName != null) {
+
+                _errors[propertyName] = exception;
+                ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+            }
+        }
+
+        private void ClearError([CallerMemberName] string? propertyName = null) {
+            if (propertyName != null) {
+                _errors.Remove(propertyName);
+                ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+            } else {
+                _errors.Clear();
+                ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(null));
+            }
+        }
         private void OnTexturesUpdate() {
             TexturesUpdate?.Invoke(this, EventArgs.Empty);
         }

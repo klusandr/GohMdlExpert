@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="200">
     <StackPanel Margin="5">
-        <TextBlock Text="Default material"/>
+        <TextBlock Text="Default texture"/>
         <ListView ItemsSource="{Binding Textures}" SelectedItem="{Binding SelectedTexture}" HorizontalContentAlignment="Stretch" MaxHeight="216">
             <ListView.ItemTemplate>
                 <DataTemplate>
@@ -47,9 +47,9 @@
             <Button Command="{Binding EditTextureNameSelectedTextureCommand}">
                 <Image Source="/Resources/check.ico"/>
             </Button>
-            <TextBox Text="{Binding TextureName, TargetNullValue=''}" Margin="2.5 5" MaxLength="30"/>
+            <TextBox Text="{Binding TextureName, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged, TargetNullValue=''}" Margin="2.5 5" MaxLength="30"/>
         </DockPanel>
-        <CheckBox Content="Use when no material" IsChecked="{Binding IsUse}"/>
+        <CheckBox Content="Use when no texture" IsChecked="{Binding IsUse}"/>
         <CheckBox Content="Use always"  IsChecked="{Binding IsUseAlways}" IsEnabled="{Binding IsUse}"/>
     </StackPanel>
 </bv:BaseView>

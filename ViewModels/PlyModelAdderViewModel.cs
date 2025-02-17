@@ -101,6 +101,10 @@ namespace GohMdlExpert.ViewModels
         }
 
         public void SelectModelMeshTexture(string mashTextureName, MtlTexture mtlTexture) {
+            if (_defaultMaterialViewModel.IsUse && _defaultMaterialViewModel.IsUseAlways) {
+                return;
+            }
+
             if (!IsAddedInProgress) {
                 throw new InvalidOperationException("Error setting texture model. Model not added yet.");
             }

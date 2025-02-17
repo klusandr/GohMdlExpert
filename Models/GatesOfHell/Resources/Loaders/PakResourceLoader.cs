@@ -55,7 +55,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
                     currentDirectory = directory;
                 }
 
-                var directoryLoad = new PakDirectoryLoader(ZipFile.OpenRead(Path.Join(path, archive.Path)));
+                string fullPath = Path.Join(path, archive.Path);
+
+                var directoryLoad = new PakDirectoryLoader(ZipFile.OpenRead(fullPath)) { PakPath = fullPath };
                 currentDirectory!.ClearData();
                 currentDirectory!.Loader = directoryLoad;
             }

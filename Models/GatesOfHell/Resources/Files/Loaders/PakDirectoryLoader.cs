@@ -9,7 +9,8 @@ using GohMdlExpert.Models.GatesOfHell.Extensions;
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
     public class PakDirectoryLoader : IDirectoryLoader {
         private readonly ZipArchive _archive;
-        private readonly IFileLoader _fileLoader;
+        private readonly PakFileLoader _fileLoader;
+        private string? _pakPath;
 
         public PakDirectoryLoader(ZipArchive resourceArchive) {
             _archive = resourceArchive;
@@ -17,6 +18,14 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
         }
 
         public IFileLoader FileLoader => _fileLoader;
+
+        public string? PakPath {
+            get => _pakPath;
+            set {
+                _fileLoader.PakPath = value;
+                _pakPath = value;
+            }
+        }
 
         public IEnumerable<GohResourceDirectory> GetDirectories(string path) {
             string archivePath = _archive.GetArchiveDirectoryPath(path);

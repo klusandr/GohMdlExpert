@@ -15,6 +15,8 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
 
         public AggregateMtlFile MtlFile { get; }
 
+        public ICommand AddDefaultTextureCommand => CommandManager.GetCommand(AddDefaultTexture);
+
         public ModelsLoadTreeMeshViewModel(AggregateMtlFile mtlFile, ModelsLoadTreeViewModel modelsTree) : base(mtlFile, modelsTree) {
             Text = mtlFile.Name;
             Icon = s_icon;
@@ -22,7 +24,8 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
 
             ContextMenuViewModel.ClearItems();
             ContextMenuViewModel
-                .AddItemBuilder(new MenuItemViewModel("Copy name in buffer", new Command(() => Clipboard.SetData(DataFormats.Text, Text))));
+                .AddItemBuilder(new MenuItemViewModel("Copy name in buffer", new Command(() => Clipboard.SetData(DataFormats.Text, Text))))
+                .AddItemBuilder(new MenuItemViewModel("Add default texture", AddDefaultTextureCommand));
 
             LoadData();
         }
@@ -54,9 +57,9 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
         }
 
 
-        private void SetDefaultMaterial(object? obj) {
-#warning Доделать...
-            throw new NotImplementedException("Скоро будет...");
+        private void AddDefaultTexture(object? obj) {
+            Tree.DefaultTexture.TextureName = MtlFile.Name;
+            Tree.DefaultTexture.AddMaterial();
         }
     }
 }

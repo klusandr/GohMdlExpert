@@ -7,9 +7,11 @@ using GohMdlExpert.Models.GatesOfHell.Extensions;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
     public class PakFileLoader : IFileLoader {
-        private ZipArchive _archive;
+        private readonly ZipArchive _archive;
 
         public bool IsReadOnly => true;
+
+        public string? PakPath { get; set; }
 
         public PakFileLoader(ZipArchive archive) {
             _archive = archive;
