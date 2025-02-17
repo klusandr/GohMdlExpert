@@ -9,6 +9,7 @@
         xmlns:viewmodels="clr-namespace:GohMdlExpert.ViewModels" 
         d:DataContext="{d:DesignInstance Type=viewmodels:ApplicationViewModel}"
         mc:Ignorable="d"
+        WindowState="Maximized"
         Title="GoH .mdl expert" Height="450" Width="800" MinHeight="400" MinWidth="675">
     <Grid>
         <Grid.RowDefinitions>
@@ -23,11 +24,12 @@
                 </Style>
             </Menu.Resources>
             <MenuItem Header="File">
-                <MenuItem Header="Open resource" Command="{Binding OpenResourceCommand}"/>
+                <MenuItem Header="Open resource" IsEnabled="False" Command="{Binding OpenResourceCommand}"/>
                 <MenuItem Header="Open file" Command="{Binding OpenFileCommand}"/>
                 <MenuItem Header="Exit" Click="MenuItemExitClick"/>
             </MenuItem>
             <MenuItem Header="Edit">
+                <MenuItem Header="Settings" Command="{Binding OpenSettingsCommand}"/>
                 <MenuItem Header="Caches">
                     <MenuItem Header="Load PLY model textures" Command="{Binding LoadPlyTexturesCacheCommand}"/>
                     <MenuItem Header="Load textures" Command="{Binding LoadTexturesCacheCommand}"/>

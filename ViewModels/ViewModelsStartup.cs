@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using GohMdlExpert.ViewModels.SettingsPages;
+using Microsoft.Extensions.DependencyInjection;
 using WpfMvvm.DependencyInjection;
 
 namespace GohMdlExpert.ViewModels {
@@ -9,6 +10,7 @@ namespace GohMdlExpert.ViewModels {
             e.Services.AddSingleton<HumanskinMdlGeneratorViewModel>();
             e.Services.AddSingleton<HumanskinResourcesViewModel>();
             e.Services.AddSingleton<TextureLoadViewModel>();
+            e.Services.AddSingleton<SettingsViewModel>();
         }
     }
 }

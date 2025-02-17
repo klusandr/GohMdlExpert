@@ -1,4 +1,6 @@
 ﻿using System.Windows;
+using System.Windows.Navigation;
+using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 using GohMdlExpert.Properties;
@@ -7,6 +9,7 @@ using GohMdlExpert.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using WpfMvvm;
 using WpfMvvm.DependencyInjection;
+using WpfMvvm.Extensions;
 using WpfMvvm.ViewModels.Commands;
 using WpfMvvm.Views.Dialogs;
 
@@ -16,19 +19,49 @@ namespace GohMdlExpert {
     /// </summary>
     public partial class App : WpfApplication {
         public App() { }
+        public bool IsInitialized { get; private set; }
 
         protected override void OnExit(ExitEventArgs e) {
             base.OnExit(e);
             Settings.Default.Save();
         }
 
+        protected override void OnActivated(EventArgs e) {
+            base.OnActivated(e);
+
+            if (!IsInitialized) {
+                var gameDirectory = ServiceProvider.GetRequiredService<GohGameDirectory>();
+
+                gameDirectory.Updated += (_, _) => {
+                    if (gameDirectory.ResourcePath != null) {
+                        ServiceProvider.GetRequiredService<GohResourceProvider>().OpenResources(gameDirectory.ResourcePath);
+                    }  
+                };
+
+                if (!string.IsNullOrEmpty(Settings.Default.GameDirectoryPath)) {
+                    try {
+                        gameDirectory.Open(Settings.Default.GameDirectoryPath);
+                    } catch (GohResourcesException ex) {
+                        ServiceProvider.GetRequiredService<IUserDialogProvider>().ShowError(string.Empty, exception: ex);
+                    }
+                } else {
+                    if (ServiceProvider.GetRequiredService<IUserDialogProvider>().Ask("The path to the game directory is not specified, open the game directory settings now?", "Game directory path", QuestionType.YesNo) == QuestionResult.Yes) {
+                        ServiceProvider.GetRequiredService<SettingsWindowService>().OpenSettings();
+                    }
+                }
+                IsInitialized = true;
+            }
+        }
+
         protected override void OnServicesStartup(object? sender, ServicesStartupArgs e) {
             base.OnServicesStartup(sender, e);
 
             e.Services
+                .AddSingleton<GohGameDirectory>()
                 .AddSingleton<GohResourceProvider>()
                 .AddSingleton<GohHumanskinResourceProvider>()
                 .AddSingleton<GohTextureProvider>()
+                .AddSingleton<SettingsWindowService>()
                 .AddSingleton<TextureLoadService>()
                 .AddSingleton((sp) => new CommandFactory(
                     exceptionHandler:
@@ -36,7 +69,7 @@ namespace GohMdlExpert {
                         sp.GetRequiredService<IUserDialogProvider>().ShowError("", exception: e);
                     }
                 ));
-
+                
             ViewModelsStartup.Startup(sender, e);
         }
 

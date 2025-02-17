@@ -6,8 +6,12 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
 
         public GohResourcesException(string? message = null, Exception? inner = null) : base(GetFullErrorMessage(message), inner) { }
 
+        public static GohResourcesException IsNotGohGameDirectory(string path) {
+            return new GohResourcesException($"\"{path}\" is not GoH game directory.");
+        }
+
         public static GohResourcesException IsNotGohResource(string path) {
-            return new GohResourcesException($"\"{path}\" is not GoH resource directory");
+            return new GohResourcesException($"\"{path}\" is not GoH resource directory.");
         }
 
         public static GohResourcesException DirectoryNotSpecified() {

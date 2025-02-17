@@ -8,6 +8,7 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 using GohMdlExpert.Models.GatesOfHell.Сaches;
 using GohMdlExpert.Properties;
+using GohMdlExpert.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using WpfMvvm.ViewModels;
@@ -18,17 +19,20 @@ namespace GohMdlExpert.ViewModels {
         private readonly GohResourceProvider _gohResourceProvider;
         private readonly GohHumanskinResourceProvider _gohHumanskinResourceProvider;
         private readonly HumanskinMdlOverviewViewModel _models3DView;
+        private readonly SettingsWindowService _settingsWindowService;
 
         public float CompletionPercentage { get; set; }
 
         public ICommand OpenResourceCommand => CommandManager.GetCommand(OpenResourceDirectory);
         public ICommand OpenFileCommand => CommandManager.GetCommand(OpenFile);
+        public ICommand OpenSettingsCommand => CommandManager.GetCommand(OpenSettings);
         public ICommand LoadPlyTexturesCacheCommand => CommandManager.GetCommand(LoadPlyTexturesCache);
         public ICommand LoadTexturesCacheCommand => CommandManager.GetCommand(LoadTexturesCache);
 
-        public ApplicationViewModel(GohResourceProvider gohResourceProvider, GohHumanskinResourceProvider gohHumanskinResourceProvider, HumanskinMdlOverviewViewModel models3DView) {
+        public ApplicationViewModel(GohResourceProvider gohResourceProvider, GohHumanskinResourceProvider gohHumanskinResourceProvider, HumanskinMdlOverviewViewModel models3DView, SettingsWindowService settingsWindowService) {
             _gohResourceProvider = gohResourceProvider;
             _models3DView = models3DView;
+            _settingsWindowService = settingsWindowService;
             _gohHumanskinResourceProvider = gohHumanskinResourceProvider;
         }
 
@@ -73,6 +77,10 @@ namespace GohMdlExpert.ViewModels {
             }).ContinueWith((t) => timer.Dispose());
 
             //var d =  GohServicesProvider.Instance.GetRequiredService<GohCacheProvider>().PlyMtlsCache;
+        }
+
+        private void OpenSettings() {
+            _settingsWindowService.OpenSettings();
         }
 
         private void LoadTexturesCache(object? obj) {

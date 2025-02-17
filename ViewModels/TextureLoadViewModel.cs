@@ -188,7 +188,6 @@ namespace GohMdlExpert.ViewModels {
         }
 
         private void Cancel() {
-            Texture = null;
             Approve();
         }
 

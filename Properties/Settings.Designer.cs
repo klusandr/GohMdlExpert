@@ -58,5 +58,29 @@ namespace GohMdlExpert.Properties {
                 this["LastSavedFile"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GameDirectoryPath {
+            get {
+                return ((string)(this["GameDirectoryPath"]));
+            }
+            set {
+                this["GameDirectoryPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GameVersion {
+            get {
+                return ((string)(this["GameVersion"]));
+            }
+            set {
+                this["GameVersion"] = value;
+            }
+        }
     }
 }
