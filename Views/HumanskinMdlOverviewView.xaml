@@ -64,10 +64,17 @@
                     <ModelVisual3D x:Name="_addedModel" Content="{Binding ModelAdderViewModel.AddedModel, Converter={StaticResource PlyModel3DToModel3DConverter}}"/>
                 </Viewport3D.Children>
             </Viewport3D>
+
+            <StackPanel Background="#1E5A5A5A" HorizontalAlignment="Left" VerticalAlignment="Bottom" Cursor="Arrow">
+                <CheckBox Content="Auto focus" IsChecked="{Binding Autofocus}" Margin="5"/>
+                <Button Content="Clear focus" Command="{Binding ClearPlyModelFocusCommand}" Margin="5"/>
+            </StackPanel>
+            
+            
         </Grid>
         <DockPanel Grid.Column="2">
             <Button Content="Create new humanskin" Command="{Binding NewMdlCommand}" Padding="5 3" HorizontalAlignment="Center" VerticalAlignment="Center" DockPanel.Dock="Top"/>
-            <Button Content="Save humanskin" Padding="5 3" HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding SaveMdlCommand}" DockPanel.Dock="Bottom"/>
+            <Button Content="Save humanskin" Padding="5 3" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding SaveMdlCommand}" DockPanel.Dock="Bottom"/>
             <trees:ModelsOverviewTreeView Margin="5" DataContext="{Binding ModelsOverviewTreeViewModel}" DockPanel.Dock="Left"/>
         </DockPanel>
     </Grid>

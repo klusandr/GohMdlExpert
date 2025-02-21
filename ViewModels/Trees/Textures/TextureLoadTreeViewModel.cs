@@ -26,6 +26,8 @@ namespace GohMdlExpert.ViewModels.Trees.Textures {
         public GohResourceProvider ResourceProvider { get; }
         public GohTextureProvider TextureProvider { get; }
 
+        public event EventHandler? TextureApply;
+
         public TextureLoadTreeViewModel(GohResourceProvider resourceProvider, GohTextureProvider textureProvider) {
             ResourceProvider = resourceProvider;
             TextureProvider = textureProvider;
@@ -47,6 +49,10 @@ namespace GohMdlExpert.ViewModels.Trees.Textures {
                     }
                 }
             }
+        }
+
+        public void OnTextureApply() {
+            TextureApply?.Invoke(this, EventArgs.Empty);
         }
     }
 }

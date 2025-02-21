@@ -16,6 +16,9 @@ namespace GohMdlExpert.ViewModels.Trees.Textures {
             Icon = IconResources.Instance.GetIcon(nameof(Resources.TextureIcon));
             ToolTip = mtlFile.GetFullPath();
             MtlFile = mtlFile;
+
+            DoubleClickCommand = CommandManager.GetCommand(Tree.OnTextureApply);
         }
+
     }
 }

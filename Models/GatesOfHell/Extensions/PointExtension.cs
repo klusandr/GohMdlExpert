@@ -44,6 +44,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Extensions {
         }
 
         public static Point3D GetCenterPoint(this IEnumerable<Point3D> points) {
+            if (!points.Any()) {
+                return new Point3D();
+            }
+
             return new Point3D() {
                 X = points.Average(x => x.X),
                 Y = points.Average(x => x.Y),

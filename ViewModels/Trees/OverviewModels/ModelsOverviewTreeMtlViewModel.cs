@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GohMdlExpert.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
 using GohMdlExpert.Properties;
+using WpfMvvm.ViewModels.Controls.Menu;
 
 namespace GohMdlExpert.ViewModels.Trees.OverviewModels {
     public class ModelsOverviewTreeMtlViewModel : ModelsOverviewTreeItemViewModel {
@@ -14,6 +16,8 @@ namespace GohMdlExpert.ViewModels.Trees.OverviewModels {
 
         public AggregateMtlFile MtlFile { get; }
 
+        public ICommand AddTextureCommand => CommandManager.GetCommand(Tree.AggregateTextureListViewModel.AddTexture);
+
         public ModelsOverviewTreeMtlViewModel(AggregateMtlFile aggregateMtlFile, ModelsOverviewTreeViewModel modelsTree) : base(modelsTree) {
             _models3DView = Tree.Models3DViewModel;
             _aggregateTextureList = Tree.AggregateTextureListViewModel;
@@ -22,6 +26,8 @@ namespace GohMdlExpert.ViewModels.Trees.OverviewModels {
             MtlFile = aggregateMtlFile;
 
             Text = GetFullText();
+
+            ContextMenuViewModel.AddItemBuilder(new MenuItemViewModel("Add texture", AddTextureCommand));
 
             PropertyChangeHandler.AddHandler(nameof(IsSelected), SelectedChangeHandler);
             _models3DView.PlyModels.CollectionChanged += PlyModelsChanged;
@@ -51,7 +57,7 @@ namespace GohMdlExpert.ViewModels.Trees.OverviewModels {
         }
 
         private string GetFullText() {
-            return $"{MtlFile.Name} [{Tree.Models3DViewModel.GetCurrentMtlFileTexture(MtlFile.Name).Diffuse.Name}]";
+            return $"{MtlFile.Name} [{Tree.Models3DViewModel.GetCurrentMtlFileTexture(MtlFile.Name)?.Diffuse?.Name ?? "null"}]";
         }
 
         private void Models3DViewModelUpdatedTextures(object? sender, EventArgs e) {

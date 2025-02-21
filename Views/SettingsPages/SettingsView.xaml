@@ -15,7 +15,7 @@
             <local:GamePathSettingsPageView/>
         </TabItem>
         <TabItem Header="Coming soon" Padding="5">
-            <TextBlock Text="1"/>
+            
         </TabItem>
     </TabControl>
 </bv:BaseView>

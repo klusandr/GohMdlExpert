@@ -32,7 +32,9 @@ namespace GohMdlExpert.ViewModels.Trees.Textures {
 
         private void ExpandedChangeHandler(object? sender, PropertyChangedEventArgs e) {
             if (IsExpanded) {
-                LoadData(_mtlFilesNames);
+                if (_items.Count == 0) {
+                    LoadData(_mtlFilesNames);
+                }
             }
         }
 

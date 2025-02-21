@@ -142,6 +142,7 @@ namespace GohMdlExpert.ViewModels {
 
             _selectFieldBindingProperty = s_fieldBindingProperties[0];
 
+            TextureTree.TextureApply += TextureTreeApplyTextureHandler;
             MaterialTree.PropertyChangeHandler.AddHandler(nameof(MaterialLoadTreeViewModel.SelectedMaterialItem), SelectedMaterialHandler);
             TextureTree.PropertyChangeHandler.AddHandler(nameof(TextureLoadTreeViewModel.SelectedTextureItem), SelectedTextureHandler);
             PropertyChangeHandler
@@ -163,6 +164,13 @@ namespace GohMdlExpert.ViewModels {
 
             MaterialTree.LoadData();
             TextureTree.LoadData();
+        }
+
+        private void TextureTreeApplyTextureHandler(object? sender, EventArgs e) {
+            if (TextureTree.SelectedTextureItem != null) { 
+                Texture = TextureTree.SelectedTextureItem.MtlFile.Data;
+                Apply();
+            }
         }
 
         public void SetSelectFieldIndex(int index) {

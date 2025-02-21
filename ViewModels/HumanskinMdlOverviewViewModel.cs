@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
+using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Media3D;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
@@ -51,13 +52,9 @@ namespace GohMdlExpert.ViewModels
 
         public ObservableCollection<PlyModel3D> PlyModels => _plyModels;
         public ObservableDictionary<string, AggregateMtlFile> AggregateMtlFiles => _aggregateMtlFiles;
-
-        public ModelsOverviewTreeViewModel ModelsOverviewTreeViewModel => _modelsOverviewTreeViewModel;
-        public ModelsLoadTreeViewModel ModelsLoadTreeViewModel => _modelsLoadTreeViewModel;
-        public PlyModelAdderViewModel ModelAdderViewModel => _modelAdderViewModel;
-        public DefaultTextureViewModel DefaultMaterialViewModel => _defaultMaterialViewModel;
-
         public Model3DCollection Models => _models;
+
+        public bool Autofocus { get; set; } = true;
 
         public PlyModel3D? FocusablePlyModel {
             get => _focusablePlyModel;
@@ -67,8 +64,15 @@ namespace GohMdlExpert.ViewModels
             }
         }
 
+
+        public ModelsOverviewTreeViewModel ModelsOverviewTreeViewModel => _modelsOverviewTreeViewModel;
+        public ModelsLoadTreeViewModel ModelsLoadTreeViewModel => _modelsLoadTreeViewModel;
+        public PlyModelAdderViewModel ModelAdderViewModel => _modelAdderViewModel;
+        public DefaultTextureViewModel DefaultMaterialViewModel => _defaultMaterialViewModel;
+
         public ICommand SaveMdlCommand => CommandManager.GetCommand(SaveMtlFile);
         public ICommand NewMdlCommand => CommandManager.GetCommand(CreateMdlFile);
+        public ICommand ClearPlyModelFocusCommand => CommandManager.GetCommand(ClearPlyModelFocus);
 
         public event EventHandler? UpdatedTextures;
 
@@ -112,10 +116,6 @@ namespace GohMdlExpert.ViewModels
 
             var missTexture = new List<MtlFile>();
 
-            foreach (var plyFile in plyFiles) {
-                AddModel(new PlyModel3D(plyFile), lodModels: lodFiles[plyFile]);
-            }
-
             foreach (var mtlFile in mtlFiles) {
                 var plyFile = plyFiles.FirstOrDefault(p => p.Data.Meshes.Select(m => m.TextureName).Contains(mtlFile.Name));
 
@@ -126,13 +126,17 @@ namespace GohMdlExpert.ViewModels
                 }
             }
 
+            foreach (var plyFile in plyFiles) {
+                AddModel(new PlyModel3D(plyFile), lodModels: lodFiles[plyFile]);
+            }
+            
             UpdateTextures();
 
             if (missTexture.Count != 0) {
                 _userDialog.ShowWarning($"Loaded .mdl file {mdlFile.GetFullPath()}, contains unclaimed textures: [{string.Join(", ", missTexture.Select(m => m.Name))}] that have been removed.", "Miss textures");
             }
 
-            FocusablePlyModel = null;
+            ClearPlyModelFocus();
         }
 
         public void AddModel(PlyModel3D modelPly, AggregateMtlFiles? aggregateMtlFiles = null, IEnumerable<PlyFile>? lodModels = null) {
@@ -196,6 +200,10 @@ namespace GohMdlExpert.ViewModels
 
         public void SetMtlFileTextureByIndex(string meshTextureName, int index) {
             if (_aggregateMtlFiles.TryGetValue(meshTextureName, out var aggregateTextures)) {
+                if (aggregateTextures.Data.Count == 0) {
+                    return;
+                }
+
                 if (index >= 0 && index < aggregateTextures.Data.Count) {
                     var mtlTexture = aggregateTextures.Data.ElementAt(index);
                     _currentMtlFilesTexturesIndex[meshTextureName] = index;
@@ -210,26 +218,30 @@ namespace GohMdlExpert.ViewModels
                         model.SetMeshTexture(meshTextureName, MtlTexture.NullTexture);
                     }
                 } else {
-                    throw new Exception("Индекс говно");
+                    throw new IndexOutOfRangeException(string.Format("Humanskin model .mtl aggregate textures do not contain element with index: {0}.", index));
                 }
             } else {
-                throw new Exception("Имя говно");
+                throw PlyModelException.NoContainMeshTextureName(null, meshTextureName);
             }
         }
 
-        public MtlTexture GetMtlFileTextureByIndex(string meshTextureName, int index) {
+        public MtlTexture? GetMtlFileTextureByIndex(string meshTextureName, int index) {
             if (_aggregateMtlFiles.TryGetValue(meshTextureName, out var aggregateTextures)) {
+                if (aggregateTextures.Data.Count == 0) {
+                    return null;
+                }
+
                 if (index >= 0 && index < aggregateTextures.Data.Count) {
                     return aggregateTextures.Data.ElementAt(index);
                 } else {
-                    throw new Exception("Индекс говно");
+                    throw new IndexOutOfRangeException(string.Format("Humanskin model .mtl aggregate textures do not contain element with index: {0}.", index));
                 }
             } else {
-                throw new Exception("Имя говно");
+                throw PlyModelException.NoContainMeshTextureName(null, meshTextureName);
             }
         }
 
-        public MtlTexture GetCurrentMtlFileTexture(string meshTextureName) {
+        public MtlTexture? GetCurrentMtlFileTexture(string meshTextureName) {
             return GetMtlFileTextureByIndex(meshTextureName, GetMtlFileMaterialIndex(meshTextureName));
         }
 
@@ -237,7 +249,7 @@ namespace GohMdlExpert.ViewModels
             if (_currentMtlFilesTexturesIndex.TryGetValue(meshTextureName, out var index)) {
                 return index;
             } else {
-                throw new Exception("Имя говно");
+                throw PlyModelException.NoContainMeshTextureName(null, meshTextureName);
             }
         }
 
@@ -245,12 +257,13 @@ namespace GohMdlExpert.ViewModels
             return _plyModels.Where(p => p.MeshesTextureNames.Contains(mtlFileName));
         }
 
-        public ObservableCollection<PlyFile> GetPlyModelLodFiles(PlyModel3D modelPly) {
-            if (!_lodPlyFiles.TryGetValue(modelPly, out var value)) {
-                throw new Exception("Модель говно");
-            } else {
-                return value;
-            }
+        public ObservableCollection<PlyFile>? GetPlyModelLodFiles(PlyModel3D modelPly) {
+            _lodPlyFiles.TryGetValue(modelPly, out var value);
+            return value;
+        }
+
+        public void ClearPlyModelFocus() {
+            FocusablePlyModel = null;
         }
 
         public void UpdateTextures() {

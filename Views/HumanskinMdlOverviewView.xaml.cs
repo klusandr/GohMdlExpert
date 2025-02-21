@@ -45,8 +45,10 @@ namespace GohMdlExpert.Views {
                     var point = ViewModel.FocusablePlyModel.GetCenterPoint();
                     _cameraPositioner.SetCameraFocus(point);
                 } else {
-                    var point = ViewModel.PlyModels.Select(pm => pm.GetCenterPoint()).GetCenterPoint();
-                    _cameraPositioner.SetCameraFocus(point);
+                    if (ViewModel.PlyModels.Any()) {
+                        var point = ViewModel.PlyModels.Select(pm => pm.GetCenterPoint()).GetCenterPoint();
+                        _cameraPositioner.SetCameraFocus(point);
+                    }
                 }
             });
 

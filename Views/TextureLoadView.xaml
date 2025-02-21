@@ -23,11 +23,17 @@
         </Grid.RowDefinitions>
         
         <TabControl>
+            <TabItem Header="Textures">
+                <controls:TreeView DataContext="{Binding TextureTree}">
+                    <controls:TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding Items}">
+                            <trees:TextureLoadTreeItemView/>
+                        </HierarchicalDataTemplate>
+                    </controls:TreeView.ItemTemplate>
+                </controls:TreeView>
+            </TabItem>
             <TabItem Header="Materials">
                 <trees:MaterialLoadTreeView DataContext="{Binding MaterialTree}"/>
-            </TabItem>
-            <TabItem Header="Textures">
-                <controls:TreeView DataContext="{Binding TextureTree}"/>
             </TabItem>
         </TabControl>
         

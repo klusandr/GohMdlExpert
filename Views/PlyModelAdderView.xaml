@@ -8,7 +8,12 @@
              xmlns:viewmodels="clr-namespace:GohMdlExpert.ViewModels" 
              d:DataContext="{d:DesignInstance Type=viewmodels:PlyModelAdderViewModel}"
              mc:Ignorable="d">
-    <StackPanel>
-        <Button Content="Add selected model" Command="{Binding AddModelCommand}" Margin="5" Padding="5"/>
-    </StackPanel>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Button Content="Cancel" Command="{Binding ClearModelCommand}" Margin="5" Padding="5"/>
+        <Button Content="Add selected model" Command="{Binding AddModelCommand}" Margin="5" Padding="5" Grid.Column="1"/>
+    </Grid>
 </wpfmvvm:BaseView>

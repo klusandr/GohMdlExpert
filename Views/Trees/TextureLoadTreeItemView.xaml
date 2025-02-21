@@ -1,0 +1,12 @@
+﻿<controls:TreeItemView x:Class="GohMdlExpert.Views.Trees.TextureLoadTreeItemView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:controls="clr-namespace:WpfMvvm.Views.Controls;assembly=WpfMvvm"
+             xmlns:local="clr-namespace:GohMdlExpert.Views.Trees" 
+             xmlns:textures="clr-namespace:GohMdlExpert.ViewModels.Trees.Textures" 
+             MouseDoubleClick="MouseDoubleClickHandler"
+             d:DataContext="{d:DesignInstance Type=textures:TextureLoadTreeItemViewModel}"
+             mc:Ignorable="d">
+</controls:TreeItemView>

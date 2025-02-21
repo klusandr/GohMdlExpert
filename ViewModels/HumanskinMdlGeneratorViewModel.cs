@@ -33,16 +33,23 @@ namespace GohMdlExpert.ViewModels
             string fileName;
             ModelDataSerializer.ModelDataParameter parameters;
 
-            if (mdlFile?.Exists() ?? false) {
-                parameters = mdlFile.Data.Parameters;
-                fileName = mdlFile.GetFullPath();
+            if (/*mdlFile?.Exists() ??*/ false) {
+                //parameters = mdlFile.Data.Parameters;
+                //fileName = mdlFile.GetFullPath();
 
-                if (_userDialog.Ask(string.Format("Do you want to save \"{0}\" file?", mdlFile.GetFullPath()), "Save file") != QuestionResult.OK) {
-                    return null;
-                }
+                //if (_userDialog.Ask(string.Format("Do you want to save \"{0}\" file?", mdlFile.GetFullPath()), "Save file") != QuestionResult.OK) {
+                //    return null;
+                //}
             } else {
                 if (_fileDialog.ShowDialog() == true) {
                     fileName = _fileDialog.FileName;
+
+                    var pathElements = fileName.Split('\\', StringSplitOptions.RemoveEmptyEntries);
+
+                    if (pathElements[^3] != _humanskinResourceProvider.Current.Root.Name) {
+                        _userDialog.ShowWarning("Lox");
+                    }
+
                 } else {
                     return null;
                 }
