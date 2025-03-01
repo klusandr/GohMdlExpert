@@ -38,7 +38,7 @@
             <local:DefaultMaterialView DataContext="{Binding DefaultMaterialViewModel}" Grid.Row="3"/>
         </Grid>
 
-        <Grid x:Name="_sceneBackground" Background="AliceBlue" MouseWheel="OnMouseWheel" Grid.Column="1" Cursor="Cross">
+        <Grid x:Name="_sceneBackground" Background="{DynamicResource DarkBackgroundBrush}" MouseWheel="OnMouseWheel" Grid.Column="1" Cursor="Cross">
             <Viewport3D x:Name="_scene">
                 <Viewport3D.Camera>
                     <PerspectiveCamera x:Name="_perspectivCamera"/>

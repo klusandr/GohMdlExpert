@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using WpfMvvm.ViewModels;
 using WpfMvvm.ViewModels.Commands;
+using WpfMvvm.Views;
 
 namespace GohMdlExpert.ViewModels {
     public class ApplicationViewModel : BaseViewModel {
@@ -20,6 +21,7 @@ namespace GohMdlExpert.ViewModels {
         private readonly GohHumanskinResourceProvider _gohHumanskinResourceProvider;
         private readonly HumanskinMdlOverviewViewModel _models3DView;
         private readonly SettingsWindowService _settingsWindowService;
+        private readonly AppThemesManager _appThemesManager;
 
         public float CompletionPercentage { get; set; }
 
@@ -28,11 +30,15 @@ namespace GohMdlExpert.ViewModels {
         public ICommand OpenSettingsCommand => CommandManager.GetCommand(OpenSettings);
         public ICommand LoadPlyTexturesCacheCommand => CommandManager.GetCommand(LoadPlyTexturesCache);
         public ICommand LoadTexturesCacheCommand => CommandManager.GetCommand(LoadTexturesCache);
+        public ICommand SetLightThemeCommand => CommandManager.GetCommand(() => SetTheme(AppThemesManager.LightThemeName));
+        public ICommand SetDarkThemeCommand => CommandManager.GetCommand(() => SetTheme(AppThemesManager.DarkThemeName));
 
-        public ApplicationViewModel(GohResourceProvider gohResourceProvider, GohHumanskinResourceProvider gohHumanskinResourceProvider, HumanskinMdlOverviewViewModel models3DView, SettingsWindowService settingsWindowService) {
+        public ApplicationViewModel(GohResourceProvider gohResourceProvider, GohHumanskinResourceProvider gohHumanskinResourceProvider, 
+            HumanskinMdlOverviewViewModel models3DView, SettingsWindowService settingsWindowService, AppThemesManager appThemesManager) {
             _gohResourceProvider = gohResourceProvider;
             _models3DView = models3DView;
             _settingsWindowService = settingsWindowService;
+            _appThemesManager = appThemesManager;
             _gohHumanskinResourceProvider = gohHumanskinResourceProvider;
         }
 
@@ -99,6 +105,10 @@ namespace GohMdlExpert.ViewModels {
                 GohCachesFilling.FillTexturesCache(_gohResourceProvider, _gohHumanskinResourceProvider, ref completionPercentage);
                 completionPercentage = 0;
             }).ContinueWith((t) => timer.Dispose());
+        }
+
+        private void SetTheme(string themeName) {
+            _appThemesManager.SetCurrentTheme(themeName);
         }
     }
 }

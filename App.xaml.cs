@@ -11,6 +11,7 @@ using WpfMvvm;
 using WpfMvvm.DependencyInjection;
 using WpfMvvm.Extensions;
 using WpfMvvm.ViewModels.Commands;
+using WpfMvvm.Views;
 using WpfMvvm.Views.Dialogs;
 
 namespace GohMdlExpert {
@@ -63,6 +64,11 @@ namespace GohMdlExpert {
                 .AddSingleton<GohTextureProvider>()
                 .AddSingleton<SettingsWindowService>()
                 .AddSingleton<TextureLoadService>()
+                .AddSingleton(s =>  new AppThemesManager()
+                    .AddTheme(AppThemesManager.LightThemeName, AppThemesManager.LightThemePath)
+                    .AddTheme(AppThemesManager.DarkThemeName, AppThemesManager.DarkThemePath)
+                    .SetCurrentTheme(AppThemesManager.DarkThemeName)
+                )
                 .AddSingleton((sp) => new CommandFactory(
                     exceptionHandler:
                     (e) => {

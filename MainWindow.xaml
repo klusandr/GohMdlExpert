@@ -7,6 +7,7 @@
         xmlns:views="clr-namespace:GohMdlExpert.Views" 
         xmlns:modelstree="clr-namespace:GohMdlExpert.Views.Trees" 
         xmlns:viewmodels="clr-namespace:GohMdlExpert.ViewModels" 
+        Style="{StaticResource MainWindowStyle}"
         d:DataContext="{d:DesignInstance Type=viewmodels:ApplicationViewModel}"
         mc:Ignorable="d"
         WindowState="Maximized"
@@ -34,6 +35,12 @@
                     <MenuItem Header="Load PLY model textures" Command="{Binding LoadPlyTexturesCacheCommand}"/>
                     <MenuItem Header="Load textures" Command="{Binding LoadTexturesCacheCommand}"/>
                 </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Themes">
+                <MenuItem Header="Light" Command="{Binding SetLightThemeCommand}"/>
+                <MenuItem Header="Dark" Command="{Binding SetDarkThemeCommand}"/>
+
+
             </MenuItem>
         </Menu>
         <!--<StackPanel HorizontalAlignment="Right">
