@@ -82,5 +82,29 @@ namespace GohMdlExpert.Properties {
                 this["GameVersion"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ThemeName {
+            get {
+                return ((string)(this["ThemeName"]));
+            }
+            set {
+                this["ThemeName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool LoadGameResourceOnStart {
+            get {
+                return ((bool)(this["LoadGameResourceOnStart"]));
+            }
+            set {
+                this["LoadGameResourceOnStart"] = value;
+            }
+        }
     }
 }

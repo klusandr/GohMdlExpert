@@ -17,5 +17,6 @@
         </DockPanel>
         <TextBlock Text="Game version:"/>
         <TextBlock Text="{Binding Version, Mode=OneWay}" Margin="5"/>
+        <CheckBox Content="Load on game start" IsChecked="{Binding IsLoadOnStart}"/>
     </StackPanel>
 </bv:BaseView>

@@ -29,7 +29,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
 
         public bool CheckBasePath(string path) {
             var directories = Directory.GetDirectories(path).Select(d => d[(d.LastIndexOf('\\') + 1)..]);
-            return s_resourceNeedDirectories.All((d) => directories.Contains(d));
+
+            return s_resourceNeedDirectories.All((d) => directories.Contains(d)) 
+                && s_resourcePakArchives.All(p => File.Exists(Path.Join(path, p.Path)) );
         }
 
         public void LoadData(string path) {

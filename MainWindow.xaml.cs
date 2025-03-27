@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using GohMdlExpert.ViewModels;
+using GohMdlExpert.Views;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GohMdlExpert {
@@ -17,6 +18,17 @@ namespace GohMdlExpert {
 
         private void MenuItemExitClick(object sender, RoutedEventArgs e) {
             Close();
+        }
+
+        private void MenuItemAboutClick(object sender, RoutedEventArgs e) {
+            new ChildWindow() {
+                Title = "About box",
+                Content = new AboutView(),
+                ResizeMode = ResizeMode.NoResize,
+                SizeToContent = SizeToContent.WidthAndHeight,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+
+            }.ShowDialog();
         }
     }
 }

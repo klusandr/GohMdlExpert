@@ -6,6 +6,7 @@ namespace GohMdlExpert {
     /// </summary>
     public partial class ChildWindow : Window {
         public ChildWindow() {
+            Owner = App.Current.MainWindow;
             InitializeComponent();
         }
     }

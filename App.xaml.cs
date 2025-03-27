@@ -13,6 +13,7 @@ using WpfMvvm.Extensions;
 using WpfMvvm.ViewModels.Commands;
 using WpfMvvm.Views;
 using WpfMvvm.Views.Dialogs;
+using WpfTestApp.View.Dialogs;
 
 namespace GohMdlExpert {
     /// <summary>
@@ -24,13 +25,53 @@ namespace GohMdlExpert {
 
         protected override void OnExit(ExitEventArgs e) {
             base.OnExit(e);
+
+            var settings = Settings.Default;
+
+            settings.ThemeName = ServiceProvider.GetRequiredService<AppThemesManager>().CurrentThemeName;
+
             Settings.Default.Save();
+        }
+
+        protected override void OnStartup(StartupEventArgs e) {
+            base.OnStartup(e);
+
+            var settings = Settings.Default;
+
+            if (!string.IsNullOrEmpty(settings.ThemeName)) {
+                ServiceProvider.GetRequiredService<AppThemesManager>().SetCurrentTheme(settings.ThemeName);
+            }
+        }
+
+        protected override void OnServicesStartup(object? sender, ServicesStartupArgs e) {
+            base.OnServicesStartup(sender, e);
+
+            e.Services
+                .AddSingleton<GohGameDirectory>()
+                .AddSingleton<GohResourceProvider>()
+                .AddSingleton<GohHumanskinResourceProvider>()
+                .AddSingleton<GohTextureProvider>()
+                .AddSingleton<SettingsWindowService>()
+                .AddSingleton<TextureLoadService>()
+                .AddSingleton(s => new AppThemesManager()
+                    .AddTheme(AppThemesManager.LightThemeName, AppThemesManager.LightThemePath)
+                    .AddTheme(AppThemesManager.DarkThemeName, AppThemesManager.DarkThemePath)
+                    .SetCurrentTheme(AppThemesManager.LightThemeName)
+                )
+                .AddSingleton((sp) => new CommandFactory(
+                    exceptionHandler:
+                    (e) => {
+                        sp.GetRequiredService<IUserDialogProvider>().ShowError("", exception: e);
+                    }
+                ));
+
+            ViewModelsStartup.Startup(sender, e);
         }
 
         protected override void OnActivated(EventArgs e) {
             base.OnActivated(e);
 
-            if (!IsInitialized) {
+            if (!IsInitialized && Settings.Default.LoadGameResourceOnStart) {
                 var gameDirectory = ServiceProvider.GetRequiredService<GohGameDirectory>();
 
                 gameDirectory.Updated += (_, _) => {
@@ -53,31 +94,5 @@ namespace GohMdlExpert {
                 IsInitialized = true;
             }
         }
-
-        protected override void OnServicesStartup(object? sender, ServicesStartupArgs e) {
-            base.OnServicesStartup(sender, e);
-
-            e.Services
-                .AddSingleton<GohGameDirectory>()
-                .AddSingleton<GohResourceProvider>()
-                .AddSingleton<GohHumanskinResourceProvider>()
-                .AddSingleton<GohTextureProvider>()
-                .AddSingleton<SettingsWindowService>()
-                .AddSingleton<TextureLoadService>()
-                .AddSingleton(s =>  new AppThemesManager()
-                    .AddTheme(AppThemesManager.LightThemeName, AppThemesManager.LightThemePath)
-                    .AddTheme(AppThemesManager.DarkThemeName, AppThemesManager.DarkThemePath)
-                    .SetCurrentTheme(AppThemesManager.DarkThemeName)
-                )
-                .AddSingleton((sp) => new CommandFactory(
-                    exceptionHandler:
-                    (e) => {
-                        sp.GetRequiredService<IUserDialogProvider>().ShowError("", exception: e);
-                    }
-                ));
-                
-            ViewModelsStartup.Startup(sender, e);
-        }
-
     }
 }

@@ -69,6 +69,7 @@ namespace GohMdlExpert.ViewModels
 
             if (texture != null) {
                 try {
+                    _materialSelector.SelectedTextureChange -= TextureSelectorChangeHandler;
                     _materialSelector.SelectedTextureChange += TextureSelectorChangeHandler;
                     _materialSelector.SelectedTexture = texture.Clone();
 
@@ -77,8 +78,8 @@ namespace GohMdlExpert.ViewModels
                     if (texture != null) {
                         SetTexture(texture, SelectedTextureIndex);
                     }
-                } finally {
-                    _materialSelector.SelectedTextureChange -= TextureSelectorChangeHandler;
+                } catch {
+_materialSelector.SelectedTextureChange -= TextureSelectorChangeHandler;
                 }                
             }
         }

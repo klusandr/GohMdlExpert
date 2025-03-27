@@ -9,6 +9,7 @@ using GohMdlExpert.Views.Camera3D;
 using GohMdlExpert.Views.Models3D;
 using GohMdlExpert.Views.MouseHandlers;
 using WpfMvvm.Data;
+using WpfMvvm.ViewModels;
 using WpfMvvm.Views;
 using WpfMvvm.Views.Attributes;
 
@@ -38,20 +39,6 @@ namespace GohMdlExpert.Views {
             _perspectivCamera.Position = new Point3D(0, 0, 40);
             _cameraPositioner.SetCameraFocus(new Point3D());
 
-            //ViewModel.Models.Changed += ((_, _) => _cameraPositioner.SetCameraFocus(ViewModel.Models.First(). ?? new Point3D()));
-
-            ViewModel.PropertyChangeHandler.AddHandler(nameof(HumanskinMdlOverviewViewModel.FocusablePlyModel), (_, _) => {
-                if (ViewModel.FocusablePlyModel != null) {
-                    var point = ViewModel.FocusablePlyModel.GetCenterPoint();
-                    _cameraPositioner.SetCameraFocus(point);
-                } else {
-                    if (ViewModel.PlyModels.Any()) {
-                        var point = ViewModel.PlyModels.Select(pm => pm.GetCenterPoint()).GetCenterPoint();
-                        _cameraPositioner.SetCameraFocus(point);
-                    }
-                }
-            });
-
             var tr = new TranslateTransform3D(_cameraPositioner.Focus - new Point3D());
 
             _cameraPositioner.PropertyChanged += (_, e) => {
@@ -69,6 +56,25 @@ namespace GohMdlExpert.Views {
         }
 
         public PerspectiveCamera Camera => _perspectivCamera;
+
+        protected override void OnViewModelInitialized(BaseViewModel viewModel) {
+            base.OnViewModelInitialized(viewModel);
+
+            //ViewModel.Models.Changed += ((_, _) => _cameraPositioner.SetCameraFocus(ViewModel.Models.First(). ?? new Point3D()));
+
+            ViewModel?.PropertyChangeHandler.AddHandler(nameof(HumanskinMdlOverviewViewModel.FocusablePlyModel), (_, _) => {
+                if (ViewModel.FocusablePlyModel != null) {
+                    var point = ViewModel.FocusablePlyModel.GetCenterPoint();
+                    _cameraPositioner.SetCameraFocus(point);
+                } else {
+                    if (ViewModel.PlyModels.Any()) {
+                        var point = ViewModel.PlyModels.Select(pm => pm.GetCenterPoint()).GetCenterPoint();
+                        _cameraPositioner.SetCameraFocus(point);
+                    }
+                }
+            });
+
+        }
 
         private void OnMouseCameraPositionMover(object sender, MouseDownHolder.MouseMoveArgs e) {
             _cameraPositioner.MoveCamera(new Vector3D(-e.Vector.X, e.Vector.Y, 0) / 100);
