@@ -49,10 +49,10 @@ namespace GohMdlExpert.Views {
                 }
             };
 
-            _scene.Children.Add(new ModelVisual3D() {
-                Content = Geometry3DDrawinger.DrowCube(1),
-                Transform = tr
-            });
+            //_scene.Children.Add(new ModelVisual3D() {
+            //    Content = Geometry3DDrawinger.DrowCube(1),
+            //    Transform = tr
+            //});
         }
 
         public PerspectiveCamera Camera => _perspectivCamera;
