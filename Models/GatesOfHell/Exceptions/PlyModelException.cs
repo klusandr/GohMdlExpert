@@ -8,6 +8,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions
         private const string MESSAGE = "Gates of hell ply model {0}error.";
         public PlyFile? PlyFile { get; }
 
+        protected override byte ExceptionTypeCode => 3;
+
         public PlyModelException(string? message = null, PlyFile? plyFile = null, Exception? inner = null) : base(GetFullErrorMessage(plyFile, message), inner) {
             PlyFile = plyFile;
         }
@@ -32,11 +34,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions
 
 
         public static PlyModelException NoContainMeshTextureName(PlyFile? plyFile, string meshTextureName) {
-            return new PlyModelException($"Ply model don't contain mesh with \"{meshTextureName}\" texture name.", plyFile);
+            return new PlyModelException($"Ply model don't contain mesh with \"{meshTextureName}\" texture name.", plyFile) { ExceptionCode = 1 };
         }
 
         public static PlyModelException AttemptInstallInvalidMtlTexture(PlyFile? plyFile, MtlTexture mtlTexture) {
-            return new PlyModelException($"Attempt set invalid texture \"{mtlTexture.Diffuse.Name}\".", plyFile);
+            return new PlyModelException($"Attempt set invalid texture \"{mtlTexture.Diffuse.Name}\".", plyFile) { ExceptionCode = 2 };
         }
     }
 }

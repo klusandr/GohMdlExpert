@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -13,15 +14,26 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using GohMdlExpert.Services;
 
 namespace GohMdlExpert.Views {
     /// <summary>
     /// Логика взаимодействия для AboutView.xaml
     /// </summary>
     public partial class AboutView : UserControl {
+        public string GitHubLink = "https://github.com/klusandr";
+
         public AboutView() {
             InitializeComponent();
             _versionTextBox.Text = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Error!";
+        }
+
+        private void ReportButtonClick(object sender, RoutedEventArgs e) {
+            ErrorReporter.Report();
+        }
+
+        private void GirHubHyperlinkHandler(object sender, RequestNavigateEventArgs e) {
+            Process.Start(new ProcessStartInfo(GitHubLink) { UseShellExecute = true });
         }
     }
 }

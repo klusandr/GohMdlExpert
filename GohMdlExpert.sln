@@ -4,6 +4,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GohMdlExpert", "GohMdlExpert.csproj", "{AD6FC3E0-F640-453D-BF6B-DFD8A9E91C4D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{056B7527-050B-4416-9439-19D6DE701482} = {056B7527-050B-4416-9439-19D6DE701482}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfMvvm", "C:\Users\Андрей\source\repos\MvvmWpf\BaseWpfMvvm\WpfMvvm.csproj", "{056B7527-050B-4416-9439-19D6DE701482}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +20,10 @@ Global
 		{AD6FC3E0-F640-453D-BF6B-DFD8A9E91C4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD6FC3E0-F640-453D-BF6B-DFD8A9E91C4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD6FC3E0-F640-453D-BF6B-DFD8A9E91C4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{056B7527-050B-4416-9439-19D6DE701482}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{056B7527-050B-4416-9439-19D6DE701482}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{056B7527-050B-4416-9439-19D6DE701482}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{056B7527-050B-4416-9439-19D6DE701482}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

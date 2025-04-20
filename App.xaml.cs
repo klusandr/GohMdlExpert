@@ -6,6 +6,7 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 using GohMdlExpert.Properties;
 using GohMdlExpert.Services;
 using GohMdlExpert.ViewModels;
+using GohMdlExpert.Views.Dialogs;
 using Microsoft.Extensions.DependencyInjection;
 using WpfMvvm;
 using WpfMvvm.DependencyInjection;
@@ -13,7 +14,6 @@ using WpfMvvm.Extensions;
 using WpfMvvm.ViewModels.Commands;
 using WpfMvvm.Views;
 using WpfMvvm.Views.Dialogs;
-using WpfTestApp.View.Dialogs;
 
 namespace GohMdlExpert {
     /// <summary>
@@ -47,6 +47,7 @@ namespace GohMdlExpert {
             base.OnServicesStartup(sender, e);
 
             e.Services
+                .AddSingleton<IUserDialogProvider, UserDialogProviderGoh>()
                 .AddSingleton<GohGameDirectory>()
                 .AddSingleton<GohResourceProvider>()
                 .AddSingleton<GohHumanskinResourceProvider>()

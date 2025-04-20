@@ -3,24 +3,34 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:control="clr-namespace:WpfMvvm.Views.Controls;assembly=WpfMvvm"
+             xmlns:control="clr-namespace:WpfMvvm.Controls;assembly=WpfMvvm"
              xmlns:local="clr-namespace:GohMdlExpert.Views"
              mc:Ignorable="d" 
              Width="400"
-             Height="150" 
              d:Background="{StaticResource BackgroundBrush}">
     <UserControl.Resources>
-        <Style TargetType="control:HeaderedContent" BasedOn="{StaticResource {x:Type control:HeaderedContent}}">
+        <Style TargetType="control:Field" BasedOn="{StaticResource {x:Type control:Field}}">
             <Setter Property="HeaderWidth" Value="50"/>
         </Style>
     </UserControl.Resources>
     <StackPanel Margin="10" >
-        <control:HeaderedContent Header="About: " Margin="5">
+        <control:Field Header="About: " Margin="5">
             <TextBlock Text="This application is designed to create and integrate human unit models (humanskin) into the game ''Call to Arms - Gates of Hell''." TextWrapping="Wrap"/>
-        </control:HeaderedContent>
-        <control:HeaderedContent Header="Author: " Content="klusandr" Margin="5"/>
-        <control:HeaderedContent Header="Version: " Margin="5">
+        </control:Field>
+        <control:Field Header="Author: " Content="klusandr" Margin="5"/>
+        <control:Field Header="Contacts:" Margin="5">
+            <StackPanel Margin="-40 20 0 0">
+                <control:Field Header="Discord:">
+                    <TextBox Text="klusandr" IsReadOnly="True"/>
+                </control:Field>
+                <TextBlock>
+                    <Hyperlink NavigateUri="https://github.com/klusandr" RequestNavigate="GirHubHyperlinkHandler">GitHub</Hyperlink>
+                </TextBlock>
+            </StackPanel>
+        </control:Field>
+        <control:Field Header="Version: " Margin="5">
             <TextBox x:Name="_versionTextBox" IsReadOnly="True" BorderBrush="{x:Null}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Background="{x:Null}"/>
-        </control:HeaderedContent>
+        </control:Field>
+        <Button Content="Report a bug" Click="ReportButtonClick" Margin="5"/>
     </StackPanel>
 </UserControl>
