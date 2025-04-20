@@ -25,7 +25,7 @@
                 </Style>
             </Menu.Resources>
             <MenuItem Header="File">
-                <MenuItem Header="Open resource" Command="{Binding OpenResourceCommand}"/>
+                <MenuItem Header="Open resource" Command="{Binding OpenResourceCommand}" IsEnabled="False"/>
                 <MenuItem Header="Open file" Command="{Binding OpenFileCommand}"/>
                 <MenuItem Header="Exit" Click="MenuItemExitClick"/>
             </MenuItem>

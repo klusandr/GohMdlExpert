@@ -47,9 +47,8 @@ namespace GohMdlExpert.ViewModels
                     var pathElements = fileName.Split('\\', StringSplitOptions.RemoveEmptyEntries);
 
                     if (pathElements[^3] != _humanskinResourceProvider.Current.Root.Name) {
-                        _userDialog.ShowWarning("Lox");
+                        _userDialog.ShowWarning("Humanskin is saved incorrectly and may not work in the game. The correct way to save is \"resource\\entity\\humanskin\\[fraction_name]\\your_folder\\humanskin.mdl\".");
                     }
-
                 } else {
                     return null;
                 }
