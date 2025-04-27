@@ -28,7 +28,7 @@ namespace GohMdlExpert {
 
             var settings = Settings.Default;
 
-            settings.ThemeName = ServiceProvider.GetRequiredService<AppThemesManager>().CurrentThemeName;
+            settings.ThemeName = ServiceProvider.GetRequiredService<AppThemesManager>().CurrentThemeName ?? AppThemesManager.LightThemeName;
 
             Settings.Default.Save();
         }
