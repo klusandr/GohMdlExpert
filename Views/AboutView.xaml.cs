@@ -29,7 +29,7 @@ namespace GohMdlExpert.Views {
         }
 
         private void ReportButtonClick(object sender, RoutedEventArgs e) {
-            ErrorReporter.Report();
+            Reporter.Report(version: GetType().Assembly.GetName().Version?.ToString());
         }
 
         private void GirHubHyperlinkHandler(object sender, RequestNavigateEventArgs e) {

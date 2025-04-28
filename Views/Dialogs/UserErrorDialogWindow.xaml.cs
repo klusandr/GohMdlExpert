@@ -35,7 +35,7 @@ namespace GohMdlExpert.Views.Dialogs {
 
                 Messagse.Text +=
                     $"Error message: {exception.Message}\n\n" +
-                    $"Code: {exception.HResult.ToString("x")}\n\n" +
+                    $"Code: 0x{exception.HResult:x}\n\n" +
                     $"Stack trace: {exception.StackTrace}";
             }
 
@@ -58,7 +58,7 @@ namespace GohMdlExpert.Views.Dialogs {
         }
 
         private void ButtonReportClick(object sender, RoutedEventArgs e) {
-            ErrorReporter.Report();
+            Reporter.Report(ReportType.Error, GetType().Assembly.GetName().Version?.ToString(), Messagse.Text);
         }
     }
 }
