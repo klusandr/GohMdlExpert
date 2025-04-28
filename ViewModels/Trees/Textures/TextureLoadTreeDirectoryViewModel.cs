@@ -52,7 +52,7 @@ namespace GohMdlExpert.ViewModels.Trees.Textures {
             mtlFiles.Sort(s_mtlFileComparer);
 
             foreach (var mtlFile in mtlFiles) {
-                Tree.TextureProvider.SetTextureMaterialsFullPath(mtlFile.Data);
+                Tree.TextureProvider.TextureMaterialsInitialize(mtlFile.Data);
                 AddItem(new TextureLoadTreeTextureViewModel(mtlFile, Tree));
             }
         }

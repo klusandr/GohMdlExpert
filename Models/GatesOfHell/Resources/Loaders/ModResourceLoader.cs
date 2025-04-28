@@ -1,15 +1,18 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
-    public class DefaultResourceLoader : GohResourceLoader {
+    public class ModResourceLoader : DefaultResourceLoader {
         private static readonly string[] s_resourceNeedDirectories = {
-            "entity", "texture"
+            "resource"
         };
-
-        public override GohResourceDirectory? Root { get; protected set; }
 
         public override bool CheckBasePath(string path) {
             var directories = Directory.GetDirectories(path).Select(d => d[(d.LastIndexOf('\\') + 1)..]);
@@ -21,7 +24,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
                 throw GohResourcesException.IsNotGohResource(path);
             }
 
-            Root = new GohResourceDirectory(path) { Loader = new DefaultDirectoryLoader() };
+            Root = new GohResourceDirectory(path) { Loader = new ModDirectoryLoader(path) };
         }
     }
 }

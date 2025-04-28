@@ -45,9 +45,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
                 throw TextureException.TextureDiffuseMaterialIsNotDefine(this);
             }
 
-            Data = new MtlTexture(new MaterialFile(textureFilesPath[0]!)) {
-                Bump = textureFilesPath[1] != null ? new MaterialFile(textureFilesPath[1]!) : null,
-                Specular = textureFilesPath[1] != null ? new MaterialFile(textureFilesPath[2]!) : null,
+            Data = new MtlTexture(textureFilesPath[0]!, textureFilesPath[1], textureFilesPath[2]) {
                 Color = color
             };
         }

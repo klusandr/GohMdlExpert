@@ -16,7 +16,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
 
         public IFileLoader FileLoader => _fileLoader;
 
-        public IEnumerable<GohResourceDirectory> GetDirectories(string path) {
+        public virtual IEnumerable<GohResourceDirectory> GetDirectories(string path) {
             var directories = new List<GohResourceDirectory>();
 
             foreach (var directoryNames in Directory.GetDirectories(path)) {
@@ -26,7 +26,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
             return directories;
         }
 
-        public IEnumerable<GohResourceFile> GetFiles(string path) {
+        public virtual IEnumerable<GohResourceFile> GetFiles(string path) {
             var files = new List<GohResourceFile>();
 
             foreach (var fileFullPath in Directory.GetFiles(path)) {

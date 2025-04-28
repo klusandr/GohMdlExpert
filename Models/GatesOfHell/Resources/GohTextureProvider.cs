@@ -1,4 +1,6 @@
-﻿using GohMdlExpert.Models.GatesOfHell.Exceptions;
+﻿using System.IO;
+using System.Linq;
+using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 
@@ -27,29 +29,28 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             }
         }
 
-        public void SetTextureMaterialsFullPath(MtlTexture mtlTexture) {
-            GohResourceFile?[] materialFiles = [mtlTexture.Diffuse, mtlTexture.Bump, mtlTexture.Specular];
+        public void TextureMaterialsInitialize(MtlTexture mtlTexture) {
+            if (!mtlTexture.IsMaterialsInitialize) {
+                mtlTexture.Diffuse = GetMaterialFile(mtlTexture.DiffusePath) ?? throw GohResourceFileException.IsNotExists(mtlTexture.DiffusePath);
 
-            foreach (var materialFile in materialFiles) {
-                if (materialFile != null) {
-                    SetMaterialFullPath((MaterialFile)materialFile);
+                if (mtlTexture.BumpPath != null) {
+                    mtlTexture.Bump = GetMaterialFile(mtlTexture.BumpPath) ?? throw GohResourceFileException.IsNotExists(mtlTexture.BumpPath);
+                }
+
+                if (mtlTexture.SpecularPath != null) {
+                    mtlTexture.Specular = GetMaterialFile(mtlTexture.SpecularPath) ?? throw GohResourceFileException.IsNotExists(mtlTexture.SpecularPath);
                 }
             }
         }
 
         public void SetTexturesMaterialsFullPath(IEnumerable<MtlTexture> mtlTextures) {
             foreach (var mtlTexture in mtlTextures) {
-                SetTextureMaterialsFullPath(mtlTexture);
+                TextureMaterialsInitialize(mtlTexture);
             }
         }
 
-        private MaterialFile SetMaterialFullPath(MaterialFile materialFile) {
-            if (materialFile.RelativePathPoint == null) {
-                materialFile.Loader = TextureDirectory.Loader.FileLoader;
-                materialFile.RelativePathPoint = TextureDirectory.GetFullPath();
-            }
-
-            return materialFile;
+        private MaterialFile? GetMaterialFile(string materialPath) {
+            return TextureDirectory.AlongPath(Path.GetDirectoryName(materialPath)!)?.GetFile(Path.GetFileName(materialPath) + ".dds") as MaterialFile;
         }
 
         private void ProviderResourceUpdated(object? sender, EventArgs e) {

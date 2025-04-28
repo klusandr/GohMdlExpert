@@ -47,6 +47,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
             return new TextureException("The texture is already contained in the texture collection.", materialFile: mtlTexture.Diffuse) { ExceptionCode = 5 };
         }
 
+        public static TextureException MaterialsNotInitialize(MtlTexture mtlTexture) {
+            return new TextureException("The texture materials is not initialize.") { ExceptionCode = 6 };
+        }
+
         private static string GetFullMessage(string? message = null, MtlFile? mtlFile = null, MaterialFile? materialFile = null) {
             return string.Format(MESSAGE,
                 materialFile != null ? string.Format(MESSAGE_MATERIAL, "\"" + materialFile.GetFullPath() + "\" ") : string.Empty,

@@ -12,6 +12,7 @@ Style="{DynamicResource ChildWindowStyle}"
 SizeToContent="WidthAndHeight" 
 MinHeight="150"
 MinWidth="150"
+        MaxHeight="600"
         Title="UserErrorDialogWindow">
     <Grid>
         <Grid.Resources>

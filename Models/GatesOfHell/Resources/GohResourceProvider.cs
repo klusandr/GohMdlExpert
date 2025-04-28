@@ -16,7 +16,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
 
         private static readonly IEnumerable<IGohResourceLoader> s_baseResourceDirectories = [
             new PakResourceLoader(),
-            new DefaultResourceLoader()
+            new ModResourceLoader()
         ];
 
         private IGohResourceLoader? _resourceLoader;
@@ -30,16 +30,21 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
         public GohResourceProvider() { }
 
         public void OpenResources(string path) {
-            foreach (var resourceDirectory in s_baseResourceDirectories) {
-                if (resourceDirectory.CheckBasePath(path)) {
-                    _resourceLoader = resourceDirectory;
-                    _resourceLoader.LoadData(path);
-                    OnResourceUpdated();
-                    return;
-                }
-            }
+            _resourceLoader = GetResourceLoader(path) ?? throw GohResourcesException.IsNotGohResource(path);
+            _resourceLoader.LoadData(path);
+            OnResourceUpdated();
+        }
 
-            throw GohResourcesException.IsNotGohResource(path);
+        public void AddResource(string path) {
+            if (_resourceLoader == null) {
+                OpenResources(path);
+            } else {
+                _resourceLoader.Root?.ClearData();
+                var newResourceLoader = GetResourceLoader(path) ?? throw GohResourcesException.IsNotGohResource(path);
+                newResourceLoader.LoadData(path);
+                _resourceLoader = new AggregateResourceLoader([_resourceLoader, newResourceLoader]);
+                OnResourceUpdated();
+            }
         }
 
         public GohResourceDirectory GetLocationDirectory(string location) {
@@ -116,6 +121,16 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
 
         private void OnResourceUpdated() {
             ResourceUpdated?.Invoke(this, EventArgs.Empty);
+        }
+
+        private IGohResourceLoader? GetResourceLoader(string path) {
+            foreach (var resourceDirectory in s_baseResourceDirectories) {
+                if (resourceDirectory.CheckBasePath(path)) {
+                    return resourceDirectory;
+                }
+            }
+
+            return null;
         }
     }
 }

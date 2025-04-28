@@ -101,7 +101,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         }
 
         public GohResourceDirectory? GetDirectory(string name) {
-            return Items.FirstOrDefault(d => d.Name == name) as GohResourceDirectory;
+            return Items.FirstOrDefault(d => string.Equals(d.Name, name, StringComparison.OrdinalIgnoreCase)) as GohResourceDirectory;
         }
 
         public GohResourceFile? GetFile(string name) {

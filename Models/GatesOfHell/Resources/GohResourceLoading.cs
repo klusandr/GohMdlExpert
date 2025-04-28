@@ -24,6 +24,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
 
         public static MdlSerializer MdlSerializer { get; } = new MdlSerializer();
 
+        public static string ResourceDirectoryName { get; } = "resource";
+
         /// <summary>
         /// Фильтр загрузки .ply файлов.
         /// </summary>
