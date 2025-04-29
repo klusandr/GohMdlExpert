@@ -1,7 +1,7 @@
 ﻿using System.Text;
 
 namespace GohMdlExpert.Models.GatesOfHell.Serialization {
-    public abstract class ModelDataSerializer {
+    public class ModelDataSerializer {
         private struct ParameterType {
             public string Name;
             public string? NameInText;
@@ -26,7 +26,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
                 Name = name;
                 Data = data;
             }
-
 
             public override string ToString() {
                 string? dataText = Data is IEnumerable<ModelDataParameter> dataCollection ? $"[{dataCollection.Count()}]" : Data?.ToString();
@@ -223,7 +222,18 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
 
 
         private ModelDataParameter GetTypeNameData(string text) {
-            var parameter = new ModelDataParameter(GetTypeByIndex(int.Parse(text[(text.IndexOf('|') + 1)..text.IndexOf('|', text.IndexOf('|') + 1)])));
+            string type;
+
+            if (text.Contains('|')) {
+                type = GetTypeByIndex(int.Parse(text[(text.IndexOf('|') + 1)..text.IndexOf('|', text.IndexOf('|') + 1)]));
+            } else {
+                int nameEndIndex = text.IndexOf(' ');
+
+                type = text[0..nameEndIndex].Trim();
+                text = text[(nameEndIndex + 1)..];
+            }
+
+            var parameter = new ModelDataParameter(type);
 
             int separatorIndex = text.IndexOf('{');
 
