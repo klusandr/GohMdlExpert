@@ -19,15 +19,14 @@ namespace GohMdlExpert.Services {
             _settingsView ??= new SettingsView();
 
             _childWindow = new ChildWindow() {
+                Owner = App.Current.MainWindow,
                 Title = "Settings",
                 Content = _settingsView,
                 MinWidth = _settingsView.MinWidth,
                 MinHeight = _settingsView.MinHeight,
             };
 
-            _childWindow.ShowDialog();
+            _childWindow.Show();
         }
-
-
     }
 }

@@ -3,6 +3,7 @@ using System.Reflection;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
+using GohMdlExpert.Models.GatesOfHell.Resources.Mods;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources
 {
@@ -18,33 +19,41 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             new PakResourceLoader(),
             new ModResourceLoader()
         ];
+        private IGohResourceLoader? _baseResourceLoader;
+        private IGohResourceLoader? _currentResourceLoader;
 
-        private IGohResourceLoader? _resourceLoader;
-
-        public IGohResourceLoader ResourceLoader => _resourceLoader ?? throw GohResourcesException.DirectoryNotSpecified();
+        public IGohResourceLoader ResourceLoader => _currentResourceLoader ?? throw GohResourcesException.DirectoryNotSpecified();
         public GohResourceDirectory ResourceDirectory => ResourceLoader?.Root ?? throw GohResourcesException.DirectoryNotSpecified();
         public bool IsResourceLoaded => ResourceDirectory != null;
 
+        public GohModResourceProvider ModResourceProvider { get; }
+
         public event EventHandler? ResourceUpdated;
 
-        public GohResourceProvider() { }
+        public GohResourceProvider(GohModResourceProvider modResourceProvider) {
+            ModResourceProvider = modResourceProvider;
+        }
 
         public void OpenResources(string path) {
-            _resourceLoader = GetResourceLoader(path) ?? throw GohResourcesException.IsNotGohResource(path);
-            _resourceLoader.LoadData(path);
+            _baseResourceLoader = _currentResourceLoader = GetResourceLoader(path) ?? throw GohResourcesException.IsNotGohResource(path);
+            _currentResourceLoader.LoadData(path);
             OnResourceUpdated();
         }
 
-        public void AddResource(string path) {
-            if (_resourceLoader == null) {
-                OpenResources(path);
-            } else {
-                _resourceLoader.Root?.ClearData();
-                var newResourceLoader = GetResourceLoader(path) ?? throw GohResourcesException.IsNotGohResource(path);
-                newResourceLoader.LoadData(path);
-                _resourceLoader = new AggregateResourceLoader([_resourceLoader, newResourceLoader]);
-                OnResourceUpdated();
+        public void LoadModResources() {
+            if (_baseResourceLoader == null) {
+                return;
             }
+
+            var resourceLoaders = ModResourceProvider.Mods.Where(m => m.IsEnable && m.IsLoad).Select(m => m.ResourceLoader);
+
+            if (resourceLoaders.Any()) {
+                _currentResourceLoader = new AggregateResourceLoader([_baseResourceLoader, .. resourceLoaders]);
+            } else {
+                _currentResourceLoader = _baseResourceLoader;
+            }
+
+            OnResourceUpdated();
         }
 
         public GohResourceDirectory GetLocationDirectory(string location) {

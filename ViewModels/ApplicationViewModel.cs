@@ -6,6 +6,7 @@ using GohMdlExpert.Models.GatesOfHell.Caches;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
+using GohMdlExpert.Models.GatesOfHell.Resources.Mods;
 using GohMdlExpert.Models.GatesOfHell.Сaches;
 using GohMdlExpert.Properties;
 using GohMdlExpert.Services;
@@ -22,6 +23,7 @@ namespace GohMdlExpert.ViewModels {
         private readonly HumanskinMdlOverviewViewModel _models3DView;
         private readonly SettingsWindowService _settingsWindowService;
         private readonly AppThemesManager _appThemesManager;
+        private readonly GohModResourceProvider _modResourceProvider;
 
         public float CompletionPercentage { get; set; }
 
@@ -34,11 +36,12 @@ namespace GohMdlExpert.ViewModels {
         public ICommand SetDarkThemeCommand => CommandManager.GetCommand(() => SetTheme(AppThemesManager.DarkThemeName));
 
         public ApplicationViewModel(GohResourceProvider gohResourceProvider, GohHumanskinResourceProvider gohHumanskinResourceProvider, 
-            HumanskinMdlOverviewViewModel models3DView, SettingsWindowService settingsWindowService, AppThemesManager appThemesManager) {
+            HumanskinMdlOverviewViewModel models3DView, SettingsWindowService settingsWindowService, AppThemesManager appThemesManager, GohModResourceProvider modResourceProvider) {
             _gohResourceProvider = gohResourceProvider;
             _models3DView = models3DView;
             _settingsWindowService = settingsWindowService;
             _appThemesManager = appThemesManager;
+            _modResourceProvider = modResourceProvider;
             _gohHumanskinResourceProvider = gohHumanskinResourceProvider;
         }
 
@@ -59,9 +62,15 @@ namespace GohMdlExpert.ViewModels {
                 InitialDirectory = Settings.Default.LastOpenedResource
             };
 
-            if (folderDialog.ShowDialog() ?? false) {
-                Settings.Default.LastOpenedResource = folderDialog.FolderName;
-                _gohResourceProvider.AddResource(folderDialog.FolderName);
+            if (_modResourceProvider.Mods.Any()) {
+                _modResourceProvider.Mods.First().IsEnable = false;
+                _gohResourceProvider.LoadModResources();
+            } else {
+                if (folderDialog.ShowDialog() ?? false) {
+                    Settings.Default.LastOpenedResource = folderDialog.FolderName;
+                    _modResourceProvider.AddMod(new(folderDialog.FolderName));
+                    _gohResourceProvider.LoadModResources();
+                }
             }
         }
 

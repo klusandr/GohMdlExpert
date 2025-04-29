@@ -12,7 +12,9 @@ namespace GohMdlExpert.ViewModels.SettingsPages {
         private SettingsPageViewModel? _selectedPage;
 
         public IEnumerable<SettingsPageViewModel> Pages => _pages;
+
         public GamePathSettingsPageViewModel GamePathSettingsPage => GetPage<GamePathSettingsPageViewModel>()!;
+        public ModsSettingsPageViewModel ModsSettingsPage => GetPage<ModsSettingsPageViewModel>()!;
 
         public SettingsPageViewModel? SelectedPage {
             get => _selectedPage;
@@ -26,7 +28,8 @@ namespace GohMdlExpert.ViewModels.SettingsPages {
             var serviceProvider = App.Current.ServiceProvider;
 
             _pages = [
-                serviceProvider.CreateInstance<GamePathSettingsPageViewModel>()
+                serviceProvider.CreateInstance<GamePathSettingsPageViewModel>(),
+                serviceProvider.CreateInstance<ModsSettingsPageViewModel>()
             ];
         }
 

@@ -3,6 +3,7 @@ using System.Windows.Navigation;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
+using GohMdlExpert.Models.GatesOfHell.Resources.Mods;
 using GohMdlExpert.Properties;
 using GohMdlExpert.Services;
 using GohMdlExpert.ViewModels;
@@ -50,6 +51,7 @@ namespace GohMdlExpert {
                 .AddSingleton<IUserDialogProvider, UserDialogProviderGoh>()
                 .AddSingleton<GohGameDirectory>()
                 .AddSingleton<GohResourceProvider>()
+                .AddSingleton<GohModResourceProvider>()
                 .AddSingleton<GohHumanskinResourceProvider>()
                 .AddSingleton<GohTextureProvider>()
                 .AddSingleton<SettingsWindowService>()
