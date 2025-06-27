@@ -12,6 +12,7 @@ using WpfMvvm.ViewModels.Controls.Menu;
 namespace GohMdlExpert.ViewModels.Trees.LoadModels {
     public class ModelsLoadTreePlyFileViewModel : ModelsLoadTreeItemViewModel {
         private static readonly ImageSource s_icon = new BitmapImage().FromByteArray(Resources.PlyIcon);
+        private static readonly ImageSource s_icon_m = new BitmapImage().FromByteArray(Resources.PlyIcon);
 
         public PlyFile PlyFile { get; }
         public AggregateMtlFiles? AggregateMtlFiles { get; private set; }

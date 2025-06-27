@@ -8,13 +8,10 @@ using System.Windows.Shapes;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
     public class DefaultDirectoryLoader : IDirectoryLoader {
-        private readonly DefaultFileLoader _fileLoader;
+        
+        public DefaultDirectoryLoader() { }
 
-        public DefaultDirectoryLoader() {
-            _fileLoader = new DefaultFileLoader();
-        }
-
-        public IFileLoader FileLoader => _fileLoader;
+        public virtual IFileLoader FileLoader { get; } = new DefaultFileLoader();
 
         public virtual IEnumerable<GohResourceDirectory> GetDirectories(string path) {
             var directories = new List<GohResourceDirectory>();
@@ -30,7 +27,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
             var files = new List<GohResourceFile>();
 
             foreach (var fileFullPath in Directory.GetFiles(path)) {
-                files.Add(GohResourceLoading.GetResourceFile(fileFullPath, fileLoader: _fileLoader));
+                files.Add(GohResourceLoading.GetResourceFile(fileFullPath, fileLoader: FileLoader));
             }
 
             return files;

@@ -9,6 +9,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
     public class ModDirectoryLoader : DefaultDirectoryLoader {
         private readonly string _path;
 
+        public override IFileLoader FileLoader { get; } = new ModFileLoader();
+
         public ModDirectoryLoader(string path) {
             _path = path;
         }
