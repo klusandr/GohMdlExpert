@@ -8,7 +8,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GohMdlExpert", "GohMdlExper
 		{056B7527-050B-4416-9439-19D6DE701482} = {056B7527-050B-4416-9439-19D6DE701482}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfMvvm", "C:\Users\Андрей\source\repos\MvvmWpf\BaseWpfMvvm\WpfMvvm.csproj", "{056B7527-050B-4416-9439-19D6DE701482}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfMvvm", "..\MvvmWpf\BaseWpfMvvm\WpfMvvm.csproj", "{056B7527-050B-4416-9439-19D6DE701482}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

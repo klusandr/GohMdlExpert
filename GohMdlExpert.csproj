@@ -47,7 +47,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="C:\Users\Андрей\source\repos\MvvmWpf\BaseWpfMvvm\WpfMvvm.csproj" />
+    <Reference Include="WpfMvvm">
+      <HintPath>..\MvvmWpf\BaseWpfMvvm\bin\Release\0.2.2.1\WpfMvvm.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
