@@ -117,23 +117,67 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         }
 
         public IEnumerable<GohResourceElement> FindResourceElements(Func<GohResourceElement, bool> predicate, bool deepSearch = true, bool first = false) {
-            return FindResourceElements(predicate, deepSearch, first, null);
+            if (!deepSearch) {
+                if (first) {
+                    return FindResourceElementLocal(predicate);
+                } else {
+                    return FindResourceElementsLocal(predicate);
+                }
+            } else {
+                if (first) {
+                    return FindResourceElement(predicate);
+                } else {
+                    return FindResourceElements(predicate, null);
+                }
+            }
         }
 
-        private List<GohResourceElement> FindResourceElements(Func<GohResourceElement, bool> predicate, bool deepSearch = true, bool first = false, List<GohResourceElement>? items = null) {
+        private List<GohResourceElement> FindResourceElementLocal(Func<GohResourceElement, bool> predicate) {
+            foreach (var item in Items) {
+                if (predicate(item)) {
+                    return [item];
+                }
+            }
+
+            return [];
+        }
+
+        private List<GohResourceElement> FindResourceElementsLocal(Func<GohResourceElement, bool> predicate) {
+            var items = new List<GohResourceElement>();
+
+            foreach (var item in Items) {
+                if (predicate(item)) {
+                    items.Add(item);
+                }
+            }
+
+            return items;
+        }
+
+        private List<GohResourceElement> FindResourceElement(Func<GohResourceElement, bool> predicate) {
+            foreach (var item in Items) {
+                if (predicate(item)) {
+                    return [item];
+                }
+            }
+
+            foreach (var directory in GetDirectories()) {
+                directory.FindResourceElement(predicate);
+            }
+
+            return [];
+        }
+
+        private List<GohResourceElement> FindResourceElements(Func<GohResourceElement, bool> predicate, List<GohResourceElement>? items = null) {
             items ??= [];
 
             foreach (var item in Items) {
                 if (predicate(item)) {
                     items.Add(item);
-
-                    if (first) { return items; }
                 }
-            }
 
-            if (deepSearch) {
-                foreach (var item in GetDirectories()) {
-                    item.FindResourceElements(predicate, deepSearch, first, items);
+                if (item is GohResourceDirectory directory) {
+                    directory.FindResourceElements(predicate, items);
                 }
             }
 
