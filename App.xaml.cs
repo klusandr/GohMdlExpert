@@ -80,6 +80,7 @@ namespace GohMdlExpert {
                 gameDirectory.Updated += (_, _) => {
                     if (gameDirectory.ResourcePath != null) {
                         ServiceProvider.GetRequiredService<GohResourceProvider>().OpenResources(gameDirectory.ResourcePath);
+                        ServiceProvider.GetRequiredService<ApplicationViewModel>().FullLoadResources();
                     }  
                 };
 

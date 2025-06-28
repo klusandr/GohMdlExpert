@@ -10,8 +10,10 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Mods;
 using GohMdlExpert.Models.GatesOfHell.Сaches;
 using GohMdlExpert.Properties;
 using GohMdlExpert.Services;
+using GohMdlExpert.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
+using WpfMvvm.Extensions;
 using WpfMvvm.ViewModels;
 using WpfMvvm.ViewModels.Commands;
 using WpfMvvm.Views;
@@ -24,8 +26,17 @@ namespace GohMdlExpert.ViewModels {
         private readonly SettingsWindowService _settingsWindowService;
         private readonly AppThemesManager _appThemesManager;
         private readonly GohModResourceProvider _modResourceProvider;
+        private bool _isWaitFillVisible;
 
         public float CompletionPercentage { get; set; }
+
+        public bool IsWaitFillVisible {
+            get => _isWaitFillVisible;
+            private set {
+                _isWaitFillVisible = value;
+                OnPropertyChanged();
+            }
+        }
 
         public ICommand OpenResourceCommand => CommandManager.GetCommand(OpenResourceDirectory);
         public ICommand OpenFileCommand => CommandManager.GetCommand(OpenFile);
@@ -34,6 +45,7 @@ namespace GohMdlExpert.ViewModels {
         public ICommand LoadTexturesCacheCommand => CommandManager.GetCommand(LoadTexturesCache);
         public ICommand SetLightThemeCommand => CommandManager.GetCommand(() => SetTheme(AppThemesManager.LightThemeName));
         public ICommand SetDarkThemeCommand => CommandManager.GetCommand(() => SetTheme(AppThemesManager.DarkThemeName));
+        public ICommand TestCommand => CommandManager.GetCommand(() => FullLoadResources(false));
 
         public ApplicationViewModel(GohResourceProvider gohResourceProvider, GohHumanskinResourceProvider gohHumanskinResourceProvider, 
             HumanskinMdlOverviewViewModel models3DView, SettingsWindowService settingsWindowService, AppThemesManager appThemesManager, GohModResourceProvider modResourceProvider) {
@@ -92,6 +104,36 @@ namespace GohMdlExpert.ViewModels {
             }).ContinueWith((t) => timer.Dispose());
 
             //var d =  GohServicesProvider.Instance.GetRequiredService<GohCacheProvider>().PlyMtlsCache;
+        }
+
+        public void FullLoadResources(bool autoClose = true) {
+            var viewModel = new ResourceLoadingProgressViewModel(_gohResourceProvider);
+            var window = new ChildWindow() {
+                Content = new ResourceLoadingProgressView() {
+                    DataContext = viewModel
+                },
+                SizeToContent = System.Windows.SizeToContent.WidthAndHeight,
+                Title = "Loading resources...",
+                WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner
+            };
+
+            Task.Factory.StartNew(() => {
+                Thread.Sleep(200);
+                _gohResourceProvider.FullLoad(viewModel.LoadElementHandler);
+                viewModel.EndLoadingHandler();
+
+                if (autoClose) {
+                    Thread.Sleep(200);
+                    App.Current.Synchronize(window.Close);
+                }
+            });
+
+            try {
+                IsWaitFillVisible = true;
+                window.ShowDialog();
+            } finally {
+                IsWaitFillVisible = false;
+            }
         }
 
         private void OpenSettings() {

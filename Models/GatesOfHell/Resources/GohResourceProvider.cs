@@ -128,6 +128,16 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             return insidePath;
         }
 
+        public void FullLoad(Action<GohResourceElement>? elementLoad = null, CancellationToken? cancellationToken = null) {
+            bool perdicate(GohResourceElement element) {
+                cancellationToken?.ThrowIfCancellationRequested();
+                elementLoad?.Invoke(element);
+                return false;
+            }
+
+            ResourceDirectory.FindResourceElements(perdicate);
+        }
+
         private void OnResourceUpdated() {
             ResourceUpdated?.Invoke(this, EventArgs.Empty);
         }

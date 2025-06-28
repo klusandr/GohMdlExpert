@@ -64,5 +64,6 @@
             </StatusBarItem>
             <StatusBarItem/>
         </StatusBar>
+        <Rectangle Fill="Black" Opacity="0.5" d:Visibility="Collapsed" Visibility="{Binding IsWaitFillVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.RowSpan="3" />
     </Grid>
 </Window>
