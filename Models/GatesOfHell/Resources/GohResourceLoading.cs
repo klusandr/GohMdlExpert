@@ -95,15 +95,14 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
         /// </summary>
         /// <param name="plyFile">Файл, для которого будут возвращены LOD файлы.</param>
         /// <returns>Коллекция <see cref="PlyFile"/> файлов, который являются LOD для указанного файла.</returns>
-        public static IEnumerable<PlyFile> GetPlyLodFiles(PlyFile plyFile, GohFactionHumanskinResource humanskinResource, GohResourceProvider resourceProvider) {
+        public static IEnumerable<PlyFile> GetPlyLodFiles(PlyFile plyFile, IGohHumanskinResource humanskinResource, GohResourceProvider resourceProvider) {
             var directory = resourceProvider.GetResourceDirectory(plyFile);
 
             var lodFiles = directory
                 .FindResourceElements<PlyFile>(searchPattern: @$"{plyFile.Name[..^4]}_lod\d*\.");
 
             if (!lodFiles.Any()) {
-                //lodFiles = [humanskinResource.GetNullPlyFile(plyFile)];
-#warning Upgrade getting null ply model.
+                lodFiles = [humanskinResource.GetNullPlyFile(plyFile)];
             }
 
             return lodFiles;
@@ -116,19 +115,17 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
         /// <param name="mtlFiles">Список .mtl файлов.</param>
         /// <param name="humanskinResourceProvider">Провайдер humanskin.</param>
         /// <param name="textureProvider">Провайдер текстур.</param>
-        public static void LoadHumanskinFile(MdlFile mdlFile, out IEnumerable<MtlFile> mtlFiles, GohHumanskinResourceProvider humanskinResourceProvider, GohTextureProvider textureProvider) {
+        public static void LoadHumanskinFile(MdlFile mdlFile, out IEnumerable<MtlFile> mtlFiles, IGohHumanskinResource humanskinResource, GohTextureProvider textureProvider) {
             var plyFiles = mdlFile.Data.PlyModel;
             var lodFiles = mdlFile.Data.PlyModelLods;
             var mtlFilesList = new List<MtlFile>();
 
             foreach (var plyFile in plyFiles) {
-                //humanskinResourceProvider.SetPlyFileFullPath(plyFile);
+                humanskinResource.SetPlyFileFullPath(plyFile);
 
-                //foreach (var lodFile in lodFiles[plyFile]) {
-                //    humanskinResourceProvider.Current.SetPlyFileFullPath(lodFile);
-                //}
-
-#warning Upgrade loading humanskin files.
+                foreach (var lodFile in lodFiles[plyFile]) {
+                    humanskinResource.SetPlyFileFullPath(lodFile);
+                }
             }
 
             string? mdlFilePath = mdlFile.GetDirectoryPath();
