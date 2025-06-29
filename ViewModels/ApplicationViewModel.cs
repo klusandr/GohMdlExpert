@@ -11,7 +11,6 @@ using GohMdlExpert.Models.GatesOfHell.Сaches;
 using GohMdlExpert.Properties;
 using GohMdlExpert.Services;
 using GohMdlExpert.Views;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using WpfMvvm.Extensions;
 using WpfMvvm.ViewModels;
@@ -22,6 +21,7 @@ namespace GohMdlExpert.ViewModels {
     public class ApplicationViewModel : BaseViewModel {
         private readonly GohResourceProvider _gohResourceProvider;
         private readonly GohHumanskinResourceProvider _gohHumanskinResourceProvider;
+        private readonly GohTextureProvider _gohTextureProvider;
         private readonly HumanskinMdlOverviewViewModel _models3DView;
         private readonly SettingsWindowService _settingsWindowService;
         private readonly AppThemesManager _appThemesManager;
@@ -47,7 +47,7 @@ namespace GohMdlExpert.ViewModels {
         public ICommand SetDarkThemeCommand => CommandManager.GetCommand(() => SetTheme(AppThemesManager.DarkThemeName));
         public ICommand TestCommand => CommandManager.GetCommand(Test);
 
-        public ApplicationViewModel(GohResourceProvider gohResourceProvider, GohHumanskinResourceProvider gohHumanskinResourceProvider, 
+        public ApplicationViewModel(GohResourceProvider gohResourceProvider, GohHumanskinResourceProvider gohHumanskinResourceProvider, GohTextureProvider gohTextureProvider,
             HumanskinMdlOverviewViewModel models3DView, SettingsWindowService settingsWindowService, AppThemesManager appThemesManager, GohModResourceProvider modResourceProvider) {
             _gohResourceProvider = gohResourceProvider;
             _models3DView = models3DView;
@@ -55,6 +55,7 @@ namespace GohMdlExpert.ViewModels {
             _appThemesManager = appThemesManager;
             _modResourceProvider = modResourceProvider;
             _gohHumanskinResourceProvider = gohHumanskinResourceProvider;
+            _gohTextureProvider = gohTextureProvider;
         }
 
         public void OpenFile() {
@@ -105,7 +106,7 @@ namespace GohMdlExpert.ViewModels {
             timer.Enabled = true;
 
             Task.Factory.StartNew(() => {
-                GohCachesFilling.FillPlyTexturesCache(_gohResourceProvider, _gohHumanskinResourceProvider, ref completionPercentage);
+                GohCachesFilling.FillPlyTexturesCache(_gohResourceProvider, _gohHumanskinResourceProvider.Resource, ref completionPercentage);
                 completionPercentage = 0;
             }).ContinueWith((t) => timer.Dispose());
 
@@ -159,7 +160,7 @@ namespace GohMdlExpert.ViewModels {
             timer.Enabled = true;
 
             Task.Factory.StartNew(() => {
-                GohCachesFilling.FillTexturesCache(_gohResourceProvider, _gohHumanskinResourceProvider, ref completionPercentage);
+                GohCachesFilling.FillTexturesCache(_gohTextureProvider, _gohHumanskinResourceProvider.Resource, ref completionPercentage);
                 completionPercentage = 0;
             }).ContinueWith((t) => timer.Dispose());
         }

@@ -13,77 +13,86 @@ using static GohMdlExpert.Models.GatesOfHell.Resources.Data.PlyModel;
 
 namespace GohMdlExpert.Models.GatesOfHell.Caches {
     public static class GohCachesFilling {
-        public static void FillPlyTexturesCache(GohResourceProvider resourceProvider, GohHumanskinResourceProvider humanskinProvider, ref float completionPercentage) {
-
+        public static void FillPlyTexturesCache(GohResourceProvider resourceProvider, IGohHumanskinResource humanskinResource, ref float completionPercentage) {
             var cacheValues = new Dictionary<string, HashSet<string>>();
 
-            //foreach (var humanskinResource in humanskinProvider.HumanskinResources) {
-            //    var mdlDirectories = humanskinResource.Root.GetDirectories().Where(dir => dir != humanskinResource.Source);
+            var mdlDirectories = humanskinResource.Root.FindResourceElements(
+                (e) => {
+                    if (e is GohResourceDirectory directory) {
+                        return directory.Items.Any(f => f is MdlFile);
+                    }
 
-            //    float percentageSteep = 100 / mdlDirectories.Count();
-            //    completionPercentage = 0;
+                    return false;
+                } 
+            ).Cast<GohResourceDirectory>();
 
-            //    foreach (var directory in mdlDirectories) {
-            //        foreach (var mdlFile in directory.GetFiles().OfType<MdlFile>()) {
-            //            foreach (var plyFile in mdlFile.Data.PlyModel) {
-            //                humanskinResource.SetPlyFileFullPath(plyFile);
-            //                var loadPlyFile = (PlyFile)resourceProvider.ResourceLoader.GetFile(plyFile.GetFullPath().ToLower())!;
+            float percentageSteep = 100f / mdlDirectories.Count();
+            completionPercentage = 0;
 
-            //                if (loadPlyFile != null) {
-            //                    if (!cacheValues.TryGetValue(plyFile.Name, out var cacheValue)) {
-            //                        cacheValue = [];
-            //                        cacheValues[plyFile.Name] = cacheValue;
-            //                    }
+            foreach (var directory in mdlDirectories) {
+                foreach (var mdlFile in directory.GetFiles().OfType<MdlFile>()) {
+                    foreach (var plyFile in mdlFile.Data.PlyModel) {
+                        var loadPlyFile = (PlyFile)resourceProvider.ResourceLoader.GetFile(plyFile.GetFullPath().ToLower())!;
 
-            //                    foreach (var mesh in loadPlyFile.Data.Meshes) {
-            //                        var mtlFile = directory.FindResourceElements<MtlFile>(searchPattern: mesh.TextureName, deepSearch: false, first: true).FirstOrDefault();
+                        if (loadPlyFile != null) {
+                            if (!cacheValues.TryGetValue(plyFile.Name, out var cacheValue)) {
+                                cacheValue = [];
+                                cacheValues[plyFile.Name] = cacheValue;
+                            }
 
-            //                        if (mtlFile != null) {
-            //                            string insidePath = resourceProvider.GetInsidePath(mtlFile!.GetFullPath());
-            //                            cacheValue.Add(insidePath);
-            //                        }
-            //                    }
+                            foreach (var mesh in loadPlyFile.Data.Meshes) {
+                                var mtlFile = directory.FindResourceElements<MtlFile>(searchPattern: mesh.TextureName, deepSearch: false, first: true).FirstOrDefault();
 
-            //                    loadPlyFile.UnloadData();
-            //                }
-            //            }
-            //        }
+                                if (mtlFile != null) {
+                                    string insidePath = resourceProvider.GetInsidePath(mtlFile!.GetFullPath());
+                                    cacheValue.Add(insidePath);
+                                }
+                            }
 
-            //        completionPercentage += percentageSteep;
-            //    }
+                            loadPlyFile.UnloadData();
+                        }
+                    }
+                }
 
-            //    completionPercentage = 100;
-            //}
+                completionPercentage += percentageSteep;
+            }
 
-            //var cache = new Dictionary<string, string[]>();
+            completionPercentage = 100;
 
-            //foreach (var cacheValue in cacheValues) {
-            //    cache.Add(cacheValue.Key, [.. cacheValue.Value]);
-            //}
+            var cache = new Dictionary<string, string[]>();
 
-            //GohServicesProvider.Instance.GetRequiredService<GohCacheProvider>().PlyTexturesCache = cache;
+            foreach (var cacheValue in cacheValues) {
+                cache.Add(cacheValue.Key, [.. cacheValue.Value]);
+            }
 
-#warning Upgrade cache loading;
+            GohServicesProvider.Instance.GetRequiredService<GohCacheProvider>().PlyTexturesCache = cache;
         }
 
-        public static void FillTexturesCache(GohResourceProvider resourceProvider, GohHumanskinResourceProvider humanskinProvider, ref float completionPercentage) {
-            //var cache = new Dictionary<string, string[]>();
+        public static void FillTexturesCache(GohTextureProvider textureProvider, IGohHumanskinResource humanskinResource, ref float completionPercentage) {
+            var cache = new Dictionary<string, string[]>();
 
-            //foreach (var humanskinResource in humanskinProvider.HumanskinResources) {
-            //    var loadMtlFiles = humanskinResource.Root.FindResourceElements<MtlFile>();
+            var loadMtlFiles = humanskinResource.Root.FindResourceElements<MtlFile>();
+            var errorMtlFiles = new List<MtlFile>();
 
-            //    var mtlFiles = loadMtlFiles
-            //        .GroupBy(mf => new { mf.Name, mf.Data.Diffuse })
-            //        .Select(mfg => mfg.First())
-            //        .Select(mf => mf.GetFullPath().ToLower());
-            //    cache.Add(humanskinResource.Name, mtlFiles.ToArray());
+            foreach (var mtlFile in loadMtlFiles) {
+                try {
+                    textureProvider.TextureMaterialsInitialize(mtlFile.Data);
+                } catch (Exception) {
+                    errorMtlFiles.Add(mtlFile);
+                }
+            }
 
-            //    completionPercentage = 100;
-            //}
+            loadMtlFiles = loadMtlFiles.Except(errorMtlFiles);
 
-            //GohServicesProvider.Instance.GetRequiredService<GohCacheProvider>().TexturesCache = cache;
+            var mtlFiles = loadMtlFiles
+                .GroupBy(mf => new { mf.Name, mf.Data.Diffuse })
+                .Select(mfg => mfg.First())
+                .Select(mf => mf.GetFullPath().ToLower());
+            cache.Add(humanskinResource.Root.Name, mtlFiles.ToArray());
 
-#warning Upgrade cache loading;
+            completionPercentage = 100;
+
+            GohServicesProvider.Instance.GetRequiredService<GohCacheProvider>().TexturesCache = cache;
         }
     }
 }

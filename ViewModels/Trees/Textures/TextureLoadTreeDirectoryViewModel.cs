@@ -45,14 +45,15 @@ namespace GohMdlExpert.ViewModels.Trees.Textures {
                 var file = Tree.ResourceProvider.GetFile(mtlFileName);
 
                 if (file is MtlFile mtlFile) {
+                    
                     mtlFiles.Add(mtlFile);
                 }
             }
 
+            mtlFiles.ForEach((f) => Tree.TextureProvider.TextureMaterialsInitialize(f.Data));
             mtlFiles.Sort(s_mtlFileComparer);
 
             foreach (var mtlFile in mtlFiles) {
-                Tree.TextureProvider.TextureMaterialsInitialize(mtlFile.Data);
                 AddItem(new TextureLoadTreeTextureViewModel(mtlFile, Tree));
             }
         }
