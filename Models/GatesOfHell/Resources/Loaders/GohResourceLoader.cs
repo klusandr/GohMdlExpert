@@ -11,6 +11,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
     public abstract class GohResourceLoader : IGohResourceLoader {
         private static readonly Dictionary<string, string> s_locationsPaths = new() {
             ["texture"] = @"\texture\common",
+            ["humanskins"] = @"\entity\humanskin",
             ["ger_humanskin"] = @"\entity\humanskin\[germans]",
             ["us_humanskin"] = @"\entity\humanskin\[united_states]",
             ["sov_humanskin"] = @"\entity\humanskin\[soviets]",

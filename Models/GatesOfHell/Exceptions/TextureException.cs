@@ -32,13 +32,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
             return new TextureException(string.Format("Aggregate textures don't belong to the ply model \"{0}\".", mtlFiles.PlyFile.GetFullPath())) { ExceptionCode = 3 };
         }
 
-        public static TextureException AggregateFilesInconsistency(AggregateMtlFile aggregateFile1, AggregateMtlFile aggregateFile2) {
-            return new TextureException(string.Format("Aggregate texture for ply model \"{0}\" inconsistency with aggregate texture for \"{1}\". Texture name \"{2}\".",
-                aggregateFile1.PlyFile.GetFullPath(),
-                aggregateFile2.PlyFile.GetFullPath(),
-                aggregateFile1.Name)) { ExceptionCode = 3 };
-        }
-
         public static TextureException TextureDiffuseMaterialIsNotDefine(MtlFile? mtlFile = null) {
             return new TextureException("Diffuse material parameter not define.", mtlFile) { ExceptionCode = 4 };
         }

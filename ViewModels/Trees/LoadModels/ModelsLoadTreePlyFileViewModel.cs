@@ -22,9 +22,9 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
         public ICommand AddCommand => CommandManager.GetCommand(AddPlyModel);
 
         private void AddPlyModel() {
-            if (Tree.SkinResourceProvider != null) {
+            if (Tree.SkinResourceProvider?.Resource != null) {
                 try {
-                    Tree.ModelsAdder.AddModel(PlyFile, new AggregateMtlFiles(PlyFile, null, Tree.TextureProvider));
+                    Tree.ModelsAdder.AddModel(PlyFile, new AggregateMtlFiles(PlyFile, Tree.SkinResourceProvider.Resource, Tree.TextureProvider));
                 } catch (OperationCanceledException) { }
             }
         }
@@ -38,11 +38,11 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
         }
 
         public override void LoadData() {
-            if (Items.Any()) {
+            if (Items.Any() || Tree.HumanskinResource == null) {
                 return;
             }
 
-            AggregateMtlFiles = new AggregateMtlFiles(PlyFile, null, Tree.TextureProvider);
+            AggregateMtlFiles = new AggregateMtlFiles(PlyFile, Tree.HumanskinResource, Tree.TextureProvider);
 
             foreach (var mtlFile in AggregateMtlFiles) {
                 AddItem(new ModelsLoadTreeMeshViewModel(mtlFile, Tree));

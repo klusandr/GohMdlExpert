@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins
 {
-    public class GohFactionHumanskinResource {
+    public class GohFactionHumanskinResource : IGohHumanskinResource {
         private const string HUMANSKIN_SOURCE_DIRECTORY_NAME_REG = @"\[.*_source\]";
 
         private readonly GohResourceProvider _resourceProvider;
@@ -25,14 +25,14 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins
             var source = factionRoot.FindResourceElements<GohResourceDirectory>(null, searchPattern: HUMANSKIN_SOURCE_DIRECTORY_NAME_REG, first: true, deepSearch: false).FirstOrDefault();
 
             if (source == null)
-                //|| !source.FindResourceElements<PlyFile>(first: true).Any()
-                //|| !factionRoot.FindResourceElements<MdlFile>(first: true).Any())
+            //|| !source.FindResourceElements<PlyFile>(first: true).Any()
+            //|| !factionRoot.FindResourceElements<MdlFile>(first: true).Any())
             {
                 throw new GohResourcesException($"Directory {factionRoot.GetFullPath} is not faction Humanskin directory");
             }
 
             _resourceProvider = resourceProvider;
-            _cacheProvider = GohServicesProvider.Instance.GetRequiredService<GohCacheProvider>();
+            
             Name = name;
             Root = factionRoot;
             Source = source;
@@ -61,7 +61,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins
             var mtlFiles = new List<AggregateMtlFile>();
 
             foreach (var mesh in plyFile.Data.Meshes) {
-                mtlFiles.Add(new AggregateMtlFile(mesh.TextureName, plyFile, this));
+                mtlFiles.Add(new AggregateMtlFile(mesh.TextureName, () => GetPlyMeshMtlTextures(plyFile, mesh.TextureName)));
             }
 
             return mtlFiles;
@@ -97,7 +97,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins
                         if (texturePath.Contains(meshTextureName)) {
                             mtlTextures.Add(((MtlFile)_resourceProvider.GetFile(texturePath)).Data);
                         }
-                        
+
                     }
                 }
             }

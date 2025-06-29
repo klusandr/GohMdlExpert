@@ -41,6 +41,7 @@
                 <MenuItem Header="Dark" Command="{Binding SetDarkThemeCommand}"/>
             </MenuItem>
             <MenuItem Header="About" Click="MenuItemAboutClick"/>
+            <MenuItem Header="Test" Command="{Binding TestCommand}"/>
         </Menu>
         <!--<StackPanel HorizontalAlignment="Right">
             <Button Width="20" Height="20" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}">

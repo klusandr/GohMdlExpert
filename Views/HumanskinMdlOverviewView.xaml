@@ -32,7 +32,6 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <local:HumanskinResourcesView/>
             <trees:ModelsLoadTreeView DataContext="{Binding ModelsLoadTreeViewModel}" Grid.Row="1"/>
             <local:PlyModelAdderView DataContext="{Binding ModelAdderViewModel}" Grid.Row="2" />
             <local:DefaultMaterialView DataContext="{Binding DefaultMaterialViewModel}" Grid.Row="3"/>

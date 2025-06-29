@@ -14,7 +14,7 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
         public GohHumanskinResourceProvider SkinResourceProvider { get; }
         public GohTextureProvider TextureProvider { get; }
 
-        public GohFactionHumanskinResource? HumanskinResource => SkinResourceProvider.Current;
+        public IGohHumanskinResource? HumanskinResource => SkinResourceProvider.Resource;
 
         public ModelsLoadTreePlyFileViewModel? ApprovedPlyItem {
             get => _approvedPlyItem;

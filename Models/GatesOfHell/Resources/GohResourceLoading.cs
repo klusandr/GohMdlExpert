@@ -102,7 +102,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
                 .FindResourceElements<PlyFile>(searchPattern: @$"{plyFile.Name[..^4]}_lod\d*\.");
 
             if (!lodFiles.Any()) {
-                lodFiles = [humanskinResource.GetNullPlyFile(plyFile)];
+                //lodFiles = [humanskinResource.GetNullPlyFile(plyFile)];
+#warning Upgrade getting null ply model.
             }
 
             return lodFiles;
@@ -121,13 +122,13 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
             var mtlFilesList = new List<MtlFile>();
 
             foreach (var plyFile in plyFiles) {
-                humanskinResourceProvider.Current.SetPlyFileFullPath(plyFile);
+                //humanskinResourceProvider.SetPlyFileFullPath(plyFile);
 
-                foreach (var lodFile in lodFiles[plyFile]) {
-                    humanskinResourceProvider.Current.SetPlyFileFullPath(lodFile);
-                }
+                //foreach (var lodFile in lodFiles[plyFile]) {
+                //    humanskinResourceProvider.Current.SetPlyFileFullPath(lodFile);
+                //}
 
-                
+#warning Upgrade loading humanskin files.
             }
 
             string? mdlFilePath = mdlFile.GetDirectoryPath();

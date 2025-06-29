@@ -17,6 +17,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
 
         private static readonly IEnumerable<IGohResourceLoader> s_baseResourceDirectories = [
             new PakResourceLoader(),
+            new DefaultResourceLoader(),
             new ModResourceLoader()
         ];
         private IGohResourceLoader? _baseResourceLoader;

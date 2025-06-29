@@ -45,7 +45,7 @@ namespace GohMdlExpert.ViewModels {
         public ICommand LoadTexturesCacheCommand => CommandManager.GetCommand(LoadTexturesCache);
         public ICommand SetLightThemeCommand => CommandManager.GetCommand(() => SetTheme(AppThemesManager.LightThemeName));
         public ICommand SetDarkThemeCommand => CommandManager.GetCommand(() => SetTheme(AppThemesManager.DarkThemeName));
-        public ICommand TestCommand => CommandManager.GetCommand(() => FullLoadResources(false));
+        public ICommand TestCommand => CommandManager.GetCommand(Test);
 
         public ApplicationViewModel(GohResourceProvider gohResourceProvider, GohHumanskinResourceProvider gohHumanskinResourceProvider, 
             HumanskinMdlOverviewViewModel models3DView, SettingsWindowService settingsWindowService, AppThemesManager appThemesManager, GohModResourceProvider modResourceProvider) {
@@ -74,16 +74,22 @@ namespace GohMdlExpert.ViewModels {
                 InitialDirectory = Settings.Default.LastOpenedResource
             };
 
-            if (_modResourceProvider.Mods.Any()) {
-                _modResourceProvider.Mods.First().IsEnable = false;
-                _gohResourceProvider.LoadModResources();
-            } else {
-                if (folderDialog.ShowDialog() ?? false) {
-                    Settings.Default.LastOpenedResource = folderDialog.FolderName;
-                    _modResourceProvider.AddMod(new(folderDialog.FolderName));
-                    _gohResourceProvider.LoadModResources();
-                }
+            if (folderDialog.ShowDialog() ?? false) {
+                Settings.Default.LastOpenedResource = folderDialog.FolderName;
+                _gohResourceProvider.OpenResources(folderDialog.FolderName);
+                FullLoadResources();
             }
+
+            //if (_modResourceProvider.Mods.Any()) {
+            //    _modResourceProvider.Mods.First().IsEnable = false;
+            //    _gohResourceProvider.LoadModResources();
+            //} else {
+            //    if (folderDialog.ShowDialog() ?? false) {
+            //        Settings.Default.LastOpenedResource = folderDialog.FolderName;
+            //        _modResourceProvider.AddMod(new(folderDialog.FolderName));
+            //        _gohResourceProvider.LoadModResources();
+            //    }
+            //}
         }
 
         public void LoadPlyTexturesCache() {
@@ -160,6 +166,10 @@ namespace GohMdlExpert.ViewModels {
 
         private void SetTheme(string themeName) {
             _appThemesManager.SetCurrentTheme(themeName);
+        }
+
+        private void Test() {
+            
         }
     }
 }

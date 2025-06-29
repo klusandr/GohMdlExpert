@@ -46,9 +46,10 @@ namespace GohMdlExpert.ViewModels
 
                     var pathElements = fileName.Split('\\', StringSplitOptions.RemoveEmptyEntries);
 
-                    if (pathElements[^3] != _humanskinResourceProvider.Current.Root.Name) {
-                        _userDialog.ShowWarning("Humanskin is saved incorrectly and may not work in the game. The correct way to save is \"resource\\entity\\humanskin\\[fraction_name]\\your_folder\\humanskin.mdl\".");
-                    }
+                    //if (pathElements[^3] != _humanskinResourceProvider.Current.Root.Name) {
+                    //    _userDialog.ShowWarning("Humanskin is saved incorrectly and may not work in the game. The correct way to save is \"resource\\entity\\humanskin\\[fraction_name]\\your_folder\\humanskin.mdl\".");
+                    //}
+#warning Upgrade humanskin saving.
                 } else {
                     return null;
                 }
@@ -68,18 +69,19 @@ namespace GohMdlExpert.ViewModels
             }
 
             foreach (var plyFile in plyFiles) {
-                var refPlyFile = new PlyFile(Path.Join("..", Path.GetRelativePath(_humanskinResourceProvider.Current.Root.GetFullPath(), plyFile.GetFullPath())));
+                //var refPlyFile = new PlyFile(Path.Join("..", Path.GetRelativePath(_humanskinResourceProvider.Current.Root.GetFullPath(), plyFile.GetFullPath())));
 
-                refPlyFiles.Add(refPlyFile);
+                //refPlyFiles.Add(refPlyFile);
 
-                if (lodFiles.TryGetValue(plyFile, out var plyLogFiles)) {
-                    var refPlyLodFiles = new List<PlyFile>();
-                    foreach (var lodFile in plyLogFiles) {
-                        refPlyLodFiles.Add(new PlyFile(Path.Join("..", Path.GetRelativePath(_humanskinResourceProvider.Current.Root.GetFullPath(), lodFile.GetFullPath()))));
-                    }
+                //if (lodFiles.TryGetValue(plyFile, out var plyLogFiles)) {
+                //    var refPlyLodFiles = new List<PlyFile>();
+                //    foreach (var lodFile in plyLogFiles) {
+                //        refPlyLodFiles.Add(new PlyFile(Path.Join("..", Path.GetRelativePath(_humanskinResourceProvider.Current.Root.GetFullPath(), lodFile.GetFullPath()))));
+                //    }
 
-                    refLodFiles.Add(refPlyFile, [.. refPlyLodFiles]);
-                }
+                //    refLodFiles.Add(refPlyFile, [.. refPlyLodFiles]);
+                //}
+#warning Upgrade humanskin saving.
             }
 
             newMdlFile.Data = new MdlModel(parameters, refPlyFiles, refLodFiles);

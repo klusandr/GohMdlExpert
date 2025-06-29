@@ -120,7 +120,7 @@ namespace GohMdlExpert.ViewModels
                 var plyFile = plyFiles.FirstOrDefault(p => p.Data.Meshes.Select(m => m.TextureName).Contains(mtlFile.Name));
 
                 if (plyFile != null) {
-                    AddAggregateMtlFile(new AggregateMtlFile(mtlFile, plyFile));
+                    AddAggregateMtlFile(new AggregateMtlFile(mtlFile));
                 } else {
                     missTexture.Add(mtlFile);
                 }
@@ -150,7 +150,8 @@ namespace GohMdlExpert.ViewModels
                 }
             }
 
-            _lodPlyFiles.Add(modelPly, new ObservableCollection<PlyFile>(lodModels ?? GohResourceLoading.GetPlyLodFiles(modelPly.PlyFile, _humanskinProvider.Current, _resourceProvider)));
+            //_lodPlyFiles.Add(modelPly, new ObservableCollection<PlyFile>(lodModels ?? GohResourceLoading.GetPlyLodFiles(modelPly.PlyFile, _humanskinProvider.Current, _resourceProvider)));
+#warning Upgrade lod files loading.
 
             _plyModels.Add(modelPly);
             UpdateTextures();
