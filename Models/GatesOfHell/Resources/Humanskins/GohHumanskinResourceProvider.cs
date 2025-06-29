@@ -9,8 +9,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
     public class GohHumanskinResourceProvider {
         private readonly GohResourceProvider _resourceProvider;
         private readonly GohCacheProvider _cacheProvider;
+        private IGohHumanskinResource? _resource;
 
-        public IGohHumanskinResource? Resource { get; private set; }
+        public IGohHumanskinResource Resource { get => _resource ?? throw GohResourcesException.DirectoryNotSpecified(); private set => _resource = value; }
 
         public event EventHandler? ResourceUpdated;
 

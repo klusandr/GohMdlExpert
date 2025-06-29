@@ -106,8 +106,6 @@ namespace GohMdlExpert.ViewModels
         }
 
         public void SetMtlFile(MdlFile mdlFile) {
-            if (_humanskinProvider.Resource == null) { throw GohResourcesException.DirectoryNotSpecified(); }
-
             PlyModels.Clear();
 
             GohResourceLoading.LoadHumanskinFile(mdlFile, out var mtlFiles, _textureProvider);

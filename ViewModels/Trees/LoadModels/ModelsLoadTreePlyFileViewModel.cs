@@ -22,11 +22,9 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
         public ICommand AddCommand => CommandManager.GetCommand(AddPlyModel);
 
         private void AddPlyModel() {
-            if (Tree.SkinResourceProvider?.Resource != null) {
-                try {
-                    Tree.ModelsAdder.AddModel(PlyFile, new AggregateMtlFiles(PlyFile, Tree.SkinResourceProvider.Resource, Tree.TextureProvider));
-                } catch (OperationCanceledException) { }
-            }
+            try {
+                Tree.ModelsAdder.AddModel(PlyFile, new AggregateMtlFiles(PlyFile, Tree.SkinResourceProvider.Resource, Tree.TextureProvider));
+            } catch (OperationCanceledException) { }
         }
 
         public ModelsLoadTreePlyFileViewModel(PlyFile plyFile, ModelsLoadTreeViewModel modelsTree) : base(plyFile, modelsTree) {
