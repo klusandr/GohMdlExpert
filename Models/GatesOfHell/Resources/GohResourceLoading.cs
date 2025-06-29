@@ -115,18 +115,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
         /// <param name="mtlFiles">Список .mtl файлов.</param>
         /// <param name="humanskinResourceProvider">Провайдер humanskin.</param>
         /// <param name="textureProvider">Провайдер текстур.</param>
-        public static void LoadHumanskinFile(MdlFile mdlFile, out IEnumerable<MtlFile> mtlFiles, IGohHumanskinResource humanskinResource, GohTextureProvider textureProvider) {
+        public static void LoadHumanskinFile(MdlFile mdlFile, out IEnumerable<MtlFile> mtlFiles, GohTextureProvider textureProvider) {
             var plyFiles = mdlFile.Data.PlyModel;
             var lodFiles = mdlFile.Data.PlyModelLods;
             var mtlFilesList = new List<MtlFile>();
-
-            foreach (var plyFile in plyFiles) {
-                humanskinResource.SetPlyFileFullPath(plyFile);
-
-                foreach (var lodFile in lodFiles[plyFile]) {
-                    humanskinResource.SetPlyFileFullPath(lodFile);
-                }
-            }
 
             string? mdlFilePath = mdlFile.GetDirectoryPath();
 

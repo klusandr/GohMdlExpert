@@ -11,6 +11,5 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
         IEnumerable<AggregateMtlFile> GetPlyAggregateMtlFiles(PlyFile plyFile);
         IEnumerable<MdlFile> GetPlyMdlFiles(PlyFile plyFile);
         MtlTextureCollection GetPlyMeshMtlTextures(PlyFile plyFile, string meshTextureName);
-        void SetPlyFileFullPath(PlyFile plyFile);
     }
 }

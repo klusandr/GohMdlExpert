@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Serialization;
 using DataList = System.Collections.Generic.IList<GohMdlExpert.Models.GatesOfHell.Serialization.ModelDataSerializer.ModelDataParameter>;
@@ -29,25 +30,33 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
 
             var plyLodModels = (IEnumerable<ModelDataParameter>)ModelDataSerializer.FindParameterByName(parameter, "skin")?.Data!;
 
-            foreach (var plyLodModel in plyLodModels) {
-                var lodParameters = (IEnumerable<ModelDataParameter>)plyLodModel.Data!;
+            if (plyLodModels != null) {
+                foreach (var plyLodModel in plyLodModels) {
+                    if (plyLodModel.Type == MdlSerializer.MdlTypes.LODView.ToString()) {
+                        var lodParameters = (IEnumerable<ModelDataParameter>)plyLodModel.Data!;
 
-                var plyModelParameter = lodParameters.First();
-                var lodModelsParameters = lodParameters.Skip(1);
+                        var plyModelParameter = lodParameters.First();
+                        var lodModelsParameters = lodParameters.Skip(1);
 
-                var plyFile = new PlyFile(RelativePathRemove((string)plyModelParameter.Data!));
-                var lodFiles = new List<PlyFile>();
-                plyFiles.Add(plyFile);
+                        var plyFile = new PlyFile((string)plyModelParameter.Data!, relativePathPoint: GetDirectoryPath());
+                        var lodFiles = new List<PlyFile>();
+                        plyFiles.Add(plyFile);
 
 
-                foreach (var lodParameter in lodModelsParameters) {
-                    lodFiles.Add(new PlyFile(RelativePathRemove((string)lodParameter.Data!)));
+                        foreach (var lodParameter in lodModelsParameters) {
+                            lodFiles.Add(new PlyFile((string)plyModelParameter.Data!, relativePathPoint: GetDirectoryPath()));
+                        }
+
+                        plyLodFiles.TryAdd(plyFile, [.. lodFiles]);
+                    } else if (plyLodModel.Type == MdlSerializer.MdlTypes.VolumeView.ToString()) {
+                        plyFiles.Add(new PlyFile((string)plyLodModel.Data!, relativePathPoint: GetDirectoryPath()));
+                    }
                 }
 
-                plyLodFiles.TryAdd(plyFile, [.. lodFiles]);
+                Data = new MdlModel(parameter, plyFiles, plyLodFiles);
+            } else {
+                throw GohResourceFileException.InvalidFormat(this, "mdl data format");
             }
-
-            Data = new MdlModel(parameter, plyFiles, plyLodFiles);
         }
 
         public override void SaveData() {

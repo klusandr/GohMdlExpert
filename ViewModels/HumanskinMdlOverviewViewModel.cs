@@ -110,7 +110,7 @@ namespace GohMdlExpert.ViewModels
 
             PlyModels.Clear();
 
-            GohResourceLoading.LoadHumanskinFile(mdlFile, out var mtlFiles, _humanskinProvider.Resource, _textureProvider);
+            GohResourceLoading.LoadHumanskinFile(mdlFile, out var mtlFiles, _textureProvider);
 
             MdlFile = mdlFile;
             var plyFiles = mdlFile.Data.PlyModel;
