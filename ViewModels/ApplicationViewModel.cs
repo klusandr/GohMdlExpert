@@ -109,8 +109,6 @@ namespace GohMdlExpert.ViewModels {
                 GohCachesFilling.FillPlyTexturesCache(_gohResourceProvider, _gohHumanskinResourceProvider.Resource, ref completionPercentage);
                 completionPercentage = 0;
             }).ContinueWith((t) => timer.Dispose());
-
-            //var d =  GohServicesProvider.Instance.GetRequiredService<GohCacheProvider>().PlyMtlsCache;
         }
 
         public void FullLoadResources(bool autoClose = true) {
@@ -137,7 +135,7 @@ namespace GohMdlExpert.ViewModels {
 
             try {
                 IsWaitFillVisible = true;
-                window.ShowDialog();
+                App.Current.Synchronize(window.ShowDialog);
             } finally {
                 IsWaitFillVisible = false;
             }
@@ -170,7 +168,7 @@ namespace GohMdlExpert.ViewModels {
         }
 
         private void Test() {
-            
+            FullLoadResources();
         }
     }
 }

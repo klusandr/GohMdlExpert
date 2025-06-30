@@ -3,6 +3,7 @@ using System.Windows.Input;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 using WpfMvvm.Collections;
+using WpfMvvm.Extensions;
 using WpfMvvm.ViewModels.Controls;
 
 namespace GohMdlExpert.ViewModels.Trees.LoadModels {
@@ -44,7 +45,7 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
             }
 
             if (HumanskinResource != null) {
-                _items.Add(new ModelsLoadTreeDirectoryViewModel(HumanskinResource.Source, this));
+                App.Current.Synchronize(() => _items.Add(new ModelsLoadTreeDirectoryViewModel(HumanskinResource.Source, this)));  
             }
         }
 

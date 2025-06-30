@@ -18,7 +18,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
         public GohHumanskinResourceProvider(GohResourceProvider ResourceProvider) {
             _resourceProvider = ResourceProvider;
             _cacheProvider = GohServicesProvider.Instance.GetRequiredService<GohCacheProvider>();
-            _resourceProvider.ResourceUpdated += GohResourceUpdatedHandler;
+            _resourceProvider.ResourceFullLoaded += GohResourceFullLoadedHandler;
         }
 
         public void UpdateResource() {
@@ -30,7 +30,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
             ResourceUpdated?.Invoke(this, EventArgs.Empty);
         }
 
-        private void GohResourceUpdatedHandler(object? sender, EventArgs e) {
+        private void GohResourceFullLoadedHandler(object? sender, EventArgs e) {
             UpdateResource();
         }
     }

@@ -30,6 +30,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
         public GohModResourceProvider ModResourceProvider { get; }
 
         public event EventHandler? ResourceUpdated;
+        public event EventHandler? ResourceFullLoaded;
 
         public GohResourceProvider(GohModResourceProvider modResourceProvider) {
             ModResourceProvider = modResourceProvider;
@@ -84,8 +85,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             }
 
             if (Path.IsPathFullyQualified(path)) {
-                if (path.Contains(ResourceDirectory.GetFullPath())) {
-                    path = path.Replace(ResourceDirectory.GetFullPath(), null);
+                if (path.Contains(ResourceDirectory.GetFullPath().ToLower())) {
+                    path = path.Replace(ResourceDirectory.GetFullPath().ToLower(), null);
                 } else {
                     throw GohResourcesException.ElementNotInResource(path);
                 }
@@ -105,7 +106,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             if (path != null) {
                 try {
                     directory = GetDirectory(path);
-                } catch (GohResourcesException) {
+                } catch (GohResourcesException ex) {
                     throw GohResourcesException.ElementNotInResource(fullName);
                 }
             } else {
@@ -137,11 +138,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             }
 
             ResourceDirectory.FindResourceElements(perdicate);
+            OnResourceFullLoaded();
         }
 
-        private void OnResourceUpdated() {
-            ResourceUpdated?.Invoke(this, EventArgs.Empty);
-        }
 
         private IGohResourceLoader? GetResourceLoader(string path) {
             foreach (var resourceDirectory in s_baseResourceDirectories) {
@@ -151,6 +150,14 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             }
 
             return null;
+        }
+
+        private void OnResourceUpdated() {
+            ResourceUpdated?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void OnResourceFullLoaded() {
+            ResourceFullLoaded?.Invoke(this, EventArgs.Empty);
         }
     }
 }
