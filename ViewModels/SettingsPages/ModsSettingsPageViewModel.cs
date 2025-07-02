@@ -32,6 +32,7 @@ namespace GohMdlExpert.ViewModels.SettingsPages {
 
         private readonly GohResourceProvider _resourceProvider;
         private readonly GohModResourceProvider _modResourceProvider;
+        private readonly ApplicationViewModel _applicationViewModel;
         private readonly ObservableList<ModViewModel> _mods;
         private ModViewModel? _selectedMod;
 
@@ -53,9 +54,10 @@ namespace GohMdlExpert.ViewModels.SettingsPages {
         public ICommand ApproveCommand => CommandManager.GetCommand(Approve);
         
 
-        public ModsSettingsPageViewModel(GohResourceProvider resourceProvider, GohModResourceProvider modResourceProvider) {
+        public ModsSettingsPageViewModel(GohResourceProvider resourceProvider, GohModResourceProvider modResourceProvider, ApplicationViewModel applicationViewModel) {
             _resourceProvider = resourceProvider;
             _modResourceProvider = modResourceProvider;
+            _applicationViewModel = applicationViewModel;
             _mods = [];
         }
 
@@ -83,6 +85,7 @@ namespace GohMdlExpert.ViewModels.SettingsPages {
 
         private void Approve() {
             _resourceProvider.LoadModResources();
+            _applicationViewModel.FullLoadResources();
         }
     }
 }
