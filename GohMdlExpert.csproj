@@ -48,7 +48,7 @@
 
   <ItemGroup>
     <Reference Include="WpfMvvm">
-      <HintPath>..\MvvmWpf\BaseWpfMvvm\bin\Release\0.2.2.1\WpfMvvm.dll</HintPath>
+      <HintPath>..\MvvmWpf\BaseWpfMvvm\bin\Release\0.2.4.0\WpfMvvm.dll</HintPath>
     </Reference>
   </ItemGroup>
 

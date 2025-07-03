@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WpfMvvm.Views;
+using WpfMvvm.Properties;
 
 namespace GohMdlExpert.Properties {
-    public class Settings : WpfMvvm.Properties.Settings {
+    public class Settings : BaseSettings {
         private static Settings? s_default;
-        
+
         public static Settings Default => s_default ??= new Settings();
 
         [UserScopedSetting()]
