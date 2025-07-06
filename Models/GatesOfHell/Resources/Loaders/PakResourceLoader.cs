@@ -3,9 +3,10 @@ using System.IO.Compression;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
-    public class PakResourceLoader : GohResourceLoader {
+    public class PakResourceLoader : GohBaseResourceLoader {
         private static readonly string[] s_resourceNeedDirectories = {
             "entity", "texture", "interface"
         };
@@ -20,7 +21,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
 
         public PakResourceLoader() {}
 
-        public override bool CheckBasePath(string path) {
+        public override bool CheckRootPath(string path) {
             var directories = Directory.GetDirectories(path).Select(d => d[(d.LastIndexOf('\\') + 1)..]);
 
             return s_resourceNeedDirectories.All((d) => directories.Contains(d)) 
@@ -28,12 +29,12 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
         }
 
         public override void LoadData(string path) {
-            if (!CheckBasePath(path)) {
+            if (!CheckRootPath(path)) {
                 throw GohResourcesException.IsNotGohResource(path);
             }
 
             var rootDirectoryLoader = new PakRootDirectoryLoader();
-            var rootDirectory = new GohResourceDirectory(GohResourceLoading.ResourceDirectoryName) { Loader = rootDirectoryLoader };
+            var rootDirectory = new GohResourceDirectory("") { Loader = rootDirectoryLoader };
 
             foreach (var archive in s_resourcePakArchives) {
                 var pathDirectories = archive.InsidePath.Split('\\', StringSplitOptions.RemoveEmptyEntries);

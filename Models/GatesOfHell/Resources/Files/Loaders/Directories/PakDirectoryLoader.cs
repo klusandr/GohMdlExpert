@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO.Compression;
 using GohMdlExpert.Models.GatesOfHell.Extensions;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Files;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories {
     public class PakDirectoryLoader : IDirectoryLoader {
         private readonly ZipArchive _archive;
         private readonly PakFileLoader _fileLoader;
@@ -16,8 +12,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
             _archive = resourceArchive;
             _fileLoader = new PakFileLoader(resourceArchive);
         }
-
-        public IFileLoader FileLoader => _fileLoader;
 
         public string? PakPath {
             get => _pakPath;
@@ -49,7 +43,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
             var filesEntries = _archive.Entries.Where(e => ZipArchiveExtensions.GetDeep(e.FullName) == pathDeep && !ZipArchiveExtensions.CheckDirectory(e.FullName) && e.FullName.Contains(archivePath));
 
             foreach (var entry in filesEntries) {
-                files.Add(GohResourceLoading.GetResourceFile(ZipArchiveExtensions.GetFullPath(path, archivePath, entry.FullName), fileLoader: _fileLoader));
+                files.Add(GohResourceLoading.CreateResourceFile(ZipArchiveExtensions.GetFullPath(path, archivePath, entry.FullName), fileLoader: _fileLoader));
             }
 
             return files;

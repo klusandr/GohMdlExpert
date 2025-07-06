@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GohMdlExpert.Models.GatesOfHell.Extensions;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories {
     internal class AggregateDirectoryLoader : IDirectoryLoader {
         private readonly List<IDirectoryLoader> _directoriesLoaders;
 
@@ -33,11 +29,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
                             new GohResourceDirectory(directory.Name, directory.Path, directory.RelativePathPoint) {
                                 Loader = new AggregateDirectoryLoader([directory.Loader, oldDirectory.Loader])
                             };
-                    }   
+                    }
                 }
             }
 
-            return directories.Values.OrderBy(d => d.Name);
+            return directories.Values.OrderByNature(d => d.Name);
         }
 
         public IEnumerable<GohResourceFile> GetFiles(string path) {
@@ -49,7 +45,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
                 }
             }
 
-            return files.Values.OrderBy(d => d.Name);
+            return files.Values.OrderByNature(d => d.Name);
         }
     }
 }

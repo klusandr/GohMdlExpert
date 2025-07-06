@@ -1,11 +1,10 @@
 ﻿using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Text;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Extensions;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Files {
     public class PakFileLoader : IFileLoader {
         private readonly ZipArchive _archive;
 
@@ -32,7 +31,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
 
         public Stream GetStream(string path) {
             var entry = GetEntry(path) ?? throw GohResourceFileException.IsNotExists(path);
-            
+
             return entry.Open();
         }
 

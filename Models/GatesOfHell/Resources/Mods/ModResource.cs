@@ -12,7 +12,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods {
         public string Path { get; }
         public bool IsEnable { get; set; }
         public ModInfo? ModInfo { get; private set; }
-        public IGohResourceLoader? ResourceLoader { get; private set; }
+        public ModResourceLoader? ResourceLoader { get; private set; }
         public bool IsLoad => ResourceLoader != null;
 
         public ModResource(string path) {
@@ -29,7 +29,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods {
             }
 
             ResourceLoader = new ModResourceLoader();
-            ResourceLoader.LoadData(Path);
+            ResourceLoader.LoadData(SystemPath.Join(Path, GohResourceLoading.ResourceDirectoryName));
             IsEnable = true;
         }
     }

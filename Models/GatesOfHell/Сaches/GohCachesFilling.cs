@@ -32,7 +32,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Caches {
             foreach (var directory in mdlDirectories) {
                 foreach (var mdlFile in directory.GetFiles().OfType<MdlFile>()) {
                     foreach (var plyFile in mdlFile.Data.PlyModel) {
-                        var loadPlyFile = (PlyFile)resourceProvider.ResourceLoader.GetFile(plyFile.GetFullPath().ToLower())!;
+                        var loadPlyFile = (PlyFile)resourceProvider.GetFile(plyFile.GetFullPath().ToLower())!;
 
                         if (loadPlyFile != null) {
                             if (!cacheValues.TryGetValue(plyFile.Name, out var cacheValue)) {
@@ -44,7 +44,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Caches {
                                 var mtlFile = directory.FindResourceElements<MtlFile>(searchPattern: mesh.TextureName, deepSearch: false, first: true).FirstOrDefault();
 
                                 if (mtlFile != null) {
-                                    string insidePath = resourceProvider.GetInsidePath(mtlFile!.GetFullPath());
+                                    string insidePath = mtlFile!.GetFullPath();
                                     cacheValue.Add(insidePath);
                                 }
                             }

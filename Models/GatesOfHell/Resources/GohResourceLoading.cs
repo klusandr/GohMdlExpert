@@ -14,7 +14,8 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 using GohMdlExpert.Models.GatesOfHell.Serialization;
 using GohMdlExpert.Models.GatesOfHell.Сaches;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources {
+namespace GohMdlExpert.Models.GatesOfHell.Resources
+{
     /// <summary>
     /// Предоставляет методы для загрузки различных ресурсов.
     /// </summary>
@@ -141,7 +142,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
             return MdlSerializer.Deserialize(templateFile.ReadToEnd());
         }
 
-        public static GohResourceFile GetResourceFile(string fileName, string? path = null, IFileLoader? fileLoader = null) {
+        public static GohResourceFile CreateResourceFile(string fileName, string? path = null, IFileLoader? fileLoader = null) {
             GohResourceFile? file = null;
 
             if (ResourcesFilesTypes.TryGetValue(Path.GetExtension(fileName), out var fileType)) {

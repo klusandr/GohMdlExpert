@@ -22,7 +22,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
         }
 
         public void UpdateResource() {
-            Resource = new GohHumanskinResource(_resourceProvider.GetLocationDirectory(GohResourceLocations.Humanskin), _resourceProvider, _cacheProvider);
+            Resource = new GohHumanskinResource(_resourceProvider.GetLocationDirectory(nameof(GohResourceLocations.Humanskin)), _resourceProvider, _cacheProvider);
             OnResourceUpdated();
         }
 

@@ -37,7 +37,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
                 return false;
             };
 
-            var diretories = Root.FindResourceElements(predicant).Cast<GohResourceDirectory>().OrderByNature((d) => d.Name);
+            var diretories = Root.FindResourceElements(predicant).Cast<GohResourceDirectory>();
 
             var sourceDirectory = new GohResourceVirtualDirectory(Root);
 

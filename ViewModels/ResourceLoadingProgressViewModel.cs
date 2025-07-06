@@ -54,10 +54,10 @@ namespace GohMdlExpert.ViewModels {
 
         public ResourceLoadingProgressViewModel(GohResourceProvider resourceProvider) {
             ProgressBar = new ProgressBarViewModel();
-            _textureDirectoty = resourceProvider.GetLocationDirectory(GohResourceLocations.Texture);
+            _textureDirectoty = resourceProvider.GetLocationDirectory(nameof(GohResourceLocations.Texture));
             _progressDirectories = (IEnumerable<GohResourceDirectory>)[
-                .. resourceProvider.GetLocationDirectory(GohResourceLocations.Humanskin).GetDirectories(),
-                .. resourceProvider.GetLocationDirectory(GohResourceLocations.Texture).GetDirectories(),
+                .. resourceProvider.GetLocationDirectory(nameof(GohResourceLocations.Humanskin)).GetDirectories(),
+                .. resourceProvider.GetLocationDirectory(nameof(GohResourceLocations.Texture)).GetDirectories(),
             ];
 
             ProgressBar.Step = ProgressBar.Maximum / _progressDirectories.Count() + 1;

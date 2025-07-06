@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
-    public class AggregateResourceLoader : GohResourceLoader {
+    public class AggregateResourceLoader : GohBaseResourceLoader {
         private readonly List<IGohResourceLoader> _resourceLoaders;
         private bool _isLoad = false;
         private GohResourceDirectory? _root;
@@ -15,7 +17,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
         public override GohResourceDirectory? Root { 
             get {
                 if (!_isLoad) {
-                    UpdateRoodDictionary();
+                    LoadRootDictionary();
                 }
 
                 return _root;    
@@ -36,7 +38,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
             _isLoad = false;
         }
 
-        public override bool CheckBasePath(string path) {
+        public override bool CheckRootPath(string path) {
             throw new InvalidOperationException("Aggregate resource loader not have a base path.");
         }
 
@@ -44,8 +46,13 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
             throw new InvalidOperationException("Aggregate resource loader can't load data.");
         }
 
-        private void UpdateRoodDictionary() {
-            Root = new GohResourceDirectory(_resourceLoaders.First().Root.GetFullPath()) { Loader = new AggregateDirectoryLoader(_resourceLoaders.Select(r => r.Root.Loader)) };
+        private void LoadRootDictionary() {
+            var loaderRoots = _resourceLoaders.Select((r) => r.Root ?? throw GohResourcesException.IsNotLoad());
+
+            Root = new GohResourceDirectory(loaderRoots.First().GetFullPath()) {
+                Loader = new AggregateDirectoryLoader(loaderRoots.Select(d => d.Loader))
+            };
+
             _isLoad = true;
         }
     }

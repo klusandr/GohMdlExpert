@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
+﻿namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories {
     public class PakRootDirectoryLoader : IDirectoryLoader {
         private readonly List<GohResourceDirectory> _resourceDirectories;
-
-        public IFileLoader FileLoader => throw new InvalidOperationException("Pak base directory loader haven't files.");
 
         public PakRootDirectoryLoader() {
             _resourceDirectories = [];

@@ -5,7 +5,8 @@ using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
+{
     [DebuggerDisplay("Path = {ToString()}")]
     public class GohResourceDirectory : GohResourceElement {
         private List<GohResourceElement>? _items;
