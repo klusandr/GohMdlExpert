@@ -16,8 +16,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
             return new GohResourcesException($"\"{path}\" is not GoH resource directory.") { ExceptionCode = 2 };
         }
 
-        public static GohResourcesException DirectoryNotSpecified() {
-            return new GohResourcesException($"Resource directory is not specified.") { ExceptionCode = 3 };
+        public static GohResourcesException IsNotLoad() {
+            return new GohResourcesException($"Resource is not load.") { ExceptionCode = 3 };
         }
 
         public static GohResourcesException LocationNotDefined(string location) {

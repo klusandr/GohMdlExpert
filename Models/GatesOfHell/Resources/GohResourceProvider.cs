@@ -23,8 +23,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
         private IGohResourceLoader? _baseResourceLoader;
         private IGohResourceLoader? _currentResourceLoader;
 
-        public IGohResourceLoader ResourceLoader => _currentResourceLoader ?? throw GohResourcesException.DirectoryNotSpecified();
-        public GohResourceDirectory ResourceDirectory => ResourceLoader?.Root ?? throw GohResourcesException.DirectoryNotSpecified();
+        public IGohResourceLoader ResourceLoader => _currentResourceLoader ?? throw GohResourcesException.IsNotLoad();
+        public GohResourceDirectory ResourceDirectory => ResourceLoader?.Root ?? throw GohResourcesException.IsNotLoad();
         public bool IsResourceLoaded => ResourceDirectory != null;
 
         public GohModResourceProvider ModResourceProvider { get; }
@@ -81,7 +81,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
 
         public GohResourceDirectory? GetDirectory(string path) {
             if (ResourceDirectory == null) {
-                throw GohResourcesException.DirectoryNotSpecified();
+                throw GohResourcesException.IsNotLoad();
             }
 
             if (Path.IsPathFullyQualified(path)) {
@@ -97,7 +97,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
 
         public GohResourceFile? GetFile(string fullName) {
             if (ResourceDirectory == null) {
-                throw GohResourcesException.DirectoryNotSpecified();
+                throw GohResourcesException.IsNotLoad();
             }
 
             string? path = Path.GetDirectoryName(fullName);

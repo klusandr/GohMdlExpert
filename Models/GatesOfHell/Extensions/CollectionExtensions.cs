@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using NaturalSort.Extension;
 
 namespace GohMdlExpert.Models.GatesOfHell.Extensions {
     public static class CollectionsExtensions {
+        private static readonly NaturalSortComparer s_naturalComparer = StringComparer.OrdinalIgnoreCase.WithNaturalSort();
+
         public static int FindIndex<T>(this IEnumerable<T> items, T item) {
             int currentIndex = 0;
             int index = -1;
@@ -37,5 +41,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Extensions {
 
             return index;
         }
+
+        public static IEnumerable<T> OrderByNature<T>(this IEnumerable<T> items, Func<T, string> selector) {
+            return items.OrderBy(i => selector(i).ToLower(), s_naturalComparer);
+        } 
     }
 }

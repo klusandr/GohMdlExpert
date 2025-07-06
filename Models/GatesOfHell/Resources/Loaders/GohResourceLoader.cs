@@ -25,7 +25,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
 
         public virtual GohResourceDirectory? GetDirectory(string path) {
             if (Root == null) {
-                throw GohResourcesException.DirectoryNotSpecified();
+                throw GohResourcesException.IsNotLoad();
             }
 
             if (Path.IsPathFullyQualified(path)) {
@@ -49,7 +49,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
 
         public virtual GohResourceFile? GetFile(string fullName) {
             if (Root == null) {
-                throw GohResourcesException.DirectoryNotSpecified();
+                throw GohResourcesException.IsNotLoad();
             }
 
             string? path = Path.GetDirectoryName(fullName);
