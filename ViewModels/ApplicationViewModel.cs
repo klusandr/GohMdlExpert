@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Timers;
+using System.Windows;
 using System.Windows.Input;
 using GohMdlExpert.Models.GatesOfHell;
 using GohMdlExpert.Models.GatesOfHell.Caches;
@@ -119,17 +120,21 @@ namespace GohMdlExpert.ViewModels {
                 },
                 SizeToContent = System.Windows.SizeToContent.WidthAndHeight,
                 Title = "Loading resources...",
-                WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner
+                WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner,
+                Style = (Style)App.Current.FindResource("ResourceLOadingWindowStyle")
             };
 
             Task.Factory.StartNew(() => {
                 Thread.Sleep(200);
-                _gohResourceProvider.FullLoad(viewModel.LoadElementHandler);
-                viewModel.EndLoadingHandler();
-
-                if (autoClose) {
-                    Thread.Sleep(200);
-                    App.Current.Synchronize(window.Close);
+                try {
+                    _gohResourceProvider.FullLoad(viewModel.LoadElementHandler, viewModel.CancellationToken);
+                    viewModel.EndLoadingHandler();
+                } catch (OperationCanceledException) {
+                } finally {
+                    if (autoClose) {
+                        Thread.Sleep(200);
+                        App.Current.Synchronize(window.Close);
+                    }
                 }
             });
 
@@ -168,7 +173,7 @@ namespace GohMdlExpert.ViewModels {
         }
 
         private void Test() {
-            FullLoadResources();
+            FullLoadResources(false);
         }
     }
 }

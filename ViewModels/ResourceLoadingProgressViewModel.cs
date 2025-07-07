@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using SeoMeterVerifier.ViewModels;
@@ -17,6 +18,7 @@ namespace GohMdlExpert.ViewModels {
         private readonly string[] _stepsText = ["Load humanskins", "Load textures"];
         private readonly GohResourceDirectory _textureDirectoty;
         private readonly IEnumerable<GohResourceDirectory> _progressDirectories;
+        private readonly CancellationTokenSource _cancellationTokenSource;
         private int _filesCount;
         private int _directoriesCount;
         private string _stepText;
@@ -52,6 +54,10 @@ namespace GohMdlExpert.ViewModels {
             }
         }
 
+        public CancellationToken CancellationToken => _cancellationTokenSource.Token;
+
+        public ICommand CancelCommand => CommandManager.GetCommand(Cancel);
+        
         public ResourceLoadingProgressViewModel(GohResourceProvider resourceProvider) {
             ProgressBar = new ProgressBarViewModel();
             _textureDirectoty = resourceProvider.GetLocationDirectory(nameof(GohResourceLocations.Texture));
@@ -59,6 +65,7 @@ namespace GohMdlExpert.ViewModels {
                 .. resourceProvider.GetLocationDirectory(nameof(GohResourceLocations.Humanskin)).GetDirectories(),
                 .. resourceProvider.GetLocationDirectory(nameof(GohResourceLocations.Texture)).GetDirectories(),
             ];
+            _cancellationTokenSource = new CancellationTokenSource();
 
             ProgressBar.Step = ProgressBar.Maximum / _progressDirectories.Count() + 1;
 
@@ -96,6 +103,10 @@ namespace GohMdlExpert.ViewModels {
 
         private void Progress() {
             ProgressBar.AddStep();
+        }
+
+        private void Cancel() {
+            _cancellationTokenSource.Cancel();
         }
 
         private void UpdateTimerElapsedHandler(object? sender, System.Timers.ElapsedEventArgs e) {

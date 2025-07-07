@@ -18,6 +18,7 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -49,6 +50,8 @@
             </StackPanel>
 
             <ProgressBar Value="{Binding ProgressBar.Value, Mode=OneWay}" Maximum="{Binding ProgressBar.Maximum, Mode=OneWay}" Height="20" Grid.Row="2" Grid.ColumnSpan="2"/>
+
+            <Button Content="Cancel" Command="{Binding CancelCommand}" Padding="5" Grid.Row="3" Grid.ColumnSpan="2"/>
         </Grid>
     </Grid>
 </UserControl>
