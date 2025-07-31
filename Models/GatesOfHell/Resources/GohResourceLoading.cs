@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
@@ -26,6 +27,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
         public static MdlSerializer MdlSerializer { get; } = new MdlSerializer();
 
         public static string ResourceDirectoryName { get; } = "resource";
+
+        public const char DIRECTORY_SEPARATE = '\\';
 
         /// <summary>
         /// Фильтр загрузки .ply файлов.
@@ -178,5 +181,35 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             return virtualDirectory;
         }
 
+        public static GohResourceDirectory GetResourceStructure(IEnumerable<string> paths, GohResourceProvider resourceProvider) {
+            var rootDirectory = new GohResourceVirtualDirectory(resourceProvider.ResourceDirectory);
+
+            foreach (var path in paths) {
+                var file = resourceProvider.GetFile(path);
+
+                if (file != null) {
+                    var pathDirectory = rootDirectory.AlongPathOrCreate(file.GetDirectoryPath()!);
+                    pathDirectory.Items.Add(file);
+                }
+            }
+
+            return rootDirectory;
+        }
+
+        public static bool TryGetNextCompletedDirectory(GohResourceDirectory resourceDirectory, [NotNullWhen(true)] out GohResourceDirectory? nextDirectory, [NotNullWhen(true)] out string? path) {
+            if (resourceDirectory.Items.Count == 1 && resourceDirectory.Items[0] is GohResourceDirectory directory) {
+                if (!TryGetNextCompletedDirectory(directory, out nextDirectory, out path)) {
+                    path = resourceDirectory.Name + DIRECTORY_SEPARATE + directory.Name;
+                    nextDirectory = directory;
+                }
+
+                return true;
+            }
+
+            nextDirectory = null;
+            path = null;
+
+            return false;
+        }
     }
 }

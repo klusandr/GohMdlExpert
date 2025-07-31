@@ -13,6 +13,12 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
 
         public ModelsLoadTreeDirectoryViewModel(GohResourceDirectory directory, ModelsLoadTreeViewModel modelsTree) : base(directory, modelsTree) {
             _directory = directory;
+
+            if (GohResourceLoading.TryGetNextCompletedDirectory(directory, out var nextDirectory, out string? path)) {
+                Text = path;
+                _directory = nextDirectory;
+            }
+
             Icon = s_icon;
         }
 

@@ -18,42 +18,26 @@ namespace GohMdlExpert.ViewModels.Trees.Textures {
             }
         }
 
-        private static MtlFileComparer s_mtlFileComparer = new MtlFileComparer();
+        private readonly GohResourceDirectory _resourceDirectory;
 
-        private readonly IEnumerable<string> _mtlFilesNames;
-
-        public TextureLoadTreeDirectoryViewModel(string name, IEnumerable<string> mtlFilesNames, TreeViewModel modelsTree) : base(modelsTree) {
-            Text = name;
+        public TextureLoadTreeDirectoryViewModel(GohResourceDirectory resourceDirectory, TreeViewModel modelsTree) : base(modelsTree) {
+            Text = resourceDirectory.Name;
             Icon = IconResources.Instance.GetIcon(nameof(Resources.DirectoryIcon));
 
             PropertyChangeHandler.AddHandler(nameof(IsExpanded), ExpandedChangeHandler);
-            _mtlFilesNames = mtlFilesNames;
+            _resourceDirectory = resourceDirectory;
         }
 
         private void ExpandedChangeHandler(object? sender, PropertyChangedEventArgs e) {
             if (IsExpanded) {
                 if (_items.Count == 0) {
-                    LoadData(_mtlFilesNames);
+                    LoadData();
                 }
             }
         }
 
-        private void LoadData(IEnumerable<string> mtlFilesNames) {
-            var mtlFiles = new List<MtlFile>();
-
-            foreach (var mtlFileName in mtlFilesNames) {
-                var file = Tree.ResourceProvider.GetFile(mtlFileName);
-
-                if (file is MtlFile mtlFile) {
-                    
-                    mtlFiles.Add(mtlFile);
-                }
-            }
-
-            mtlFiles.ForEach((f) => Tree.TextureProvider.TextureMaterialsInitialize(f.Data));
-            mtlFiles.Sort(s_mtlFileComparer);
-
-            foreach (var mtlFile in mtlFiles) {
+        private void LoadData() {
+            foreach (var mtlFile in _resourceDirectory.GetFiles().Cast<MtlFile>()) {
                 AddItem(new TextureLoadTreeTextureViewModel(mtlFile, Tree));
             }
         }
