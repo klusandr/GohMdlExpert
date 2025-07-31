@@ -27,38 +27,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
         }
 
         public void Load() {
-            static bool predicant(GohResourceElement element) {
-                if (element is GohResourceDirectory directory) {
-                    if (directory.GetFiles().Any(f => f is PlyFile)) {
-                        return true;
-                    }
-                }
-
-                return false;
-            };
-
-            var diretories = Root.FindResourceElements(predicant).Cast<GohResourceDirectory>();
-
-            var sourceDirectory = new GohResourceVirtualDirectory(Root);
-
-            foreach (var directory in diretories) {
-                var path = directory.GetDirectoryPath();
-
-                if (path != null) {
-                    string localPath = path.Replace(Root.GetFullPath(), null);
-                    var pathDirectory = sourceDirectory.AlongPathOrCreate(localPath);
-
-                    var thatDirectory = pathDirectory.GetDirectory(directory.Name);
-
-                    if (thatDirectory == null) {
-                        pathDirectory.Items.Add(new GohResourceVirtualDirectory(directory.GetFullPath()) {
-                            Items = [.. directory.GetFiles()]
-                        });
-                    } else {
-                        thatDirectory.Items.AddRange(directory.GetFiles());
-                    }
-                }
-            }
+            var sourceDirectory = GohResourceLoading.FilterResource(Root, (f) => f is PlyFile);
 
             Source = sourceDirectory;
         }

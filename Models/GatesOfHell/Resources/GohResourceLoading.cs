@@ -156,5 +156,27 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             return file ?? new GohResourceFile(fileName, path);
         }
 
+        public static GohResourceDirectory FilterResource(GohResourceDirectory resourceDirectory, Func<GohResourceFile, bool> predicate) {
+            var files = resourceDirectory.GetFiles().Where(predicate);
+
+            var virtualDirectory = new GohResourceVirtualDirectory(resourceDirectory);
+
+            if (files.Any()) {
+                foreach (var file in files) {
+                    virtualDirectory.Items.Add(file);
+                }
+            }
+
+            foreach (var directory in resourceDirectory.GetDirectories()) {
+                var subVirtualDirectory = FilterResource(directory, predicate);
+
+                if (subVirtualDirectory.Items.Count != 0) {
+                    virtualDirectory.Items.Add(subVirtualDirectory);
+                }
+            }
+
+            return virtualDirectory;
+        }
+
     }
 }
