@@ -106,7 +106,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
         }
 
         public GohResourceFile? GetFile(string name) {
-            return Items.FirstOrDefault(d => d.Name == name) as GohResourceFile;
+            return Items.FirstOrDefault(d => d.Name.Equals(name, StringComparison.OrdinalIgnoreCase)) as GohResourceFile;
         }
 
         public IEnumerable<GohResourceElement> FindResourceElements(string? resourceName = null, string? searchPattern = null, bool deepSearch = true, bool first = false) {
