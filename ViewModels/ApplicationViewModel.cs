@@ -121,7 +121,8 @@ namespace GohMdlExpert.ViewModels {
                 SizeToContent = System.Windows.SizeToContent.WidthAndHeight,
                 Title = "Loading resources...",
                 WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner,
-                Style = (Style)App.Current.FindResource("ResourceLOadingWindowStyle")
+                Style = (Style)App.Current.FindResource("ResourceLOadingWindowStyle"),
+                OverrideOnClosing = (e) => e.Cancel = !viewModel.IsEnd
             };
 
             Task.Factory.StartNew(() => {
