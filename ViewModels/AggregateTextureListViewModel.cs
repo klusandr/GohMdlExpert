@@ -52,7 +52,7 @@ namespace GohMdlExpert.ViewModels
         }
 
         public void AddTexture() {
-            var texture = _materialSelector.GetMaterialDialog();
+            var texture = _materialSelector.ShowDialog();
 
             if (texture != null) {
                 if (_items.Any(t => t.Equals(texture))) {
@@ -73,13 +73,13 @@ namespace GohMdlExpert.ViewModels
                     _materialSelector.SelectedTextureChange += TextureSelectorChangeHandler;
                     _materialSelector.SelectedTexture = texture.Clone();
 
-                    texture = _materialSelector.GetMaterialDialog();
+                    texture = _materialSelector.ShowDialog();
 
                     if (texture != null) {
                         SetTexture(texture, SelectedTextureIndex);
                     }
-                } catch {
-_materialSelector.SelectedTextureChange -= TextureSelectorChangeHandler;
+                } finally {
+                    _materialSelector.SelectedTextureChange -= TextureSelectorChangeHandler;
                 }                
             }
         }
