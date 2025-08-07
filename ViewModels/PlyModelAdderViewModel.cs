@@ -97,7 +97,32 @@ namespace GohMdlExpert.ViewModels
         public void AddModel() {
             if (AddedModel != null) {
                 try {
+                    Dictionary<string, MtlTexture>? textures = null;
+
+                    if (AggregateMtlFiles != null) {
+                        textures = [];
+                        foreach (var aggregateMtlFile in AggregateMtlFiles) {
+                            var texture = AddedModel.GetMeshTexture(aggregateMtlFile.Name);
+
+                            if (texture != null) {
+                                if (aggregateMtlFile.Data.Count == 0 || _defaultMaterialViewModel.IsUseAlways) {
+                                    aggregateMtlFile.Data.Add(texture);
+                                }
+
+                                textures.Add(aggregateMtlFile.Name, texture);
+                            }
+                        }
+                    }
+                    
                     _models3DView.AddModel(AddedModel, AggregateMtlFiles);
+
+                    if (textures != null) {
+                        foreach (var texture in textures) {
+                            int index = _models3DView.AggregateMtlFiles[texture.Key].Data.IndexOf(texture.Value);
+                            _models3DView.SetMtlFileTextureByIndex(texture.Key, index);
+                        }
+                    }
+
                     AddedModel = null;
                     ModelAdded?.Invoke(this, EventArgs.Empty);
                 } catch (OperationCanceledException) { }
