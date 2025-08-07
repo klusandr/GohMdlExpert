@@ -128,12 +128,13 @@ namespace GohMdlExpert.ViewModels {
         public MaterialLoadTreeViewModel MaterialTree { get; }
         public TextureLoadTreeViewModel TextureTree { get; }
 
-        public ICommand ApproveCommand => CommandManager.GetCommand(Approve);
+        public ICommand OkCommand => CommandManager.GetCommand(Ok);
         public ICommand ApplyCommand => CommandManager.GetCommand(Apply);
         public ICommand CancelCommand => CommandManager.GetCommand(Cancel);
 
-        public event EventHandler? TextureApprove;
-        public event EventHandler? TextureApply;
+        public event EventHandler? CancelEvent;
+        public event EventHandler? ApplyEvent;
+        public event EventHandler? OkEvent;
 
         public TextureLoadViewModel(GohResourceProvider resourceProvider, GohTextureProvider textureProvider) {
             MaterialTree = new MaterialLoadTreeViewModel(textureProvider);
@@ -166,13 +167,6 @@ namespace GohMdlExpert.ViewModels {
             TextureTree.LoadData();
         }
 
-        private void TextureTreeApplyTextureHandler(object? sender, EventArgs e) {
-            if (TextureTree.SelectedTextureItem != null) { 
-                Texture = TextureTree.SelectedTextureItem.MtlFile.Data;
-                Apply();
-            }
-        }
-
         public void SetSelectFieldIndex(int index) {
             if (index != -1) {
                 _selectFieldBindingProperty = s_fieldBindingProperties[index];
@@ -187,21 +181,29 @@ namespace GohMdlExpert.ViewModels {
             OnPropertyChanged(nameof(Texture));
         }
 
-        private void Approve() {
-            TextureApprove?.Invoke(this, EventArgs.Empty);
+        private void Cancel() {
+            ClearTexture();
+            CancelEvent?.Invoke(this, EventArgs.Empty);
         }
 
         private void Apply() {
-            TextureApply?.Invoke(this, EventArgs.Empty);
+            ApplyEvent?.Invoke(this, EventArgs.Empty);
         }
 
-        private void Cancel() {
-            Approve();
+        private void Ok() {
+            OkEvent?.Invoke(this, EventArgs.Empty);
         }
 
         private void UpdateColorBrush() {
             if (TextureColor.HasValue) {
                 _textureColorBrush.Color = TextureColor.Value;
+            }
+        }
+
+        private void TextureTreeApplyTextureHandler(object? sender, EventArgs e) {
+            if (TextureTree.SelectedTextureItem != null) {
+                Texture = TextureTree.SelectedTextureItem.MtlFile.Data;
+                Apply();
             }
         }
 
