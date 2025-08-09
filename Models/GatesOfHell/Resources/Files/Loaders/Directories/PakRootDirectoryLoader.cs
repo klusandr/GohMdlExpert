@@ -1,9 +1,14 @@
-﻿namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories {
+﻿using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
+
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories {
     public class PakRootDirectoryLoader : IDirectoryLoader {
         private readonly List<GohResourceDirectory> _resourceDirectories;
 
-        public PakRootDirectoryLoader() {
+        public IGohResourceLoader ResourceLoader { get; }
+
+        public PakRootDirectoryLoader(PakResourceLoader resourceLoader) {
             _resourceDirectories = [];
+            ResourceLoader = resourceLoader;
         }
 
         public void AddPakDirectory(GohResourceDirectory resourceDirectory) {

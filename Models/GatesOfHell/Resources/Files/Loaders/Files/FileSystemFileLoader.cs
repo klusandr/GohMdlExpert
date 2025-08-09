@@ -6,11 +6,13 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Files {
     public class FileSystemFileLoader : IFileLoader {
         private readonly FileSystemResourceLoader _resourceLoader;
 
+        public virtual bool IsReadOnly => false;
+
+        public IGohResourceLoader ResourceLoader => _resourceLoader;
+
         public FileSystemFileLoader(FileSystemResourceLoader resourceLoader) {
             _resourceLoader = resourceLoader;
         }
-
-        public bool IsReadOnly => false;
 
         public bool Exists(string path) {
             return File.Exists(_resourceLoader.GetFileSystemPath(path));

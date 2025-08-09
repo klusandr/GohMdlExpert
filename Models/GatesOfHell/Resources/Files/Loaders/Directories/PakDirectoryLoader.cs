@@ -1,17 +1,16 @@
 ﻿using System.IO.Compression;
 using GohMdlExpert.Models.GatesOfHell.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Files;
+using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories {
     public class PakDirectoryLoader : IDirectoryLoader {
         private readonly ZipArchive _archive;
+        private readonly PakResourceLoader _resourceLoader;
         private readonly PakFileLoader _fileLoader;
         private string? _pakPath;
 
-        public PakDirectoryLoader(ZipArchive resourceArchive) {
-            _archive = resourceArchive;
-            _fileLoader = new PakFileLoader(resourceArchive);
-        }
+        public IGohResourceLoader ResourceLoader => _resourceLoader;
 
         public string? PakPath {
             get => _pakPath;
@@ -19,6 +18,12 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories {
                 _fileLoader.PakPath = value;
                 _pakPath = value;
             }
+        }
+
+        public PakDirectoryLoader(ZipArchive resourceArchive, PakResourceLoader resourceLoader) {
+            _archive = resourceArchive;
+            _resourceLoader = resourceLoader;
+            _fileLoader = new PakFileLoader(resourceArchive, resourceLoader);
         }
 
         public IEnumerable<GohResourceDirectory> GetDirectories(string path) {

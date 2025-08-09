@@ -8,13 +8,14 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories {
         protected readonly FileSystemResourceLoader _resourceLoader;
         private readonly FileSystemFileLoader _fileLoader;
 
+        public IGohResourceLoader ResourceLoader => _resourceLoader;
 
-        protected FileSystemDirectoryLoader(FileSystemResourceLoader resourceLoader, FileSystemFileLoader fileLoader) {
+        public FileSystemDirectoryLoader(FileSystemResourceLoader resourceLoader, FileSystemFileLoader fileLoader) {
             _resourceLoader = resourceLoader;
-            _fileLoader = new FileSystemFileLoader(resourceLoader);
+            _fileLoader = fileLoader;
         }
 
-        public FileSystemDirectoryLoader(FileSystemResourceLoader resourceLoader) : this(resourceLoader, new FileSystemFileLoader(resourceLoader)) {}
+        public FileSystemDirectoryLoader(FileSystemResourceLoader resourceLoader) : this(resourceLoader, new FileSystemFileLoader(resourceLoader)) { }
 
         public virtual IEnumerable<GohResourceDirectory> GetDirectories(string path) {
             var directories = new List<GohResourceDirectory>();

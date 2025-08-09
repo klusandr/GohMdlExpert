@@ -1,4 +1,5 @@
 ﻿using GohMdlExpert.Models.GatesOfHell.Extensions;
+using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories {
     internal class AggregateDirectoryLoader : IDirectoryLoader {
@@ -13,6 +14,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories {
         }
 
         public IFileLoader FileLoader => throw new NotImplementedException();
+        public IGohResourceLoader ResourceLoader => throw new NotImplementedException();
 
         public void AddDirectory(IDirectoryLoader directoryLoader) {
             _directoriesLoaders.Insert(0, directoryLoader);

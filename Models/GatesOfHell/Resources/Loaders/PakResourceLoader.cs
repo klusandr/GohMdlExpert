@@ -33,7 +33,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
                 throw GohResourceLoadException.IsNotGohResource(path);
             }
 
-            var rootDirectoryLoader = new PakRootDirectoryLoader();
+            var rootDirectoryLoader = new PakRootDirectoryLoader(this);
             var rootDirectory = new GohResourceDirectory("") { Loader = rootDirectoryLoader };
 
             foreach (var archive in s_resourcePakArchives) {
@@ -54,7 +54,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
 
                 string fullPath = Path.Join(path, archive.Path);
 
-                var directoryLoad = new PakDirectoryLoader(ZipFile.OpenRead(fullPath)) { PakPath = fullPath };
+                var directoryLoad = new PakDirectoryLoader(ZipFile.OpenRead(fullPath), this) { PakPath = fullPath };
                 currentDirectory!.ClearData();
                 currentDirectory!.Loader = directoryLoad;
             }

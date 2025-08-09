@@ -3,17 +3,22 @@ using System.IO.Compression;
 using System.Text;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Extensions;
+using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Files {
     public class PakFileLoader : IFileLoader {
         private readonly ZipArchive _archive;
+        private readonly PakResourceLoader _resourceLoader;
 
         public bool IsReadOnly => true;
 
         public string? PakPath { get; set; }
 
-        public PakFileLoader(ZipArchive archive) {
+        public IGohResourceLoader ResourceLoader => _resourceLoader;
+
+        public PakFileLoader(ZipArchive archive, PakResourceLoader resourceLoader) {
             _archive = archive;
+            _resourceLoader = resourceLoader;
         }
 
         public bool Exists(string path) {
