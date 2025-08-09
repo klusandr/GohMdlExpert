@@ -39,7 +39,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
 
         public string GetResourceInsidePath(string fileSystemPath) {
             if (_resourcePath == null) {
-                throw GohResourcesException.IsNotLoad();
+                throw GohResourceLoadException.IsNotLoad();
             }
 
             return fileSystemPath.Replace(_resourcePath + '\\', null);
