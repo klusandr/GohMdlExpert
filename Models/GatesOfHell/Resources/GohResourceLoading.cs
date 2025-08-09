@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -21,8 +22,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
     /// Предоставляет методы для загрузки различных ресурсов.
     /// </summary>
     public static class GohResourceLoading {
-        
-        private static GohMaterialCache _materialCache = new();
+        private static GohMaterialCache? s_materialCache;
 
         public static MdlSerializer MdlSerializer { get; } = new MdlSerializer();
 
@@ -54,7 +54,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
         /// <param name="materialFile">Файл материала.</param>
         /// <returns>Материал.</returns>
         public static DiffuseMaterial LoadMaterial(MaterialFile materialFile) {
-            if (!_materialCache.TryGetMaterial(materialFile.Name, out DiffuseMaterial? diffuseMaterial)) {
+            s_materialCache ??= new();
+
+            if (!s_materialCache.TryGetMaterial(materialFile.Name, out DiffuseMaterial? diffuseMaterial)) {
                 if (!materialFile.Exists()) {
                     throw GohResourceFileException.IsNotExists(materialFile);
                 }
@@ -79,7 +81,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
                 diffuseMaterial.Freeze();
                 bitmap.Freeze();
 
-                _materialCache.SetMaterial(materialFile.Name, diffuseMaterial);
+                s_materialCache.SetMaterial(materialFile.Name, diffuseMaterial);
             }
 
             return diffuseMaterial;
@@ -159,7 +161,14 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             return file ?? new GohResourceFile(fileName, path);
         }
 
-        public static GohResourceDirectory FilterResource(GohResourceDirectory resourceDirectory, Func<GohResourceFile, bool> predicate) {
+
+        /// <summary>
+        /// Filters resource files in resource directory and subdirectories by predicate and return virtual directory with only select files.
+        /// </summary>
+        /// <param name="resourceDirectory">Directory where need filter resource.</param>
+        /// <param name="predicate">Condition for filtering files.</param>
+        /// <returns>New virtual directory with structure input directory, but without directories don't have filtered files.</returns>
+        public static GohResourceVirtualDirectory FilterResource(GohResourceDirectory resourceDirectory, Func<GohResourceFile, bool> predicate) {
             var files = resourceDirectory.GetFiles().Where(predicate);
 
             var virtualDirectory = new GohResourceVirtualDirectory(resourceDirectory);
@@ -181,7 +190,13 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             return virtualDirectory;
         }
 
-        public static GohResourceDirectory GetResourceStructure(IEnumerable<string> paths, GohResourceProvider resourceProvider) {
+        /// <summary>
+        /// Create virtual directories structure on files list with full path.
+        /// </summary>
+        /// <param name="paths">List files with full path.</param>
+        /// <param name="resourceProvider">GoH resource provider.</param>
+        /// <returns>New virtual directories structure with files from list.</returns>
+        public static GohResourceVirtualDirectory GetResourceStructure(IEnumerable<string> paths, GohResourceProvider resourceProvider) {
             var rootDirectory = new GohResourceVirtualDirectory(resourceProvider.ResourceDirectory);
 
             foreach (var path in paths) {
@@ -196,6 +211,13 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             return rootDirectory;
         }
 
+        /// <summary>
+        /// Trying get next subdirectory have more than one directory or any files.
+        /// </summary>
+        /// <param name="resourceDirectory">Directory where start find next completed directory.</param>
+        /// <param name="nextDirectory">Completed directory, have more one than directory or any files.</param>
+        /// <param name="path">Path from resource directory to completed directory.</param>
+        /// <returns></returns>
         public static bool TryGetNextCompletedDirectory(GohResourceDirectory resourceDirectory, [NotNullWhen(true)] out GohResourceDirectory? nextDirectory, [NotNullWhen(true)] out string? path) {
             if (resourceDirectory.Items.Count == 1 && resourceDirectory.Items[0] is GohResourceDirectory directory) {
                 if (!TryGetNextCompletedDirectory(directory, out nextDirectory, out path)) {
@@ -210,6 +232,38 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             path = null;
 
             return false;
+        }
+
+        /// <summary>
+        /// Return relatively path from first path to second path with one root.
+        /// </summary>
+        /// <returns>Relatively path from first path to second path.</returns>
+        public static string GetRelativelyPath(string firstPath, string secondPath) {
+            if (firstPath.Equals(secondPath, StringComparison.OrdinalIgnoreCase)) {
+                return "";
+            }
+
+            var firstPathElements = firstPath.Split(DIRECTORY_SEPARATE, StringSplitOptions.RemoveEmptyEntries);
+            var secondPathElements = secondPath.Split(DIRECTORY_SEPARATE, StringSplitOptions.RemoveEmptyEntries);
+
+            if (firstPath[0] != secondPath[0]) {
+                throw GohResourceLoadException.ResourcesPathNotHaveOneRoot(firstPath, secondPath);
+            }
+
+            int lastSharedPathElementIndex = Math.Min(firstPathElements.Length, secondPathElements.Length) - 1;
+            for (var i = 1; i < firstPathElements.Length && i < secondPathElements.Length; i++) {
+                if (!firstPathElements[i].Equals(secondPathElements[i], StringComparison.OrdinalIgnoreCase)) {
+                    lastSharedPathElementIndex = i - 1;
+                    break;
+                }
+            }
+
+            int upStep = (firstPathElements.Length - 1) - lastSharedPathElementIndex;
+            int startIndexDownSteap = lastSharedPathElementIndex + 1;
+
+            string relativelyPath = string.Join(DIRECTORY_SEPARATE, [.. Enumerable.Repeat("..", upStep) ,..secondPathElements[(lastSharedPathElementIndex + 1)..]]);
+
+            return relativelyPath;
         }
     }
 }
