@@ -48,7 +48,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
             }
         }
 
-        public GohResourceDirectory(GohResourceElement resourceElement) : this(resourceElement.GetDirectoryPath() ?? throw GohResourcesException.PathIsNull(resourceElement)) { }
+        public GohResourceDirectory(GohResourceElement resourceElement) : this(resourceElement.GetDirectoryPath() ?? throw GohResourceLoadException.PathIsNull(resourceElement)) { }
 
         public virtual void LoadData() {
             if (_items != null) {

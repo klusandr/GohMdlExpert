@@ -28,7 +28,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins
             //|| !source.FindResourceElements<PlyFile>(first: true).Any()
             //|| !factionRoot.FindResourceElements<MdlFile>(first: true).Any())
             {
-                throw new GohResourcesException($"Directory {factionRoot.GetFullPath} is not faction Humanskin directory");
+                throw new GohResourceLoadException($"Directory {factionRoot.GetFullPath} is not faction Humanskin directory");
             }
 
             _resourceProvider = resourceProvider;

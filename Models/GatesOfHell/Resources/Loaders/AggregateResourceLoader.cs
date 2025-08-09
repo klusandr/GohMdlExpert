@@ -47,7 +47,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
         }
 
         private void LoadRootDictionary() {
-            var loaderRoots = _resourceLoaders.Select((r) => r.Root ?? throw GohResourcesException.IsNotLoad());
+            var loaderRoots = _resourceLoaders.Select((r) => r.Root ?? throw GohResourceLoadException.IsNotLoad());
 
             Root = new GohResourceDirectory(loaderRoots.First().GetFullPath()) {
                 Loader = new AggregateDirectoryLoader(loaderRoots.Select(d => d.Loader))

@@ -30,7 +30,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
 
         public override void LoadData(string path) {
             if (!CheckRootPath(path)) {
-                throw GohResourcesException.IsNotGohResource(path);
+                throw GohResourceLoadException.IsNotGohResource(path);
             }
 
             var rootDirectoryLoader = new PakRootDirectoryLoader();

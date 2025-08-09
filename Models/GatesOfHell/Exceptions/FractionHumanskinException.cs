@@ -1,7 +1,7 @@
 ﻿using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 
 namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
-    public class FractionHumanskinException : GohResourcesException {
+    public class FractionHumanskinException : GohResourceLoadException {
         private static readonly string s_message = "Fraction {0}humanskin load error.{1}";
 
         protected override byte ExceptionTypeCode => 5;

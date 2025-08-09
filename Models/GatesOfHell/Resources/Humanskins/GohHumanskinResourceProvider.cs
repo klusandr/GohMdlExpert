@@ -11,7 +11,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
         private readonly GohCacheProvider _cacheProvider;
         private IGohHumanskinResource? _resource;
 
-        public IGohHumanskinResource Resource { get => _resource ?? throw GohResourcesException.IsNotLoad(); private set => _resource = value; }
+        public IGohHumanskinResource Resource { get => _resource ?? throw GohResourceLoadException.IsNotLoad(); private set => _resource = value; }
 
         public event EventHandler? ResourceUpdated;
 

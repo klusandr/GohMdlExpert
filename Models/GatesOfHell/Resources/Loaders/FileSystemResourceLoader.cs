@@ -21,7 +21,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
 
         public override void LoadData(string path) {
             if (!CheckRootPath(path)) {
-                throw GohResourcesException.IsNotGohResource(path);
+                throw GohResourceLoadException.IsNotGohResource(path);
             }
 
             _resourcePath = path;
@@ -31,7 +31,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
 
         public string GetFileSystemPath(string insidePath) {
             if (_resourcePath == null) {
-                throw GohResourcesException.IsNotLoad();
+                throw GohResourceLoadException.IsNotLoad();
             }
 
             return Path.Join(_resourcePath, insidePath);

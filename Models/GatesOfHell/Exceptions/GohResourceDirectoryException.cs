@@ -1,7 +1,7 @@
 ﻿using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 
 namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
-    public class GohResourceDirectoryException : GohResourcesException {
+    public class GohResourceDirectoryException : GohResourceLoadException {
         private const string MESSAGE = "Dictionary load {0}error.{1}";
 
         protected override byte ExceptionTypeCode => 6;

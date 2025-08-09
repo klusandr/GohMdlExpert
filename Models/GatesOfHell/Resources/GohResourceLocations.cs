@@ -25,7 +25,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
             if (s_locations.TryGetValue(name.ToLower(), out var propety)) {
                 return (string)propety.GetValue(null)!;
             } else {
-                throw GohResourcesException.LocationNotDefined(name);
+                throw GohResourceLoadException.LocationNotDefined(name);
             }
         }
     }

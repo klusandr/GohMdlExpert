@@ -23,8 +23,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
         private IGohResourceLoader? _baseResourceLoader;
         private IGohResourceLoader? _currentResourceLoader;
 
-        public IGohResourceLoader ResourceLoader => _currentResourceLoader ?? throw GohResourcesException.IsNotLoad();
-        public GohResourceDirectory ResourceDirectory => ResourceLoader?.Root ?? throw GohResourcesException.IsNotLoad();
+        public IGohResourceLoader ResourceLoader => _currentResourceLoader ?? throw GohResourceLoadException.IsNotLoad();
+        public GohResourceDirectory ResourceDirectory => ResourceLoader?.Root ?? throw GohResourceLoadException.IsNotLoad();
         public bool IsResourceLoaded => ResourceDirectory != null;
 
         public GohModResourceProvider ModResourceProvider { get; }
@@ -37,7 +37,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
         }
 
         public void OpenResources(string path) {
-            _baseResourceLoader = _currentResourceLoader = GetResourceLoader(path) ?? throw GohResourcesException.IsNotGohResource(path);
+            _baseResourceLoader = _currentResourceLoader = GetResourceLoader(path) ?? throw GohResourceLoadException.IsNotGohResource(path);
             _currentResourceLoader.LoadData(path);
             OnResourceUpdated();
         }
@@ -61,7 +61,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
         public GohResourceDirectory GetLocationDirectory(string location) {
             string path = GohResourceLocations.GetLocationPathByName(location);
 
-            return GetDirectory(path) ?? throw GohResourcesException.LocationNotFound(location, path);
+            return GetDirectory(path) ?? throw GohResourceLoadException.LocationNotFound(location, path);
         }
 
         public GohResourceDirectory GetResourceDirectory(GohResourceElement resourceElement) {
@@ -75,7 +75,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             }
 
             if (resourceDirectory == null || resourceDirectory.GetFile(resourceElement.Name) == null) {
-                throw GohResourcesException.ElementNotInResource(resourceElement);
+                throw GohResourceLoadException.ElementNotInResource(resourceElement);
             }
 
             return resourceDirectory;

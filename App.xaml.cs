@@ -87,7 +87,7 @@ namespace GohMdlExpert {
                 if (!string.IsNullOrEmpty(Settings.Default.GameDirectoryPath)) {
                     try {
                         gameDirectory.Open(Settings.Default.GameDirectoryPath);
-                    } catch (GohResourcesException ex) {
+                    } catch (GohResourceLoadException ex) {
                         ServiceProvider.GetRequiredService<IUserDialogProvider>().ShowError(string.Empty, exception: ex);
                     }
                 } else {
