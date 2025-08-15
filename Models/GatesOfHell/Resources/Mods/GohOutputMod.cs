@@ -1,0 +1,27 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Shapes;
+using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
+using SystemPath = System.IO.Path;
+
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods {
+    public class GohOutputMod {
+        private readonly FileSystemResourceLoader _resourceLoader;
+
+        public string Name { get; }
+        public string Path { get; }
+        public FileSystemResourceLoader ResourceLoader => _resourceLoader;
+
+        public GohOutputMod(string name, string path) {
+            Name = name;
+            Path = path;
+            _resourceLoader = new FileSystemResourceLoader();
+            _resourceLoader.LoadData(path);
+        }
+
+        public GohOutputMod(string path) : this(SystemPath.GetFileName(path), path) { }
+    }
+}

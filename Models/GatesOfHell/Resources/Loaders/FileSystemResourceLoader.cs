@@ -10,22 +10,24 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
             "entity", "texture"
         };
 
-        protected string? _resourcePath;
+        protected string _resourcePath;
 
         public override GohResourceDirectory? Root { get; protected set; }
+
+        public FileSystemResourceLoader(string path) {
+            if (!CheckRootPath(path)) {
+                throw GohResourceLoadException.IsNotGohResource(path);
+            }
+
+            _resourcePath = path;
+        }
 
         public override bool CheckRootPath(string path) {
             var directories = Directory.GetDirectories(path).Select(d => d[(d.LastIndexOf('\\') + 1)..]);
             return s_resourceNeedDirectories.All((d) => directories.Contains(d));
         }
 
-        public override void LoadData(string path) {
-            if (!CheckRootPath(path)) {
-                throw GohResourceLoadException.IsNotGohResource(path);
-            }
-
-            _resourcePath = path;
-
+        public override void LoadData() {
             Root = new GohResourceDirectory("") { Loader = new FileSystemDirectoryLoader(this) };
         }
 

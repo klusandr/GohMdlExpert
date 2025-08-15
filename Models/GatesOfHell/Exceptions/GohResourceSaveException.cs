@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Mods;
 
 namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
@@ -20,6 +21,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
             return new GohResourceSaveException(string.Format("File output path not include path of output mod. Output path: \"{0}\". Output mod path: \"{0}\".", mod.Path));
         }
 
+        public static GohResourceSaveException SaveReadOnlyFile(GohResourceFile file) {
+            return new GohResourceSaveException(string.Format("Try save read only file. File name: {0}", file.GetFullPath()));
+        }
+
         private static string GetFullMessage(string? message) {
             if (message == null) {
                 return MESSAGE;
@@ -27,5 +32,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
                 return MESSAGE + " " + message;
             }
         }
+
     }
 }

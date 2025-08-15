@@ -49,7 +49,7 @@ namespace GohMdlExpert.ViewModels.Trees.Textures {
                     var rootDirectory = GohResourceLoading.GetResourceStructure(cache.Values.First(), ResourceProvider);
 
                     if (GohResourceLoading.TryGetNextCompletedDirectory(rootDirectory, out var nextDirectory, out _)) {
-                        rootDirectory = nextDirectory;
+                        rootDirectory = (GohResourceVirtualDirectory)nextDirectory;
                     }
 
                     foreach (var directory in rootDirectory.GetDirectories().ToArray()) {

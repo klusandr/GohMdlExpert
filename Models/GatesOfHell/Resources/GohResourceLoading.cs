@@ -23,6 +23,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
     /// </summary>
     public static class GohResourceLoading {
         private static GohMaterialCache? s_materialCache;
+        private static ModelDataSerializer.ModelDataParameter? s_mdlTemplateParameters;
 
         public static MdlSerializer MdlSerializer { get; } = new MdlSerializer();
 
@@ -47,6 +48,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             [".mtl"] = typeof(MtlFile),
             [".dds"] = typeof(MaterialFile)
         };
+
+        public static ModelDataSerializer.ModelDataParameter MdlTemplateParameters => s_mdlTemplateParameters ??= new MdlFile(HumanskinMdl).Data.Parameters;
 
         /// <summary>
         /// Возвращает материал текстуры из файла материала в виде изображения.
