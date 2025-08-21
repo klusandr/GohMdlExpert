@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
@@ -13,6 +14,7 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
+using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
 using GohMdlExpert.Models.GatesOfHell.Serialization;
 using GohMdlExpert.Models.GatesOfHell.Сaches;
 
@@ -23,6 +25,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
     /// </summary>
     public static class GohResourceLoading {
         private static GohMaterialCache? s_materialCache;
+        private static ModelDataSerializer.ModelDataParameter? s_mdlTemplateParameters;
+        private static AppResourceLoader? s_appResourceLoader;
 
         public static MdlSerializer MdlSerializer { get; } = new MdlSerializer();
 
@@ -39,14 +43,30 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             @"^(?!.*null\.)",
         ];
 
-        public static string HumanskinMdl { get; } = @"\Templates\humanskin_template.mdl";
+        public static string HumanskinTemplateMdl { get; } = @"\Templates\humanskin_template.mdl";
         public static string MdlFileOpenFilter { get; } = "Mdl files (*.mdl)|*.mdl";
         public static IReadOnlyDictionary<string, Type> ResourcesFilesTypes { get; } = new Dictionary<string, Type>() {
-            [".mdl"] = typeof(MdlFile),
-            [".ply"] = typeof(PlyFile),
-            [".mtl"] = typeof(MtlFile),
-            [".dds"] = typeof(MaterialFile)
+            [MdlFile.Extension] = typeof(MdlFile),
+            [PlyFile.Extension] = typeof(PlyFile),
+            [MtlFile.Extension] = typeof(MtlFile),
+            [MaterialFile.Extension] = typeof(MaterialFile),
+            [DefFile.Extension] = typeof(DefFile)
         };
+
+        public static AppResourceLoader AppResourceLoader {
+            get {
+                if (s_appResourceLoader == null) {
+                    s_appResourceLoader = new AppResourceLoader();
+                    s_appResourceLoader.LoadData(AppDomain.CurrentDomain.BaseDirectory);
+                }
+
+                return s_appResourceLoader;
+            }
+        }
+
+        public static ModelDataSerializer.ModelDataParameter MdlTemplateParameters => s_mdlTemplateParameters ??= new MdlFile(HumanskinTemplateMdl) {
+            Loader = AppResourceLoader.FileLoader
+        }.Data.Parameters;
 
         /// <summary>
         /// Возвращает материал текстуры из файла материала в виде изображения.
@@ -101,15 +121,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
         /// </summary>
         /// <param name="plyFile">Файл, для которого будут возвращены LOD файлы.</param>
         /// <returns>Коллекция <see cref="PlyFile"/> файлов, который являются LOD для указанного файла.</returns>
-        public static IEnumerable<PlyFile> GetPlyLodFiles(PlyFile plyFile, IGohHumanskinResource humanskinResource, GohResourceProvider resourceProvider) {
+        public static IEnumerable<PlyFile> GetPlyLodFiles(PlyFile plyFile, GohResourceProvider resourceProvider) {
             var directory = resourceProvider.GetResourceDirectory(plyFile);
 
             var lodFiles = directory
                 .FindResourceElements<PlyFile>(searchPattern: @$"{plyFile.Name[..^4]}_lod\d*\.");
-
-            if (!lodFiles.Any()) {
-                lodFiles = [humanskinResource.GetNullPlyFile(plyFile)];
-            }
 
             return lodFiles;
         }
@@ -142,7 +158,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
         }
 
         public static ModelDataSerializer.ModelDataParameter GetHumanskinMdlParametersTemplate() {
-            var templateFile = new StreamReader(Path.Join(Environment.CurrentDirectory, HumanskinMdl));
+            var templateFile = new StreamReader(Path.Join(Environment.CurrentDirectory, HumanskinTemplateMdl));
 
             return MdlSerializer.Deserialize(templateFile.ReadToEnd());
         }

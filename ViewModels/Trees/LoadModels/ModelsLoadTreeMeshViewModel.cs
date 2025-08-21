@@ -59,7 +59,7 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
 
         private void AddDefaultTexture(object? obj) {
             Tree.DefaultTexture.TextureName = MtlFile.Name;
-            Tree.DefaultTexture.AddMaterial();
+            Tree.DefaultTexture.AddTexture();
         }
     }
 }

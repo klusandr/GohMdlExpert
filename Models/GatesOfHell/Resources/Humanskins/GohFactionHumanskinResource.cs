@@ -15,7 +15,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins
         private const string HUMANSKIN_SOURCE_DIRECTORY_NAME_REG = @"\[.*_source\]";
 
         private readonly GohResourceProvider _resourceProvider;
-        private readonly GohCacheProvider _cacheProvider;
+        //private readonly GohCacheProvider? _cacheProvider;
 
         public string Name { get; }
         public GohResourceDirectory Root { get; }
@@ -68,54 +68,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins
         }
 
         public MtlTextureCollection GetPlyMeshMtlTextures(PlyFile plyFile, string meshTextureName) {
-            ResourceChecking.ThrowCheckPlyFileMeshTextureName(plyFile, meshTextureName);
-
-            var cache = _cacheProvider.PlyTexturesCache;
-
-            //var mdlFiles = GetPlyMdlFiles(plyFile);
-            //var mtlTextures = new MtlTextureCollection();
-
-            //foreach (var mdlFile in mdlFiles) {
-            //    var directory = _resourceProvider.GetResourceDirectory(mdlFile);
-
-            //    foreach (var mtlFile in directory.GetFiles().OfType<MtlFile>()) {
-            //        if (mtlFile.Name == meshTextureName) {
-            //            mtlTextures.Add(mtlFile.Data);
-            //        }
-            //    }
-            //}
-
-            //return mtlTextures;
-
-            var mtlTextures = new MtlTextureCollection();
-
-            if (cache != null) {
-
-
-                if (cache.TryGetValue(plyFile.Name, out var value)) {
-                    foreach (var texturePath in value) {
-                        if (texturePath.Contains(meshTextureName)) {
-                            mtlTextures.Add(((MtlFile)_resourceProvider.GetFile(texturePath)).Data);
-                        }
-
-                    }
-                }
-            }
-
-
-
-            //foreach (var directory in Root.GetDirectories()) {
-            //    if (directory != Source && directory.GetFile(meshTextureName) != null) {
-            //        foreach (var mdlFile in directory.GetFiles().OfType<MdlFile>()) {
-            //            if (mdlFile.GetAllText().Contains(plyFile.Name)) {
-            //                mtlTextures.Add(((MtlFile)directory.GetFile(meshTextureName)!).Data);
-            //                break;
-            //            }
-            //        }
-            //    }
-            //}
-
-            return mtlTextures;
+            throw new NotImplementedException();
         }
 
         public PlyFile GetNullPlyFile(PlyFile plyFile) {

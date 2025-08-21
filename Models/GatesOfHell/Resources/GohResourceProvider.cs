@@ -8,13 +8,6 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Mods;
 namespace GohMdlExpert.Models.GatesOfHell.Resources
 {
     public class GohResourceProvider {
-        private static readonly Dictionary<string, Type> s_fileTypes = new() {
-            [MtlFile.Extension] = typeof(MdlFile),
-            [PlyFile.Extension] = typeof(PlyFile),
-            [MtlFile.Extension] = typeof(MtlFile),
-            [MaterialFile.Extension] = typeof(MaterialFile),
-        };
-
         private static readonly IEnumerable<IGohResourceLoader> s_baseResourceDirectories = [
             new PakResourceLoader(),
             new FileSystemResourceLoader(),
@@ -54,7 +47,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             } else {
                 _currentResourceLoader = _baseResourceLoader;
             }
-
+            FullLoad();
             OnResourceUpdated();
         }
 

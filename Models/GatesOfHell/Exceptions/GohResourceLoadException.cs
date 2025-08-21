@@ -1,4 +1,5 @@
 ﻿using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
 
 namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
     public class GohResourceLoadException : GohException {
@@ -46,6 +47,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
 
         public static GohResourceLoadException ResourcesPathNotHaveOneRoot(string firstResource, string secondResource) {
             return new GohResourceLoadException(string.Format("Resources haven't one path root. First resource: \"{0}\". Second resource \"{1}\"", firstResource, secondResource)) { ExceptionCode = 11 };
+        }
+
+        public static GohResourceLoadException LoaderNotLoadResource(IGohResourceLoader resourceLoader) {
+            return new GohResourceLoadException(string.Format("Resource loader \"{0}\" is not load data.", resourceLoader.GetType().Name)) { ExceptionCode = 12 };
         }
 
         private static string GetFullErrorMessage(string? message = null) {

@@ -9,6 +9,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
             "entity"
         };
 
+        public override void LoadData(string path) {
+            base.LoadData(Path.Combine(path, GohResourceLoading.ResourceDirectoryName));
+        }
+
         public override bool CheckRootPath(string path) {
             var directories = Directory.GetDirectories(path).Select(d => d[(d.LastIndexOf('\\') + 1)..]);
             return s_resourceNeedDirectories.All((d) => directories.Contains(d));

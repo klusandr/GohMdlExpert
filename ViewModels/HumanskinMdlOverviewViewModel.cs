@@ -39,7 +39,7 @@ namespace GohMdlExpert.ViewModels
         private readonly ModelsOverviewTreeViewModel _modelsOverviewTreeViewModel;
         private readonly PlyModelAdderViewModel _modelAdderViewModel;
         private readonly ModelsLoadTreeViewModel _modelsLoadTreeViewModel;
-        private readonly HumanskinMdlGeneratorViewModel _humanskinMdlGeneratorViewModel;
+        private readonly HumanskinMdlSaveViewModel _humanskinMdlGeneratorViewModel;
         private readonly DefaultTextureViewModel _defaultMaterialViewModel;
 
         public MdlFile? MdlFile {
@@ -76,7 +76,7 @@ namespace GohMdlExpert.ViewModels
 
         public event EventHandler? UpdatedTextures;
 
-        public HumanskinMdlOverviewViewModel(IUserDialogProvider userDialog, GohResourceProvider resourceProvider, GohHumanskinResourceProvider humanskinProvider, GohTextureProvider textureProvider, HumanskinMdlGeneratorViewModel humanskinMdlGeneratorViewModel, TextureLoadService textureSelector) {
+        public HumanskinMdlOverviewViewModel(IUserDialogProvider userDialog, GohResourceProvider resourceProvider, GohHumanskinResourceProvider humanskinProvider, GohTextureProvider textureProvider, HumanskinMdlSaveViewModel humanskinMdlGeneratorViewModel, TextureLoadService textureSelector) {
             _models = [];
             _plyModels = [];
             _lodPlyFiles = [];
@@ -107,7 +107,7 @@ namespace GohMdlExpert.ViewModels
 
         public void SetMtlFile(MdlFile mdlFile) {
             PlyModels.Clear();
-
+#warning Upgrade load mdl file
             GohResourceLoading.LoadHumanskinFile(mdlFile, out var mtlFiles, _textureProvider);
 
             MdlFile = mdlFile;
@@ -150,8 +150,7 @@ namespace GohMdlExpert.ViewModels
                 }
             }
 
-            //_lodPlyFiles.Add(modelPly, new ObservableCollection<PlyFile>(lodModels ?? GohResourceLoading.GetPlyLodFiles(modelPly.PlyFile, _humanskinProvider.Current, _resourceProvider)));
-#warning Upgrade lod files loading.
+            _lodPlyFiles.Add(modelPly, new ObservableCollection<PlyFile>(lodModels ?? GohResourceLoading.GetPlyLodFiles(modelPly.PlyFile, _resourceProvider)));
 
             _plyModels.Add(modelPly);
             UpdateTextures();
@@ -191,12 +190,25 @@ namespace GohMdlExpert.ViewModels
                 return;
             }
 
-            _humanskinMdlGeneratorViewModel.CreateMtlFile(
-                MdlFile,
-                PlyModels.Select(p => p.PlyFile),
-                new Dictionary<string, MtlTexture>(AggregateMtlFiles.Values.Select(m => new KeyValuePair<string, MtlTexture>(m.Name, m.Data.ElementAt(GetMtlFileMaterialIndex(m.Name))))),
-                new Dictionary<PlyFile, PlyFile[]>(_lodPlyFiles.Select(l => new KeyValuePair<PlyFile, PlyFile[]>(l.Key.PlyFile, l.Value.ToArray())))
+            MdlModel? mdlModel = null;
+
+            if (MdlFile.Exists()) {
+                mdlModel = MdlFile.Data;
+            }
+
+            MdlFile.Data = new MdlModel(
+                mdlModel?.Parameters ?? GohResourceLoading.MdlTemplateParameters, 
+                PlyModels.Select(p => p.PlyFile), 
+                new(_lodPlyFiles.Select(l => new KeyValuePair<PlyFile, PlyFile[]>(l.Key.PlyFile, [.. l.Value])))
             );
+
+            var textures = new Dictionary<string, MtlTexture>(
+                AggregateMtlFiles.Keys.Select(
+                    (n) => new KeyValuePair<string, MtlTexture>(n, GetCurrentMtlFileTexture(n) ?? throw GohResourceSaveException.MtlTextureIsNotDefindForMesh(n))
+                )
+            );
+
+            _humanskinMdlGeneratorViewModel.Save(MdlFile, textures);
         }
 
         public void SetMtlFileTextureByIndex(string meshTextureName, int index) {

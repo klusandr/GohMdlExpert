@@ -77,7 +77,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
                 }
             });
 
-            using var stream = new StreamWriter(GetFullPath());
+            using var stream = new StreamWriter(GetStream());
             stream.Write(str);
         }
     }

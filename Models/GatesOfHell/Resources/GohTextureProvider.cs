@@ -50,7 +50,16 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
         }
 
         private MaterialFile? GetMaterialFile(string materialPath) {
-            return TextureDirectory.AlongPath(Path.GetDirectoryName(materialPath)!)?.GetFile(Path.GetFileName(materialPath) + ".dds") as MaterialFile;
+            string materialFileName = Path.GetFileName(materialPath) + ".dds";
+            string meterialFilePath = Path.GetDirectoryName(materialPath)!;
+            var materialFile = TextureDirectory.AlongPath(meterialFilePath)?.GetFile(materialFileName) as MaterialFile;
+
+            if (materialFile != null) {
+                materialFile.Path = meterialFilePath;
+                materialFile.RelativePathPoint = TextureDirectory.Name;
+            }
+
+            return materialFile;
         }
 
         private void ProviderResourceUpdated(object? sender, EventArgs e) {

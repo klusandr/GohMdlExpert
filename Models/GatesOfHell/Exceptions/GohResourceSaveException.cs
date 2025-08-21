@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Mods;
 
 namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
@@ -17,7 +18,19 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
         }
 
         public static GohResourceSaveException FileOutputPathIsNotModPath(string outputPath, GohOutputMod mod) {
-            return new GohResourceSaveException(string.Format("File output path not include path of output mod. Output path: \"{0}\". Output mod path: \"{0}\".", mod.Path));
+            return new GohResourceSaveException(string.Format("File output path not include path of output mod. Output path: \"{0}\". Output mod path: \"{0}\".", mod.Path)) { ExceptionCode = 2 };
+        }
+
+        public static GohResourceSaveException SaveReadOnlyFile(GohResourceFile file) {
+            return new GohResourceSaveException(string.Format("Try save read only file. File name: {0}", file.GetFullPath())) { ExceptionCode = 3 };
+        }
+
+        public static GohResourceSaveException MtlTextureIsNotDefindForMesh(string textureName) {
+            return new GohResourceSaveException(string.Format("Mtl texture is not define for mesh \"{0}\".", textureName)) { ExceptionCode = 4 };
+        }
+
+        public static GohResourceSaveException SaveFilePathIsNotDefine(MdlFile mdlFile) {
+            return new GohResourceSaveException(string.Format("File output path is not define. File name: \"{0}\".", mdlFile.Name)) { ExceptionCode = 5 };
         }
 
         private static string GetFullMessage(string? message) {
@@ -27,5 +40,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
                 return MESSAGE + " " + message;
             }
         }
+
     }
 }

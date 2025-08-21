@@ -4,6 +4,7 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Serialization;
 using DataList = System.Collections.Generic.IList<GohMdlExpert.Models.GatesOfHell.Serialization.ModelDataSerializer.ModelDataParameter>;
 using ModelDataParameter = GohMdlExpert.Models.GatesOfHell.Serialization.ModelDataSerializer.ModelDataParameter;
+using SystemPath = System.IO.Path;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
 {
@@ -60,6 +61,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
         }
 
         public override void SaveData() {
+            if (Loader.IsReadOnly) {
+                throw GohResourceSaveException.SaveReadOnlyFile(this);
+            }
+
             var parameters = Data.Parameters;
             var skinParameter = new ModelDataParameter() {
                 Type = MdlSerializer.MdlTypes.Bone.ToString(),
@@ -71,14 +76,16 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
             foreach (var plyFile in Data.PlyModel) {
                 var volumeViews = new List<ModelDataParameter>() {
                     new(MdlSerializer.MdlTypes.VolumeView.ToString()) {
-                        Data = plyFile.GetFullPath()
+                        Data = SystemPath.Join(GohResourceLoading.GetRelativelyPath(GetDirectoryPath()!, plyFile.GetDirectoryPath()!), plyFile.Name)
                     }
                 };
 
-                foreach (var plyLodFile in Data.PlyModelLods[plyFile]) {
-                    volumeViews.Add(new ModelDataParameter(MdlSerializer.MdlTypes.VolumeView.ToString()) {
-                        Data = plyLodFile.GetFullPath()
-                    });
+                if (Data.PlyModelLods.TryGetValue(plyFile, out var plyLodFiles)) {
+                    foreach (var plyLodFile in plyLodFiles) {
+                        volumeViews.Add(new ModelDataParameter(MdlSerializer.MdlTypes.VolumeView.ToString()) {
+                            Data = SystemPath.Join(GohResourceLoading.GetRelativelyPath(GetDirectoryPath()!, plyLodFile.GetDirectoryPath()!), plyLodFile.Name)
+                        });
+                    }
                 }
 
                 lodViews.Add(new ModelDataParameter(MdlSerializer.MdlTypes.LODView.ToString()) {
@@ -92,13 +99,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
 
             var str = Serializer.Serialize(Data.Parameters);
 
-            using var stream = new StreamWriter(GetFullPath());
-
+            using var stream = new StreamWriter(GetStream());
+            stream.BaseStream.SetLength(0);
             stream.Write(str);
-        }
-
-        private string RelativePathRemove(string relativePath) {
-            return relativePath.Replace("../", null);
         }
     }
 }

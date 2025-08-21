@@ -21,11 +21,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Files {
         public Stream GetStream(string path) {
             string fullPath = _resourceLoader.GetFileSystemPath(path);
 
-            if (!File.Exists(fullPath)) {
-                throw GohResourceFileException.IsNotExists(fullPath);
-            }
+            //if (!File.Exists(fullPath)) {
+            //    throw GohResourceFileException.IsNotExists(fullPath);
+            //}
 
-            return new FileStream(fullPath, FileMode.Open);
+            return new FileStream(fullPath, FileMode.OpenOrCreate);
         }
 
         public string GetAllText(string path) {

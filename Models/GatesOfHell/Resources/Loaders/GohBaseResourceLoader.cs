@@ -9,7 +9,7 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
     public abstract class GohBaseResourceLoader : IGohResourceLoader {
-        public abstract GohResourceDirectory? Root { get; protected set; }
+        public abstract GohResourceDirectory Root { get; protected set; }
 
         public abstract bool CheckRootPath(string path);
 

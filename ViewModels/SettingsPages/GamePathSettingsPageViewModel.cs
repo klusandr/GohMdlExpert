@@ -10,7 +10,6 @@ using Microsoft.Win32;
 
 namespace GohMdlExpert.ViewModels.SettingsPages {
     public class GamePathSettingsPageViewModel : SettingsPageViewModel {
-        private string? _gameDirectoryPath;
         private readonly GohGameDirectory _gameDirectory;
 
         public override string Name { get; } = nameof(GamePathSettingsPageViewModel);

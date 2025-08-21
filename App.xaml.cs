@@ -52,6 +52,7 @@ namespace GohMdlExpert {
                 .AddSingleton<GohGameDirectory>()
                 .AddSingleton<GohResourceProvider>()
                 .AddSingleton<GohModResourceProvider>()
+                .AddSingleton<GohOutputModProvider>()
                 .AddSingleton<GohHumanskinResourceProvider>()
                 .AddSingleton<GohTextureProvider>()
                 .AddSingleton<SettingsWindowService>()

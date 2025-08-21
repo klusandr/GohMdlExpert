@@ -14,13 +14,13 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
         private bool _isLoad = false;
         private GohResourceDirectory? _root;
 
-        public override GohResourceDirectory? Root { 
+        public override GohResourceDirectory Root { 
             get {
                 if (!_isLoad) {
                     LoadRootDictionary();
                 }
 
-                return _root;    
+                return _root!;    
             }
             protected set => _root = value; 
         }
