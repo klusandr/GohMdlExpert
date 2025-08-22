@@ -14,6 +14,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
 
         public MtlSerializer() {
             AddType("MaterialBump", "material bump");
+            AddType("MaterialSimple", "material simple");
+            AddType("MaterialEnvmap", "material envmap");
             AddType("Diffuse", "diffuse");
             AddType("Bump", "bump");
             AddType("Specular", "specular");

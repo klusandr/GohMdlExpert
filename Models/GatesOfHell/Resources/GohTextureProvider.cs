@@ -24,7 +24,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
 
         public void Update() {
             if (GohResourceProvider.IsResourceLoaded) {
-                _textureDirectory = GohResourceProvider.GetLocationDirectory("texture");
+                _textureDirectory = GohResourceProvider.GetDirectory(GohResourceLocations.TextureCommon);
                 ResourceUpdated?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -56,7 +56,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
 
             if (materialFile != null) {
                 materialFile.Path = meterialFilePath;
-                materialFile.RelativePathPoint = TextureDirectory.Name;
+                materialFile.RelativePathPoint = TextureDirectory.GetFullPath();
             }
 
             return materialFile;

@@ -10,7 +10,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
     public static class GohResourceLocations {
         private static readonly Dictionary<string, PropertyInfo> s_locations;
 
-        public static string Texture => @"texture\common";
+        public static string Texture => @"texture";
+        public static string TextureCommon => @"texture\common";
         public static string Humanskin => @"entity\humanskin";
 
         static GohResourceLocations() {

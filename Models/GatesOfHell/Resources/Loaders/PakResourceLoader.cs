@@ -41,12 +41,14 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
                 GohResourceDirectory? currentDirectory = null;
 
                 foreach (var directoryName in pathDirectories) {
-                    var directory = new GohResourceDirectory(directoryName) { Items = [] };
+                    var directory = new GohResourceDirectory(directoryName, currentDirectory?.GetFullPath());
 
                     if (currentDirectory == null) {
                         rootDirectoryLoader.AddPakDirectory(directory);
                     } else {
-                        currentDirectory.Items.Add(directory);
+                        var currentRootDirectoryLoader = new PakRootDirectoryLoader(this);
+                        currentRootDirectoryLoader.AddPakDirectory(directory);
+                        currentDirectory.Loader = currentRootDirectoryLoader;
                     }
 
                     currentDirectory = directory;

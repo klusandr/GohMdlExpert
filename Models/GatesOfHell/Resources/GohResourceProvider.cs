@@ -47,7 +47,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             } else {
                 _currentResourceLoader = _baseResourceLoader;
             }
-            FullLoad();
             OnResourceUpdated();
         }
 
