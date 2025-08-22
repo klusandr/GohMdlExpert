@@ -84,6 +84,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
         }
 
         public virtual ModelDataParameter Deserialize(string text) {
+            text = text.ToLower();
+
             var buildText = new StringBuilder(text);
 
             buildText.Replace('\t', ' ');
@@ -255,7 +257,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
 
         private void SetSimpleType(StringBuilder buildText) {
             foreach (var typeName in _types.Values.OrderBy(pt => pt.NameInText).Reverse()) {
-                buildText.Replace('{' + (typeName.NameInText ?? typeName.Name), $"{{|{GetTypeIndex(typeName.Name)}|");
+                buildText.Replace('{' + (typeName.NameInText ?? typeName.Name).ToLower(), $"{{|{GetTypeIndex(typeName.Name)}|");
             }
         }
 
@@ -276,10 +278,22 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
         private static void ClearComments(StringBuilder buildText) {
             for (int i = buildText.Length - 1; i >= 0; i--) {
                 if (buildText[i] == ';') {
-                    for (int j = i; j < buildText.Length; j++) {
-                        if (buildText[j] == '\n' || j == buildText.Length - 1) {
-                            buildText.Remove(i, j - i);
+                    bool inString = false;
+
+                    for (int j = i; j > 0; j--) {
+                        if (buildText[j] == '\n') {
                             break;
+                        } else if (buildText[j] == '"') {
+                            inString = !inString;
+                        }
+                    }
+
+                    if (!inString) {
+                        for (int j = i; j < buildText.Length; j++) {
+                            if (buildText[j] == '\n' || j == buildText.Length - 1) {
+                                buildText.Remove(i, j - i);
+                                break;
+                            }
                         }
                     }
                 }
