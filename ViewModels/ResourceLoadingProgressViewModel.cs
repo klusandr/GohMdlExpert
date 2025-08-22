@@ -57,7 +57,9 @@ namespace GohMdlExpert.ViewModels {
         public CancellationToken CancellationToken => _cancellationTokenSource.Token;
 
         public ICommand CancelCommand => CommandManager.GetCommand(Cancel);
-        
+
+        public event EventHandler? Canceled;
+
         public ResourceLoadingProgressViewModel(GohResourceProvider resourceProvider) {
             ProgressBar = new ProgressBarViewModel();
             _textureDirectoty = resourceProvider.GetLocationDirectory(nameof(GohResourceLocations.Texture));
@@ -107,6 +109,7 @@ namespace GohMdlExpert.ViewModels {
 
         private void Cancel() {
             _cancellationTokenSource.Cancel();
+            Canceled?.Invoke(this, EventArgs.Empty);
         }
 
         private void UpdateTimerElapsedHandler(object? sender, System.Timers.ElapsedEventArgs e) {
