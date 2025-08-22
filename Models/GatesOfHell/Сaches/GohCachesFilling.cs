@@ -73,6 +73,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Caches {
 
             var loadMtlFiles = humanskinResource.Root.FindResourceElements<MtlFile>();
             var errorMtlFiles = new List<MtlFile>();
+            var steap = 90f / loadMtlFiles.Count();
 
             foreach (var mtlFile in loadMtlFiles) {
                 try {
@@ -80,6 +81,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Caches {
                 } catch (Exception) {
                     errorMtlFiles.Add(mtlFile);
                 }
+
+                completionPercentage += steap;
             }
 
             loadMtlFiles = loadMtlFiles.Except(errorMtlFiles);
@@ -89,10 +92,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Caches {
                 .Select(mfg => mfg.First())
                 .Select(mf => mf.GetFullPath().ToLower());
             cache.Add(humanskinResource.Root.Name, mtlFiles.ToArray());
-
-            completionPercentage = 100;
+            completionPercentage = 95;
 
             GohServicesProvider.Instance.GetRequiredService<GohCacheProvider>().TexturesCache = cache;
+
+            completionPercentage = 100;
         }
     }
 }

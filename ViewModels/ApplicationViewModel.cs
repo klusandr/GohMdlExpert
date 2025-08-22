@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Input;
@@ -42,8 +43,8 @@ namespace GohMdlExpert.ViewModels {
         public ICommand OpenResourceCommand => CommandManager.GetCommand(OpenResourceDirectory);
         public ICommand OpenFileCommand => CommandManager.GetCommand(OpenFile);
         public ICommand OpenSettingsCommand => CommandManager.GetCommand(OpenSettings);
-        public ICommand LoadPlyTexturesCacheCommand => CommandManager.GetCommand(LoadPlyTexturesCache);
-        public ICommand LoadTexturesCacheCommand => CommandManager.GetCommand(LoadTexturesCache);
+        public ICommand LoadPlyTexturesCacheCommand => CommandManager.GetAsyncCommand(LoadPlyTexturesCacheAsync, singleExecute: true);
+        public ICommand LoadTexturesCacheCommand => CommandManager.GetAsyncCommand(LoadTexturesCacheAsync, singleExecute: true);
         public ICommand SetLightThemeCommand => CommandManager.GetCommand(() => SetTheme(AppThemesManager.LightThemeName));
         public ICommand SetDarkThemeCommand => CommandManager.GetCommand(() => SetTheme(AppThemesManager.DarkThemeName));
         public ICommand TestCommand => CommandManager.GetCommand(Test);
@@ -94,10 +95,10 @@ namespace GohMdlExpert.ViewModels {
             //}
         }
 
-        public void LoadPlyTexturesCache() {
+        public async Task LoadPlyTexturesCacheAsync() {
             float completionPercentage = 0;
 
-            var timer = new System.Timers.Timer(1000);
+            using var timer = new System.Timers.Timer(1000);
             timer.Elapsed += (_, _) => {
                 CompletionPercentage = completionPercentage;
                 OnPropertyChanged(nameof(CompletionPercentage));
@@ -106,10 +107,12 @@ namespace GohMdlExpert.ViewModels {
             timer.AutoReset = true;
             timer.Enabled = true;
 
-            Task.Factory.StartNew(() => {
+            await Task.Factory.StartNew(() => {
                 GohCachesFilling.FillPlyTexturesCache(_gohResourceProvider, _gohHumanskinResourceProvider.Resource, ref completionPercentage);
-                completionPercentage = 0;
-            }).ContinueWith((t) => timer.Dispose());
+            });
+
+            CompletionPercentage = completionPercentage = 0;
+            OnPropertyChanged(nameof(CompletionPercentage));
         }
 
         public void FullLoadResources(bool autoClose = true) {
@@ -121,8 +124,11 @@ namespace GohMdlExpert.ViewModels {
                 SizeToContent = System.Windows.SizeToContent.WidthAndHeight,
                 Title = "Loading resources...",
                 WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner,
-                Style = (Style)App.Current.FindResource("ResourceLOadingWindowStyle"),
-                OverrideOnClosing = (e) => e.Cancel = !viewModel.IsEnd
+                Style = (Style)App.Current.FindResource("ResourceLOadingWindowStyle")
+            };
+
+            viewModel.Canceled += (s, e) => {
+                window.Close();
             };
 
             Task.Factory.StartNew(() => {
@@ -151,10 +157,12 @@ namespace GohMdlExpert.ViewModels {
             _settingsWindowService.OpenSettings();
         }
 
-        private void LoadTexturesCache(object? obj) {
+        private async Task LoadTexturesCacheAsync() {
             float completionPercentage = 0;
+            CompletionPercentage = completionPercentage = 0;
+            OnPropertyChanged(nameof(CompletionPercentage));
 
-            var timer = new System.Timers.Timer(1000);
+            using var timer = new System.Timers.Timer(1000);
             timer.Elapsed += (_, _) => {
                 CompletionPercentage = completionPercentage;
                 OnPropertyChanged(nameof(CompletionPercentage));
@@ -163,10 +171,12 @@ namespace GohMdlExpert.ViewModels {
             timer.AutoReset = true;
             timer.Enabled = true;
 
-            Task.Factory.StartNew(() => {
+            await Task.Factory.StartNew(() => {
                 GohCachesFilling.FillTexturesCache(_gohTextureProvider, _gohHumanskinResourceProvider.Resource, ref completionPercentage);
-                completionPercentage = 0;
-            }).ContinueWith((t) => timer.Dispose());
+            });
+
+            CompletionPercentage = completionPercentage = 0;
+            OnPropertyChanged(nameof(CompletionPercentage));
         }
 
         private void SetTheme(string themeName) {
