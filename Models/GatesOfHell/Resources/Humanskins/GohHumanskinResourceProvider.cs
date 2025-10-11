@@ -44,6 +44,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
                 _humanskinResources.Add(new GohFactionHumanskinResource("German", _resourceProvider.GetLocationDirectory("ger_humanskin"), _resourceProvider));
                 _humanskinResources.Add(new GohFactionHumanskinResource("United states", _resourceProvider.GetLocationDirectory("us_humanskin"), _resourceProvider));
                 _humanskinResources.Add(new GohFactionHumanskinResource("Soviets", _resourceProvider.GetLocationDirectory("sov_humanskin"), _resourceProvider));
+                _humanskinResources.Add(new GohFactionHumanskinResource("Finnish", _resourceProvider.GetLocationDirectory("fin_humanskin"), _resourceProvider));
                 //_humanskinResources.Add(new GohFactionHumanskinResource("German pak", new Files.GohResourceDirectory("humanskin/[germans]") { Loader = GohServicesProvider.Instance.GetRequiredService<PakDirectoryLoader>()}));
             }
 

@@ -15,6 +15,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
             ["ger_humanskin"] = @"\entity\humanskin\[germans]",
             ["us_humanskin"] = @"\entity\humanskin\[united_states]",
             ["sov_humanskin"] = @"\entity\humanskin\[soviets]",
+            ["fin_humanskin"] = @"\entity\humanskin\[finnish]",
         };
 
         private static readonly List<(string Path, string InsidePath)> s_resourcePakArchives = [

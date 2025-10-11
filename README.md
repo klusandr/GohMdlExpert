@@ -5,6 +5,11 @@
 ### Installation:
   Unzip the archive wherever you want and run it.
 
+### Versions:
+   (beta)
+   - 0.0.1.0 release
+   - 0.0.2.0 add finnish
+   
 ### First launch:
   
   When you first launch the program, you will be asked to specify the path to the game folder, usually it is "D:\..\steamapps\common\Call to Arms - Gates of Hell". After specifying it, the program will download all the necessary resources and display the current version of the game.
@@ -47,11 +52,16 @@
 - [ ] More flexibility in saving skins;
 - [ ] Localization of the application to EN, RU and DE.
 
-### Current version 0.0.1.0
+### Current version 0.0.2.0
 
 ## -- RU --
 
 ### Бета версия программы для создания скинов человеческих юнитов (humanksin) в игре "Call to arms - Gates of Hell"
+
+### Версии:
+   (beta)
+   - 0.0.1.0 релиз
+   - 0.0.2.0 долбавлены фины.
 
 ### Установка:
 
@@ -101,4 +111,4 @@
 - [ ] Больше гибкости в сохранении скинов;
 - [ ] Локализация приложения на EN, RU и DE.
 
-### Текущая версия 0.0.1.0
+### Текущая версия 0.0.2.0
