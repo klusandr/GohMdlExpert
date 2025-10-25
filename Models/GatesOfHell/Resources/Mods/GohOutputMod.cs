@@ -9,6 +9,8 @@ using SystemPath = System.IO.Path;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods {
     public class GohOutputMod {
+        private readonly FileSystemResourceLoader _resourceLoader;
+
         public string Name { get; }
         public string Path { get; }
         public ModResourceLoader ResourceLoader { get; }

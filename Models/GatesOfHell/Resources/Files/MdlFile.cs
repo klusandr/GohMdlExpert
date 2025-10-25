@@ -76,16 +76,14 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
             foreach (var plyFile in Data.PlyModel) {
                 var volumeViews = new List<ModelDataParameter>() {
                     new(MdlSerializer.MdlTypes.VolumeView.ToString()) {
-                        Data = SystemPath.Join(GohResourceLoading.GetRelativelyPath(GetDirectoryPath()!, plyFile.GetDirectoryPath()!), plyFile.Name)
+                        Data = GohResourceLoading.GetRelativelyPath(plyFile.GetFullPath(), GetFullPath()) 
                     }
                 };
 
-                if (Data.PlyModelLods.TryGetValue(plyFile, out var plyLodFiles)) {
-                    foreach (var plyLodFile in plyLodFiles) {
-                        volumeViews.Add(new ModelDataParameter(MdlSerializer.MdlTypes.VolumeView.ToString()) {
-                            Data = SystemPath.Join(GohResourceLoading.GetRelativelyPath(GetDirectoryPath()!, plyLodFile.GetDirectoryPath()!), plyLodFile.Name)
-                        });
-                    }
+                foreach (var plyLodFile in Data.PlyModelLods[plyFile]) {
+                    volumeViews.Add(new ModelDataParameter(MdlSerializer.MdlTypes.VolumeView.ToString()) {
+                        Data = GohResourceLoading.GetRelativelyPath(plyLodFile.GetFullPath(), GetFullPath())
+                    });
                 }
 
                 lodViews.Add(new ModelDataParameter(MdlSerializer.MdlTypes.LODView.ToString()) {
@@ -100,7 +98,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
             var str = Serializer.Serialize(Data.Parameters);
 
             using var stream = new StreamWriter(GetStream());
-            stream.BaseStream.SetLength(0);
+
             stream.Write(str);
         }
     }

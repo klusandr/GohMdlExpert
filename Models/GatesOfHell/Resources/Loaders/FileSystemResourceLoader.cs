@@ -30,12 +30,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
             protected set => _root = value; 
         }
 
-        public override bool CheckRootPath(string path) {
-            var directories = Directory.GetDirectories(path).Select(d => d[(d.LastIndexOf('\\') + 1)..]);
-            return s_resourceNeedDirectories.All((d) => directories.Contains(d));
-        }
-
-        public override void LoadData(string path) {
+        public FileSystemResourceLoader(string path) {
             if (!CheckRootPath(path)) {
                 throw GohResourceLoadException.IsNotGohResource(path);
             }
@@ -44,6 +39,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
             FileLoader = new FileSystemFileLoader(this);
             DirectoryLoader = new FileSystemDirectoryLoader(this, FileLoader);
 
+        public override void LoadData() {
             Root = new GohResourceDirectory("") { Loader = new FileSystemDirectoryLoader(this) };
         }
 

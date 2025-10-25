@@ -74,7 +74,7 @@ namespace GohMdlExpert.ViewModels
                     .OfType<MtlFile>()
                     .Where(f => mtlTextures.ContainsKey(f.Name))
                     .ToList();
-
+                
                 defFile = (DefFile?)outputDirectory.GetFile(defFileName);
             }
 
@@ -83,7 +83,7 @@ namespace GohMdlExpert.ViewModels
             } else {
                 defFile = null;
             }
-
+            
             mtlFiles ??= [];
 
             foreach (var mtlTexture in mtlTextures) {

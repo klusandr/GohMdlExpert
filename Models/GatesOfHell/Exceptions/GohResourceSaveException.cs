@@ -33,6 +33,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
             return new GohResourceSaveException(string.Format("File output path is not define. File name: \"{0}\".", mdlFile.Name)) { ExceptionCode = 5 };
         }
 
+        public static GohResourceSaveException SaveReadOnlyFile(GohResourceFile file) {
+            return new GohResourceSaveException(string.Format("Try save read only file. File name: {0}", file.GetFullPath()));
+        }
+
         private static string GetFullMessage(string? message) {
             if (message == null) {
                 return MESSAGE;
