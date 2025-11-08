@@ -6,6 +6,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
     public interface IGohHumanskinResource {
         GohResourceDirectory Root { get; }
         GohResourceDirectory Source { get; }
+        GohResourceDirectory Humanskins { get; }
 
         PlyFile GetNullPlyFile(PlyFile plyFile);
         IEnumerable<AggregateMtlFile> GetPlyAggregateMtlFiles(PlyFile plyFile);

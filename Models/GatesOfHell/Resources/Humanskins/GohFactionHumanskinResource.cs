@@ -21,6 +21,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins
         public GohResourceDirectory Root { get; }
         public GohResourceDirectory Source { get; }
 
+        public GohResourceDirectory Humanskins => throw new NotImplementedException();
+
         public GohFactionHumanskinResource(string name, GohResourceDirectory factionRoot, GohResourceProvider resourceProvider) {
             var source = factionRoot.FindResourceElements<GohResourceDirectory>(null, searchPattern: HUMANSKIN_SOURCE_DIRECTORY_NAME_REG, first: true, deepSearch: false).FirstOrDefault();
 

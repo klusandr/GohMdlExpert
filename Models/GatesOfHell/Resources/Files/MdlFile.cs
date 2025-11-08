@@ -39,18 +39,18 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
                         var plyModelParameter = lodParameters.First();
                         var lodModelsParameters = lodParameters.Skip(1);
 
-                        var plyFile = new PlyFile((string)plyModelParameter.Data!, relativePathPoint: GetDirectoryPath());
+                        var plyFile = new PlyFile((string)plyModelParameter.Data!, relativePathPoint: GetDirectoryPath()) { Loader = Loader };
                         var lodFiles = new List<PlyFile>();
                         plyFiles.Add(plyFile);
 
 
                         foreach (var lodParameter in lodModelsParameters) {
-                            lodFiles.Add(new PlyFile((string)plyModelParameter.Data!, relativePathPoint: GetDirectoryPath()));
+                            lodFiles.Add(new PlyFile((string)plyModelParameter.Data!, relativePathPoint: GetDirectoryPath()) { Loader = Loader });
                         }
 
                         plyLodFiles.TryAdd(plyFile, [.. lodFiles]);
                     } else if (plyLodModel.Type == MdlSerializer.MdlTypes.VolumeView.ToString()) {
-                        plyFiles.Add(new PlyFile((string)plyLodModel.Data!, relativePathPoint: GetDirectoryPath()));
+                        plyFiles.Add(new PlyFile((string)plyLodModel.Data!, relativePathPoint: GetDirectoryPath()) { Loader = Loader });
                     }
                 }
 

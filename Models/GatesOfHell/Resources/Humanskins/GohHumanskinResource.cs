@@ -18,6 +18,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
 
         public GohResourceDirectory Root { get; }
         public GohResourceDirectory? Source { get; private set; }
+        public GohResourceDirectory? Humanskins { get; private set; }
 
         public GohHumanskinResource(GohResourceDirectory humanskinsDirectory, GohResourceProvider resourceProvider, GohCacheProvider cacheProvider) {
             Root = humanskinsDirectory;
@@ -27,9 +28,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
         }
 
         public void Load() {
-            var sourceDirectory = GohResourceLoading.FilterResource(Root, (f) => f is PlyFile);
-
-            Source = sourceDirectory;
+            Source = GohResourceLoading.FilterResource(Root, (f) => f is PlyFile);
+            Humanskins = GohResourceLoading.FilterResource(Root, (f) => f is MdlFile);
         }
 
         public IEnumerable<MdlFile> GetPlyMdlFiles(PlyFile plyFile) {

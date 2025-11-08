@@ -128,17 +128,22 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
         /// <param name="mtlFiles">Список .mtl файлов.</param>
         /// <param name="humanskinResourceProvider">Провайдер humanskin.</param>
         /// <param name="textureProvider">Провайдер текстур.</param>
-        public static void LoadHumanskinFile(MdlFile mdlFile, out IEnumerable<MtlFile> mtlFiles, GohTextureProvider textureProvider) {
+        public static void LoadHumanskinFile(MdlFile mdlFile, out IEnumerable<MtlFile> mtlFiles, GohResourceProvider resourceProvider, GohTextureProvider textureProvider) {
             var plyFiles = mdlFile.Data.PlyModel;
             var lodFiles = mdlFile.Data.PlyModelLods;
             var mtlFilesList = new List<MtlFile>();
 
             string? mdlFilePath = mdlFile.GetDirectoryPath();
 
+
             if (mdlFilePath != null) {
-                foreach (var mtlFilePath in Directory.GetFiles(mdlFilePath, "*.mtl")) {
-                    if (ResourceChecking.CheckMdlModelMeshTextureName(mdlFile.Data, Path.GetFileName(mtlFilePath))) {
-                        mtlFilesList.Add(new MtlFile(mtlFilePath));
+                var mdlResourceDirectory = resourceProvider.GetDirectory(mdlFilePath);
+
+                if (mdlResourceDirectory != null) {
+                    foreach (var mtlFile in mdlResourceDirectory.GetFiles().OfType<MtlFile>()) {
+                        if (ResourceChecking.CheckMdlModelMeshTextureName(mdlFile.Data, mtlFile.Name)) {
+                            mtlFilesList.Add(mtlFile);
+                        }
                     }
                 }
             }

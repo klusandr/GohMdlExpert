@@ -74,14 +74,8 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels
                 IsApproved = false;
             }
         }
-
         private void OpenInExplorer() {
-            string? path = ((ResourceElement as GohResourceFile)?.Loader as PakFileLoader)?.PakPath;
-
-            path ??= ((ResourceElement as GohResourceDirectory)?.Loader as PakDirectoryLoader)?.PakPath;
-            path ??= ResourceElement.GetFullPath();
-
-            Process.Start("explorer.exe", $"/select, {path}");
+            ViewModelUtils.OpenInExplorer(ResourceElement);
         }
     }
 }

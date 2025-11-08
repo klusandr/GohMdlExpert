@@ -11,6 +11,7 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 using GohMdlExpert.Services;
+using GohMdlExpert.ViewModels.Trees.Humanskins;
 using GohMdlExpert.ViewModels.Trees.LoadModels;
 using GohMdlExpert.ViewModels.Trees.OverviewModels;
 using WpfMvvm.Collections.ObjectModel;
@@ -39,6 +40,7 @@ namespace GohMdlExpert.ViewModels
         private readonly ModelsOverviewTreeViewModel _modelsOverviewTreeViewModel;
         private readonly PlyModelAdderViewModel _modelAdderViewModel;
         private readonly ModelsLoadTreeViewModel _modelsLoadTreeViewModel;
+        private readonly HumanskinTreeViewModel _humanskinTreeViewModel;
         private readonly HumanskinMdlSaveViewModel _humanskinMdlGeneratorViewModel;
         private readonly DefaultTextureViewModel _defaultMaterialViewModel;
 
@@ -67,12 +69,14 @@ namespace GohMdlExpert.ViewModels
 
         public ModelsOverviewTreeViewModel ModelsOverviewTreeViewModel => _modelsOverviewTreeViewModel;
         public ModelsLoadTreeViewModel ModelsLoadTreeViewModel => _modelsLoadTreeViewModel;
+        public HumanskinTreeViewModel HumanskinTreeViewModel => _humanskinTreeViewModel;
         public PlyModelAdderViewModel ModelAdderViewModel => _modelAdderViewModel;
         public DefaultTextureViewModel DefaultMaterialViewModel => _defaultMaterialViewModel;
 
         public ICommand SaveMdlCommand => CommandManager.GetCommand(SaveMtlFile);
         public ICommand NewMdlCommand => CommandManager.GetCommand(CreateMdlFile);
         public ICommand ClearPlyModelFocusCommand => CommandManager.GetCommand(ClearPlyModelFocus);
+
 
         public event EventHandler? UpdatedTextures;
 
@@ -92,6 +96,7 @@ namespace GohMdlExpert.ViewModels
             _defaultMaterialViewModel = new DefaultTextureViewModel(textureSelector);
             _modelAdderViewModel = new PlyModelAdderViewModel(this, _defaultMaterialViewModel);
             _modelsLoadTreeViewModel = new ModelsLoadTreeViewModel(_modelAdderViewModel, _defaultMaterialViewModel, humanskinProvider, textureProvider);
+            _humanskinTreeViewModel = new HumanskinTreeViewModel(this, humanskinProvider);
             _modelsOverviewTreeViewModel = new ModelsOverviewTreeViewModel(this, textureSelector);
 
             _modelsCollectionBinder = new CollectionChangeBinder<Model3D>(_plyModels, _models, (i) => ((PlyModel3D)i!).Model);
@@ -107,8 +112,8 @@ namespace GohMdlExpert.ViewModels
 
         public void SetMtlFile(MdlFile mdlFile) {
             PlyModels.Clear();
-#warning Upgrade load mdl file
-            GohResourceLoading.LoadHumanskinFile(mdlFile, out var mtlFiles, _textureProvider);
+            
+            GohResourceLoading.LoadHumanskinFile(mdlFile, out var mtlFiles, _resourceProvider, _textureProvider);
 
             MdlFile = mdlFile;
             var plyFiles = mdlFile.Data.PlyModel;
@@ -127,7 +132,8 @@ namespace GohMdlExpert.ViewModels
             }
 
             foreach (var plyFile in plyFiles) {
-                AddModel(new PlyModel3D(plyFile), lodModels: lodFiles[plyFile]);
+                lodFiles.TryGetValue(plyFile, out var lodFile);
+                AddModel(new PlyModel3D(plyFile), lodModels: lodFile);
             }
             
             UpdateTextures();
