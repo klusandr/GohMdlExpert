@@ -8,20 +8,17 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
 using SystemPath = System.IO.Path;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods {
-    public class GohOutputMod {
-        private readonly FileSystemResourceLoader _resourceLoader;
-
+    public class OutputModResource {
         public string Name { get; }
         public string Path { get; }
         public ModResourceLoader ResourceLoader { get; }
 
-        public GohOutputMod(string name, string path) {
+        public OutputModResource(string name, string path) {
             Name = name;
             Path = path;
-            ResourceLoader = new ModResourceLoader();
-            ResourceLoader.LoadData(path);
+            ResourceLoader = new ModResourceLoader(path);
         }
 
-        public GohOutputMod(string path) : this(SystemPath.GetFileName(path), path) { }
+        public OutputModResource(string path) : this(SystemPath.GetFileName(path), path) { }
     }
 }

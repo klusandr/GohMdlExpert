@@ -52,7 +52,7 @@ namespace GohMdlExpert {
                 .AddSingleton<GohGameDirectory>()
                 .AddSingleton<GohResourceProvider>()
                 .AddSingleton<GohModResourceProvider>()
-                .AddSingleton<GohOutputModProvider>()
+                .AddSingleton<OutputModProvider>()
                 .AddSingleton<GohHumanskinResourceProvider>()
                 .AddSingleton<GohTextureProvider>()
                 .AddSingleton<SettingsWindowService>()
@@ -80,7 +80,7 @@ namespace GohMdlExpert {
 
                 gameDirectory.Updated += (_, _) => {
                     if (gameDirectory.ResourcePath != null) {
-                        ServiceProvider.GetRequiredService<GohResourceProvider>().OpenResources(gameDirectory.ResourcePath);
+                        ServiceProvider.GetRequiredService<GohResourceProvider>().LoadGameResource(gameDirectory.ResourcePath);
                         ServiceProvider.GetRequiredService<ApplicationViewModel>().FullLoadResources();
                     }  
                 };

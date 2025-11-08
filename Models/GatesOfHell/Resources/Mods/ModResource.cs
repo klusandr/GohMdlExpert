@@ -10,14 +10,14 @@ using SystemPath = System.IO.Path;
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods {
     public class ModResource {
         public string Path { get; }
-        public bool IsEnable { get; set; }
+        public bool IsLoaded { get; set; }
         public ModInfo? ModInfo { get; private set; }
         public ModResourceLoader ResourceLoader { get; private set; }
         public bool IsLoad => ResourceLoader != null;
 
         public ModResource(string path) {
             Path = path;
-            ResourceLoader = new ModResourceLoader();
+            ResourceLoader = new ModResourceLoader(path);
         }
 
         public void Load() {
@@ -29,9 +29,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods {
                 } catch (Exception) { }
             }
 
-            ResourceLoader = new ModResourceLoader();
-            ResourceLoader.LoadData(Path);
-            IsEnable = true;
+            IsLoaded = true;
         }
     }
 }

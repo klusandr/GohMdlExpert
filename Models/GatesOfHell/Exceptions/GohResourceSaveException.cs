@@ -17,7 +17,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
             return new GohResourceSaveException($"Output mod is not in set.") { ExceptionCode = 1 };
         }
 
-        public static GohResourceSaveException FileOutputPathIsNotModPath(string outputPath, GohOutputMod mod) {
+        public static GohResourceSaveException FileOutputPathIsNotModPath(string outputPath, OutputModResource mod) {
             return new GohResourceSaveException(string.Format("File output path not include path of output mod. Output path: \"{0}\". Output mod path: \"{0}\".", mod.Path)) { ExceptionCode = 2 };
         }
 
@@ -31,10 +31,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
 
         public static GohResourceSaveException SaveFilePathIsNotDefine(MdlFile mdlFile) {
             return new GohResourceSaveException(string.Format("File output path is not define. File name: \"{0}\".", mdlFile.Name)) { ExceptionCode = 5 };
-        }
-
-        public static GohResourceSaveException SaveReadOnlyFile(GohResourceFile file) {
-            return new GohResourceSaveException(string.Format("Try save read only file. File name: {0}", file.GetFullPath()));
         }
 
         private static string GetFullMessage(string? message) {

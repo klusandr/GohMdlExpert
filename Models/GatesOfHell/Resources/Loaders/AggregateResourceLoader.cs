@@ -9,12 +9,12 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
-    public class AggregateResourceLoader : GohBaseResourceLoader {
+    public class AggregateResourceLoader : IGohResourceLoader {
         private readonly List<IGohResourceLoader> _resourceLoaders;
         private bool _isLoad = false;
         private GohResourceDirectory? _root;
 
-        public override GohResourceDirectory Root { 
+        public GohResourceDirectory Root { 
             get {
                 if (!_isLoad) {
                     LoadRootDictionary();
@@ -36,14 +36,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
         public void AddResourceLoader(IGohResourceLoader resourceLoader) {
             _resourceLoaders.Insert(0, resourceLoader);
             _isLoad = false;
-        }
-
-        public override bool CheckRootPath(string path) {
-            throw new InvalidOperationException("Aggregate resource loader not have a base path.");
-        }
-
-        public override void LoadData(string path) {
-            throw new InvalidOperationException("Aggregate resource loader can't load data.");
         }
 
         private void LoadRootDictionary() {

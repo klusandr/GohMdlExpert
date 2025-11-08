@@ -19,10 +19,10 @@ namespace GohMdlExpert.ViewModels
     public class HumanskinMdlSaveViewModel : BaseViewModel {
         private readonly SaveFileDialog _fileDialog;
         private readonly GohHumanskinResourceProvider _humanskinResourceProvider;
-        private readonly GohOutputModProvider _gohOutputModProvider;
+        private readonly OutputModProvider _gohOutputModProvider;
         private readonly IUserDialogProvider _userDialog;
 
-        public HumanskinMdlSaveViewModel(GohHumanskinResourceProvider humanskinResourceProvider, GohOutputModProvider gohOutputModProvider, IUserDialogProvider userDialog) {
+        public HumanskinMdlSaveViewModel(GohHumanskinResourceProvider humanskinResourceProvider, OutputModProvider gohOutputModProvider, IUserDialogProvider userDialog) {
             _humanskinResourceProvider = humanskinResourceProvider;
             _gohOutputModProvider = gohOutputModProvider;
             _userDialog = userDialog;
@@ -32,7 +32,7 @@ namespace GohMdlExpert.ViewModels
                 DefaultExt = "mdl"
             };
 
-            _gohOutputModProvider.Mod = new GohOutputMod("F:\\Steam Game\\steamapps\\common\\Call to Arms - Gates of Hell\\mods\\divisions");
+            _gohOutputModProvider.Mod = new OutputModResource("F:\\Steam Game\\steamapps\\common\\Call to Arms - Gates of Hell\\mods\\divisions");
         }
 
         public void Save(MdlFile mdlFile, Dictionary<string, MtlTexture> mtlTextures, bool newFile = false) {

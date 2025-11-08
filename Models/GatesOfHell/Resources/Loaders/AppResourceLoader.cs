@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
     public class AppResourceLoader : FileSystemResourceLoader {
-        public override bool CheckRootPath(string path) {
+        public AppResourceLoader(string path) : base(path) { }
+
+        public override bool CheckResourceDirectory(string path) {
             return true;
         }
     }

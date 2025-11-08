@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods
 {
     public class GohModResourceProvider {
-        private List<ModResource> _mods;
+        private readonly List<ModResource> _mods;
 
         public IEnumerable<ModResource> Mods { get => _mods; }
 

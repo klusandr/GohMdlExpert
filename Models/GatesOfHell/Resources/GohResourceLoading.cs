@@ -53,16 +53,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             [DefFile.Extension] = typeof(DefFile)
         };
 
-        public static AppResourceLoader AppResourceLoader {
-            get {
-                if (s_appResourceLoader == null) {
-                    s_appResourceLoader = new AppResourceLoader();
-                    s_appResourceLoader.LoadData(AppDomain.CurrentDomain.BaseDirectory);
-                }
-
-                return s_appResourceLoader;
-            }
-        }
+        public static AppResourceLoader AppResourceLoader => s_appResourceLoader ??= new AppResourceLoader(AppDomain.CurrentDomain.BaseDirectory);
 
         public static ModelDataSerializer.ModelDataParameter MdlTemplateParameters => s_mdlTemplateParameters ??= new MdlFile(HumanskinTemplateMdl) {
             Loader = AppResourceLoader.FileLoader

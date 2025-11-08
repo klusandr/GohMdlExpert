@@ -18,8 +18,8 @@ namespace GohMdlExpert.ViewModels.SettingsPages {
             public string? Name => _modResource.ModInfo?.Name;
             public string Path => _modResource.Path;
             public bool IsEnable {
-                get => _modResource.IsEnable;
-                set => _modResource.IsEnable = value;
+                get => _modResource.IsLoaded;
+                set => _modResource.IsLoaded = value;
             }
             public bool IsLoad => _modResource.IsLoad;
 
@@ -84,7 +84,7 @@ namespace GohMdlExpert.ViewModels.SettingsPages {
         }
 
         private void Approve() {
-            _resourceProvider.LoadModResources();
+            _resourceProvider.LoadModes();
             _applicationViewModel.FullLoadResources();
         }
     }

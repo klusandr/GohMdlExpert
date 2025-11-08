@@ -79,7 +79,7 @@ namespace GohMdlExpert.ViewModels {
 
             if (folderDialog.ShowDialog() ?? false) {
                 Settings.Default.LastOpenedResource = folderDialog.FolderName;
-                _gohResourceProvider.OpenResources(folderDialog.FolderName);
+                _gohResourceProvider.OpenResource(folderDialog.FolderName);
                 FullLoadResources();
             }
 

@@ -21,7 +21,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
 
                 return _items!;
             }
-            set {
+            protected set {
                 _items = value;
             }
         }

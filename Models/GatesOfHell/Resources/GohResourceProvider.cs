@@ -8,11 +8,6 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Mods;
 namespace GohMdlExpert.Models.GatesOfHell.Resources
 {
     public class GohResourceProvider {
-        private static readonly IEnumerable<IGohResourceLoader> s_baseResourceDirectories = [
-            new PakResourceLoader(),
-            new FileSystemResourceLoader(),
-            new ModResourceLoader()
-        ];
         private IGohResourceLoader? _baseResourceLoader;
         private IGohResourceLoader? _currentResourceLoader;
 
@@ -29,24 +24,29 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             ModResourceProvider = modResourceProvider;
         }
 
-        public void OpenResources(string path) {
-            _baseResourceLoader = _currentResourceLoader = GetResourceLoader(path) ?? throw GohResourceLoadException.IsNotGohResource(path);
-            _currentResourceLoader.LoadData(path);
+        public void LoadGameResource(string path) {
+            _baseResourceLoader = _currentResourceLoader = new PakResourceLoader(path);
             OnResourceUpdated();
         }
 
-        public void LoadModResources() {
+        public void OpenResource(string path) {
+            _baseResourceLoader = _currentResourceLoader = new FileSystemResourceLoader(path);
+            OnResourceUpdated();
+        }
+
+        public void LoadModes() {
             if (_baseResourceLoader == null) {
                 return;
             }
 
-            var resourceLoaders = ModResourceProvider.Mods.Where(m => m.IsEnable && m.IsLoad).Select(m => m.ResourceLoader);
+            var resourceLoaders = ModResourceProvider.Mods.Where(m => m.IsLoaded && m.IsLoad).Select(m => m.ResourceLoader);
 
             if (resourceLoaders.Any()) {
                 _currentResourceLoader = new AggregateResourceLoader([_baseResourceLoader, .. resourceLoaders]);
             } else {
                 _currentResourceLoader = _baseResourceLoader;
             }
+
             OnResourceUpdated();
         }
 
@@ -95,16 +95,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
 
             ResourceDirectory.FindResourceElements(perdicate);
             OnResourceFullLoaded();
-        }
-
-        private IGohResourceLoader? GetResourceLoader(string path) {
-            foreach (var resourceDirectory in s_baseResourceDirectories) {
-                if (resourceDirectory.CheckRootPath(path)) {
-                    return resourceDirectory;
-                }
-            }
-
-            return null;
         }
 
         private void OnResourceUpdated() {

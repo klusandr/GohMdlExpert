@@ -6,41 +6,34 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Files;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
-    public class FileSystemResourceLoader : GohBaseResourceLoader {
-        private static readonly string[] s_resourceNeedDirectories = {
+    public class FileSystemResourceLoader : IGohResourceLoader {
+        private static readonly string[] s_resourceDirectories = [
             "entity", "texture"
-        };
+        ];
 
         protected string? _resourcePath;
-        private FileSystemDirectoryLoader? _directoryLoader;
-        private FileSystemFileLoader? _fileLoader;
-        private GohResourceDirectory? _root;
 
-        public FileSystemDirectoryLoader DirectoryLoader { 
-            get => _directoryLoader ?? throw GohResourceLoadException.LoaderNotLoadResource(this);
-            private set => _directoryLoader = value; 
-        }
+        public FileSystemDirectoryLoader DirectoryLoader { get; }
 
-        public FileSystemFileLoader FileLoader { 
-            get => _fileLoader ?? throw GohResourceLoadException.LoaderNotLoadResource(this);  
-            private set => _fileLoader = value; 
-        }
-        public override GohResourceDirectory Root {
-            get => _root ?? throw GohResourceLoadException.LoaderNotLoadResource(this);
-            protected set => _root = value; 
-        }
+        public FileSystemFileLoader FileLoader { get; }
+
+        public GohResourceDirectory Root { get; }
 
         public FileSystemResourceLoader(string path) {
-            if (!CheckRootPath(path)) {
+            if (!CheckResourceDirectory(path)) {
                 throw GohResourceLoadException.IsNotGohResource(path);
             }
 
             _resourcePath = path;
+
             FileLoader = new FileSystemFileLoader(this);
             DirectoryLoader = new FileSystemDirectoryLoader(this, FileLoader);
+            Root = new GohResourceDirectory("") { Loader = DirectoryLoader };
+        }
 
-        public override void LoadData() {
-            Root = new GohResourceDirectory("") { Loader = new FileSystemDirectoryLoader(this) };
+        public virtual bool CheckResourceDirectory(string path) {
+            var directories = Directory.GetDirectories(path).Select(d => d[(d.LastIndexOf('\\') + 1)..]);
+            return s_resourceDirectories.Any((d) => directories.Contains(d));
         }
 
         public string GetFileSystemPath(string insidePath) {
