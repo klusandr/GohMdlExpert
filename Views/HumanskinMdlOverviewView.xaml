@@ -53,7 +53,7 @@
         </TabControl>
 
         <Grid x:Name="_sceneBackground" Background="{DynamicResource DarkBackgroundBrush}" MouseWheel="OnMouseWheel" Grid.Column="1" Cursor="Cross">
-            <Viewport3D x:Name="_scene" MouseLeftButtonDown="_scene_MouseDown">
+            <Viewport3D x:Name="_scene">
                 <Viewport3D.Camera>
                     <PerspectiveCamera x:Name="_perspectivCamera"/>
                 </Viewport3D.Camera>

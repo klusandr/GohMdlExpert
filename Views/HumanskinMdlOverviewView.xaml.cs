@@ -49,10 +49,10 @@ namespace GohMdlExpert.Views {
                 }
             };
 
-            _scene.Children.Add(new ModelVisual3D() {
-                Content = Geometry3DDrawinger.DrowCube(1),
-                Transform = tr
-            });
+            //_scene.Children.Add(new ModelVisual3D() {
+            //    Content = Geometry3DDrawinger.DrowCube(1),
+            //    Transform = tr
+            //});
         }
 
         public PerspectiveCamera Camera => _perspectivCamera;
@@ -87,10 +87,6 @@ namespace GohMdlExpert.Views {
 
         private void OnMouseWheel(object sender, MouseWheelEventArgs e) {
             _cameraPositioner.ZoomCamera(e.Delta / 120);
-        }
-
-        private void _scene_MouseDown(object sender, MouseButtonEventArgs e) {
-
         }
     }
 }
