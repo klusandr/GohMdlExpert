@@ -17,7 +17,8 @@ namespace GohMdlExpert.ViewModels.Trees.Humanskins {
         }
 
         protected override void Approve() {
-            Tree.HumanskinOverview.SetMtlFile(_mdlFile);
+            var mdlFile = new MdlFile(_mdlFile.Name, _mdlFile.Path) { Data = _mdlFile.Data };
+            Tree.HumanskinOverview.SetMtlFile(mdlFile);
         }
     }
 }

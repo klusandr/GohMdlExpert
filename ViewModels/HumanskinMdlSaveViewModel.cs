@@ -4,6 +4,7 @@ using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
@@ -21,6 +22,9 @@ namespace GohMdlExpert.ViewModels
         private readonly GohHumanskinResourceProvider _humanskinResourceProvider;
         private readonly OutputModProvider _gohOutputModProvider;
         private readonly IUserDialogProvider _userDialog;
+        private string _currentModDirectory;
+
+        private OutputModResource Mod => _gohOutputModProvider.Mod;
 
         public HumanskinMdlSaveViewModel(GohHumanskinResourceProvider humanskinResourceProvider, OutputModProvider gohOutputModProvider, IUserDialogProvider userDialog) {
             _humanskinResourceProvider = humanskinResourceProvider;
@@ -33,73 +37,66 @@ namespace GohMdlExpert.ViewModels
             };
 
             _gohOutputModProvider.Mod = new OutputModResource("F:\\Steam Game\\steamapps\\common\\Call to Arms - Gates of Hell\\mods\\divisions");
+            _currentModDirectory = "entity\\humanskin\\[germans]\\ger_test";
+            Mod.AddDirectory("entity\\humanskin\\[germans]\\ger_test");
         }
 
-        public void Save(MdlFile mdlFile, Dictionary<string, MtlTexture> mtlTextures, bool newFile = false) {
-            string defFileName = Path.GetFileNameWithoutExtension(mdlFile.Name) + ".def";
-            var mod = _gohOutputModProvider.Mod;
-            var fileLoader = mod.ResourceLoader.FileLoader;
-            DefFile? defFile = null;
-            List<MtlFile>? mtlFiles = null;
+        public void Save(MdlFile mdlFile, Dictionary<string, MtlTexture> mtlTextures) {
+            var currentDirectory = Mod.Root.AlongPath(_currentModDirectory);
+            var files = currentDirectory!.GetFiles();
 
-#warning Check mdlFile diff resource loader
-            if (newFile || !mdlFile.IsLoaderInitialize || mdlFile.Loader.ResourceLoader != mod.ResourceLoader) {
-                _fileDialog.InitialDirectory = Path.GetDirectoryName(Settings.Default.LastSavedFile);
-                _fileDialog.FileName = mdlFile.Name;
+            var oldFile = files.FirstOrDefault(f => f.Name == mdlFile.Name);
 
-                if (!(_fileDialog.ShowDialog() ?? false)) {
+            if (oldFile != null) {
+                if (true /*ask*/) {
+                    currentDirectory.Items.Remove(oldFile);
+                } else {
                     return;
                 }
+            }
 
-                string fileName = _fileDialog.FileName;
-
-                if (!fileName.StartsWith(mod.Path)) {
-                    throw GohResourceSaveException.FileOutputPathIsNotModPath(fileName, mod);
+            if (mdlFile.IsLoaderInitialize) {
+                if (mdlFile.Loader != Mod.FileLoader) {
+                    mdlFile = new MdlFile(mdlFile.Name) {
+                        Data = mdlFile.Data,
+                        Loader = Mod.FileLoader
+                    };
                 }
-
-                mdlFile.RelativePathPoint = null;
-                mdlFile.Path = mod.ResourceLoader.GetResourceInsidePath(Path.GetDirectoryName(fileName)!);
-                mdlFile.Name = Path.GetFileName(fileName);
-                mdlFile.Loader = fileLoader;
             } else {
-                if (mdlFile.Path == null) {
-                    throw GohResourceSaveException.SaveFilePathIsNotDefine(mdlFile);
-                }
+                mdlFile.Loader = Mod.FileLoader;
             }
 
-            var outputDirectory = mod.ResourceLoader.Root.AlongPath(mdlFile.Path);
+            mdlFile.Path = _currentModDirectory;
 
-            if (outputDirectory != null) {
-                mtlFiles = outputDirectory.GetFiles()
-                    .OfType<MtlFile>()
-                    .Where(f => mtlTextures.ContainsKey(f.Name))
-                    .ToList();
-                
-                defFile = (DefFile?)outputDirectory.GetFile(defFileName);
+            Mod.AddFile(mdlFile);
+
+            string defFileName = Path.GetFileNameWithoutExtension(mdlFile.Name) + ".def";
+
+            DefFile? defFile = null;
+
+            if (!files.Any(f => f.Name == defFileName)) {
+                defFile = new DefFile(defFileName, currentDirectory.GetFullPath()) { 
+                    Loader = Mod.FileLoader 
+                };
             }
 
-            if (defFile == null) {
-                defFile = new DefFile(defFileName, mdlFile.Path) { Loader = fileLoader };
-            } else {
-                defFile = null;
-            }
-            
-            mtlFiles ??= [];
+            var mtlFiles = new List<MtlFile>();
+            var currentMtlFiles = currentDirectory.GetFiles().OfType<MtlFile>();
 
             foreach (var mtlTexture in mtlTextures) {
-                var mtlFile = mtlFiles.FirstOrDefault(f => f.Name == mtlTexture.Key);
+                var mtlFile = currentMtlFiles.FirstOrDefault(f => f.Name == mtlTexture.Key);
 
                 if (mtlFile == null) {
-                    mtlFiles.Add(new MtlFile(mtlTexture.Key, mdlFile.Path) {
+                    mtlFiles.Add(new MtlFile(mtlTexture.Key, currentDirectory.GetFullPath()) {
                         Data = mtlTexture.Value,
-                        Loader = fileLoader
+                        Loader = Mod.FileLoader
                     });
                 } else {
                     if (mtlFile.Data.DiffusePath != mtlTexture.Value.DiffusePath) {
                         var replaceDialogResult = _userDialog.Ask(
                             "The humanskin output directory contain another texture which your humanskin use. " +
                             "Replace this texture on your texture?" +
-                            "\n Warning. Your new texture will be used by other humanskin.", 
+                            "\n Warning. Your new texture will be used by other humanskin.",
                             "Replace texture", QuestionType.YesNoCancel, QuestionResult.Cancel
                         );
 
@@ -107,15 +104,13 @@ namespace GohMdlExpert.ViewModels
                             return;
                         } else if (replaceDialogResult == QuestionResult.Yes) {
                             mtlFile.Data = mtlTexture.Value;
-                        } else {
-                            mtlFiles.Remove(mtlFile);
+                            mtlFiles.Add(mtlFile);
                         }
-                    } else {
-                        mtlFiles.Remove(mtlFile);
                     }
                 }
             }
 
+            Mod.CreateModDirectories();
             mdlFile.SaveData();
             defFile?.SaveData();
             mtlFiles.ForEach(f => f.SaveData());

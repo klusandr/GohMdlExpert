@@ -198,9 +198,9 @@ namespace GohMdlExpert.ViewModels
 
             MdlModel? mdlModel = null;
 
-            if (MdlFile.Exists()) {
-                mdlModel = MdlFile.Data;
-            }
+            //if (MdlFile.Exists()) {
+            //    mdlModel = MdlFile.Data;
+            //}
 
             MdlFile.Data = new MdlModel(
                 mdlModel?.Parameters ?? GohResourceLoading.MdlTemplateParameters, 
