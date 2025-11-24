@@ -45,7 +45,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
 
 
                         foreach (var lodParameter in lodModelsParameters) {
-                            lodFiles.Add(new PlyFile((string)plyModelParameter.Data!, relativePathPoint: GetDirectoryPath()) { Loader = Loader });
+                            lodFiles.Add(new PlyFile((string)lodParameter.Data!, relativePathPoint: GetDirectoryPath()) { Loader = Loader });
                         }
 
                         plyLodFiles.TryAdd(plyFile, [.. lodFiles]);
