@@ -150,8 +150,12 @@ namespace GohMdlExpert.ViewModels
                 }
             }
 
-            _lodPlyFiles.Add(modelPly, new ObservableCollection<PlyFile>(lodModels ?? GohResourceLoading.GetPlyLodFiles(modelPly.PlyFile, _humanskinProvider.Current, _resourceProvider)));
-
+            try {
+                _lodPlyFiles.Add(modelPly, new ObservableCollection<PlyFile>(lodModels ?? GohResourceLoading.GetPlyLodFiles(modelPly.PlyFile, _humanskinProvider.Current, _resourceProvider)));
+            } catch (GohException) {
+                _userDialog.ShowWarning("Load LOD models failed. Add LOD elements by manually.");
+            }
+            
             _plyModels.Add(modelPly);
             UpdateTextures();
         }
