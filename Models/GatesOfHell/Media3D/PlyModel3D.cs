@@ -5,6 +5,8 @@ using GohMdlExpert.Models.GatesOfHell.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
+using WpfMvvm.Collections.ObjectModel;
+using WpfMvvm.Data;
 
 namespace GohMdlExpert.Models.GatesOfHell.Media3D
 {
@@ -69,10 +71,18 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D
         private readonly static Material s_transparentMaterial = new DiffuseMaterial();
 
         private readonly Dictionary<string, MeshData> _meshes;
+        private readonly Model3DGroup _mainModel;
+        private readonly List<Model3DGroup> _lodModels;
         private bool _isVisible;
+        private int _currentLodIndex = 0;
 
         public PlyFile PlyFile { get; }
-        public Model3DGroup Model { get; }
+        public ObservableList<PlyFile>? LodPlyFiles { get; }
+
+        private readonly CollectionChangeBinder<Model3DGroup> _lodPlyFilesBinding;
+
+        public Model3DGroup Model { get; private set; }
+
         public IEnumerable<string> MeshesTextureNames => _meshes.Keys;
         public bool IsVisible {
             get => _isVisible;
@@ -85,17 +95,32 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D
         }
         public bool IsEnable { get; set; }
 
-        public PlyModel3D(PlyFile plyFile, Dictionary<string, MtlTexture?>? meshesTextures = null) {
+        public event EventHandler? ModelChanged;
+
+        public PlyModel3D(PlyFile plyFile, Dictionary<string, MtlTexture?>? meshesTextures = null, IEnumerable<PlyFile>? lodPlyFiles = null) {
             _meshes = [];
             PlyFile = plyFile;
+            _lodModels = [];
             _isVisible = true;
 
-            Model = ResourceConverts.PlyModelToModel3D(plyFile.Data, meshesTextures);
+            LodPlyFiles = [];
+
+            _lodPlyFilesBinding = new CollectionChangeBinder<Model3DGroup>(LodPlyFiles, _lodModels, (pF) => ResourceConverts.PlyModelToModel3D(((PlyFile)pF!).Data, meshesTextures));
+            LodPlyFiles.CollectionChanged += (s, e) => ModelChanged?.Invoke(this, EventArgs.Empty);
+
+            _mainModel = ResourceConverts.PlyModelToModel3D(plyFile.Data, meshesTextures);
+            Model = _mainModel;
+
+            if (lodPlyFiles != null) {
+                foreach (var lodplyFile in lodPlyFiles) {
+                    LodPlyFiles.Add(lodplyFile);
+                }
+            }
 
             LoadMeshes(meshesTextures);
         }
 
-        public PlyModel3D(PlyFile plyFile, AggregateMtlFiles? mtlFiles) : this(plyFile, mtlFiles?.GetFirstMeshesTextures()) { }
+        public PlyModel3D(PlyFile plyFile, AggregateMtlFiles? mtlFiles, IEnumerable<PlyFile>? lodPlyFiles = null) : this(plyFile, mtlFiles?.GetFirstMeshesTextures(), lodPlyFiles) { }
 
         public static implicit operator Model3D?(PlyModel3D? ply) {
             return ply?.Model;
@@ -136,6 +161,31 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D
 
         public Point3D GetCenterPoint() {
             return PlyFile.Data.Points.SwapYZ().SwapXZ().GetCenterPoint();
+        }
+
+        public void SetLodIndex(int index) {
+            if (index == _currentLodIndex) {
+                return;
+            }
+
+            if (index == 0) {
+                Model = _mainModel;
+            } else {
+                Model = _lodModels[index - 1];
+                for (int i = 0; i < _mainModel.Children.Count; i++) {
+                    var mainmodelMesh = ((GeometryModel3D)_mainModel.Children[i]);
+                    var lodModelMesh = ((GeometryModel3D)Model.Children[i]);
+
+                    lodModelMesh.Material = lodModelMesh.BackMaterial = mainmodelMesh.Material;
+                }
+            }
+
+            _currentLodIndex = index;
+            ModelChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public int GetLodIndex() {
+            return _currentLodIndex;
         }
 
         private MeshData GetMesh(string meshTextureName) {

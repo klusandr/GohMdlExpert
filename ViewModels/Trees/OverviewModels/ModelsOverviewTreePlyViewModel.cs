@@ -62,10 +62,10 @@ namespace GohMdlExpert.ViewModels.Trees.OverviewModels {
 
         private void IsSelectedChangeHandler(object? sender, PropertyChangedEventArgs e) {
             if (IsSelected) {
-                Tree.LodListViewModel.Items = Tree.Models3DViewModel.GetPlyModelLodFiles(PlyModel);
+                Tree.LodListViewModel.PlyModel = PlyModel;
                 PlyModel.Model.SetSelectMaterial();
             } else {
-                Tree.LodListViewModel.Items = null;
+                Tree.LodListViewModel.PlyModel = null;
                 PlyModel.Model.ClearSelectMaterial();
             }
         }

@@ -113,7 +113,7 @@ namespace GohMdlExpert.ViewModels
                             }
                         }
                     }
-                    
+#warning Add load LOD files.
                     _models3DView.AddModel(AddedModel, AggregateMtlFiles);
 
                     if (textures != null) {

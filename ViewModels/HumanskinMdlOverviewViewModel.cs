@@ -28,7 +28,6 @@ namespace GohMdlExpert.ViewModels
         private readonly Model3DCollection _models;
         private readonly ObservableDictionary<string, AggregateMtlFile> _aggregateMtlFiles;
         private readonly Dictionary<string, int> _currentMtlFilesTexturesIndex;
-        private readonly Dictionary<PlyModel3D, ObservableCollection<PlyFile>> _lodPlyFiles;
         private readonly CollectionChangeBinder<Model3D> _modelsCollectionBinder;
         private readonly CollectionChangeHandler _plyModelsChangeHandler;
 
@@ -83,7 +82,6 @@ namespace GohMdlExpert.ViewModels
         public HumanskinMdlOverviewViewModel(IUserDialogProvider userDialog, GohResourceProvider resourceProvider, GohHumanskinResourceProvider humanskinProvider, GohTextureProvider textureProvider, HumanskinMdlSaveViewModel humanskinMdlGeneratorViewModel, TextureLoadService textureSelector) {
             _models = [];
             _plyModels = [];
-            _lodPlyFiles = [];
             _aggregateMtlFiles = [];
             _currentMtlFilesTexturesIndex = [];
 
@@ -99,7 +97,12 @@ namespace GohMdlExpert.ViewModels
             _humanskinTreeViewModel = new HumanskinTreeViewModel(this, humanskinProvider);
             _modelsOverviewTreeViewModel = new ModelsOverviewTreeViewModel(this, textureSelector);
 
-            _modelsCollectionBinder = new CollectionChangeBinder<Model3D>(_plyModels, _models, (i) => ((PlyModel3D)i!).Model);
+            _modelsCollectionBinder = new CollectionChangeBinder<Model3D>(_plyModels, _models, 
+                (s) => { 
+                    var plyModel = (s as PlyModel3D)!;
+                    plyModel.ModelChanged += PlyModelChanged;
+                    return plyModel.Model; 
+                });
             _plyModelsChangeHandler = new CollectionChangeHandler(_plyModels)
                 .AddHandlerBuilder(NotifyCollectionChangedAction.Remove, PlyModelRemoveHandler)
                 .AddHandlerBuilder(NotifyCollectionChangedAction.Reset, PlyModelRemoveHandler);
@@ -133,7 +136,7 @@ namespace GohMdlExpert.ViewModels
 
             foreach (var plyFile in plyFiles) {
                 lodFiles.TryGetValue(plyFile, out var lodFile);
-                AddModel(new PlyModel3D(plyFile), lodModels: lodFile);
+                AddModel(new PlyModel3D(plyFile, lodPlyFiles: lodFile));
             }
             
             UpdateTextures();
@@ -145,7 +148,7 @@ namespace GohMdlExpert.ViewModels
             ClearPlyModelFocus();
         }
 
-        public void AddModel(PlyModel3D modelPly, AggregateMtlFiles? aggregateMtlFiles = null, IEnumerable<PlyFile>? lodModels = null) {
+        public void AddModel(PlyModel3D modelPly, AggregateMtlFiles? aggregateMtlFiles = null) {
             if (MdlFile == null) {
                 CreateMdlFile();
             }
@@ -155,8 +158,6 @@ namespace GohMdlExpert.ViewModels
                     AddAggregateMtlFile(aggregateMtlFile);
                 }
             }
-
-            _lodPlyFiles.Add(modelPly, new ObservableCollection<PlyFile>(lodModels ?? GohResourceLoading.GetPlyLodFiles(modelPly.PlyFile, _resourceProvider)));
 
             _plyModels.Add(modelPly);
             UpdateTextures();
@@ -205,7 +206,7 @@ namespace GohMdlExpert.ViewModels
             MdlFile.Data = new MdlModel(
                 mdlModel?.Parameters ?? GohResourceLoading.MdlTemplateParameters, 
                 PlyModels.Select(p => p.PlyFile), 
-                new(_lodPlyFiles.Select(l => new KeyValuePair<PlyFile, PlyFile[]>(l.Key.PlyFile, [.. l.Value])))
+                new(PlyModels.Select(l => new KeyValuePair<PlyFile, PlyFile[]>(l.PlyFile, [.. l.LodPlyFiles ?? []])))
             );
 
             var textures = new Dictionary<string, MtlTexture>(
@@ -276,11 +277,6 @@ namespace GohMdlExpert.ViewModels
             return _plyModels.Where(p => p.MeshesTextureNames.Contains(mtlFileName));
         }
 
-        public ObservableCollection<PlyFile>? GetPlyModelLodFiles(PlyModel3D modelPly) {
-            _lodPlyFiles.TryGetValue(modelPly, out var value);
-            return value;
-        }
-
         public void ClearPlyModelFocus() {
             FocusablePlyModel = null;
         }
@@ -326,13 +322,16 @@ namespace GohMdlExpert.ViewModels
             }
         }
 
+        private void PlyModelChanged(object? s, EventArgs e) {
+            var plyModel = (s as PlyModel3D)!;
+
+            _models[_plyModels.IndexOf(plyModel)] = plyModel.Model;
+        }
+
         private void PlyModelRemoveHandler(object? sender, NotifyCollectionChangedEventArgs e) {
             if (_plyModels.Count == 0) {
                 ClearAggregateFiles();
-                _lodPlyFiles.Clear();
             } else {
-                _lodPlyFiles.Remove(e.GetItem<PlyModel3D>()!);
-
                 foreach (var aggregateMtlFile in _aggregateMtlFiles.Values) {
                     if (!GetMtlFilePlyModels(aggregateMtlFile.Name).Any()) {
                         RemoveAggregateMtlFile(aggregateMtlFile.Name);
