@@ -96,7 +96,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins
                 if (cache.TryGetValue(plyFile.Name, out var value)) {
                     foreach (var texturePath in value) {
                         if (texturePath.Contains(meshTextureName)) {
-                            mtlTextures.Add(((MtlFile)_resourceProvider.GetFile(texturePath)).Data);
+                            var file = (MtlFile?)_resourceProvider.GetFile(texturePath);
+
+                            if (file != null) {
+                                mtlTextures.Add(file.Data);
+                            }
                         }
                         
                     }
