@@ -41,11 +41,21 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
             _humanskinResources.Clear();
 
             if (_resourceProvider.ResourceDirectory != null) {
-                _humanskinResources.Add(new GohFactionHumanskinResource("German", _resourceProvider.GetLocationDirectory("ger_humanskin"), _resourceProvider) { NullName = "ger_null.ply" });
-                _humanskinResources.Add(new GohFactionHumanskinResource("United states", _resourceProvider.GetLocationDirectory("us_humanskin"), _resourceProvider));
-                _humanskinResources.Add(new GohFactionHumanskinResource("Soviets", _resourceProvider.GetLocationDirectory("sov_humanskin"), _resourceProvider) { NullName = "sov_null.ply" });
-                _humanskinResources.Add(new GohFactionHumanskinResource("Finnish", _resourceProvider.GetLocationDirectory("fin_humanskin"), _resourceProvider) { NullName = "fin_null.ply" });
-                //_humanskinResources.Add(new GohFactionHumanskinResource("German pak", new Files.GohResourceDirectory("humanskin/[germans]") { Loader = GohServicesProvider.Instance.GetRequiredService<PakDirectoryLoader>()}));
+                try {
+                    _humanskinResources.Add(new GohFactionHumanskinResource("German", _resourceProvider.GetLocationDirectory("ger_humanskin"), _resourceProvider) { NullName = "ger_null.ply" });
+                } catch (GohResourcesException) { }
+
+                try {
+                    _humanskinResources.Add(new GohFactionHumanskinResource("United states", _resourceProvider.GetLocationDirectory("us_humanskin"), _resourceProvider));
+                } catch (GohResourcesException) { }
+
+                try {
+                    _humanskinResources.Add(new GohFactionHumanskinResource("Soviets", _resourceProvider.GetLocationDirectory("sov_humanskin"), _resourceProvider) { NullName = "sov_null.ply" });
+                } catch (GohResourcesException) { }
+
+                try {
+                    _humanskinResources.Add(new GohFactionHumanskinResource("Finnish", _resourceProvider.GetLocationDirectory("fin_humanskin"), _resourceProvider) { NullName = "fin_null.ply" });
+                } catch (GohResourcesException) { }
             }
 
             EndLoading();
