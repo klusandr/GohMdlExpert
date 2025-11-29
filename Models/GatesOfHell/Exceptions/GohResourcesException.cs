@@ -13,7 +13,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
         }
 
         public static GohResourcesException IsNotGohResource(string path) {
-            return new GohResourcesException($"\"{path}\" is not GoH resource directory.") { ExceptionCode = 2 };
+            return new GohResourcesException($"\"{path}\" is not GoH resource directory. It not contain entity or texture resource folder.") { ExceptionCode = 2 };
         }
 
         public static GohResourcesException DirectoryNotSpecified() {

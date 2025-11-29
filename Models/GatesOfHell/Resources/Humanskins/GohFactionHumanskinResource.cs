@@ -20,6 +20,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins
         public string Name { get; }
         public GohResourceDirectory Root { get; }
         public GohResourceDirectory Source { get; }
+        public string? NullName { get; set; }
 
         public GohFactionHumanskinResource(string name, GohResourceDirectory factionRoot, GohResourceProvider resourceProvider) {
             var source = factionRoot.FindResourceElements<GohResourceDirectory>(null, searchPattern: HUMANSKIN_SOURCE_DIRECTORY_NAME_REG, first: true, deepSearch: false).FirstOrDefault();
@@ -95,7 +96,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins
                 if (cache.TryGetValue(plyFile.Name, out var value)) {
                     foreach (var texturePath in value) {
                         if (texturePath.Contains(meshTextureName)) {
-                            mtlTextures.Add(((MtlFile)_resourceProvider.GetFile(texturePath)).Data);
+                            var file = (MtlFile?)_resourceProvider.GetFile(texturePath);
+
+                            if (file != null) {
+                                mtlTextures.Add(file.Data);
+                            }
                         }
                         
                     }
@@ -127,7 +132,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins
         }
 
         public PlyFile GetNullPlyFile(PlyFile plyFile) {
-            return new PlyFile(@"F:\SDK\Content\goh\entity\humanskin\[germans]\[ger_source]\ger_null.ply");
+            if (NullName == null) {
+                throw new FractionHumanskinException($"Null element not specifed for fraction.");
+            }
+
+            return Source.FindResourceElements<PlyFile>(NullName).FirstOrDefault() ?? throw new FractionHumanskinException($"Null element not find for fraction. Null name: \"{NullName}\".");
         }
     }
 }

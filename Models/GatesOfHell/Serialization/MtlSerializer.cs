@@ -35,6 +35,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
                     return "none";
                 }
             );
+            AddType("FullSpecular", "full_specular");
         }
     }
 }

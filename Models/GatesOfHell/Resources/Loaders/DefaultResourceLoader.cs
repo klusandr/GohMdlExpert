@@ -45,8 +45,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
             }
 
             if (Path.IsPathFullyQualified(path)) {
-                if (path.Contains(Root.GetFullPath())) {
-                    path = path.Replace(Root.GetFullPath(), null);
+                if (path.Contains(Root.GetFullPath(), StringComparison.InvariantCultureIgnoreCase)) {
+                    path = path.Replace(Root.GetFullPath(), null, StringComparison.InvariantCultureIgnoreCase);
                 } else {
                     throw GohResourcesException.ElementNotInResource(path);
                 }
