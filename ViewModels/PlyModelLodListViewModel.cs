@@ -7,6 +7,7 @@ using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Services;
 using Microsoft.Win32;
+using Newtonsoft.Json.Linq;
 using WpfMvvm.ViewModels;
 
 namespace GohMdlExpert.ViewModels {
@@ -14,22 +15,22 @@ namespace GohMdlExpert.ViewModels {
         private PlyModel3D? _plyModel;
         private ObservableCollection<PlyFile>? _items;
         private int _selectedIndex;
-        private Regex _lodFilefilterRegex;
+        private PlyFile? _selectedItem;
         private readonly SelectResourceFileService _selectResourceFileService;
 
         public PlyModel3D? PlyModel {
             get => _plyModel;
             set {
-                if (value != null) { 
-                    Items = value.LodPlyFiles;
-                } else {
+                if (value == null) {
                     _plyModel?.SetLodIndex(0);
-                    Items = null;
                 }
 
                 _plyModel = value;
+                OnPropertyChanged();
             }
         }
+
+        public PlyFile? MainLod => PlyModel?.PlyFile;
 
         public ObservableCollection<PlyFile>? Items {
             get => _items;
@@ -39,39 +40,55 @@ namespace GohMdlExpert.ViewModels {
             }
         }
 
-        public PlyFile? SelectedItem { get; set; }
-        public int SelectedIndex {
-            get => _selectedIndex;
+        public PlyFile? SelectedItem {
+            get => _selectedItem;
             set {
-                _selectedIndex = value;
+                _selectedItem = value;
                 PlyModel?.Model.ClearSelectMaterial();
-                PlyModel?.SetLodIndex(SelectedIndex + 1);
+
+                var idndex = value != null && Items != null ? Items.IndexOf(value) : -1;
+                PlyModel?.SetLodIndex(idndex + 1);
+                OnPropertyChanged();
             }
         }
+
+        public ICommand UpSelectLodCommand => CommandManager.GetCommand(UpSelectLod, canExecute: (_) => SelectedItem != null && Items?.IndexOf(SelectedItem) > 0);
+
+        public ICommand DownSelectLodCommand => CommandManager.GetCommand(DownSelectLod, canExecute: (_) => SelectedItem != null && Items?.IndexOf(SelectedItem) < Items?.Count - 1);
 
         public ICommand AddCommand => CommandManager.GetCommand(() => {
             if (Items == null || PlyModel == null) {
                 return;
             }
 
-            //var fileDialog = new OpenFileDialog {
-            //    Filter = "Ply files (*.ply)|*.ply"
-            //};
+            var lodFile = _selectResourceFileService.SelectResourceFile<PlyFile>(initPath: PlyModel.PlyFile.GetDirectoryPath());
 
-            //if (fileDialog.ShowDialog() ?? false) {
-            //    AddLod(new PlyFile(fileDialog.FileName));
-            //}
-
-            //_lodFilefilterRegex ??= new Regex(string.Join("", GohResourceLoading.PlyFilesLoadFilters), RegexOptions.Compiled);
-            //f => _lodFilefilterRegex.IsMatch(f.Name)
-
-            _selectResourceFileService.SelectResourceFile<PlyFile>(initPath: PlyModel.PlyFile.GetDirectoryPath());
+            if (lodFile != null) {
+                Items.Add(lodFile);
+            }
         });
 
         public ICommand RemoveCommand => CommandManager.GetCommand(RemoveSelectedLod);
 
         public PlyModelLodListViewModel(SelectResourceFileService selectResourceFileService) {
             _selectResourceFileService = selectResourceFileService;
+
+            PropertyChangeHandler
+                .AddHandlerBuilder(nameof(SelectedItem), (_, _) => {
+                    if (SelectedItem == null) {
+                        PlyModel?.SetLodIndex(0);
+                    }
+
+                    CommandManager.OnCommandCanExecuteChanged(nameof(UpSelectLodCommand));
+                    CommandManager.OnCommandCanExecuteChanged(nameof(DownSelectLodCommand));
+                })
+                .AddHandlerBuilder(nameof(PlyModel), (_, _) => {
+                    Items = PlyModel?.LodPlyFiles;
+                    SelectedItem = PlyModel?.PlyFile;
+
+                    OnPropertyChanged(nameof(MainLod));
+                })
+            ;
         }
 
         public void AddLod(PlyFile plyFile) {
@@ -79,7 +96,23 @@ namespace GohMdlExpert.ViewModels {
         }
 
         public void RemoveSelectedLod() {
-            Items?.RemoveAt(SelectedIndex);
+            if (SelectedItem != null) {
+                Items?.Remove(SelectedItem);
+            }
+        }
+
+        private void UpSelectLod() {
+            if (SelectedItem != null && Items != null) {
+                var index = Items.IndexOf(SelectedItem);
+                Items.Move(index, index - 1);
+            }
+        }
+
+        private void DownSelectLod() {
+            if (SelectedItem != null && Items != null) {
+                var index = Items.IndexOf(SelectedItem);
+                Items.Move(index, index + 1);
+            }
         }
     }
 }
