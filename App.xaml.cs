@@ -67,7 +67,8 @@ namespace GohMdlExpert {
                     (e) => {
                         sp.GetRequiredService<IUserDialogProvider>().ShowError("", exception: e);
                     }
-                ));
+                ))
+                .AddSingleton<SelectResourceFileService>();
 
             ViewModelsStartup.Startup(sender, e);
         }

@@ -55,6 +55,7 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
                     SelectTextures();
                     IsButtonActive = true;
                     IsExpanded = true;
+                    IsSelected = true;
                 } catch (GohResourceFileException) {
                     throw;
                 } finally {

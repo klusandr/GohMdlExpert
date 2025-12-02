@@ -25,10 +25,10 @@ namespace GohMdlExpert.ViewModels.Trees.OverviewModels {
         }
         public IObservableEnumerable<TreeItemViewModel>? PlyItems => MdlItem?.Items;
 
-        public ModelsOverviewTreeViewModel(HumanskinMdlOverviewViewModel models3DViewModel, TextureLoadService textureSelector) {
+        public ModelsOverviewTreeViewModel(HumanskinMdlOverviewViewModel models3DViewModel, TextureLoadService textureSelector, SelectResourceFileService selectResourceFileService) {
             Models3DViewModel = models3DViewModel;
             AggregateTextureListViewModel = new AggregateTextureListViewModel(textureSelector);
-            LodListViewModel = new PlyModelLodListViewModel();
+            LodListViewModel = new PlyModelLodListViewModel(selectResourceFileService);
 
             models3DViewModel.PropertyChangeHandler.AddHandler(nameof(Models3DViewModel.MdlFile), MdlFileChangeHandler);
             models3DViewModel.PlyModels.CollectionChanged += ModelsPlyChanged;

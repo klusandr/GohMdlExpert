@@ -19,8 +19,7 @@ using WpfMvvm.Data;
 using WpfMvvm.ViewModels;
 using WpfMvvm.Views.Dialogs;
 
-namespace GohMdlExpert.ViewModels
-{
+namespace GohMdlExpert.ViewModels {
     public sealed class HumanskinMdlOverviewViewModel : BaseViewModel {
         private MdlFile? _mdlFile;
         private PlyModel3D? _focusablePlyModel;
@@ -79,7 +78,7 @@ namespace GohMdlExpert.ViewModels
 
         public event EventHandler? UpdatedTextures;
 
-        public HumanskinMdlOverviewViewModel(IUserDialogProvider userDialog, GohResourceProvider resourceProvider, GohHumanskinResourceProvider humanskinProvider, GohTextureProvider textureProvider, HumanskinMdlSaveViewModel humanskinMdlGeneratorViewModel, TextureLoadService textureSelector) {
+        public HumanskinMdlOverviewViewModel(IUserDialogProvider userDialog, GohResourceProvider resourceProvider, GohHumanskinResourceProvider humanskinProvider, GohTextureProvider textureProvider, HumanskinMdlSaveViewModel humanskinMdlGeneratorViewModel, TextureLoadService textureSelector, SelectResourceFileService selectResourceFileService) {
             _models = [];
             _plyModels = [];
             _aggregateMtlFiles = [];
@@ -95,7 +94,7 @@ namespace GohMdlExpert.ViewModels
             _modelAdderViewModel = new PlyModelAdderViewModel(this, _defaultMaterialViewModel);
             _modelsLoadTreeViewModel = new ModelsLoadTreeViewModel(_modelAdderViewModel, _defaultMaterialViewModel, humanskinProvider, textureProvider);
             _humanskinTreeViewModel = new HumanskinTreeViewModel(this, humanskinProvider);
-            _modelsOverviewTreeViewModel = new ModelsOverviewTreeViewModel(this, textureSelector);
+            _modelsOverviewTreeViewModel = new ModelsOverviewTreeViewModel(this, textureSelector, selectResourceFileService);
 
             _modelsCollectionBinder = new CollectionChangeBinder<Model3D>(_plyModels, _models, 
                 (s) => { 

@@ -48,9 +48,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="WpfMvvm">
-      <HintPath>..\MvvmWpf\BaseWpfMvvm\bin\Release\0.2.4.0\WpfMvvm.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\MvvmWpf\BaseWpfMvvm\WpfMvvm.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -69,6 +67,9 @@
     </Compile>
     <Compile Update="Views\HumanskinMdlOverviewView.xaml.cs">
       <Generator>MSBuild:Compile</Generator>
+    </Compile>
+    <Compile Update="Views\Trees\ResourceLoadFileTreeItemView.xaml.cs">
+      <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
 
