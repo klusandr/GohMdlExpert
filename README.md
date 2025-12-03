@@ -10,6 +10,7 @@
    - 0.0.1.0 release
    - 0.0.2.0 add finnish
    - 0.0.2.1 hotfix default LOD null, load soviet resource, load unpack resource
+   - 0.0.3.0 add united kingdom, any fix
    
 ### First launch:
   
@@ -53,7 +54,7 @@
 - [ ] More flexibility in saving skins;
 - [ ] Localization of the application to EN, RU and DE.
 
-### Current version 0.0.2.1
+### Current version 0.0.3.0
 
 ## -- RU --
 
@@ -62,8 +63,9 @@
 ### Версии:
    (beta)
    - 0.0.1.0 релиз
-   - 0.0.2.0 долбавлены фины.
-   - 0.0.2.1 hotfix стандартного LOD null, загрузки советских ресурсов, загрузки распакованных ресурсов.
+   - 0.0.2.0 долбавлены фины
+   - 0.0.2.1 hotfix стандартного LOD null, загрузки советских ресурсов, загрузки распакованных ресурсов
+   - 0.0.3.0 добавлено соедиенённое королевство, другие исправления
 
 ### Установка:
 
@@ -113,4 +115,4 @@
 - [ ] Больше гибкости в сохранении скинов;
 - [ ] Локализация приложения на EN, RU и DE.
 
-### Текущая версия 0.0.2.1
+### Текущая версия 0.0.3.0

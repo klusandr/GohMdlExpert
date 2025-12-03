@@ -16,11 +16,12 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
             ["us_humanskin"] = @"\entity\humanskin\[united_states]",
             ["sov_humanskin"] = @"\entity\humanskin\[soviets]",
             ["fin_humanskin"] = @"\entity\humanskin\[finnish]",
+            ["united_kingdom"] = @"\entity\humanskin\[united_kingdom]",
         };
 
         private static readonly List<(string Path, string InsidePath)> s_resourcePakArchives = [
-            (@"\entity\humanskin.pak", @"\entity\"),
-            (@"\texture\common\_hum.pak", @"\texture\common\")
+            (@"\entity\humanskin.pak", @"\entity\humanskin"),
+            (@"\texture\common\_hum.pak", @"\texture\common\_hun")
         ];
 
 
@@ -45,9 +46,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
             foreach (var archive in s_resourcePakArchives) {
                 var pathDirectories = archive.InsidePath.Split('\\', StringSplitOptions.RemoveEmptyEntries);
                 GohResourceDirectory? currentDirectory = null;
+                string fullPath = Path.Join(path, archive.Path);
+                var directoryLoaders = new PakDirectoryLoader(ZipFile.OpenRead(fullPath)) { PakPath = fullPath };
 
                 foreach (var directoryName in pathDirectories) {
-                    var directory = new GohResourceDirectory(directoryName) { Items = [] };
+                    var directory = new GohResourceDirectory(directoryName, currentDirectory?.GetFullPath()) { Items = [], Loader = directoryLoaders };
 
                     if (currentDirectory == null) {
                         rootDirectory.Items.Add(directory);
@@ -58,11 +61,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
                     currentDirectory = directory;
                 }
 
-                string fullPath = Path.Join(path, archive.Path);
-
-                var directoryLoad = new PakDirectoryLoader(ZipFile.OpenRead(fullPath)) { PakPath = fullPath };
                 currentDirectory!.ClearData();
-                currentDirectory!.Loader = directoryLoad;
             }
 
             Root = rootDirectory;

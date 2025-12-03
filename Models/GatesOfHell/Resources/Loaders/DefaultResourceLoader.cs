@@ -14,6 +14,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
             ["ger_humanskin"] = @"\entity\humanskin\[germans]",
             ["us_humanskin"] = @"\entity\humanskin\[united_states]",
             ["sov_humanskin"] = @"\entity\humanskin\[soviets]",
+            ["[finnish]"] = @"\entity\humanskin\[[finnish]]",
+            ["[united_kingdom]"] = @"\entity\humanskin\[united_kingdom]",
         };
 
         public GohResourceDirectory? Root { get; private set; }

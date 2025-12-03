@@ -9,6 +9,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
             Specular,
             Color,
             Blend,
+            FullSpecular,
         }
 
         public MtlSerializer() {

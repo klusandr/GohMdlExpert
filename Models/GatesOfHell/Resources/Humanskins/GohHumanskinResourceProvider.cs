@@ -56,6 +56,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
                 try {
                     _humanskinResources.Add(new GohFactionHumanskinResource("Finnish", _resourceProvider.GetLocationDirectory("fin_humanskin"), _resourceProvider) { NullName = "fin_null.ply" });
                 } catch (GohResourcesException) { }
+
+                try {
+                    _humanskinResources.Add(new GohFactionHumanskinResource("United kingdom", _resourceProvider.GetLocationDirectory("united_kingdom"), _resourceProvider) { NullName = "uk_null.ply" });
+                } catch (GohResourcesException) { }
             }
 
             EndLoading();

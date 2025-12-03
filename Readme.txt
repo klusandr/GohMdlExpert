@@ -10,6 +10,7 @@ Versions:
   - 0.0.1.0 release
   - 0.0.2.0 add finnish
   - 0.0.2.1 hotfix default LOD null, load soviet resource, load unpack resource
+  - 0.0.3.0 добавлено соедиенённое королевство, другие исправления
 
 First launch:
   When you first launch the program, you will be asked to specify the path to the game folder, usually it is "D:\..\steamapps\common\Call to Arms - Gates of Hell". After specifying it, the program will download all the necessary resources and display the current version of the game.
