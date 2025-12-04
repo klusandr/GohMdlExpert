@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.11.35327.3
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11222.16 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GohMdlExpert", "GohMdlExpert.csproj", "{AD6FC3E0-F640-453D-BF6B-DFD8A9E91C4D}"
 	ProjectSection(ProjectDependencies) = postProject

@@ -11,8 +11,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
         };
 
         private static readonly List<(string Path, string InsidePath)> s_resourcePakArchives = [
-            (@"\entity\humanskin.pak", @"\entity\"),
-            (@"\texture\common\_hum.pak", @"\texture\common\")
+            (@"\entity\humanskin.pak", @"\entity\humanskin"),
+            (@"\texture\common\_hum.pak", @"\texture\common\_hun")
         ];
 
         public GohResourceDirectory? Root { get; protected set; }
@@ -28,26 +28,18 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
             foreach (var archive in s_resourcePakArchives) {
                 var pathDirectories = archive.InsidePath.Split('\\', StringSplitOptions.RemoveEmptyEntries);
                 GohResourceDirectory? currentDirectory = null;
+                string fullPath = Path.Join(path, archive.Path);
+                var directoryLoaders = new PakDirectoryLoader(ZipFile.OpenRead(fullPath), this) { PakPath = fullPath };
 
                 foreach (var directoryName in pathDirectories) {
-                    var directory = new GohResourceDirectory(directoryName, currentDirectory?.GetFullPath());
+                    var directory = new GohResourceDirectory(directoryName, currentDirectory?.GetFullPath()) { Loader = directoryLoaders };
 
-                    if (currentDirectory == null) {
-                        rootDirectoryLoader.AddPakDirectory(directory);
-                    } else {
-                        var currentRootDirectoryLoader = new PakRootDirectoryLoader(this);
-                        currentRootDirectoryLoader.AddPakDirectory(directory);
-                        currentDirectory.Loader = currentRootDirectoryLoader;
-                    }
+                    rootDirectoryLoader.AddPakDirectory(directory);
 
                     currentDirectory = directory;
                 }
 
-                string fullPath = Path.Join(path, archive.Path);
-
-                var directoryLoad = new PakDirectoryLoader(ZipFile.OpenRead(fullPath), this) { PakPath = fullPath };
                 currentDirectory!.ClearData();
-                currentDirectory!.Loader = directoryLoad;
             }
 
             Root = rootDirectory;

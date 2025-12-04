@@ -28,13 +28,12 @@ namespace GohMdlExpert.Models.GatesOfHell.Extensions {
         }
 
         public static IEnumerable<string> GetDirectoriesPathsByDeep(this ZipArchive archive, int deep) {
-            var directoriesPaths = archive.Entries.Where(e => GetDeep(e.FullName) == deep && CheckDirectory(e.FullName)).Select(e => e.FullName);
+            var directoriesPaths = new List<string>();
+            var entriesPaths = archive.Entries.Where(e => GetDeep(e.FullName) > deep).Select(e => e.FullName);
 
-            if (!directoriesPaths.Any()) {
-                string? directoryPath = archive.GetDeepDirectoryPath(deep);
-
-                if (directoryPath != null) {
-                    directoriesPaths = [directoryPath];
+            foreach (var directory in entriesPaths) {
+                if (!directoriesPaths.Any(directory.Contains)) {
+                    directoriesPaths.Add(GetPathFromComponents(GetPathComponents(directory).Take(deep + 1)) + '/');
                 }
             }
 

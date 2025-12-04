@@ -10,7 +10,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
             Color,
             Blend,
             emitsheat,
-    }
+            FullSpecular,
+        }
 
         public MtlSerializer() {
             AddType("MaterialBump", "material bump");
@@ -39,6 +40,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
                 }
             );
             AddType("emitsheat", "emitsheat");
+            AddType("FullSpecular", "full_specular");
         }
     }
 }
