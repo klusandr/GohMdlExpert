@@ -50,11 +50,12 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
         }
 
         private MaterialFile? GetMaterialFile(string materialPath) {
-            string materialFileName = Path.GetFileName(materialPath) + ".dds";
+            string materialFileName = Path.GetFileName(materialPath);
             string meterialFilePath = Path.GetDirectoryName(materialPath)!;
-            var materialFile = TextureDirectory.AlongPath(meterialFilePath)?.GetFile(materialFileName) as MaterialFile;
+            var materialFile = TextureDirectory.AlongPath(meterialFilePath)?
+                .FindResourceElements<MaterialFile>(searchPattern: $"(?i)^{materialFileName}\\.[^.]+$", deepSearch: false, first: true).FirstOrDefault();
 
-            if (materialFile != null) {
+             if (materialFile != null) {
                 materialFile.Path = meterialFilePath;
                 materialFile.RelativePathPoint = TextureDirectory.GetFullPath();
             }

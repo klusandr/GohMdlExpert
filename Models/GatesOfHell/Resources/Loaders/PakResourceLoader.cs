@@ -23,7 +23,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
                 throw GohResourceLoadException.IsNotGohResource(path);
             }
 
-            var rootDirectory = new GohResourceVirtualDirectory("");
+            var rootDirectory = new GohResourceDirectory("") { Loader = new PakVirtualDirectoryLoader(this) };
 
             foreach (var archive in s_resourcePakArchives) {
                 string fullPath = Path.Join(path, archive);
@@ -40,7 +40,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
                         directory.Loader = new PakDirectoryLoader(ZipFile.OpenRead(fullPath), this, directory.GetDirectoryPath()!) { PakPath = fullPath };
                     }
 
-                    currentDirectory.Items.Add(directory);
+                    ((PakVirtualDirectoryLoader)currentDirectory.Loader).AddPakDirectory(directory);
                     currentDirectory = directory;
                 }
             }

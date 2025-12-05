@@ -25,7 +25,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories {
         public PakDirectoryLoader(ZipArchive resourceArchive, PakResourceLoader resourceLoader, string pakInsidePath) {
             _archive = resourceArchive;
             _resourceLoader = resourceLoader;
-            _fileLoader = new PakFileLoader(resourceArchive, resourceLoader);
+            _fileLoader = new PakFileLoader(resourceArchive, resourceLoader, this);
             PakInsidePath = pakInsidePath;
         }
 
@@ -69,11 +69,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories {
             return files;
         }
 
-        private string GetInsidePath(string path) {
+        public string GetInsidePath(string path) {
             return ZipArchiveExtensions.GetZipPath(path.Replace(PakInsidePath, null).Trim(GohResourceLoading.DIRECTORY_SEPARATE));
         }
 
-        private string GetOutsidePath(string path) {
+        public string GetOutsidePath(string path) {
             return PathUtils.GetPathFromComponents([PakInsidePath, path]);
         }
     }

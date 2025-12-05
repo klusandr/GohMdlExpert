@@ -50,6 +50,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             [PlyFile.Extension] = typeof(PlyFile),
             [MtlFile.Extension] = typeof(MtlFile),
             [MaterialFile.Extension] = typeof(MaterialFile),
+            [MaterialFile.Extension2] = typeof(MaterialFile),
             [DefFile.Extension] = typeof(DefFile)
         };
 
