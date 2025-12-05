@@ -110,20 +110,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
         }
 
         /// <summary>
-        /// Возвращает коллекцию LOD файлов для указанного <see cref="PlyFile"/> файла.
-        /// </summary>
-        /// <param name="plyFile">Файл, для которого будут возвращены LOD файлы.</param>
-        /// <returns>Коллекция <see cref="PlyFile"/> файлов, который являются LOD для указанного файла.</returns>
-        public static IEnumerable<PlyFile> GetPlyLodFiles(PlyFile plyFile, GohResourceProvider resourceProvider) {
-            var directory = resourceProvider.GetResourceDirectory(plyFile);
-
-            var lodFiles = directory
-                .FindResourceElements<PlyFile>(searchPattern: @$"{plyFile.Name[..^4]}_lod\d*\.");
-
-            return lodFiles;
-        }
-
-        /// <summary>
         /// Загружает humanskin, прописывая для .ply файлов полные пути, а так же заполняет список .mtl файлов используемых в моделях.
         /// </summary>
         /// <param name="mdlFile">humanskin .mdl файл.</param>

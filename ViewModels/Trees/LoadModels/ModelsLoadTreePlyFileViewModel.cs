@@ -16,6 +16,7 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
 
         public PlyFile PlyFile { get; }
         public AggregateMtlFiles? AggregateMtlFiles { get; private set; }
+        public IEnumerable<PlyFile>? LodPlyFiles { get; private set; }
 
         public override ICommand LoadCommand => Tree.ModelsAdder.AddModelCommand;
         public override ICommand DeleteCommand => Tree.ModelsAdder.ClearModelCommand;
@@ -41,9 +42,25 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
             }
 
             AggregateMtlFiles = new AggregateMtlFiles(PlyFile, Tree.HumanskinResource, Tree.TextureProvider);
+            
+            var lodFiles = Tree.HumanskinResource.GetPlyLodFiles(PlyFile);
+
+            if (!lodFiles.Any()) {
+                var nullPly = Tree.HumanskinResource.GetNullPlyFile(PlyFile);
+
+                if (nullPly != null) {
+                    lodFiles = [nullPly];
+                }
+            }
+
+            LodPlyFiles = lodFiles;
 
             foreach (var mtlFile in AggregateMtlFiles) {
                 AddItem(new ModelsLoadTreeMeshViewModel(mtlFile, Tree));
+            }
+
+            if (LodPlyFiles != null) {
+                AddItem(new ModelsLoadTreePlyLodFilesViewModel(LodPlyFiles, Tree));
             }
         }
 
@@ -51,7 +68,7 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
             if (!IsApproved) {
                 try {
                     LoadData();
-                    Tree.ModelsAdder.SetModel(PlyFile, AggregateMtlFiles);
+                    Tree.ModelsAdder.SetModel(PlyFile, AggregateMtlFiles, LodPlyFiles);
                     SelectTextures();
                     IsButtonActive = true;
                     IsExpanded = true;

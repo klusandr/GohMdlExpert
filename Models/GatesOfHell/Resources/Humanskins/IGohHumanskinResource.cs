@@ -8,8 +8,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
         GohResourceDirectory Source { get; }
         GohResourceDirectory Humanskins { get; }
 
-        PlyFile GetNullPlyFile(PlyFile plyFile);
+        PlyFile? GetNullPlyFile(PlyFile plyFile);
         IEnumerable<AggregateMtlFile> GetPlyAggregateMtlFiles(PlyFile plyFile);
+        IEnumerable<PlyFile> GetPlyLodFiles(PlyFile plyFile);
         IEnumerable<MdlFile> GetPlyMdlFiles(PlyFile plyFile);
         MtlTextureCollection GetPlyMeshMtlTextures(PlyFile plyFile, string meshTextureName);
     }

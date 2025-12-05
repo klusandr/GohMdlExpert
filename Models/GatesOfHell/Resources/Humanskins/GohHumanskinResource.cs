@@ -69,9 +69,33 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
 
             return mtlTextures;
         }
-#warning Make right method for getting null ply.
-        public PlyFile GetNullPlyFile(PlyFile plyFile) {
-            return new PlyFile(@"F:\SDK\Content\goh\entity\humanskin\[germans]\[ger_source]\ger_null.ply");
+
+
+
+        /// <summary>
+        /// Возвращает коллекцию LOD файлов для указанного <see cref="PlyFile"/> файла.
+        /// </summary>
+        /// <param name="plyFile">Файл, для которого будут возвращены LOD файлы.</param>
+        /// <returns>Коллекция <see cref="PlyFile"/> файлов, который являются LOD для указанного файла.</returns>
+        public IEnumerable<PlyFile> GetPlyLodFiles(PlyFile plyFile) {
+            var directory = _resourceProvider.GetDirectory(plyFile.GetDirectoryPath());
+
+            var lodFiles = directory
+                .FindResourceElements<PlyFile>(searchPattern: @$"{plyFile.Name[..^4]}_lod\d*\.", deepSearch: false);
+
+            return lodFiles;
+        }
+
+        public PlyFile? GetNullPlyFile(PlyFile plyFile) {
+            var pathComponents = PathUtils.GetPathComponents(plyFile.GetDirectoryPath()!);
+            PlyFile? nullFile = null;
+
+            for (int i = 0; i < pathComponents.Length; i++) {
+                var directory = _resourceProvider.GetDirectory(PathUtils.GetPathFromComponents(pathComponents.SkipLast(i)));
+                nullFile = directory!.FindResourceElements<PlyFile>(searchPattern: "null_*.ply", deepSearch: false, first: true).FirstOrDefault();
+            }
+
+            return nullFile;
         }
     }
 }
