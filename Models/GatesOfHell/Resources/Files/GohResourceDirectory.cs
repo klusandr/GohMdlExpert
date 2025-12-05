@@ -38,12 +38,12 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
             : base(name, path, relativePathPoint) {
 
             if (path == null) {
-                name = name.Replace("/", "\\");
-                int lastSeparateIndex = name.LastIndexOf('\\', name.Length - 2);
+                name = name.Replace('/', GohResourceLoading.DIRECTORY_SEPARATE);
+                int lastSeparateIndex = name.LastIndexOf(GohResourceLoading.DIRECTORY_SEPARATE, name.Length - 2);
 
                 if (lastSeparateIndex != -1) {
                     Path = name[..lastSeparateIndex];
-                    Name = name[(lastSeparateIndex + 1)..];
+                    Name = name[(lastSeparateIndex + 1)..].Trim(GohResourceLoading.DIRECTORY_SEPARATE);
                 }
             }
         }
@@ -84,7 +84,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
         }
 
         public GohResourceDirectory? AlongPath(string path) {
-            return AlongPath(path.Split('\\', StringSplitOptions.RemoveEmptyEntries));
+            return AlongPath(PathUtils.GetPathComponents(path));
         }
 
         public GohResourceDirectory? AlongPath(IEnumerable<string> pathDirectoryNames) {

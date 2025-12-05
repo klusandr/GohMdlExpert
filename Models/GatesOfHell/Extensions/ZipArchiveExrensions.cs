@@ -47,11 +47,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Extensions {
         }
 
         public static bool CheckDirectory(string fullName) {
-            return fullName.LastOrDefault() == '/';
+            return fullName.LastOrDefault() is ('/' or '\\');
         }
 
         public static int GetDeep(string fullName) {
-            return fullName.Count((c) => c == '/') - (CheckDirectory(fullName) ? 1 : 0);
+            return fullName.Count((c) => c is ('/' or '\\')) - (CheckDirectory(fullName) ? 1 : 0);
         }
 
         public static string[] GetPathComponents(string path) {
@@ -70,6 +70,14 @@ namespace GohMdlExpert.Models.GatesOfHell.Extensions {
             }
 
             return @$"{path}\{fullElementPath}";
+        }
+
+        public static string GetPathFromFirstElments(string path, int elementCount) {
+            return GetPathFromComponents(GetPathComponents(path).Take(elementCount));
+        }
+
+        public static string GetZipPath(string path) {
+            return path.Replace('\\', '/');
         }
     }
 }

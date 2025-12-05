@@ -14,44 +14,67 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories {
 
         public string? PakPath {
             get => _pakPath;
-            set {
+            init {
                 _fileLoader.PakPath = value;
                 _pakPath = value;
             }
         }
 
-        public PakDirectoryLoader(ZipArchive resourceArchive, PakResourceLoader resourceLoader) {
+        public string PakInsidePath { get; }
+
+        public PakDirectoryLoader(ZipArchive resourceArchive, PakResourceLoader resourceLoader, string pakInsidePath) {
             _archive = resourceArchive;
             _resourceLoader = resourceLoader;
             _fileLoader = new PakFileLoader(resourceArchive, resourceLoader);
+            PakInsidePath = pakInsidePath;
         }
 
         public IEnumerable<GohResourceDirectory> GetDirectories(string path) {
-            string archivePath = _archive.GetArchiveDirectoryPath(path);
+            string archivePath = GetInsidePath(path);
             var directories = new List<GohResourceDirectory>();
-            int pathDeep = archivePath != "" ? ZipArchiveExtensions.GetDeep(archivePath) + 1 : 0;
+            int pathDeep = ZipArchiveExtensions.GetDeep(archivePath) + 1;
 
-            var directoriesPaths = _archive.GetDirectoriesPathsByDeep(pathDeep).Where(p => p.Contains(archivePath));
+            var directoriesPaths = new List<string>();
+
+            foreach (var entrie in _archive.Entries) {
+                if (entrie.FullName.Contains(archivePath)
+                    && ZipArchiveExtensions.GetDeep(entrie.FullName) > pathDeep
+                    && directoriesPaths.All(d => !entrie.FullName.Contains(d))) {
+                    directoriesPaths.Add(ZipArchiveExtensions.GetPathFromFirstElments(entrie.FullName, pathDeep + 1) + '/');
+                }
+            }
 
             foreach (var directoryPath in directoriesPaths) {
-                directories.Add(new GohResourceDirectory(ZipArchiveExtensions.GetFullPath(path, archivePath, directoryPath)) { Loader = this });
+                directories.Add(new GohResourceDirectory(GetOutsidePath(directoryPath)) { Loader = this });
             }
 
             return directories;
         }
 
         public IEnumerable<GohResourceFile> GetFiles(string path) {
-            string archivePath = _archive.GetArchiveDirectoryPath(path);
+            string archivePath = GetInsidePath(path) + '/';
             var files = new List<GohResourceFile>();
-            int pathDeep = archivePath != "" ? ZipArchiveExtensions.GetDeep(archivePath) + 1 : 0;
+            int pathDeep = ZipArchiveExtensions.GetDeep(archivePath) + 1;
 
-            var filesEntries = _archive.Entries.Where(e => ZipArchiveExtensions.GetDeep(e.FullName) == pathDeep && !ZipArchiveExtensions.CheckDirectory(e.FullName) && e.FullName.Contains(archivePath));
+            var filesPaths = _archive.Entries
+                .Where(e => e.FullName.Contains(archivePath)
+                && ZipArchiveExtensions.GetDeep(e.FullName) == pathDeep
+                && !ZipArchiveExtensions.CheckDirectory(e.FullName)
+            ).Select(e => e.FullName);
 
-            foreach (var entry in filesEntries) {
-                files.Add(GohResourceLoading.CreateResourceFile(ZipArchiveExtensions.GetFullPath(path, archivePath, entry.FullName), fileLoader: _fileLoader));
+            foreach (var filePath in filesPaths) {
+                files.Add(GohResourceLoading.CreateResourceFile(GetOutsidePath(filePath), fileLoader: _fileLoader));
             }
 
             return files;
+        }
+
+        private string GetInsidePath(string path) {
+            return ZipArchiveExtensions.GetZipPath(path.Replace(PakInsidePath, null).Trim(GohResourceLoading.DIRECTORY_SEPARATE));
+        }
+
+        private string GetOutsidePath(string path) {
+            return PathUtils.GetPathFromComponents([PakInsidePath, path]);
         }
     }
 }

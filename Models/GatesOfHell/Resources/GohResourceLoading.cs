@@ -53,6 +53,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             [DefFile.Extension] = typeof(DefFile)
         };
 
+        public static string PakExtension => ".pak";
+
         public static AppResourceLoader AppResourceLoader => s_appResourceLoader ??= new AppResourceLoader(AppDomain.CurrentDomain.BaseDirectory);
 
         public static ModelDataSerializer.ModelDataParameter MdlTemplateParameters => s_mdlTemplateParameters ??= new MdlFile(HumanskinTemplateMdl) {

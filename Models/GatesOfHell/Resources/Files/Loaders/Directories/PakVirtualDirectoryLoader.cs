@@ -1,12 +1,12 @@
 ﻿using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories {
-    public class PakRootDirectoryLoader : IDirectoryLoader {
+    public class PakVirtualDirectoryLoader : IDirectoryLoader {
         private readonly List<GohResourceDirectory> _resourceDirectories;
 
         public IGohResourceLoader ResourceLoader { get; }
 
-        public PakRootDirectoryLoader(PakResourceLoader resourceLoader) {
+        public PakVirtualDirectoryLoader(PakResourceLoader resourceLoader) {
             _resourceDirectories = [];
             ResourceLoader = resourceLoader;
         }
