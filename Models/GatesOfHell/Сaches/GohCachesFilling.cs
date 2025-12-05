@@ -13,7 +13,7 @@ using static GohMdlExpert.Models.GatesOfHell.Resources.Data.PlyModel;
 
 namespace GohMdlExpert.Models.GatesOfHell.Caches {
     public static class GohCachesFilling {
-        public static void FillPlyTexturesCache(GohResourceProvider resourceProvider, IGohHumanskinResource humanskinResource, ref float completionPercentage) {
+        public static void FillPlyTexturesCache(GohResourceProvider resourceProvider, IGohHumanskinResource humanskinResource, CancellationToken? cancellationToken = null, Action<string, float>? currentPlyFileHandler = null) {
             var cacheValues = new Dictionary<string, HashSet<string>>();
 
             var mdlDirectories = humanskinResource.Root.FindResourceElements(
@@ -23,16 +23,19 @@ namespace GohMdlExpert.Models.GatesOfHell.Caches {
                     }
 
                     return false;
-                } 
+                }
             ).Cast<GohResourceDirectory>();
 
             float percentageSteep = 100f / mdlDirectories.Count();
-            completionPercentage = 0;
+            float completionPercentage = 0;
 
             foreach (var directory in mdlDirectories) {
                 foreach (var mdlFile in directory.GetFiles().OfType<MdlFile>()) {
                     foreach (var plyFile in mdlFile.Data.PlyModel) {
+                        cancellationToken?.ThrowIfCancellationRequested();
                         var loadPlyFile = (PlyFile)resourceProvider.GetFile(plyFile.GetFullPath().ToLower())!;
+
+                        currentPlyFileHandler?.Invoke(loadPlyFile.GetFullPath(), completionPercentage);
 
                         if (loadPlyFile != null) {
                             if (!cacheValues.TryGetValue(plyFile.Name, out var cacheValue)) {
@@ -40,16 +43,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Caches {
                                 cacheValues[plyFile.Name] = cacheValue;
                             }
 
-                            foreach (var mesh in loadPlyFile.Data.Meshes) {
-                                var mtlFile = directory.FindResourceElements<MtlFile>(searchPattern: mesh.TextureName, deepSearch: false, first: true).FirstOrDefault();
-
-                                if (mtlFile != null) {
-                                    string insidePath = mtlFile!.GetFullPath();
-                                    cacheValue.Add(insidePath);
-                                }
-                            }
-
-                            loadPlyFile.UnloadData();
+                            cacheValue.Add(mdlFile.GetDirectoryPath()!);
                         }
                     }
                 }
@@ -68,14 +62,18 @@ namespace GohMdlExpert.Models.GatesOfHell.Caches {
             GohServicesProvider.Instance.GetRequiredService<GohCacheProvider>().PlyTexturesCache = cache;
         }
 
-        public static void FillTexturesCache(GohTextureProvider textureProvider, IGohHumanskinResource humanskinResource, ref float completionPercentage) {
+        public static void FillTexturesCache(GohTextureProvider textureProvider, IGohHumanskinResource humanskinResource, CancellationToken? cancellationToken = null, Action<string, float>? currentFileHandler = null) {
             var cache = new Dictionary<string, string[]>();
 
             var loadMtlFiles = humanskinResource.Root.FindResourceElements<MtlFile>();
             var errorMtlFiles = new List<MtlFile>();
-            var steap = 90f / loadMtlFiles.Count();
+            var steap = 100f / loadMtlFiles.Count();
+
+            float completionPercentage = 0;
 
             foreach (var mtlFile in loadMtlFiles) {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 try {
                     textureProvider.TextureMaterialsInitialize(mtlFile.Data);
                 } catch (Exception) {
@@ -83,6 +81,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Caches {
                 }
 
                 completionPercentage += steap;
+                currentFileHandler?.Invoke(mtlFile.GetFullPath(), completionPercentage);
             }
 
             loadMtlFiles = loadMtlFiles.Except(errorMtlFiles);
@@ -92,11 +91,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Caches {
                 .Select(mfg => mfg.First())
                 .Select(mf => mf.GetFullPath().ToLower());
             cache.Add(humanskinResource.Root.Name, mtlFiles.ToArray());
-            completionPercentage = 95;
 
             GohServicesProvider.Instance.GetRequiredService<GohCacheProvider>().TexturesCache = cache;
-
-            completionPercentage = 100;
         }
     }
 }

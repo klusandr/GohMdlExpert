@@ -33,12 +33,12 @@ namespace GohMdlExpert.Models.GatesOfHell.Caches {
         }
 
         public void SetCache<T>(string key, Dictionary<string, T>? value) {
+            DeleteCache(key);
+
             if (value != null) {
                 using var writer = GetWriter(key);
 
                 writer.Write(JsonConvert.SerializeObject(value));
-            } else {
-                DeleteCache(key);
             }
         }
 

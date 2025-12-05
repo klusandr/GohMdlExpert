@@ -29,7 +29,7 @@
         </Grid>
     </ControlTemplate>
 
-    <Style x:Key="ResourceLOadingWindowStyle" TargetType="{x:Type Window}">
+    <Style x:Key="ResourceLoadingWindowStyle" TargetType="{x:Type Window}">
         <Setter Property="WindowChrome.WindowChrome">
             <Setter.Value>
                 <WindowChrome CaptionHeight="0"/>

@@ -55,12 +55,14 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
 
             var mtlTextures = new MtlTextureCollection();
 
-            if (cache.TryGetValue(plyFile.Name, out var value)) {
-                foreach (var texturePath in value) {
-                    if (texturePath.Contains(meshTextureName)) {
-                        var file = (MtlFile?)_resourceProvider.GetFile(texturePath);
+            if (cache.TryGetValue(plyFile.Name, out var textureDirectories)) {
+                foreach (var textureDirectory in textureDirectories) {
+                    var directory = _resourceProvider.GetDirectory(textureDirectory);
 
-                        if (file != null) { 
+                    if (directory != null) {
+                        var file = directory.FindResourceElements<MtlFile>(meshTextureName, deepSearch: false, first: true).FirstOrDefault();
+
+                        if (file != null) {
                             mtlTextures.Add(file.Data);
                         }
                     }

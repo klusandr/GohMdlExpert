@@ -60,9 +60,6 @@
             <views:HumanskinMdlOverviewView Grid.Column="2"/>
         </Grid>
         <StatusBar Grid.Row="2" Height="15">
-            <StatusBarItem>
-                <ProgressBar Value="{Binding CompletionPercentage}" Width="100" Margin="0 -5"/>
-            </StatusBarItem>
             <StatusBarItem/>
         </StatusBar>
         <Rectangle Fill="Black" Opacity="0.5" d:Visibility="Collapsed" Visibility="{Binding IsWaitFillVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.RowSpan="3" />
