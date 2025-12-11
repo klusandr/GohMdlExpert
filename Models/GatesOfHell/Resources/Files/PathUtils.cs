@@ -17,5 +17,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         public static string GetPathFromFirstElments(string path, int elementCount) {
             return GetPathFromComponents(GetPathComponents(path).Take(elementCount));
         }
+
+        public static string GetPathWithoutLastElments(string path, int elementCount) {
+            return GetPathFromComponents(GetPathComponents(path).SkipLast(elementCount));
+        }
     }
 }

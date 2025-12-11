@@ -4,24 +4,36 @@ using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
 using GohMdlExpert.Models.GatesOfHell.Resources.Mods;
+using Windows.ApplicationModel.Resources;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources
 {
     public class GohResourceProvider {
         private IGohResourceLoader? _baseResourceLoader;
+        private IGohResourceLoader? _outputModeResourceLoader;
         private IGohResourceLoader? _currentResourceLoader;
 
         public IGohResourceLoader ResourceLoader => _currentResourceLoader ?? throw GohResourceLoadException.IsNotLoad();
         public GohResourceDirectory ResourceDirectory => ResourceLoader?.Root ?? throw GohResourceLoadException.IsNotLoad();
         public bool IsResourceLoaded => ResourceDirectory != null;
 
+        public GohOutputModProvider OutputModProvider { get; }
         public GohModResourceProvider ModResourceProvider { get; }
 
         public event EventHandler? ResourceUpdated;
         public event EventHandler? ResourceFullLoaded;
 
-        public GohResourceProvider(GohModResourceProvider modResourceProvider) {
+        public GohResourceProvider(GohOutputModProvider outputModProvider, GohModResourceProvider modResourceProvider) {
+            OutputModProvider = outputModProvider;
             ModResourceProvider = modResourceProvider;
+
+            OutputModProvider.ModUpdate += OutputModUpdateHandler;
+        }
+
+        private void OutputModUpdateHandler(object? sender, EventArgs e) {
+            _outputModeResourceLoader = OutputModProvider.Mod.ResourceLoader;
+
+            LoadModes();
         }
 
         public void LoadGameResource(string path) {
@@ -39,10 +51,16 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
                 return;
             }
 
-            var resourceLoaders = ModResourceProvider.Mods.Where(m => m.IsLoaded && m.IsLoad).Select(m => m.ResourceLoader);
+            var resourceLoaders = new List<IGohResourceLoader>() { _baseResourceLoader };
 
-            if (resourceLoaders.Any()) {
-                _currentResourceLoader = new AggregateResourceLoader([_baseResourceLoader, .. resourceLoaders]);
+            if (_outputModeResourceLoader != null) {
+                resourceLoaders.Add(_outputModeResourceLoader);
+            }
+
+            resourceLoaders.AddRange(ModResourceProvider.Mods.Where(m => m.IsLoaded && m.IsLoad).Select(m => m.ResourceLoader));
+
+            if (resourceLoaders.Count > 1) {
+                _currentResourceLoader = new AggregateResourceLoader([.. resourceLoaders]);
             } else {
                 _currentResourceLoader = _baseResourceLoader;
             }

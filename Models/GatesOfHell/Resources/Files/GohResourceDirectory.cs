@@ -88,7 +88,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
         }
 
         public GohResourceDirectory? AlongPath(IEnumerable<string> pathDirectoryNames) {
-            GohResourceDirectory? currentDirectory = null;
+            GohResourceDirectory? currentDirectory = this;
 
             if (pathDirectoryNames.Any()) {
                 currentDirectory = GetDirectory(pathDirectoryNames.First());

@@ -52,7 +52,7 @@ namespace GohMdlExpert {
                 .AddSingleton<GohGameDirectory>()
                 .AddSingleton<GohResourceProvider>()
                 .AddSingleton<GohModResourceProvider>()
-                .AddSingleton<OutputModProvider>()
+                .AddSingleton<GohOutputModProvider>()
                 .AddSingleton<GohHumanskinResourceProvider>()
                 .AddSingleton<GohTextureProvider>()
                 .AddSingleton<SettingsWindowService>()
@@ -82,6 +82,7 @@ namespace GohMdlExpert {
                 gameDirectory.Updated += (_, _) => {
                     if (gameDirectory.ResourcePath != null) {
                         ServiceProvider.GetRequiredService<GohResourceProvider>().LoadGameResource(gameDirectory.ResourcePath);
+                        ServiceProvider.GetRequiredService<GohOutputModProvider>().Mod = new OutputModResource("F:\\Steam Game\\steamapps\\common\\Call to Arms - Gates of Hell\\mods\\divisions");
                         ServiceProvider.GetRequiredService<ApplicationViewModel>().FullLoadResources();
                     }  
                 };

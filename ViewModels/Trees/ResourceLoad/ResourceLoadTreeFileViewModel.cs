@@ -9,12 +9,8 @@ using WpfMvvm.ViewModels.Controls;
 
 namespace GohMdlExpert.ViewModels.Trees.ResourceLoad {
     public class ResourceLoadTreeFileViewModel : ResourceLoadTreeItemViewModel {
-        public GohResourceFile ResourceFile { get; }
-        public ResourceLoadTreeFileViewModel(GohResourceFile resourceFile, TreeViewModel modelsTree) : base(modelsTree) {
-            ResourceFile = resourceFile;
-            
-            Text = resourceFile.Name;
-
+        public GohResourceFile ResourceFile => (GohResourceFile)ResourceElement;
+        public ResourceLoadTreeFileViewModel(GohResourceFile resourceFile, TreeViewModel modelsTree) : base(resourceFile, modelsTree) {
             Icon = IconResources.Instance.GetIcon(resourceFile switch {
                 MdlFile => nameof(Resources.MdlIcon),
                 PlyFile => nameof(Resources.PlyIcon),

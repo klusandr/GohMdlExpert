@@ -32,6 +32,30 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
             Humanskins = GohResourceLoading.FilterResource(Root, (f) => f is MdlFile);
         }
 
+        public void MdlMdoelInitialize(MdlModel mdlModel) {
+            for (int i = 0; i < mdlModel.PlyModels.Length; i++) {
+                var plyModel = mdlModel.PlyModels[i];
+                bool isExists = plyModel.Exists();
+
+                if (!isExists) {
+                    mdlModel.PlyModels[i] = (PlyFile)(_resourceProvider.GetFile(plyModel.GetFullPath()) ?? throw GohResourceFileException.IsNotExists(plyModel));
+                }
+
+                if (mdlModel.PlyModelsLods.TryGetValue(plyModel, out var plyModelLods)) {
+                    if (!isExists) {
+                        mdlModel.PlyModelsLods.Remove(plyModel);
+                        mdlModel.PlyModelsLods[mdlModel.PlyModels[i]] = plyModelLods;
+                    }
+
+                    for (int j = 0; j < plyModelLods.Length; j++) {
+                        if (!plyModelLods[j].Exists()) {
+                            plyModelLods[j] = (PlyFile)(_resourceProvider.GetFile(plyModelLods[j].GetFullPath()) ?? throw GohResourceFileException.IsNotExists(plyModelLods[j]));
+                        }
+                    }
+                }
+            }
+        }
+
         public IEnumerable<MdlFile> GetPlyMdlFiles(PlyFile plyFile) {
             return Root
                 .FindResourceElements<MdlFile>()

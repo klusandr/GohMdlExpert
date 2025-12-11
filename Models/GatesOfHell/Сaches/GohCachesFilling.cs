@@ -31,7 +31,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Caches {
 
             foreach (var directory in mdlDirectories) {
                 foreach (var mdlFile in directory.GetFiles().OfType<MdlFile>()) {
-                    foreach (var plyFile in mdlFile.Data.PlyModel) {
+                    foreach (var plyFile in mdlFile.Data.PlyModels) {
                         cancellationToken?.ThrowIfCancellationRequested();
                         var loadPlyFile = (PlyFile)resourceProvider.GetFile(plyFile.GetFullPath().ToLower())!;
 

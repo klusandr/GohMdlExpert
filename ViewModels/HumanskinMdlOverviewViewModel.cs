@@ -39,7 +39,7 @@ namespace GohMdlExpert.ViewModels {
         private readonly PlyModelAdderViewModel _modelAdderViewModel;
         private readonly ModelsLoadTreeViewModel _modelsLoadTreeViewModel;
         private readonly HumanskinTreeViewModel _humanskinTreeViewModel;
-        private readonly HumanskinMdlSaveViewModel _humanskinMdlGeneratorViewModel;
+        private readonly HumanskinSaveViewModel _humanskinMdlGeneratorViewModel;
         private readonly DefaultTextureViewModel _defaultMaterialViewModel;
 
         public MdlFile? MdlFile {
@@ -78,7 +78,7 @@ namespace GohMdlExpert.ViewModels {
 
         public event EventHandler? UpdatedTextures;
 
-        public HumanskinMdlOverviewViewModel(IUserDialogProvider userDialog, GohResourceProvider resourceProvider, GohHumanskinResourceProvider humanskinProvider, GohTextureProvider textureProvider, HumanskinMdlSaveViewModel humanskinMdlGeneratorViewModel, TextureLoadService textureSelector, SelectResourceFileService selectResourceFileService) {
+        public HumanskinMdlOverviewViewModel(IUserDialogProvider userDialog, GohResourceProvider resourceProvider, GohHumanskinResourceProvider humanskinProvider, GohTextureProvider textureProvider, HumanskinSaveViewModel humanskinMdlGeneratorViewModel, TextureLoadService textureSelector, SelectResourceFileService selectResourceFileService) {
             _models = [];
             _plyModels = [];
             _aggregateMtlFiles = [];
@@ -114,12 +114,13 @@ namespace GohMdlExpert.ViewModels {
 
         public void SetMtlFile(MdlFile mdlFile) {
             PlyModels.Clear();
-            
+
+            _humanskinProvider.Resource.MdlMdoelInitialize(mdlFile.Data);
             GohResourceLoading.LoadHumanskinFile(mdlFile, out var mtlFiles, _resourceProvider, _textureProvider);
 
             MdlFile = mdlFile;
-            var plyFiles = mdlFile.Data.PlyModel;
-            var lodFiles = mdlFile.Data.PlyModelLods;
+            var plyFiles = mdlFile.Data.PlyModels;
+            var lodFiles = mdlFile.Data.PlyModelsLods;
 
             var missTexture = new List<MtlFile>();
 
@@ -214,6 +215,7 @@ namespace GohMdlExpert.ViewModels {
                 )
             );
 
+            _humanskinMdlGeneratorViewModel.SetHumanskin(MdlFile, textures);
             _humanskinMdlGeneratorViewModel.Save(MdlFile, textures);
         }
 

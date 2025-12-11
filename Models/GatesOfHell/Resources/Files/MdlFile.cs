@@ -73,14 +73,14 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
 
             var lodViews = new List<ModelDataParameter>();
 
-            foreach (var plyFile in Data.PlyModel) {
+            foreach (var plyFile in Data.PlyModels) {
                 var volumeViews = new List<ModelDataParameter>() {
                     new(MdlSerializer.MdlTypes.VolumeView.ToString()) {
                         Data = SystemPath.Join(GohResourceLoading.GetRelativelyPath(GetDirectoryPath()!, plyFile.GetDirectoryPath()!), plyFile.Name) 
                     }
                 };
 
-                foreach (var plyLodFile in Data.PlyModelLods[plyFile]) {
+                foreach (var plyLodFile in Data.PlyModelsLods[plyFile]) {
                     volumeViews.Add(new ModelDataParameter(MdlSerializer.MdlTypes.VolumeView.ToString()) {
                         Data = SystemPath.Join(GohResourceLoading.GetRelativelyPath(GetDirectoryPath()!, plyFile.GetDirectoryPath()!), plyFile.Name)
                     });

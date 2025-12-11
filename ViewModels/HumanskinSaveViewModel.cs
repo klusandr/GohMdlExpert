@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Windows.Documents;
+using System.Windows.Input;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
@@ -11,22 +13,70 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
 using GohMdlExpert.Models.GatesOfHell.Resources.Mods;
 using GohMdlExpert.Models.GatesOfHell.Serialization;
 using GohMdlExpert.Properties;
+using GohMdlExpert.ViewModels.Lists;
+using GohMdlExpert.ViewModels.Trees.ResourceLoad;
+using GohMdlExpert.Views;
 using Microsoft.Win32;
+using WpfMvvm.Collections.ObjectModel;
 using WpfMvvm.ViewModels;
 using WpfMvvm.Views.Dialogs;
 
 namespace GohMdlExpert.ViewModels
 {
-    public class HumanskinMdlSaveViewModel : BaseViewModel {
+    public class HumanskinSaveViewModel : BaseViewModel {
         private readonly SaveFileDialog _fileDialog;
+
+        public ResourceLoadTreeViewModel Tree { get; }
+
         private readonly GohHumanskinResourceProvider _humanskinResourceProvider;
-        private readonly OutputModProvider _gohOutputModProvider;
+        private readonly GohOutputModProvider _gohOutputModProvider;
         private readonly IUserDialogProvider _userDialog;
-        private string _currentModDirectory;
+
+        private bool _isLoadOnlyMod;
+        private GohResourceDirectory? _currentDirectory;
+        private string? _newDirectoryName;
 
         private OutputModResource Mod => _gohOutputModProvider.Mod;
 
-        public HumanskinMdlSaveViewModel(GohHumanskinResourceProvider humanskinResourceProvider, OutputModProvider gohOutputModProvider, IUserDialogProvider userDialog) {
+        public GohResourceDirectory? CurrentDirectory {
+            get => _currentDirectory;
+            set {
+                _currentDirectory = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableList<ResourceSaveListItemViewModel> CurrentDirectoryItems { get; }
+
+        public ObservableList<GohResourceFile> HumanskinFiles { get; }
+
+        public string? NewDirectoryName {
+            get => _newDirectoryName;
+            set {
+                _newDirectoryName = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsLoadOnlyMod {
+            get => _isLoadOnlyMod;
+            set {
+                _isLoadOnlyMod = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ICommand AddDirectoryCommand => CommandManager.GetCommand(AddDirectory);
+
+        private void AddDirectory() {
+            if (Tree.SelectedItem != null && Tree.SelectedItem.ResourceElement is GohResourceDirectory resourceDirectory) {
+                if (NewDirectoryName != null) {
+                    Mod.AddDirectory(resourceDirectory.GetFullPath(), NewDirectoryName);
+                }   
+            }
+        }
+
+        public HumanskinSaveViewModel(GohHumanskinResourceProvider humanskinResourceProvider, GohOutputModProvider gohOutputModProvider, IUserDialogProvider userDialog) {
             _humanskinResourceProvider = humanskinResourceProvider;
             _gohOutputModProvider = gohOutputModProvider;
             _userDialog = userDialog;
@@ -36,13 +86,111 @@ namespace GohMdlExpert.ViewModels
                 DefaultExt = "mdl"
             };
 
-            _gohOutputModProvider.Mod = new OutputModResource("F:\\Steam Game\\steamapps\\common\\Call to Arms - Gates of Hell\\mods\\divisions");
-            _currentModDirectory = "entity\\humanskin\\[germans]\\ger_test";
-            Mod.AddDirectory("entity\\humanskin\\[germans]\\ger_test");
+            Tree = new ResourceLoadTreeViewModel() { Filter = (f) => false };
+            CurrentDirectoryItems = [];
+            HumanskinFiles = [];
+
+            //_gohOutputModProvider.Mod = new OutputModResource("F:\\Steam Game\\steamapps\\common\\Call to Arms - Gates of Hell\\mods\\divisions");
+            //_currentModDirectory = "entity\\humanskin\\[germans]\\ger_test";
+            //Mod.AddDirectory("entity\\humanskin\\[germans]\\ger_test");
+
+            Tree.PropertyChangeHandler.AddHandler(nameof(Tree.SelectedItem), (_, _) => {
+                if (Tree.SelectedItem != null) {
+                    if (Tree.SelectedItem is ResourceLoadTreeDirectoryViewModel treeDirectory) {
+                        CurrentDirectory = treeDirectory.ResourceDirectory;
+                    }
+                } else {
+                    CurrentDirectory = null;
+                }
+            });
+
+            PropertyChangeHandler.AddHandler(nameof(CurrentDirectory), (_, _) => {
+                CurrentDirectoryItemsUpdate();
+            });
+
+            _humanskinResourceProvider.ResourceUpdated += (_, _) => {
+                TreeUpdate();
+            };
+        }
+
+        private void CurrentDirectoryItemsUpdate() {
+            CurrentDirectoryItems.Clear();
+
+            if (CurrentDirectory != null) {
+                var listItem = new ResourceSaveListItemViewModel(new GohResourceVirtualDirectory(".."));
+                listItem.ApproveEvent += ListItemApproveEventHandler;
+                CurrentDirectoryItems.Add(listItem);
+
+                foreach (var item in CurrentDirectory.Items) {
+                    listItem = new ResourceSaveListItemViewModel(item);
+
+                    if (item is GohResourceDirectory) {
+                        listItem.ApproveEvent += ListItemApproveEventHandler;
+                    }
+
+                    CurrentDirectoryItems.Add(listItem);
+                }
+
+                var currentDirectoryFilesItems = CurrentDirectoryItems.Where(i => i.ResourceElement is GohResourceFile);
+
+                foreach (var item in HumanskinFiles) {
+                    var directoryFileItem = currentDirectoryFilesItems.FirstOrDefault(f => f.ResourceElement.Name == item.Name);
+
+                    if (directoryFileItem != null) {
+                        if (item is MtlFile mtlFile) {
+                            var directoryMtlFile = (MtlFile)directoryFileItem.ResourceElement;
+
+                            if (directoryMtlFile.Data.DiffusePath != mtlFile.Data.DiffusePath) {
+                                directoryFileItem.Status = WpfMvvm.Data.Statuses.Error;
+                            } else {
+                                directoryFileItem.Status = WpfMvvm.Data.Statuses.Warning;
+                            }
+                        } else {
+                            directoryFileItem.Status = WpfMvvm.Data.Statuses.Warning;
+                        }
+                    } else {
+                        CurrentDirectoryItems.Add(new ResourceSaveListItemViewModel(item) { Status = WpfMvvm.Data.Statuses.Good });
+                    }
+                }
+            }
+        }
+
+        private void ListItemApproveEventHandler(object? sender, EventArgs e) {
+            var listItem = (ResourceLoadListItemViewModel)sender!;
+
+            if (listItem.ResourceElement is GohResourceDirectory resourceDirectory) {
+                string directoryPath; 
+
+                if (resourceDirectory.Name != "..") {
+                    directoryPath = resourceDirectory.GetFullPath().Replace(GohResourceLocations.Humanskin, null);
+                } else {
+                    directoryPath = CurrentDirectory?.GetFullPath().Replace(GohResourceLocations.Humanskin, null) ?? GohResourceLoading.DIRECTORY_SEPARATE.ToString();
+                    directoryPath = PathUtils.GetPathWithoutLastElments(directoryPath, 1);
+                }
+
+                Tree.ExpandetDirectory(directoryPath);
+            }
+        }
+
+        public void SetHumanskin(MdlFile mdlFile, Dictionary<string, MtlTexture> mtlTextures) {
+            HumanskinFiles.Clear();
+
+            HumanskinFiles.Add(mdlFile);
+            HumanskinFiles.Add(new DefFile(Path.GetFileNameWithoutExtension(mdlFile.Name) + DefFile.Extension) { Loader = Mod.FileLoader});
+            HumanskinFiles.AddRange(mtlTextures.Select(m => new MtlFile(m.Key) { Data = m.Value, Loader = Mod.FileLoader }));
         }
 
         public void Save(MdlFile mdlFile, Dictionary<string, MtlTexture> mtlTextures) {
-            var currentDirectory = Mod.Root.AlongPath(_currentModDirectory);
+
+            var d = new ChildWindow() {
+                Content = new HumanskinSaveView() { ViewModel = this }
+            };
+
+            d.ShowDialog();
+
+            return;
+
+            var currentDirectory = _currentDirectory;
             var files = currentDirectory!.GetFiles();
 
             var oldFile = files.FirstOrDefault(f => f.Name == mdlFile.Name);
@@ -66,7 +214,7 @@ namespace GohMdlExpert.ViewModels
                 mdlFile.Loader = Mod.FileLoader;
             }
 
-            mdlFile.Path = _currentModDirectory;
+            //mdlFile.Path = _currentModDirectory;
 
             Mod.AddFile(mdlFile);
 
@@ -206,6 +354,16 @@ namespace GohMdlExpert.ViewModels
             //Settings.Default.LastSavedFile = fileName;
             //return fileName;
             return "";
+        }
+
+        private void TreeUpdate() {
+            if (IsLoadOnlyMod) {
+                Tree.Root = Mod.Root.AlongPath(GohResourceLocations.Humanskin);
+            } else {
+                Tree.Root = _humanskinResourceProvider.Resource.Root;
+            }
+
+            Tree.UpdateData();
         }
     }
 }

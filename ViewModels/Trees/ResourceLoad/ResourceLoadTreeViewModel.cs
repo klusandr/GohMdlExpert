@@ -11,6 +11,11 @@ namespace GohMdlExpert.ViewModels.Trees.ResourceLoad {
         public GohResourceDirectory? Root { get; set; }
         public Func<GohResourceFile, bool>? Filter { get; internal set; }
 
+        public new ResourceLoadTreeItemViewModel? SelectedItem { 
+            get => (ResourceLoadTreeItemViewModel?)base.SelectedItem; 
+            set => base.SelectedItem = value; 
+        }
+
         public ResourceLoadTreeViewModel() { }
 
         public override void LoadData() {
@@ -28,7 +33,7 @@ namespace GohMdlExpert.ViewModels.Trees.ResourceLoad {
                 if (directory != null) {
                     var directoryItem = FindItem((item) => {
                         if (item is ResourceLoadTreeDirectoryViewModel directoryItem) {
-                            if (directoryItem.Directory.GetFullPath() == directory.GetFullPath()) {
+                            if (directoryItem.ResourceDirectory.GetFullPath() == directory.GetFullPath()) {
                                 return true;
                             } else if (!item.Items.Any()) {
                                 directoryItem.LoadData();

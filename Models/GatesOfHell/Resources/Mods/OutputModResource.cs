@@ -17,8 +17,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods {
 
         public string Name { get; }
         public string Path { get; }
-        public GohResourceDirectory Root => _root;
+        public GohResourceVirtualDirectory Root => _root;
         public IFileLoader FileLoader => _resourceLoader.FileLoader;
+
+        public IGohResourceLoader ResourceLoader => _resourceLoader;
 
         public OutputModResource(string name, string path) {
             Name = name;
@@ -40,8 +42,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods {
             CreateSubDirectories(Root);
         }
 
-        public void AddDirectory(string path) {
-            _root.AlongPathOrCreate(path);
+        public GohResourceDirectory AddDirectory(string path, string name) {
+            return _root.AlongPathOrCreate(PathUtils.GetPathFromComponents([path, name]));
         }
 
         public void AddFile(GohResourceFile resourceFile) {

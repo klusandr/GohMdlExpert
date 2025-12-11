@@ -15,8 +15,11 @@ namespace GohMdlExpert.ViewModels.Trees.ResourceLoad {
 
         public ICommand ApproveCommand => CommandManager.GetCommand(Approve);
 
-        public ResourceLoadTreeItemViewModel(TreeViewModel modelsTree) : base(modelsTree) {
-            
+        public GohResourceElement ResourceElement { get; protected init; }
+
+        public ResourceLoadTreeItemViewModel(GohResourceElement resourceElement, TreeViewModel modelsTree) : base(modelsTree) {
+            Text = resourceElement.Name;
+            ResourceElement = resourceElement;
         }
 
         protected virtual void Approve() { }

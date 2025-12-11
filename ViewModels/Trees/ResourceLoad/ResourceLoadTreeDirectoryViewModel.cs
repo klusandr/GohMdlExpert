@@ -12,16 +12,14 @@ using WpfMvvm.ViewModels.Controls;
 
 namespace GohMdlExpert.ViewModels.Trees.ResourceLoad {
     public class ResourceLoadTreeDirectoryViewModel : ResourceLoadTreeItemViewModel {
-        public GohResourceDirectory Directory { get; }
+        public GohResourceDirectory ResourceDirectory => (GohResourceDirectory)ResourceElement;
 
-        public ResourceLoadTreeDirectoryViewModel(GohResourceDirectory gohResourceDirectory, TreeViewModel modelsTree) : base(modelsTree) {
-            Directory = gohResourceDirectory;
-            Text = Directory.Name;
+        public ResourceLoadTreeDirectoryViewModel(GohResourceDirectory gohResourceDirectory, TreeViewModel modelsTree) : base(gohResourceDirectory, modelsTree) {
             Icon = IconResources.Instance.GetIcon(nameof(Resources.DirectoryIcon));
 
             if (GohResourceLoading.TryGetNextCompletedDirectory(gohResourceDirectory, out var nextDirectory, out string? path)) {
                 Text = path;
-                Directory = nextDirectory;
+                ResourceElement = nextDirectory;
             }
 
             if (string.IsNullOrEmpty(Text)) {
@@ -34,11 +32,11 @@ namespace GohMdlExpert.ViewModels.Trees.ResourceLoad {
                 return;
             }
 
-            foreach (var directory in Directory.GetDirectories()) {
+            foreach (var directory in ResourceDirectory.GetDirectories()) {
                 AddItem(new ResourceLoadTreeDirectoryViewModel(directory, Tree));
             }
 
-            var files = Directory.GetFiles();
+            var files = ResourceDirectory.GetFiles();
 
             if (Tree.Filter != null) {
                 files = files.Where(Tree.Filter);

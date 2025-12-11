@@ -118,13 +118,26 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
         /// <param name="humanskinResourceProvider">Провайдер humanskin.</param>
         /// <param name="textureProvider">Провайдер текстур.</param>
         public static void LoadHumanskinFile(MdlFile mdlFile, out IEnumerable<MtlFile> mtlFiles, GohResourceProvider resourceProvider, GohTextureProvider textureProvider) {
-            var plyFiles = mdlFile.Data.PlyModel;
-            var lodFiles = mdlFile.Data.PlyModelLods;
+            var plyFiles = mdlFile.Data.PlyModels;
+            var lodFiles = mdlFile.Data.PlyModelsLods;
             var mtlFilesList = new List<MtlFile>();
 
             string? mdlFilePath = mdlFile.GetDirectoryPath();
 
+            for (int i = 0; i < plyFiles.Length; i++) {
+                if (!plyFiles[i].Exists()) {
+                    plyFiles[i] = (PlyFile)resourceProvider.GetFile(plyFiles[i].GetFullPath())!;
+                }
+            }
 
+            foreach (var plyFile in plyFiles) {
+                for (int i = 0; i < plyFiles.Length; i++) {
+                    if (!plyFiles[i].Exists()) {
+                        plyFiles[i] = (PlyFile)resourceProvider.GetFile(plyFiles[i].GetFullPath())!;
+                    }
+                }
+            }
+            
             if (mdlFilePath != null) {
                 var mdlResourceDirectory = resourceProvider.GetDirectory(mdlFilePath);
 
