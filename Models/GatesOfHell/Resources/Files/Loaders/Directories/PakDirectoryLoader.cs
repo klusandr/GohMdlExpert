@@ -29,6 +29,12 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories {
             PakInsidePath = pakInsidePath;
         }
 
+        public bool Exists(string path) {
+            string insidePath = GetInsidePath(path) + '/';
+
+            return _archive.Entries.Any(e => e.FullName.Contains(path + '/'));
+        }
+
         public IEnumerable<GohResourceDirectory> GetDirectories(string path) {
             string archivePath = GetInsidePath(path);
             var directories = new List<GohResourceDirectory>();

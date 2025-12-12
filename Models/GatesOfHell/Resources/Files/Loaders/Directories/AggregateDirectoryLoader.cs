@@ -20,6 +20,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories {
             _directoriesLoaders.Insert(0, directoryLoader);
         }
 
+        public bool Exists(string path) {
+            return _directoriesLoaders.Any(d => d.Exists(path));
+        }
+
         public IEnumerable<GohResourceDirectory> GetDirectories(string path) {
             var directories = new Dictionary<string, GohResourceDirectory>();
 

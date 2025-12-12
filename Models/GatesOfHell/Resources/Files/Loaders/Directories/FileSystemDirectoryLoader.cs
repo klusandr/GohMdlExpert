@@ -39,5 +39,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories {
 
             return files.OrderByNature(f => f.Name);
         }
+
+        public bool Exists(string path) {
+            return Directory.Exists(_resourceLoader.GetFileSystemPath(path));
+        }
     }
 }

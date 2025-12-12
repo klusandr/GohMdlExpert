@@ -51,6 +51,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
 
         public GohResourceDirectory(GohResourceElement resourceElement) : this(resourceElement.GetDirectoryPath() ?? throw GohResourceLoadException.PathIsNull(resourceElement)) { }
 
+        public bool Exists() {
+            return Loader.Exists(GetFullPath());
+        }
+
         public virtual void LoadData() {
             if (_items != null) {
                 Items.Clear();

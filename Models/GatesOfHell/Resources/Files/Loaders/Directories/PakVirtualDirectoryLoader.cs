@@ -22,5 +22,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories {
         public IEnumerable<GohResourceFile> GetFiles(string path) {
             return [];
         }
+
+        public bool Exists(string path) {
+            throw new NotImplementedException();
+        }
     }
 }
