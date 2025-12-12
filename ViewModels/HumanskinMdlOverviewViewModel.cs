@@ -326,7 +326,11 @@ namespace GohMdlExpert.ViewModels {
         private void PlyModelChanged(object? s, EventArgs e) {
             var plyModel = (s as PlyModel3D)!;
 
-            _models[_plyModels.IndexOf(plyModel)] = plyModel.Model;
+            int index = _plyModels.IndexOf(plyModel);
+
+            if (index >= 0 && index < _models.Count) {
+                _models[_plyModels.IndexOf(plyModel)] = plyModel.Model;
+            }
         }
 
         private void PlyModelRemoveHandler(object? sender, NotifyCollectionChangedEventArgs e) {
