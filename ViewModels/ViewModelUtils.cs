@@ -17,16 +17,21 @@ namespace GohMdlExpert.ViewModels {
                 loader = directory.Loader.ResourceLoader;
             }
 
+            if (loader is AggregateResourceLoader aggregateLoader) {
+                loader = aggregateLoader.ResourceLoaders.FirstOrDefault(l => l is FileSystemResourceLoader);
+                loader ??= aggregateLoader.ResourceLoaders.FirstOrDefault(l => l is PakResourceLoader);
+            }
+
             if (loader is FileSystemResourceLoader fileSystemLoader) {
                 path = fileSystemLoader.GetFileSystemPath(resourceElement.GetFullPath());
             } else if (loader is PakResourceLoader) {
-                path ??= ((resourceElement as GohResourceFile)?.Loader as PakFileLoader)?.PakPath;
+                path = ((resourceElement as GohResourceFile)?.Loader as PakFileLoader)?.PakPath;
                 path ??= ((resourceElement as GohResourceDirectory)?.Loader as PakDirectoryLoader)?.PakPath;
             }
 
-            path ??= resourceElement.GetFullPath();
-
-            Process.Start("explorer.exe", $"/select, {path}");
+            if (path != null) {
+                Process.Start("explorer.exe", $"/select, {path}");
+            }            
         }
     }
 }

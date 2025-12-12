@@ -25,6 +25,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
             protected set => _root = value; 
         }
 
+        public IEnumerable<IGohResourceLoader> ResourceLoaders => _resourceLoaders;
+
         public AggregateResourceLoader() {
             _resourceLoaders = [];
         }
@@ -42,7 +44,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
             var loaderRoots = _resourceLoaders.Select((r) => r.Root ?? throw GohResourceLoadException.IsNotLoad());
 
             Root = new GohResourceDirectory(loaderRoots.First().GetFullPath()) {
-                Loader = new AggregateDirectoryLoader(loaderRoots.Select(d => d.Loader))
+                Loader = new AggregateDirectoryLoader(loaderRoots.Select(d => d.Loader)) { ResourceLoader = this }
             };
 
             _isLoad = true;

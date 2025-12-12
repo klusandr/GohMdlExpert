@@ -4,6 +4,7 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories {
     internal class AggregateDirectoryLoader : IDirectoryLoader {
         private readonly List<IDirectoryLoader> _directoriesLoaders;
+        private IGohResourceLoader? _resourceLoader;
 
         public AggregateDirectoryLoader() {
             _directoriesLoaders = [];
@@ -14,7 +15,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories {
         }
 
         public IFileLoader FileLoader => throw new NotImplementedException();
-        public IGohResourceLoader ResourceLoader => throw new NotImplementedException();
+        public IGohResourceLoader ResourceLoader { get => _resourceLoader!; init => _resourceLoader = value; }
 
         public void AddDirectory(IDirectoryLoader directoryLoader) {
             _directoriesLoaders.Insert(0, directoryLoader);
@@ -33,7 +34,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories {
                         var oldDirectory = directories[directory.Name];
                         directories[directory.Name] =
                             new GohResourceDirectory(directory.Name, directory.Path, directory.RelativePathPoint) {
-                                Loader = new AggregateDirectoryLoader([directory.Loader, oldDirectory.Loader])
+                                Loader = new AggregateDirectoryLoader([directory.Loader, oldDirectory.Loader]) { ResourceLoader = ResourceLoader }
                             };
                     }
                 }

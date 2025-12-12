@@ -13,17 +13,16 @@ namespace GohMdlExpert.ViewModels.Trees.Humanskins {
     public class HumanskinTreeDirectoryViewModel : HumanskinTreeItemViewModel {
         private readonly GohResourceDirectory _directory;
 
+        public ICommand UpdateCommand => CommandManager.GetCommand(UpdateDirectoryData);
+
         public HumanskinTreeDirectoryViewModel(GohResourceDirectory directory, TreeViewModel modelsTree) : base(directory, modelsTree) {
             _directory = directory;
+
+            ContextMenuViewModel.AddItem(new MenuItemViewModel("Update", UpdateCommand));
 
             directory.Update += DirectoryUpdateHandler;
 
             Icon = IconResources.Instance.GetIcon(nameof(Resources.DirectoryIcon));
-        }
-
-        private void DirectoryUpdateHandler(object? sender, EventArgs e) {
-            _items.Clear();
-            LoadData();
         }
 
         public void LoadData() {
@@ -40,8 +39,21 @@ namespace GohMdlExpert.ViewModels.Trees.Humanskins {
             }
         }
 
+        public void UpdateData() {
+            _items.Clear();
+            LoadData();
+        }
+
+        public void UpdateDirectoryData() {
+            _directory.UpdateData();
+        }
+
         protected override void Approve() {
             LoadData();
+        }
+
+        private void DirectoryUpdateHandler(object? sender, EventArgs e) {
+            UpdateData();
         }
     }
 }
