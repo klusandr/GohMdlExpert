@@ -99,7 +99,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
                 var currentDirectory = (GohResourceVirtualDirectory?)GetDirectory(directoryName);
 
                 if (currentDirectory == null) {
-                    currentDirectory = dirCreate?.Invoke(directoryName, GetFullPath()) ?? new GohResourceVirtualDirectory(directoryName, GetFullPath()) {};
+                    currentDirectory = dirCreate?.Invoke(directoryName, GetFullPath()) ?? new GohResourceVirtualDirectory(directoryName, GetFullPath()) { Loader = Loader };
                     Items.Add(currentDirectory);
                 }
 
