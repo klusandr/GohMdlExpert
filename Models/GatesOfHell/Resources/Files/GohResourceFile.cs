@@ -12,9 +12,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
         private IFileLoader? _loader;
 
         public IFileLoader Loader {
-            get => _loader ?? GohServicesProvider.Instance.GetRequiredService<IFileLoader>();
+            get => _loader ?? throw GohResourceFileException.LoaderIsNull(this);
             set {
-                if (_loader != null) throw new InvalidOperationException($"Cannot reinitialize property {nameof(Loader)}.");
                 _loader = value;
             }
         }

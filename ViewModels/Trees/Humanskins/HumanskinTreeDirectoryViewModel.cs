@@ -16,7 +16,14 @@ namespace GohMdlExpert.ViewModels.Trees.Humanskins {
         public HumanskinTreeDirectoryViewModel(GohResourceDirectory directory, TreeViewModel modelsTree) : base(directory, modelsTree) {
             _directory = directory;
 
+            directory.Update += DirectoryUpdateHandler;
+
             Icon = IconResources.Instance.GetIcon(nameof(Resources.DirectoryIcon));
+        }
+
+        private void DirectoryUpdateHandler(object? sender, EventArgs e) {
+            _items.Clear();
+            LoadData();
         }
 
         public void LoadData() {

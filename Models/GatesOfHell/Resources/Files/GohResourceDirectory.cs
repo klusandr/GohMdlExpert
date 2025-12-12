@@ -27,12 +27,13 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
         }
 
         public IDirectoryLoader Loader {
-            get => _loader ?? GohServicesProvider.Instance.GetRequiredService<IDirectoryLoader>();
+            get => _loader ?? throw GohResourceDirectoryException.LoaderIsNull(this);
             set {
-                if (_loader != null) throw new InvalidOperationException($"Cannot reinitialize property {nameof(Loader)}.");
                 _loader = value;
             }
         }
+
+        public event EventHandler? Update;
 
         public GohResourceDirectory(string name, string? path = null, string? relativePathPoint = null)
             : base(name, path, relativePathPoint) {
@@ -66,6 +67,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
             }
         }
 
+        public virtual void UpdateData() {
+            ClearData();
+            LoadData();
+            Update?.Invoke(this, EventArgs.Empty);
+        }
 
         public virtual void ClearData() {
             _items = null;

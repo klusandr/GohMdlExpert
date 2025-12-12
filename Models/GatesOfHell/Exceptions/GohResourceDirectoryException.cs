@@ -12,6 +12,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
             return new GohResourceDirectoryException($"Path has be null.", directory) { ExceptionCode = 1 };
         }
 
+        public static GohResourceDirectoryException LoaderIsNull(GohResourceDirectory directory) {
+            return new GohResourceDirectoryException($"Directory resource loader has be null.", directory) { ExceptionCode = 2 };
+        }
+
         private static string GetFullErrorMessage(string? message, GohResourceDirectory? directory) {
             return string.Format(MESSAGE,
                 directory != null ? directory.Name + ' ' : string.Empty,

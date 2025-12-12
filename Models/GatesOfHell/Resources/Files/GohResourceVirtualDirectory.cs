@@ -7,37 +7,78 @@ using GohMdlExpert.Models.GatesOfHell.Exceptions;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class GohResourceVirtualDirectory : GohResourceDirectory {
+        private readonly GohResourceDirectory? _resourceDirectory;
+        private readonly bool _loadFiles;
+        private readonly bool _loadDirectories;
+        private readonly bool _deepLoad;
+        private readonly Func<GohResourceFile, bool>? _filter;
+        private readonly bool _skipEmptyDirectories;
+
         public GohResourceVirtualDirectory(string name, string? path = null, string? relativePathPoint = null) : base(name, path, relativePathPoint) {
             Items = [];
         }
 
-        public GohResourceVirtualDirectory(GohResourceDirectory resourceDirectory, bool loadFiles = false, bool loadDirectories = false, bool deepLoad = false) : this(resourceDirectory.Name, resourceDirectory.Path, resourceDirectory.RelativePathPoint) {
+        public GohResourceVirtualDirectory(GohResourceDirectory resourceDirectory, bool loadFiles = false, bool loadDirectories = false, bool deepLoad = false, Func<GohResourceFile, bool>? filter = null, bool skipEmptyDirectories = false) : this(resourceDirectory.Name, resourceDirectory.Path, resourceDirectory.RelativePathPoint) {
+            _resourceDirectory = resourceDirectory;
+            _loadFiles = loadFiles;
+            _loadDirectories = loadDirectories;
+            _deepLoad = deepLoad;
+            _filter = filter;
+            _skipEmptyDirectories = skipEmptyDirectories;
+
             Loader = resourceDirectory.Loader;
 
-            if (loadFiles) {
-                LoadFiles(resourceDirectory);
-            }
+            resourceDirectory.Update += ResourceDirectoryUpdateHandler;
 
-            if (loadDirectories) {
-                LoadDirectories(resourceDirectory, loadFiles, deepLoad);
+            LoadData();
+        }
+
+        private void ResourceDirectoryUpdateHandler(object? sender, EventArgs e) {
+            base.UpdateData();
+        }
+
+        public static GohResourceVirtualDirectory GetDeepClone(GohResourceDirectory resourceDirectory, Func<GohResourceFile, bool>? filter = null, bool skipEmptyDirectories = false) {
+            return new GohResourceVirtualDirectory(resourceDirectory, true, true, true, filter, skipEmptyDirectories);
+        }
+
+        public override void LoadData() {
+            if (_resourceDirectory != null) {
+                if (_loadFiles) {
+                    LoadFiles(_resourceDirectory, _filter);
+                }
+
+                if (_loadDirectories) {
+                    LoadDirectories(_resourceDirectory, _loadFiles, _deepLoad, _filter);
+                }
             }
         }
 
-        public static GohResourceVirtualDirectory GetDeepClone(GohResourceDirectory resourceDirectory) {
-            return new GohResourceVirtualDirectory(resourceDirectory, true, true, true);
+        public override void UpdateData() {
+            if (_resourceDirectory != null) {
+                _resourceDirectory.UpdateData();
+                base.UpdateData();
+            }
         }
 
-        public override void LoadData() { }
+        public GohResourceVirtualDirectory LoadFiles(GohResourceDirectory resourceDirectory, Func<GohResourceFile, bool>? filter = null) {
+            var files = resourceDirectory.GetFiles();
 
-        public GohResourceVirtualDirectory LoadFiles(GohResourceDirectory resourceDirectory) {
-            Items.AddRange(resourceDirectory.GetFiles());
+            if (filter != null) {
+                files = files.Where(filter);
+            }
+
+            Items.AddRange(files);
 
             return this;
         }
 
-        public GohResourceVirtualDirectory LoadDirectories(GohResourceDirectory resourceDirectory, bool loadFiles = false, bool deepLoad = false) {
+        public GohResourceVirtualDirectory LoadDirectories(GohResourceDirectory resourceDirectory, bool loadFiles = false, bool deepLoad = false, Func<GohResourceFile, bool>? filter = null) {
             foreach (var directory in resourceDirectory.GetDirectories()) {
-                Items.Add(new GohResourceVirtualDirectory(directory, loadFiles, deepLoad, deepLoad));
+                var virualDirectory = new GohResourceVirtualDirectory(directory, loadFiles, deepLoad, deepLoad, filter);
+
+                if (!_skipEmptyDirectories || virualDirectory.Items.Count != 0) {
+                    Items.Add(virualDirectory);
+                }
             }
 
             return this;
@@ -47,18 +88,18 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             Items.Clear();
         }
 
-        public GohResourceVirtualDirectory AlongPathOrCreate(string path, Func<string, GohResourceVirtualDirectory>? dirCreate = null) {
+        public GohResourceVirtualDirectory AlongPathOrCreate(string path, Func<string, string, GohResourceVirtualDirectory>? dirCreate = null) {
             return AlongPathOrCreate(path.Split('\\', StringSplitOptions.RemoveEmptyEntries), dirCreate);
         }
 
-        public GohResourceVirtualDirectory AlongPathOrCreate(IEnumerable<string> pathDirectoryNames, Func<string, GohResourceVirtualDirectory>? dirCreate = null) {
+        public GohResourceVirtualDirectory AlongPathOrCreate(IEnumerable<string> pathDirectoryNames, Func<string, string, GohResourceVirtualDirectory>? dirCreate = null) {
             if (pathDirectoryNames.Any()) {
                 string directoryName = pathDirectoryNames.First();
 
                 var currentDirectory = (GohResourceVirtualDirectory?)GetDirectory(directoryName);
 
                 if (currentDirectory == null) {
-                    currentDirectory = dirCreate?.Invoke(GetFullPath()) ?? new GohResourceVirtualDirectory(directoryName, GetFullPath()) {};
+                    currentDirectory = dirCreate?.Invoke(directoryName, GetFullPath()) ?? new GohResourceVirtualDirectory(directoryName, GetFullPath()) {};
                     Items.Add(currentDirectory);
                 }
 

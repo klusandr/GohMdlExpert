@@ -30,8 +30,6 @@ namespace GohMdlExpert.Models.GatesOfHell
 
         public void OnStartup() {
             _services
-                .AddSingleton<IFileLoader, FileSystemFileLoader>()
-                .AddSingleton<IDirectoryLoader, FileSystemDirectoryLoader>()
                 .AddSingleton<ICacheLoader, GohCacheLoader>()
                 .AddSingleton<GohCacheProvider>();
         }

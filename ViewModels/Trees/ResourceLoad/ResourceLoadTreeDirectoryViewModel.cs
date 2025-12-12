@@ -25,6 +25,14 @@ namespace GohMdlExpert.ViewModels.Trees.ResourceLoad {
             if (string.IsNullOrEmpty(Text)) {
                 Text = GohResourceLoading.DIRECTORY_SEPARATE.ToString();
             }
+
+            ResourceDirectory.Update += ResourceDirectoryUpdateHandler;
+        }
+
+        private void ResourceDirectoryUpdateHandler(object? sender, EventArgs e) {
+            _items.Clear();
+
+            LoadData();
         }
 
         public void LoadData() {
