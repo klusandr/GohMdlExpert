@@ -74,7 +74,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
         public GohResourceVirtualDirectory LoadDirectories(GohResourceDirectory resourceDirectory, bool loadFiles = false, bool deepLoad = false, Func<GohResourceFile, bool>? filter = null) {
             foreach (var directory in resourceDirectory.GetDirectories()) {
-                var virualDirectory = new GohResourceVirtualDirectory(directory, loadFiles, deepLoad, deepLoad, filter);
+                var virualDirectory = new GohResourceVirtualDirectory(directory, loadFiles, deepLoad, deepLoad, filter, _skipEmptyDirectories);
 
                 if (!_skipEmptyDirectories || virualDirectory.Items.Count != 0) {
                     Items.Add(virualDirectory);

@@ -4,6 +4,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
 
 namespace GohMdlExpert.Models.GatesOfHell.Extensions {
     public static class ZipArchiveExtensions {
@@ -33,7 +34,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Extensions {
 
             foreach (var directory in entriesPaths) {
                 if (!directoriesPaths.Any(directory.Contains)) {
-                    directoriesPaths.Add(GetPathFromComponents(GetPathComponents(directory).Take(deep + 1)) + '/');
+                    directoriesPaths.Add(SetPathAsDirectory(GetPathFromComponents(GetPathComponents(directory).Take(deep + 1))));
                 }
             }
 
@@ -48,6 +49,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Extensions {
 
         public static bool CheckDirectory(string fullName) {
             return fullName.LastOrDefault() is ('/' or '\\');
+        }
+
+        public static string SetPathAsDirectory(string path) {
+            return path += PakResourceLoader.PATH_SEPARATOR;
         }
 
         public static int GetDeep(string fullName) {

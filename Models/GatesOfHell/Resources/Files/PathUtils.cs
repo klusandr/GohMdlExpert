@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public static class PathUtils {
+
+        public static string GetPathWithoutExtension(string path) {
+            return path[..path.LastIndexOf('.')];
+        }
+
         public static string[] GetPathComponents(string path) {
             return path.Split(GohResourceLoading.DIRECTORY_SEPARATE, StringSplitOptions.RemoveEmptyEntries);
         }

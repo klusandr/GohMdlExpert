@@ -16,6 +16,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
             (@"\texture\common\_hum.pak")
         ];
 
+        public const string PATH_SEPARATOR = "/";
+
         public GohResourceDirectory? Root { get; protected set; }
 
         public PakResourceLoader(string path) {
@@ -27,7 +29,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
 
             foreach (var archive in s_resourcePakArchives) {
                 string fullPath = Path.Join(path, archive);
-                var pathDirectories = archive[..^(GohResourceLoading.PakExtension.Length)].Split('\\', StringSplitOptions.RemoveEmptyEntries);
+                var pathDirectories = PathUtils.GetPathComponents(PathUtils.GetPathWithoutExtension(archive));
 
                 GohResourceDirectory currentDirectory = rootDirectory;
 

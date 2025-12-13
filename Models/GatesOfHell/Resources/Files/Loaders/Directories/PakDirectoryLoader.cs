@@ -36,7 +36,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories {
         }
 
         public IEnumerable<GohResourceDirectory> GetDirectories(string path) {
-            string archivePath = GetInsidePath(path);
+            string archivePath = ZipArchiveExtensions.SetPathAsDirectory(GetInsidePath(path));
             var directories = new List<GohResourceDirectory>();
             int pathDeep = ZipArchiveExtensions.GetDeep(archivePath) + 1;
 
@@ -46,7 +46,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories {
                 if (entrie.FullName.Contains(archivePath)
                     && ZipArchiveExtensions.GetDeep(entrie.FullName) > pathDeep
                     && directoriesPaths.All(d => !entrie.FullName.Contains(d))) {
-                    directoriesPaths.Add(ZipArchiveExtensions.GetPathFromFirstElments(entrie.FullName, pathDeep + 1) + '/');
+                    directoriesPaths.Add(ZipArchiveExtensions.SetPathAsDirectory(ZipArchiveExtensions.GetPathFromFirstElments(entrie.FullName, pathDeep + 1)));
                 }
             }
 
@@ -58,7 +58,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories {
         }
 
         public IEnumerable<GohResourceFile> GetFiles(string path) {
-            string archivePath = GetInsidePath(path) + '/';
+            string archivePath = ZipArchiveExtensions.SetPathAsDirectory(GetInsidePath(path));
             var files = new List<GohResourceFile>();
             int pathDeep = ZipArchiveExtensions.GetDeep(archivePath) + 1;
 

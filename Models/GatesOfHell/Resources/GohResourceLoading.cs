@@ -183,7 +183,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
         /// <param name="predicate">Condition for filtering files.</param>
         /// <returns>New virtual directory with structure input directory, but without directories don't have filtered files.</returns>
         public static GohResourceVirtualDirectory FilterResource(GohResourceDirectory resourceDirectory, Func<GohResourceFile, bool> predicate) {
-            return GohResourceVirtualDirectory.GetDeepClone(resourceDirectory, predicate); ;
+            return GohResourceVirtualDirectory.GetDeepClone(resourceDirectory, predicate, true);
         }
 
         /// <summary>
