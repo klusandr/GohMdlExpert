@@ -24,6 +24,9 @@ namespace GohMdlExpert.Views {
     [BindingViewModel<HumanskinSaveViewModel>]
     [BindingViewModelViaDI]
     public partial class HumanskinSaveView : BaseView {
+
+        public new HumanskinSaveViewModel ViewModel => (HumanskinSaveViewModel)base.ViewModel;
+
         public HumanskinSaveView() {
             InitializeComponent();
         }
@@ -32,8 +35,10 @@ namespace GohMdlExpert.Views {
             if (sender is FrameworkElement { DataContext: ResourceLoadListItemViewModel listItemViewNodel }) {
                 listItemViewNodel.ApproveCommand.Execute(null);
             }
-            
-            
+        }
+
+        private void DataGridLoadingRowHandler(object sender, DataGridRowEventArgs e) {
+            e.Row.MouseDoubleClick += ListViewItemMouseLeftButtonDownHendler;
         }
     }
 }

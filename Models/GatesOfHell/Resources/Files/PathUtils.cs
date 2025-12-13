@@ -26,5 +26,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         public static string GetPathWithoutLastElments(string path, int elementCount) {
             return GetPathFromComponents(GetPathComponents(path).SkipLast(elementCount));
         }
+
+        public static bool IsDirectory(string path) {
+            int lastElementIndex = path.LastIndexOf(GohResourceLoading.DIRECTORY_SEPARATE) + 1;
+
+            return path[lastElementIndex..].Contains('.');
+        }
     }
 }

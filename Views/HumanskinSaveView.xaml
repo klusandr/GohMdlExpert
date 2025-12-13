@@ -18,71 +18,73 @@
             <RowDefinition/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Grid>
+        <Grid Margin="5">
             <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
                 <RowDefinition/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <controlsView:TreeView DataContext="{Binding Tree}">
+            <CheckBox Content="Load only mod" IsChecked="{Binding IsLoadOnlyMod}" Margin="5"/>
+            <controlsView:TreeView DataContext="{Binding Tree}" Grid.Row="1">
                 <controlsView:TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Items}">
                         <trees:ResourceLoadFileTreeItemView/>
                     </HierarchicalDataTemplate>
                 </controlsView:TreeView.ItemTemplate>
             </controlsView:TreeView>
-            <Button Content="Add directory" Grid.Row="1" Margin="5"/>
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button Content="Add directory" Command="{Binding AddDirectoryCommand}" Margin="5"/>
+                <Button Content="Remove directory" Command="{Binding RemoveDirectoryCommand}" Margin="5" Grid.Column="1"/>
+            </Grid>
         </Grid>
-        <DataGrid ItemsSource="{Binding CurrentDirectoryItems}" AutoGenerateColumns="False" IsReadOnly="True" CanUserResizeRows="False" CanUserResizeColumns="False" 
-                  GridLinesVisibility="None" RowHeaderWidth="0"
+        <DataGrid ItemsSource="{Binding CurrentDirectoryItems}" AutoGenerateColumns="False" IsReadOnly="True" CanUserResizeRows="False" CanUserReorderColumns="False"
+                  GridLinesVisibility="None" RowHeaderWidth="0" Margin="5" LoadingRow="DataGridLoadingRowHandler"
                   Grid.Column="1">
-            <DataGrid.ColumnHeaderStyle>
-                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
-                    <Setter Property="BorderThickness" Value="0"/>
-                </Style>
-            </DataGrid.ColumnHeaderStyle>
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
-                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="BorderThickness" Value="0 1"/>
                     <Setter Property="Focusable" Value="False"/>
+                    <Setter Property="ToolTip" Value="{Binding ToolTip}"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Status}" Value="Good">
+                            <Setter Property="Background" Value="{DynamicResource StatusGoodBrush}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Status}" Value="Warning">
+                            <Setter Property="Background" Value="{DynamicResource StatusWarningBrush}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Status}" Value="Error">
+                            <Setter Property="Background" Value="{DynamicResource StatusErrorBrush}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
                 </Style>
             </DataGrid.CellStyle>
-            <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
-                    <Setter Property="BorderThickness" Value="0"/>
-                    <EventSetter Event="MouseDoubleClick" Handler="ListViewItemMouseLeftButtonDownHendler"/>
-                </Style>
-            </DataGrid.RowStyle>
             <DataGrid.Columns>
                 <DataGridTemplateColumn  Header="Name" Width="*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" Margin="1">
-                                <StackPanel.Style>
-                                    <Style TargetType="StackPanel">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Status}" Value="Good">
-                                                <Setter Property="Background" Value="{DynamicResource StatusGoodBrush}"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Status}" Value="Warning">
-                                                <Setter Property="Background" Value="{DynamicResource StatusWarningBrush}"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Status}" Value="Error">
-                                                <Setter Property="Background" Value="{DynamicResource StatusErrorBrush}"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </StackPanel.Style>
                                 <Image Source="{Binding Icon}" Width="20"/>
                                 <TextBlock Text="{Binding Text}"/>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Save action" Width="200">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding SaveAction}" Margin="1"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
         <StackPanel Style="{StaticResource DialogButtonStackPanel}" Grid.Row="1" Grid.Column="1">
-            <Button Content="Save"/>
-            <Button Content="Cancel"/>
+            <Button Content="Save" Command="{Binding SaveCommand}"/>
+            <Button Content="Cancel" Command="{Binding CancelCommand}"/>
         </StackPanel>
     </Grid>
 </vb:BaseView>

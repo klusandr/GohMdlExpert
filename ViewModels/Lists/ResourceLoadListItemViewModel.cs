@@ -13,6 +13,7 @@ namespace GohMdlExpert.ViewModels.Lists {
     public class ResourceLoadListItemViewModel : BaseViewModel {
         private ImageSource? _icon;
         private string? _text;
+        private string? _toolTip;
 
         public GohResourceElement ResourceElement { get; }
 
@@ -28,6 +29,14 @@ namespace GohMdlExpert.ViewModels.Lists {
             get => _icon;
             set {
                 _icon = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string? ToolTip {
+            get => _toolTip;
+            set {
+                _toolTip = value;
                 OnPropertyChanged();
             }
         }

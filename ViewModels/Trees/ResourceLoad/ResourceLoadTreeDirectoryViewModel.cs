@@ -14,12 +14,15 @@ namespace GohMdlExpert.ViewModels.Trees.ResourceLoad {
     public class ResourceLoadTreeDirectoryViewModel : ResourceLoadTreeItemViewModel {
         public GohResourceDirectory ResourceDirectory => (GohResourceDirectory)ResourceElement;
 
+        public bool IsSkipEmpty { get; } = false;
+
         public ResourceLoadTreeDirectoryViewModel(GohResourceDirectory gohResourceDirectory, TreeViewModel modelsTree) : base(gohResourceDirectory, modelsTree) {
             Icon = IconResources.Instance.GetIcon(nameof(Resources.DirectoryIcon));
 
             if (GohResourceLoading.TryGetNextCompletedDirectory(gohResourceDirectory, out var nextDirectory, out string? path)) {
                 Text = path;
                 ResourceElement = nextDirectory;
+                IsSkipEmpty = true;
             }
 
             if (string.IsNullOrEmpty(Text)) {

@@ -42,14 +42,35 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods {
             CreateSubDirectories(Root);
         }
 
-        public GohResourceDirectory AddDirectory(string path, string name) {
-            return _root.AlongPathOrCreate(PathUtils.GetPathFromComponents([path, name]));
+
+        public GohResourceDirectory AddDirectory(string fullPath) {
+            var directory = _root.AlongPathOrCreate(fullPath);
+
+            if (!directory.Exists()) {
+                Directory.CreateDirectory(_resourceLoader.GetFileSystemPath(directory.GetFullPath()));
+            }
+
+            return directory;
         }
 
-        public void AddFile(GohResourceFile resourceFile) {
-            var directory = _root.AlongPathOrCreate(resourceFile.GetDirectoryPath()!);
+        internal void RemoveDirectory(string fullPath, bool recursive = false) {
+            var directory = _root.AlongPathOrCreate(fullPath);
+
+            if (directory.Exists()) {
+                Directory.Delete(_resourceLoader.GetFileSystemPath(directory.GetFullPath()), recursive);
+            }
+        }
+
+
+        public void AddFile(GohResourceFile resourceFile, GohResourceDirectory resourceDirectory) {
+            var directory = AddDirectory(resourceDirectory.GetFullPath());
+
+            resourceFile.Loader = FileLoader;
+            resourceFile.RelativePathPoint = null;
+            resourceFile.Path = directory.GetFullPath();
 
             directory.Items.Add(resourceFile);
+            resourceFile.SaveData();
         }
 
         private void CreateSubDirectories(GohResourceDirectory directory) {

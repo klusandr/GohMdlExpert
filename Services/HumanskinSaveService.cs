@@ -1,0 +1,55 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using GohMdlExpert.Models.GatesOfHell.Resources.Data;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+using GohMdlExpert.ViewModels;
+using GohMdlExpert.Views;
+using GohMdlExpert.Views.Dialogs;
+
+namespace GohMdlExpert.Services {
+    public class HumanskinSaveService {
+        private HumanskinSaveView _view;
+        private HumanskinSaveViewModel _viewModel;
+        private ChildWindow? _window;
+
+        public HumanskinSaveService() {
+            _view = new HumanskinSaveView();
+            _viewModel = _view.ViewModel;
+
+            _viewModel.Saved += HumanskinSavedHandler;
+            _viewModel.Canceled += HumanskinSaveCanceledHandler;
+        }
+
+        public void Save(MdlFile mdlFile, Dictionary<string, MtlTexture> mtlTextures) {
+            if (_window != null) {
+                throw new InvalidOperationException("Humansin save dialog is open already.");
+            }
+
+            try {
+                _window = new ChildWindow() {
+                    Title = "Humanskin saving",
+                    Content = _view,
+                    WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner
+                };
+
+                _viewModel.SetHumanskin(mdlFile, mtlTextures);
+
+                _window.ShowDialog();
+
+            } finally {
+                _window = null;
+            }
+        }
+
+        private void HumanskinSaveCanceledHandler(object? sender, EventArgs e) {
+            _window?.Close();
+        }
+
+        private void HumanskinSavedHandler(object? sender, EventArgs e) {
+            _window?.Close();
+        }
+    }
+}

@@ -39,7 +39,7 @@ namespace GohMdlExpert.ViewModels {
         private readonly PlyModelAdderViewModel _modelAdderViewModel;
         private readonly ModelsLoadTreeViewModel _modelsLoadTreeViewModel;
         private readonly HumanskinTreeViewModel _humanskinTreeViewModel;
-        private readonly HumanskinSaveViewModel _humanskinMdlGeneratorViewModel;
+        private readonly HumanskinSaveService _humanskinSeveSrvice;
         private readonly DefaultTextureViewModel _defaultMaterialViewModel;
 
         public MdlFile? MdlFile {
@@ -71,14 +71,14 @@ namespace GohMdlExpert.ViewModels {
         public PlyModelAdderViewModel ModelAdderViewModel => _modelAdderViewModel;
         public DefaultTextureViewModel DefaultMaterialViewModel => _defaultMaterialViewModel;
 
-        public ICommand SaveMdlCommand => CommandManager.GetCommand(SaveMtlFile);
+        public ICommand SaveMdlCommand => CommandManager.GetCommand(SaveMtlFile, canExecute: (_) => MdlFile != null);
         public ICommand NewMdlCommand => CommandManager.GetCommand(CreateMdlFile);
         public ICommand ClearPlyModelFocusCommand => CommandManager.GetCommand(ClearPlyModelFocus);
 
 
         public event EventHandler? UpdatedTextures;
 
-        public HumanskinMdlOverviewViewModel(IUserDialogProvider userDialog, GohResourceProvider resourceProvider, GohHumanskinResourceProvider humanskinProvider, GohTextureProvider textureProvider, HumanskinSaveViewModel humanskinMdlGeneratorViewModel, TextureLoadService textureSelector, SelectResourceFileService selectResourceFileService) {
+        public HumanskinMdlOverviewViewModel(IUserDialogProvider userDialog, GohResourceProvider resourceProvider, GohHumanskinResourceProvider humanskinProvider, GohTextureProvider textureProvider, HumanskinSaveService humanskinSeveSrvice, TextureLoadService textureSelector, SelectResourceFileService selectResourceFileService) {
             _models = [];
             _plyModels = [];
             _aggregateMtlFiles = [];
@@ -88,7 +88,7 @@ namespace GohMdlExpert.ViewModels {
             _resourceProvider = resourceProvider;
             _humanskinProvider = humanskinProvider;
             _textureProvider = textureProvider;
-            _humanskinMdlGeneratorViewModel = humanskinMdlGeneratorViewModel;
+            _humanskinSeveSrvice = humanskinSeveSrvice;
 
             _defaultMaterialViewModel = new DefaultTextureViewModel(textureSelector);
             _modelAdderViewModel = new PlyModelAdderViewModel(this, _defaultMaterialViewModel);
@@ -96,6 +96,7 @@ namespace GohMdlExpert.ViewModels {
             _humanskinTreeViewModel = new HumanskinTreeViewModel(this, humanskinProvider);
             _modelsOverviewTreeViewModel = new ModelsOverviewTreeViewModel(this, textureSelector, selectResourceFileService);
 
+            PropertyChangeHandler.AddHandler(nameof(MdlFile), (_, _) => CommandManager.OnCommandCanExecuteChanged(nameof(SaveMdlCommand)));
             _modelsCollectionBinder = new CollectionChangeBinder<Model3D>(_plyModels, _models, 
                 (s) => { 
                     var plyModel = (s as PlyModel3D)!;
@@ -199,10 +200,6 @@ namespace GohMdlExpert.ViewModels {
 
             MdlModel? mdlModel = null;
 
-            //if (MdlFile.Exists()) {
-            //    mdlModel = MdlFile.Data;
-            //}
-
             MdlFile.Data = new MdlModel(
                 mdlModel?.Parameters ?? GohResourceLoading.MdlTemplateParameters, 
                 PlyModels.Select(p => p.PlyFile), 
@@ -215,8 +212,7 @@ namespace GohMdlExpert.ViewModels {
                 )
             );
 
-            _humanskinMdlGeneratorViewModel.SetHumanskin(MdlFile, textures);
-            _humanskinMdlGeneratorViewModel.Save(MdlFile, textures);
+            _humanskinSeveSrvice.Save(MdlFile, textures);
         }
 
         public void SetMtlFileTextureByIndex(string meshTextureName, int index) {

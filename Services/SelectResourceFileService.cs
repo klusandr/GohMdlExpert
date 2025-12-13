@@ -42,7 +42,7 @@ namespace GohMdlExpert.Services {
             }
 
             if (initPath != null) {
-                _dialogViewModel.Tree.ExpandetDirectory(initPath);
+                _dialogViewModel.Tree.ExpandToResourceElement(initPath);
             }
 
             childWindow.ShowDialog();

@@ -68,7 +68,9 @@ namespace GohMdlExpert {
                         sp.GetRequiredService<IUserDialogProvider>().ShowError("", exception: e);
                     }
                 ))
-                .AddSingleton<SelectResourceFileService>();
+                .AddSingleton<SelectResourceFileService>()
+                .AddSingleton<RequestTextService>()
+                .AddSingleton<HumanskinSaveService>();
 
             ViewModelsStartup.Startup(sender, e);
         }

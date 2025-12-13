@@ -28,6 +28,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
             Loader = resourceDirectory.Loader;
 
+            resourceDirectory.Update -= ResourceDirectoryUpdateHandler;
             resourceDirectory.Update += ResourceDirectoryUpdateHandler;
 
             LoadData();
@@ -56,7 +57,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         public override void UpdateData() {
             if (_resourceDirectory != null) {
                 _resourceDirectory.UpdateData();
-                base.UpdateData();
             }
         }
 

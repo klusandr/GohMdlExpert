@@ -23,6 +23,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             set {
                 _path = value;
                 _fullDirectoryPath = null;
+                _fullPath = null;
             }
         }
 
@@ -31,6 +32,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             set {
                 _relativePathPoint = value;
                 _fullDirectoryPath = null;
+                _fullPath = null;
             }
         }
         public bool IsRelativePath => RelativePathPoint != null;
@@ -41,7 +43,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             RelativePathPoint = relativePathPoint;
         }
 
-        public string GetFullPath() {
+        public string GetFullPath(){
             return _fullPath ??= SystemPath.Join(GetDirectoryPath(), Name);
         }
 
