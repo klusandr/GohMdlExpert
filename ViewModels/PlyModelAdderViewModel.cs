@@ -104,31 +104,20 @@ namespace GohMdlExpert.ViewModels
         public void AddModel() {
             if (AddedModel != null) {
                 try {
-                    Dictionary<string, MtlTexture>? textures = null;
+                    IEnumerable<string>? updatedTextureNames = null;
 
-                    if (AggregateMtlFiles != null) {
-                        textures = [];
-                        foreach (var aggregateMtlFile in AggregateMtlFiles) {
-                            var texture = AddedModel.GetMeshTexture(aggregateMtlFile.Name);
-
-                            if (texture != null) {
-                                if (aggregateMtlFile.Data.Count == 0 || _defaultMaterialViewModel.IsUseAlways) {
-                                    aggregateMtlFile.Data.Add(texture);
-                                }
-
-                                textures.Add(aggregateMtlFile.Name, texture);
-                            }
-                        }
+                    if (_defaultMaterialViewModel.IsUse && AggregateMtlFiles != null) {
+                        SetDefaultTextures(AggregateMtlFiles, out updatedTextureNames);
                     }
-
+                    
                     AddedModel.SetLodIndex(0);
 
                     _models3DView.AddModel(AddedModel, AggregateMtlFiles);
 
-                    if (textures != null) {
-                        foreach (var texture in textures) {
-                            int index = _models3DView.AggregateMtlFiles[texture.Key].Data.IndexOf(texture.Value);
-                            _models3DView.SetMtlFileTextureByIndex(texture.Key, index);
+                    if (updatedTextureNames?.Any() != null) {
+                        foreach (var textureName in updatedTextureNames) {
+                            int index = _models3DView.AggregateMtlFiles[textureName].Data.Count - 1;
+                            _models3DView.SetMtlFileTextureByIndex(textureName, index);
                         }
                     }
 
@@ -216,6 +205,25 @@ namespace GohMdlExpert.ViewModels
                     SetDefaultTexture();
                 }
             }
+        }
+
+        private void SetDefaultTextures(AggregateMtlFiles aggregateMtlFiles, out IEnumerable<string>? updatedTextureNames) {
+            List<string>? updatedTextureNamesList = null;
+
+            foreach (var aggregateMtlFile in aggregateMtlFiles) {
+                if (aggregateMtlFile.Data.Count == 0 || _defaultMaterialViewModel.IsUseAlways) {
+                    var texture = _defaultMaterialViewModel.GetTextureFile(aggregateMtlFile.Name);
+
+                    if (texture != null) {
+                        aggregateMtlFile.Data.Add(texture);
+                    }
+
+                    updatedTextureNamesList ??= [];
+                    updatedTextureNamesList.Add(aggregateMtlFile.Name);
+                }
+            }
+
+            updatedTextureNames = updatedTextureNamesList;
         }
     }
 }
