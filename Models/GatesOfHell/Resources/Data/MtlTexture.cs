@@ -41,9 +41,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Data {
         }
 
         public MtlTexture(string DiffusePath, string? BumpPath, string? SpecularPath) {
-            _diffusePath = DiffusePath;
-            _bumpPath = BumpPath;
-            _specularPath = SpecularPath;
+            _diffusePath = PathUtils.SetDefaultPathSepatate(DiffusePath);
+            _bumpPath = BumpPath != null ? PathUtils.SetDefaultPathSepatate(BumpPath) : null;
+            _specularPath = SpecularPath != null ? PathUtils.SetDefaultPathSepatate(SpecularPath) : null;
         }
 
         public static IEqualityComparer<MtlTexture> GetEqualityComparer() => new EqualsCompare();

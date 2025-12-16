@@ -32,5 +32,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
             return path[lastElementIndex..].Contains('.');
         }
+
+        public static string SetDefaultPathSepatate(string path) {
+            return path.Replace('/', '\\');
+        }
     }
 }
