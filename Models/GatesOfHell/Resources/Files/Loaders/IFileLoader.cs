@@ -8,5 +8,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
         Stream GetStream(string path);
         string GetAllText(string path);
         bool Exists(string path);
+        void WriteAllText(string path, string text);
     }
 }

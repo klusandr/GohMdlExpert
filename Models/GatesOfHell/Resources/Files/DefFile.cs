@@ -13,14 +13,13 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         }
 
         public override void SaveData() {
-            using var streamWriter = new StreamWriter(GetStream());
             var buildString = new StringBuilder();
 
             buildString.AppendLine("{game_entity")
                 .Append("\t{extension \"").Append(SystemPath.GetFileNameWithoutExtension(Name)).Append(".mdl").AppendLine("\"}{RimLight}")
             .Append('}');
 
-            streamWriter.WriteLine(buildString.ToString());
+            WriteAllText(buildString.ToString());
         }
     }
 }

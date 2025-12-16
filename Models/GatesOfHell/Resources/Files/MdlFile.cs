@@ -25,7 +25,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
         }
 
         public override void LoadData() {
-            var parameter = Serializer.Deserialize(GetAllText());
+            var parameter = Serializer.Deserialize(ReadAllText());
             var plyFiles = new List<PlyFile>();
             var plyLodFiles = new Dictionary<PlyFile, PlyFile[]>();
 
@@ -95,11 +95,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
 
             ((DataList)((DataList)parameters.Data!)[0].Data!)[13] = skinParameter;
 
-            var str = Serializer.Serialize(Data.Parameters);
-
-            using var stream = new StreamWriter(GetStream());
-
-            stream.Write(str);
+            WriteAllText(Serializer.Serialize(Data.Parameters));
         }
     }
 }

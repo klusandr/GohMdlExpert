@@ -50,5 +50,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Files {
             return _archive.Entries.FirstOrDefault(e => e.FullName.Equals(insidePath, StringComparison.CurrentCultureIgnoreCase));
             //return _archive.GetEntry(_archive.GetArchiveFilePath(path)) != null;
         }
+
+        public void WriteAllText(string path, string text) {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -45,17 +45,25 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
             }
         }
 
-        public string GetAllText() {
-            return Loader.GetAllText(GetFullPath());
-        }
-
         public Stream GetStream() {
             return Loader.GetStream(GetFullPath());
         }
 
+        public string ReadAllText() {
+            return Loader.GetAllText(GetFullPath());
+        }
+
+        public void WriteAllText(string text) {
+            if (Loader.IsReadOnly) {
+                throw GohResourceSaveException.SaveReadOnlyFile(this);
+            }
+
+            Loader.WriteAllText(GetFullPath(), text);
+        }
+
 #warning Слишком частый вызов при загрузке одной моделей или текстур к ней.
         public bool Exists() {
-            return Path != null && Loader.Exists(GetFullPath()); ;
+            return Path != null && Loader.Exists(GetFullPath());
         }
 
         public virtual string? GetExtension() {
@@ -63,7 +71,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
         }
 
         public virtual void LoadData() {
-            Data = GetAllText();
+            Data = ReadAllText();
         }
 
         public virtual void UnloadData() {

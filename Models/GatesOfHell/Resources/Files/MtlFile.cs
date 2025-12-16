@@ -26,7 +26,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
         }
 
         public override void LoadData() {
-            var parameters = Serializer.Deserialize(GetAllText());
+            var parameters = Serializer.Deserialize(ReadAllText());
             var textureFilesPath = new List<string?>();
 
             foreach (var type in (IEnumerable<Types>)[Types.Diffuse, Types.Bump, Types.Specular]) {
@@ -95,8 +95,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
                 Data = data
             });
 
-            using var stream = new StreamWriter(GetStream());
-            stream.Write(str);
+            WriteAllText(str);
         }
     }
 }

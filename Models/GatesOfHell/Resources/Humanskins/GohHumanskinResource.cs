@@ -59,7 +59,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
         public IEnumerable<MdlFile> GetPlyMdlFiles(PlyFile plyFile) {
             return Root
                 .FindResourceElements<MdlFile>()
-                .Where(m => m.GetAllText().Contains(plyFile.Name));
+                .Where(m => m.ReadAllText().Contains(plyFile.Name));
         }
 
         public IEnumerable<AggregateMtlFile> GetPlyAggregateMtlFiles(PlyFile plyFile) {
