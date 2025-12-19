@@ -40,5 +40,17 @@ namespace GohMdlExpert.ViewModels.SettingsPages {
         public T? GetPage<T>() where T: SettingsPageViewModel {
             return (T?)Pages.FirstOrDefault(p => p is T);
         }
+
+        public void LoadSettings() {
+            foreach (var page in _pages) { 
+                page.LoadSettings();
+            }
+        }
+
+        public void SaveSettings() {
+            foreach (var page in _pages) { 
+                page.SaveSettings();
+            }
+        }
     }
 }

@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Mods;
+using GohMdlExpert.Properties;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using WpfMvvm.Collections.ObjectModel;
-using GohMdlExpert.Properties;
 
 namespace GohMdlExpert.ViewModels.SettingsPages {
     public class ModsSettingsPageViewModel : SettingsPageViewModel {
@@ -31,7 +32,7 @@ namespace GohMdlExpert.ViewModels.SettingsPages {
         }
 
         private readonly GohResourceProvider _resourceProvider;
-        private readonly GohModResourceProvider _modResourceProvider;
+        private readonly GohModsResourceProvider _modResourceProvider;
         private readonly ApplicationViewModel _applicationViewModel;
         private readonly ObservableList<ModViewModel> _mods;
         private ModViewModel? _selectedMod;
@@ -54,7 +55,7 @@ namespace GohMdlExpert.ViewModels.SettingsPages {
         public ICommand ApproveCommand => CommandManager.GetCommand(Approve);
         
 
-        public ModsSettingsPageViewModel(GohResourceProvider resourceProvider, GohModResourceProvider modResourceProvider, ApplicationViewModel applicationViewModel) {
+        public ModsSettingsPageViewModel(GohResourceProvider resourceProvider, GohModsResourceProvider modResourceProvider, ApplicationViewModel applicationViewModel) {
             _resourceProvider = resourceProvider;
             _modResourceProvider = modResourceProvider;
             _applicationViewModel = applicationViewModel;
@@ -86,6 +87,25 @@ namespace GohMdlExpert.ViewModels.SettingsPages {
         private void Approve() {
             _resourceProvider.LoadModes();
             _applicationViewModel.FullLoadResources();
+            SaveSettings();
+        }
+
+        public override void LoadSettings() {
+            _modResourceProvider.ClearMods();
+
+            if (Settings.ModsSettings != null) {
+                foreach (var modSettings in Settings.ModsSettings) {
+                    var mod = new ModResource(modSettings.Path) { IsLoaded = modSettings.Enable };
+
+                    _modResourceProvider.AddMod(mod);
+                    _mods.Add(new ModViewModel(mod));
+                }
+            }
+        }
+
+        public override void SaveSettings() {
+            Settings.ModsSettings = [.. _modResourceProvider.Mods.Select(m => new Settings.ModSettings() { Path = m.Path, Enable = m.IsLoaded })];
+            base.SaveSettings();
         }
     }
 }

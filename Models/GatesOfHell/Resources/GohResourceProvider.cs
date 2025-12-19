@@ -18,12 +18,12 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
         public bool IsResourceLoaded => ResourceDirectory != null;
 
         public GohOutputModProvider OutputModProvider { get; }
-        public GohModResourceProvider ModResourceProvider { get; }
+        public GohModsResourceProvider ModResourceProvider { get; }
 
         public event EventHandler? ResourceUpdated;
         public event EventHandler? ResourceFullLoaded;
 
-        public GohResourceProvider(GohOutputModProvider outputModProvider, GohModResourceProvider modResourceProvider) {
+        public GohResourceProvider(GohOutputModProvider outputModProvider, GohModsResourceProvider modResourceProvider) {
             OutputModProvider = outputModProvider;
             ModResourceProvider = modResourceProvider;
 

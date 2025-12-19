@@ -28,7 +28,7 @@ namespace GohMdlExpert.ViewModels {
         private readonly HumanskinMdlOverviewViewModel _models3DView;
         private readonly SettingsWindowService _settingsWindowService;
         private readonly AppThemesManager _appThemesManager;
-        private readonly GohModResourceProvider _modResourceProvider;
+        private readonly GohModsResourceProvider _modResourceProvider;
         private bool _isWaitFillVisible;
 
         public float CompletionPercentage { get; set; }
@@ -51,7 +51,7 @@ namespace GohMdlExpert.ViewModels {
         public ICommand TestCommand => CommandManager.GetCommand(Test);
 
         public ApplicationViewModel(GohResourceProvider gohResourceProvider, GohHumanskinResourceProvider gohHumanskinResourceProvider, GohTextureProvider gohTextureProvider,
-            HumanskinMdlOverviewViewModel models3DView, SettingsWindowService settingsWindowService, AppThemesManager appThemesManager, GohModResourceProvider modResourceProvider) {
+            HumanskinMdlOverviewViewModel models3DView, SettingsWindowService settingsWindowService, AppThemesManager appThemesManager, GohModsResourceProvider modResourceProvider) {
             _gohResourceProvider = gohResourceProvider;
             _models3DView = models3DView;
             _settingsWindowService = settingsWindowService;

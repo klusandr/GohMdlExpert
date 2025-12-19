@@ -7,6 +7,7 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Mods;
 using GohMdlExpert.Properties;
 using GohMdlExpert.Services;
 using GohMdlExpert.ViewModels;
+using GohMdlExpert.ViewModels.SettingsPages;
 using GohMdlExpert.Views.Dialogs;
 using Microsoft.Extensions.DependencyInjection;
 using WpfMvvm;
@@ -29,19 +30,26 @@ namespace GohMdlExpert {
 
             var settings = Settings.Default;
 
-            settings.ThemeName = ServiceProvider.GetRequiredService<AppThemesManager>().CurrentThemeName ?? AppThemesManager.LightThemeName;
-
-            Settings.Default.Save();
+            settings.Save();
         }
 
         protected override void OnStartup(StartupEventArgs e) {
             base.OnStartup(e);
 
             var settings = Settings.Default;
+            settings.Load();
+            AppThemesManager themesManager = ServiceProvider.GetRequiredService<AppThemesManager>();
 
             if (!string.IsNullOrEmpty(settings.ThemeName)) {
-                ServiceProvider.GetRequiredService<AppThemesManager>().SetCurrentTheme(settings.ThemeName);
+                themesManager.SetCurrentTheme(settings.ThemeName);
             }
+
+            themesManager.ThemeChange += (_, _) => {
+                settings.ThemeName = themesManager.CurrentThemeName ?? AppThemesManager.LightThemeName;
+                settings.Save();
+            };
+
+            LoadSettings();
         }
 
         protected override void OnServicesStartup(object? sender, ServicesStartupArgs e) {
@@ -51,7 +59,7 @@ namespace GohMdlExpert {
                 .AddSingleton<IUserDialogProvider, UserDialogProviderGoh>()
                 .AddSingleton<GohGameDirectory>()
                 .AddSingleton<GohResourceProvider>()
-                .AddSingleton<GohModResourceProvider>()
+                .AddSingleton<GohModsResourceProvider>()
                 .AddSingleton<GohOutputModProvider>()
                 .AddSingleton<GohHumanskinResourceProvider>()
                 .AddSingleton<GohTextureProvider>()
@@ -77,8 +85,9 @@ namespace GohMdlExpert {
 
         protected override void OnActivated(EventArgs e) {
             base.OnActivated(e);
+            Settings settings = Settings.Default;
 
-            if (!IsInitialized && Settings.Default.LoadGameResourceOnStart) {
+            if (!IsInitialized && settings.LoadGameResourceOnStart) {
                 var gameDirectory = ServiceProvider.GetRequiredService<GohGameDirectory>();
 
                 gameDirectory.Updated += (_, _) => {
@@ -89,19 +98,27 @@ namespace GohMdlExpert {
                     }  
                 };
 
-                if (!string.IsNullOrEmpty(Settings.Default.GameDirectoryPath)) {
-                    try {
-                        gameDirectory.Open(Settings.Default.GameDirectoryPath);
-                    } catch (GohResourceLoadException ex) {
-                        ServiceProvider.GetRequiredService<IUserDialogProvider>().ShowError(string.Empty, exception: ex);
-                    }
-                } else {
-                    if (ServiceProvider.GetRequiredService<IUserDialogProvider>().Ask("The path to the game directory is not specified, open the game directory settings now?", "Game directory path", QuestionType.YesNo) == QuestionResult.Yes) {
-                        ServiceProvider.GetRequiredService<SettingsWindowService>().OpenSettings();
+                if (settings.LoadGameResourceOnStart) {
+                    if (!string.IsNullOrEmpty(settings.GameDirectoryPath)) {
+                        try {
+                            gameDirectory.Open(settings.GameDirectoryPath);
+                        } catch (GohResourceLoadException ex) {
+                            ServiceProvider.GetRequiredService<IUserDialogProvider>().ShowError(string.Empty, exception: ex);
+                        }
+                    } else {
+                        if (ServiceProvider.GetRequiredService<IUserDialogProvider>().Ask("The path to the game directory is not specified, open the game directory settings now?\n" +
+                            "You can disble automatic load of game resource in the settings.", "Game directory path", QuestionType.YesNo) == QuestionResult.Yes) {
+                            ServiceProvider.GetRequiredService<SettingsWindowService>().OpenSettings();
+                        }
                     }
                 }
+                
                 IsInitialized = true;
             }
+        }
+
+        private void LoadSettings() {
+            ServiceProvider.GetRequiredService<SettingsViewModel>().LoadSettings();
         }
     }
 }

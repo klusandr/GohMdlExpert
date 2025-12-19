@@ -15,7 +15,13 @@ namespace GohMdlExpert.ViewModels.SettingsPages {
         public override string Name { get; } = nameof(GamePathSettingsPageViewModel);
 
         public string? GameDirectoryPath => _gameDirectory.Path;
-        public bool IsLoadOnStart { get => Settings.LoadGameResourceOnStart; set => Settings.LoadGameResourceOnStart = value; }
+        public bool IsLoadOnStart {
+            get => Settings.LoadGameResourceOnStart;
+            set {
+                Settings.LoadGameResourceOnStart = value;
+                SaveSettings();
+            }
+        }
         public Version? Version => _gameDirectory.Version;
 
         public ICommand ReviewPathCommand => CommandManager.GetCommand(ReviewPath);

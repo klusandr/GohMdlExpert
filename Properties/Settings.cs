@@ -4,6 +4,11 @@ using WpfMvvm.Properties;
 
 namespace GohMdlExpert.Properties {
     public class Settings : BaseSettings {
+        public struct ModSettings {
+            public bool Enable { get; set; }
+            public string Path { get; set; }
+        }
+
         private static Settings? s_default;
 
         public static Settings Default => s_default ??= new Settings();
@@ -55,6 +60,13 @@ namespace GohMdlExpert.Properties {
         public bool LoadGameResourceOnStart {
             get => GetValue<bool>();
             set => SetValue(value);
+        }
+
+        [UserScopedSetting()]
+        [DefaultValue(null)]
+        public ModSettings[]? ModsSettings { 
+            get => GetValue<ModSettings[]>(); 
+            set => SetValue(value); 
         }
     }
 }

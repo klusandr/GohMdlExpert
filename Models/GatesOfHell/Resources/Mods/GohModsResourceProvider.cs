@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods
 {
-    public class GohModResourceProvider {
+    public class GohModsResourceProvider {
         private readonly List<ModResource> _mods;
 
         public IEnumerable<ModResource> Mods { get => _mods; }
 
-        public GohModResourceProvider() {
+        public GohModsResourceProvider() {
             _mods = [];
         }
 
@@ -22,6 +22,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods
 
         public void RemoveMod(ModResource mod) { 
             _mods.Remove(mod);
+        }
+
+        public void ClearMods() {
+            _mods.Clear(); 
         }
     }
 }
