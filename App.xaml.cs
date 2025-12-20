@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Navigation;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources;
@@ -12,6 +13,7 @@ using GohMdlExpert.Views.Dialogs;
 using Microsoft.Extensions.DependencyInjection;
 using WpfMvvm;
 using WpfMvvm.DependencyInjection;
+using WpfMvvm.Exceptions;
 using WpfMvvm.Extensions;
 using WpfMvvm.ViewModels.Commands;
 using WpfMvvm.Views;
@@ -22,7 +24,12 @@ namespace GohMdlExpert {
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : WpfApplication {
-        public App() { }
+        private const string DUMP_FILE = "dump";
+
+        public App() {
+            AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+            LogUnhandledException((Exception)e.ExceptionObject, "AppDomain.CurrentDomain.UnhandledException");
+        }
         public bool IsInitialized { get; private set; }
 
         protected override void OnExit(ExitEventArgs e) {
@@ -52,6 +59,17 @@ namespace GohMdlExpert {
             LoadSettings();
         }
 
+        private void LogUnhandledException(Exception exceptionObject, string v) {
+            string fileName = DUMP_FILE;
+
+            int fileNumber = 1;
+            while (File.Exists(fileName)) { 
+                fileName = DUMP_FILE + fileNumber++;
+            }
+
+            File.WriteAllText(fileName, ServiceProvider.GetRequiredService<ExceptionFormatter>().ExceptionToString(exceptionObject));
+        }
+
         protected override void OnServicesStartup(object? sender, ServicesStartupArgs e) {
             base.OnServicesStartup(sender, e);
 
@@ -79,7 +97,6 @@ namespace GohMdlExpert {
                 .AddSingleton<SelectResourceFileService>()
                 .AddSingleton<RequestTextService>()
                 .AddSingleton<HumanskinSaveService>();
-
             ViewModelsStartup.Startup(sender, e);
         }
 
