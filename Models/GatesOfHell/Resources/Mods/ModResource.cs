@@ -10,10 +10,9 @@ using SystemPath = System.IO.Path;
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods {
     public class ModResource {
         public string Path { get; }
-        public bool IsLoaded { get; set; }
+        public bool IsEnable { get; set; } = true;
         public ModInfo? ModInfo { get; private set; }
         public ModResourceLoader ResourceLoader { get; private set; }
-        public bool IsLoad => ResourceLoader != null;
 
         public ModResource(string path) {
             Path = path;
@@ -28,8 +27,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods {
                     ModInfo = ModInfo.Parse(File.ReadAllText(modInfoPath));
                 } catch (Exception) { }
             }
-
-            IsLoaded = true;
         }
     }
 }

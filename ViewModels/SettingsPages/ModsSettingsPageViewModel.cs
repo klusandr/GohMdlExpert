@@ -19,10 +19,9 @@ namespace GohMdlExpert.ViewModels.SettingsPages {
             public string? Name => _modResource.ModInfo?.Name;
             public string Path => _modResource.Path;
             public bool IsEnable {
-                get => _modResource.IsLoaded;
-                set => _modResource.IsLoaded = value;
+                get => _modResource.IsEnable;
+                set => _modResource.IsEnable = value;
             }
-            public bool IsLoad => _modResource.IsLoad;
 
             public ModResource ModResource => _modResource;
 
@@ -37,7 +36,9 @@ namespace GohMdlExpert.ViewModels.SettingsPages {
         private readonly ObservableList<ModViewModel> _mods;
         private ModViewModel? _selectedMod;
 
-        public override string Name => "Mod manager";
+        public static readonly string PageName = "ModsSettings";
+
+        public override string Name => PageName;
 
         public IObservableEnumerable<ModViewModel> Mods => _mods;
 
@@ -85,7 +86,8 @@ namespace GohMdlExpert.ViewModels.SettingsPages {
         }
 
         private void Approve() {
-            _resourceProvider.LoadModes();
+            ApproveSettings();
+            _resourceProvider.LoadAllResources();
             _applicationViewModel.FullLoadResources();
             SaveSettings();
         }
@@ -95,7 +97,7 @@ namespace GohMdlExpert.ViewModels.SettingsPages {
 
             if (Settings.ModsSettings != null) {
                 foreach (var modSettings in Settings.ModsSettings) {
-                    var mod = new ModResource(modSettings.Path) { IsLoaded = modSettings.Enable };
+                    var mod = new ModResource(modSettings.Path) { IsEnable = modSettings.Enable };
 
                     _modResourceProvider.AddMod(mod);
                     _mods.Add(new ModViewModel(mod));
@@ -104,7 +106,7 @@ namespace GohMdlExpert.ViewModels.SettingsPages {
         }
 
         public override void SaveSettings() {
-            Settings.ModsSettings = [.. _modResourceProvider.Mods.Select(m => new Settings.ModSettings() { Path = m.Path, Enable = m.IsLoaded })];
+            Settings.ModsSettings = [.. _modResourceProvider.Mods.Select(m => new Settings.ModSettings() { Path = m.Path, Enable = m.IsEnable })];
             base.SaveSettings();
         }
     }

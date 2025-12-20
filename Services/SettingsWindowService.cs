@@ -8,15 +8,24 @@ using GohMdlExpert.Views.SettingsPages;
 
 namespace GohMdlExpert.Services {
     public class SettingsWindowService { 
-        private ChildWindow? _childWindow;
         private SettingsView? _settingsView;
+        private ChildWindow? _childWindow;
 
-        public SettingsWindowService() {
-            
+        public SettingsWindowService() { }
+
+        private void SettingsApprovedHandler(object? sender, EventArgs e) {
+            _childWindow?.Close();
         }
 
         public void OpenSettings(string? pageName = null) {
-            _settingsView ??= new SettingsView();
+            if (_settingsView == null) {
+                _settingsView = new SettingsView();
+                _settingsView.ViewModel.SettingsApproved += SettingsApprovedHandler;
+            }
+
+            if (pageName != null) {
+                _settingsView.OpenPage(pageName);
+            }
 
             _childWindow = new ChildWindow() {
                 Owner = App.Current.MainWindow,
@@ -26,7 +35,7 @@ namespace GohMdlExpert.Services {
                 MinHeight = _settingsView.MinHeight,
             };
 
-            _childWindow.Show();
+            _childWindow.ShowDialog();
         }
     }
 }

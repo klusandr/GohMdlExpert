@@ -93,7 +93,6 @@ namespace GohMdlExpert {
                 gameDirectory.Updated += (_, _) => {
                     if (gameDirectory.ResourcePath != null) {
                         ServiceProvider.GetRequiredService<GohResourceProvider>().LoadGameResource(gameDirectory.ResourcePath);
-                        ServiceProvider.GetRequiredService<GohOutputModProvider>().Mod = new OutputModResource("F:\\Steam Game\\steamapps\\common\\Call to Arms - Gates of Hell\\mods\\divisions");
                         ServiceProvider.GetRequiredService<ApplicationViewModel>().FullLoadResources();
                     }  
                 };
@@ -106,9 +105,22 @@ namespace GohMdlExpert {
                             ServiceProvider.GetRequiredService<IUserDialogProvider>().ShowError(string.Empty, exception: ex);
                         }
                     } else {
-                        if (ServiceProvider.GetRequiredService<IUserDialogProvider>().Ask("The path to the game directory is not specified, open the game directory settings now?\n" +
-                            "You can disble automatic load of game resource in the settings.", "Game directory path", QuestionType.YesNo) == QuestionResult.Yes) {
-                            ServiceProvider.GetRequiredService<SettingsWindowService>().OpenSettings();
+                        if (ServiceProvider.GetRequiredService<IUserDialogProvider>().Ask(
+                            "The path to the game directory is not specified, open the game directory settings now?\n" +
+                            "You can disble automatic load of game resource in the settings.", "Game directory path", 
+                            QuestionType.YesNo) == QuestionResult.Yes) {
+                            ServiceProvider.GetRequiredService<SettingsWindowService>().OpenSettings(GamePathSettingsPageViewModel.PageName);
+                        }
+                    }
+                }
+
+                if (settings.LoadOutputModOnStart) {
+                    if (string.IsNullOrEmpty(settings.OutputModPath)) {
+                        if (ServiceProvider.GetRequiredService<IUserDialogProvider>().Ask(
+                            "The path to the output mod for seving resources is not specified, open the output mod settings now?\n" +
+                            "You can disble automatic load of output mod in the settings.", "Game directory path", 
+                            QuestionType.YesNo) == QuestionResult.Yes) {
+                            ServiceProvider.GetRequiredService<SettingsWindowService>().OpenSettings(OutputModSettingsPageViewModel.PageName);
                         }
                     }
                 }

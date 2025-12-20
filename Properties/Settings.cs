@@ -68,5 +68,20 @@ namespace GohMdlExpert.Properties {
             get => GetValue<ModSettings[]>(); 
             set => SetValue(value); 
         }
+
+        [UserScopedSetting()]
+        [DefaultValue(null)]
+        public string? OutputModPath {
+            get => GetValue<string>();
+            set => SetValue(value);
+        }
+
+
+        [UserScopedSetting()]
+        [DefaultValue(true)]
+        public bool LoadOutputModOnStart {
+            get => GetValue<bool>();
+            set => SetValue(value);
+        }
     }
 }

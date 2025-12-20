@@ -17,5 +17,8 @@
         <TabItem Header="Mod manager" Padding="5">
             <local:ModsSettingsPageView/>
         </TabItem>
+        <TabItem Header="Output mod" Padding="5">
+            <local:OutputModSettingsPageView/>
+        </TabItem>
     </TabControl>
 </bv:BaseView>

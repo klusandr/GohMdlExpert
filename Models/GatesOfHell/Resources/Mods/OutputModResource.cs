@@ -11,30 +11,18 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
 using SystemPath = System.IO.Path;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods {
-    public class OutputModResource {
-        private readonly ModResourceLoader _resourceLoader;
+    public class OutputModResource : ModResource {
         private readonly GohResourceVirtualDirectory _root;
 
-        public string Name { get; }
-        public string Path { get; }
         public GohResourceVirtualDirectory Root => _root;
-        public IFileLoader FileLoader => _resourceLoader.FileLoader;
 
-        public IGohResourceLoader ResourceLoader => _resourceLoader;
-
-        public OutputModResource(string name, string path) {
-            Name = name;
-            Path = path;
-            _resourceLoader = new ModResourceLoader(path);
-
+        public OutputModResource(string path) : base(path) {
             if (Directory.Exists(path)) {
-                _root = GohResourceVirtualDirectory.GetDeepClone(_resourceLoader.Root);
+                _root = GohResourceVirtualDirectory.GetDeepClone(ResourceLoader.Root);
             } else {
                 _root = new GohResourceVirtualDirectory("");
             }
         }
-
-        public OutputModResource(string path) : this(SystemPath.GetFileName(path), path) { }
 
         public void CreateModDirectories() {
             Directory.CreateDirectory(Path);
@@ -47,7 +35,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods {
             var directory = _root.AlongPathOrCreate(fullPath);
 
             if (!directory.Exists()) {
-                Directory.CreateDirectory(_resourceLoader.GetFileSystemPath(directory.GetFullPath()));
+                Directory.CreateDirectory(ResourceLoader.GetFileSystemPath(directory.GetFullPath()));
             }
 
             return directory;
@@ -57,7 +45,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods {
             var directory = _root.AlongPathOrCreate(fullPath);
 
             if (directory.Exists()) {
-                Directory.Delete(_resourceLoader.GetFileSystemPath(directory.GetFullPath()), recursive);
+                Directory.Delete(ResourceLoader.GetFileSystemPath(directory.GetFullPath()), recursive);
             }
         }
 
@@ -65,7 +53,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods {
         public void AddFile(GohResourceFile resourceFile, GohResourceDirectory resourceDirectory) {
             var directory = AddDirectory(resourceDirectory.GetFullPath());
 
-            resourceFile.Loader = FileLoader;
+            resourceFile.Loader = ResourceLoader.FileLoader;
             resourceFile.RelativePathPoint = null;
             resourceFile.Path = directory.GetFullPath();
 
@@ -75,7 +63,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods {
 
         private void CreateSubDirectories(GohResourceDirectory directory) {
             foreach (var subDirectory in directory.GetDirectories()) {
-                Directory.CreateDirectory(_resourceLoader.GetFileSystemPath(subDirectory.GetFullPath() ?? ""));
+                Directory.CreateDirectory(ResourceLoader.GetFileSystemPath(subDirectory.GetFullPath() ?? ""));
 
                 if (subDirectory.GetDirectories().Any()) {
                     CreateSubDirectories(subDirectory);

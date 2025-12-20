@@ -13,17 +13,17 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using GohMdlExpert.ViewModels.SettingsPages;
+using WpfMvvm.ViewModels;
 using WpfMvvm.Views;
-using WpfMvvm.Views.Attributes;
 
 namespace GohMdlExpert.Views.SettingsPages {
     /// <summary>
-    /// Логика взаимодействия для ModsSettingsPageView.xaml
+    /// Логика взаимодействия для SettingsPageView.xaml
     /// </summary>
-    [BindingViewModel<ModsSettingsPageViewModel>(true)]
-    public partial class ModsSettingsPageView : SettingsPageView {
-        public ModsSettingsPageView() {
-            InitializeComponent();
-        }
+    public abstract class SettingsPageView : BaseView {
+
+        public string? PageName => (ViewModel as SettingsPageViewModel)?.Name;
+
+        public SettingsPageView() { }
     }
 }

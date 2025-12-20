@@ -21,7 +21,7 @@ namespace GohMdlExpert.Views.SettingsPages {
     /// Логика взаимодействия для GamePathSettingsPageView.xaml
     /// </summary>
     [BindingViewModel<GamePathSettingsPageViewModel>(true)]
-    public partial class GamePathSettingsPageView : BaseView {
+    public partial class GamePathSettingsPageView : SettingsPageView {
         public GamePathSettingsPageView() {
             InitializeComponent();
         }

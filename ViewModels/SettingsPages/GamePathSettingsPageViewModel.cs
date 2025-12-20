@@ -12,7 +12,9 @@ namespace GohMdlExpert.ViewModels.SettingsPages {
     public class GamePathSettingsPageViewModel : SettingsPageViewModel {
         private readonly GohGameDirectory _gameDirectory;
 
-        public override string Name { get; } = nameof(GamePathSettingsPageViewModel);
+        public static readonly string PageName = "GamePathSettings";
+
+        public override string Name => PageName;
 
         public string? GameDirectoryPath => _gameDirectory.Path;
         public bool IsLoadOnStart {

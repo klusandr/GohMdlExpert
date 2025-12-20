@@ -10,7 +10,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
 {
     public class GohResourceProvider {
         private IGohResourceLoader? _baseResourceLoader;
-        private IGohResourceLoader? _outputModeResourceLoader;
         private IGohResourceLoader? _currentResourceLoader;
 
         public IGohResourceLoader ResourceLoader => _currentResourceLoader ?? throw GohResourceLoadException.IsNotLoad();
@@ -26,38 +25,20 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
         public GohResourceProvider(GohOutputModProvider outputModProvider, GohModsResourceProvider modResourceProvider) {
             OutputModProvider = outputModProvider;
             ModResourceProvider = modResourceProvider;
-
-            OutputModProvider.ModUpdate += OutputModUpdateHandler;
         }
 
-        private void OutputModUpdateHandler(object? sender, EventArgs e) {
-            _outputModeResourceLoader = OutputModProvider.Mod.ResourceLoader;
-
-            LoadModes();
-        }
-
-        public void LoadGameResource(string path) {
-            _baseResourceLoader = _currentResourceLoader = new PakResourceLoader(path);
-            OnResourceUpdated();
-        }
-
-        public void OpenResource(string path) {
-            _baseResourceLoader = _currentResourceLoader = new FileSystemResourceLoader(path);
-            OnResourceUpdated();
-        }
-
-        public void LoadModes() {
+        public void LoadAllResources() {
             if (_baseResourceLoader == null) {
                 return;
             }
 
             var resourceLoaders = new List<IGohResourceLoader>() { _baseResourceLoader };
 
-            if (_outputModeResourceLoader != null) {
-                resourceLoaders.Add(_outputModeResourceLoader);
+            if (OutputModProvider.ModIsLoaded && OutputModProvider.Mod.IsEnable) {
+                resourceLoaders.Add(OutputModProvider.Mod.ResourceLoader);
             }
 
-            resourceLoaders.AddRange(ModResourceProvider.Mods.Where(m => m.IsLoaded && m.IsLoad).Select(m => m.ResourceLoader));
+            resourceLoaders.AddRange(ModResourceProvider.Mods.Where(m => m.IsEnable).Select(m => m.ResourceLoader));
 
             if (resourceLoaders.Count > 1) {
                 _currentResourceLoader = new AggregateResourceLoader([.. resourceLoaders]);
@@ -67,6 +48,17 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
 
             OnResourceUpdated();
         }
+
+        public void OpenResource(string path) {
+            _baseResourceLoader = _currentResourceLoader = new FileSystemResourceLoader(path);
+            LoadAllResources();
+        }
+
+        public void LoadGameResource(string path) {
+            _baseResourceLoader = _currentResourceLoader = new PakResourceLoader(path);
+            LoadAllResources();
+        }
+
 
         public GohResourceDirectory GetLocationDirectory(string location) {
             string path = GohResourceLocations.GetLocationPathByName(location);

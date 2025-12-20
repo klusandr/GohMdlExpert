@@ -24,13 +24,25 @@ namespace GohMdlExpert.ViewModels.SettingsPages {
             }
         }
 
+        public event EventHandler? SettingsApproved;
+
         public SettingsViewModel() {
             var serviceProvider = App.Current.ServiceProvider;
 
             _pages = [
                 serviceProvider.CreateInstance<GamePathSettingsPageViewModel>(),
-                serviceProvider.CreateInstance<ModsSettingsPageViewModel>()
+                serviceProvider.CreateInstance<ModsSettingsPageViewModel>(),
+                serviceProvider.CreateInstance<OutputModSettingsPageViewModel>()
             ];
+
+
+            foreach (var page in _pages) {
+                page.SettingsApproved += PageSettingsApprovedHandler;
+            }
+        }
+
+        private void PageSettingsApprovedHandler(object? sender, EventArgs e) {
+            SettingsApproved?.Invoke(this, EventArgs.Empty);
         }
 
         public SettingsPageViewModel? GetPage(Type type) {

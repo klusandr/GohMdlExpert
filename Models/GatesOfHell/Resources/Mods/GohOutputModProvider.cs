@@ -17,8 +17,15 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods {
             }
         }
 
+        public bool ModIsLoaded => _mod != null;
+
         public event EventHandler? ModUpdate;
 
         public GohOutputModProvider() { }
+
+        public void ClearMod() {
+            _mod = null;
+            ModUpdate?.Invoke(this, EventArgs.Empty);
+        }
     }
 }
