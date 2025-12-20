@@ -114,17 +114,6 @@ namespace GohMdlExpert {
                     }
                 }
 
-                if (settings.LoadOutputModOnStart) {
-                    if (string.IsNullOrEmpty(settings.OutputModPath)) {
-                        if (ServiceProvider.GetRequiredService<IUserDialogProvider>().Ask(
-                            "The path to the output mod for seving resources is not specified, open the output mod settings now?\n" +
-                            "You can disble automatic load of output mod in the settings.", "Game directory path", 
-                            QuestionType.YesNo) == QuestionResult.Yes) {
-                            ServiceProvider.GetRequiredService<SettingsWindowService>().OpenSettings(OutputModSettingsPageViewModel.PageName);
-                        }
-                    }
-                }
-                
                 IsInitialized = true;
             }
         }

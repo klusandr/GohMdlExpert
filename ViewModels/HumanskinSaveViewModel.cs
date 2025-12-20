@@ -37,7 +37,9 @@ namespace GohMdlExpert.ViewModels
         private GohResourceDirectory? _currentDirectory;
         private string? _newDirectoryName;
 
-        private OutputModResource Mod => _gohOutputModProvider.Mod;
+        public OutputModResource Mod => _gohOutputModProvider.Mod;
+
+        public bool ModIsLoaded => _gohOutputModProvider.ModIsLoaded;
 
         public GohResourceDirectory? CurrentDirectory {
             get => _currentDirectory;
