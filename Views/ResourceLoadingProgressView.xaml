@@ -1,0 +1,57 @@
+﻿<UserControl x:Class="GohMdlExpert.Views.ResourceLoadingProgressView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GohMdlExpert.Views" 
+             xmlns:viewmodels="clr-namespace:GohMdlExpert.ViewModels" 
+             d:DataContext="{d:DesignInstance Type=viewmodels:ResourceLoadingProgressViewModel}"
+             mc:Ignorable="d" Width="500" Height="100">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock FontSize="14" Visibility="{Binding IsEnd, Converter={StaticResource BooleanToVisibilityConverterRevers}}">
+                <Run Text="Current step: "/>
+                <Run Text="{Binding CurrentStepText, StringFormat='{}{0}...', Mode=OneWay}"/>
+            </TextBlock>
+
+            <TextBlock Grid.Row="1" Visibility="{Binding IsEnd, Converter={StaticResource BooleanToVisibilityConverterRevers}}" TextTrimming="CharacterEllipsis">
+                <Run Text="Current directory: "/>
+                <Run Text="{Binding CurrentDirectoryFullName, StringFormat='.\\{0}\\...',  Mode=OneWay}"/>
+            </TextBlock>
+
+            <TextBlock Text="Done." FontSize="20" d:Visibility="Collapsed" Visibility="{Binding IsEnd, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.RowSpan="2"/>
+ 
+            <StackPanel HorizontalAlignment="Right" Grid.RowSpan="2" Grid.Column="1">
+                <TextBlock HorizontalAlignment="Right">
+                    <Run Text="{Binding FilesCount, Mode=OneWay}"/>
+                    <Run Text=" :Files loaded"/>
+                </TextBlock>
+                <TextBlock HorizontalAlignment="Right">
+                    <Run Text="{Binding DirectoriesCount, Mode=OneWay}"/>
+                    <Run Text=" :Directories loaded"/>
+                </TextBlock>
+
+            </StackPanel>
+
+            <ProgressBar Value="{Binding ProgressBar.Value, Mode=OneWay}" Maximum="{Binding ProgressBar.Maximum, Mode=OneWay}" Height="20" Grid.Row="2" Grid.ColumnSpan="2"/>
+
+            <Button Content="Cancel" Command="{Binding CancelCommand}" Padding="5" Grid.Row="3" Grid.ColumnSpan="2"/>
+        </Grid>
+    </Grid>
+</UserControl>

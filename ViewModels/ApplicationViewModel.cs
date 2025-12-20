@@ -1,16 +1,21 @@
 ﻿using System.IO;
+using System.Threading.Tasks;
 using System.Timers;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using GohMdlExpert.Models.GatesOfHell;
 using GohMdlExpert.Models.GatesOfHell.Caches;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
+using GohMdlExpert.Models.GatesOfHell.Resources.Mods;
 using GohMdlExpert.Models.GatesOfHell.Сaches;
 using GohMdlExpert.Properties;
 using GohMdlExpert.Services;
-using Microsoft.Extensions.DependencyInjection;
+using GohMdlExpert.Views;
 using Microsoft.Win32;
+using WpfMvvm.Extensions;
 using WpfMvvm.ViewModels;
 using WpfMvvm.ViewModels.Commands;
 using WpfMvvm.Views;
@@ -19,27 +24,41 @@ namespace GohMdlExpert.ViewModels {
     public class ApplicationViewModel : BaseViewModel {
         private readonly GohResourceProvider _gohResourceProvider;
         private readonly GohHumanskinResourceProvider _gohHumanskinResourceProvider;
+        private readonly GohTextureProvider _gohTextureProvider;
         private readonly HumanskinMdlOverviewViewModel _models3DView;
         private readonly SettingsWindowService _settingsWindowService;
         private readonly AppThemesManager _appThemesManager;
+        private readonly GohModsResourceProvider _modResourceProvider;
+        private bool _isWaitFillVisible;
 
         public float CompletionPercentage { get; set; }
+
+        public bool IsWaitFillVisible {
+            get => _isWaitFillVisible;
+            private set {
+                _isWaitFillVisible = value;
+                OnPropertyChanged();
+            }
+        }
 
         public ICommand OpenResourceCommand => CommandManager.GetCommand(OpenResourceDirectory);
         public ICommand OpenFileCommand => CommandManager.GetCommand(OpenFile);
         public ICommand OpenSettingsCommand => CommandManager.GetCommand(OpenSettings);
-        public ICommand LoadPlyTexturesCacheCommand => CommandManager.GetCommand(LoadPlyTexturesCache);
-        public ICommand LoadTexturesCacheCommand => CommandManager.GetCommand(LoadTexturesCache);
+        public ICommand LoadPlyTexturesCacheCommand => CommandManager.GetAsyncCommand(LoadPlyTexturesCacheAsync, singleExecute: true);
+        public ICommand LoadTexturesCacheCommand => CommandManager.GetAsyncCommand(LoadTexturesCacheAsync, singleExecute: true);
         public ICommand SetLightThemeCommand => CommandManager.GetCommand(() => SetTheme(AppThemesManager.LightThemeName));
         public ICommand SetDarkThemeCommand => CommandManager.GetCommand(() => SetTheme(AppThemesManager.DarkThemeName));
+        public ICommand TestCommand => CommandManager.GetCommand(Test);
 
-        public ApplicationViewModel(GohResourceProvider gohResourceProvider, GohHumanskinResourceProvider gohHumanskinResourceProvider, 
-            HumanskinMdlOverviewViewModel models3DView, SettingsWindowService settingsWindowService, AppThemesManager appThemesManager) {
+        public ApplicationViewModel(GohResourceProvider gohResourceProvider, GohHumanskinResourceProvider gohHumanskinResourceProvider, GohTextureProvider gohTextureProvider,
+            HumanskinMdlOverviewViewModel models3DView, SettingsWindowService settingsWindowService, AppThemesManager appThemesManager, GohModsResourceProvider modResourceProvider) {
             _gohResourceProvider = gohResourceProvider;
             _models3DView = models3DView;
             _settingsWindowService = settingsWindowService;
             _appThemesManager = appThemesManager;
+            _modResourceProvider = modResourceProvider;
             _gohHumanskinResourceProvider = gohHumanskinResourceProvider;
+            _gohTextureProvider = gohTextureProvider;
         }
 
         public void OpenFile() {
@@ -61,54 +80,136 @@ namespace GohMdlExpert.ViewModels {
 
             if (folderDialog.ShowDialog() ?? false) {
                 Settings.Default.LastOpenedResource = folderDialog.FolderName;
-                _gohResourceProvider.OpenResources(folderDialog.FolderName);
+                _gohResourceProvider.OpenResource(folderDialog.FolderName);
+                FullLoadResources();
             }
+
+            //if (_modResourceProvider.Mods.Any()) {
+            //    _modResourceProvider.Mods.First().IsEnable = false;
+            //    _gohResourceProvider.LoadModResources();
+            //} else {
+            //    if (folderDialog.ShowDialog() ?? false) {
+            //        Settings.Default.LastOpenedResource = folderDialog.FolderName;
+            //        _modResourceProvider.AddMod(new(folderDialog.FolderName));
+            //        _gohResourceProvider.LoadModResources();
+            //    }
+            //}
         }
 
-        public void LoadPlyTexturesCache() {
-            float completionPercentage = 0;
-
-            var timer = new System.Timers.Timer(1000);
-            timer.Elapsed += (_, _) => {
-                CompletionPercentage = completionPercentage;
-                OnPropertyChanged(nameof(CompletionPercentage));
+        public async Task LoadPlyTexturesCacheAsync() {
+            var viewModel = new ResourceCachingProgressViewModel();
+            var window = new ChildWindow() {
+                Content = new ResourceCachingProgressView() {
+                    DataContext = viewModel
+                },
+                SizeToContent = System.Windows.SizeToContent.WidthAndHeight,
+                Title = "Caching .ply textures...",
+                WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner,
+                Style = (Style)App.Current.FindResource("ResourceLoadingWindowStyle")
             };
 
-            timer.AutoReset = true;
-            timer.Enabled = true;
+            _ = Task.Factory.StartNew(() => {
+                Thread.Sleep(200);
+                try {
+                    GohCachesFilling.FillPlyTexturesCache(_gohResourceProvider, _gohHumanskinResourceProvider.Resource, viewModel.CancellationToken, viewModel.LoadFileHandler);
+                    viewModel.EndLoadingHandler();
+                } catch (OperationCanceledException) {
+                } finally {
+                    Thread.Sleep(200);
+                    App.Current.Synchronize(window.Close);
+                }
+            });
+
+            IsWaitFillVisible = true;
+
+            await Task.Factory.StartNew(() => {
+                App.Current.Synchronize(window.ShowDialog, DispatcherPriority.Normal, true);
+            }).ContinueWith((t) => {
+                App.Current.Synchronize(() => IsWaitFillVisible = false); ;
+            });
+        }
+
+        public void FullLoadResources(bool autoClose = true) {
+            var viewModel = new ResourceLoadingProgressViewModel(_gohResourceProvider);
+            var window = new ChildWindow() {
+                Content = new ResourceLoadingProgressView() {
+                    DataContext = viewModel
+                },
+                SizeToContent = System.Windows.SizeToContent.WidthAndHeight,
+                Title = "Loading resources...",
+                WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner,
+                Style = (Style)App.Current.FindResource("ResourceLoadingWindowStyle")
+            };
+
+            viewModel.Canceled += (s, e) => {
+                window.Close();
+            };
 
             Task.Factory.StartNew(() => {
-                GohCachesFilling.FillPlyTexturesCache(_gohResourceProvider, _gohHumanskinResourceProvider, ref completionPercentage);
-                completionPercentage = 0;
-            }).ContinueWith((t) => timer.Dispose());
+                Thread.Sleep(200);
+                try {
+                    _gohResourceProvider.FullLoad(viewModel.LoadElementHandler, viewModel.CancellationToken);
+                    viewModel.EndLoadingHandler();
+                } catch (OperationCanceledException) {
+                } finally {
+                    if (autoClose) {
+                        Thread.Sleep(200);
+                        App.Current.Synchronize(window.Close);
+                    }
+                }
+            });
 
-            //var d =  GohServicesProvider.Instance.GetRequiredService<GohCacheProvider>().PlyMtlsCache;
+            try {
+                IsWaitFillVisible = true;
+                App.Current.Synchronize(window.ShowDialog);
+            } finally {
+                IsWaitFillVisible = false;
+            }
         }
 
         private void OpenSettings() {
             _settingsWindowService.OpenSettings();
         }
 
-        private void LoadTexturesCache(object? obj) {
-            float completionPercentage = 0;
-
-            var timer = new System.Timers.Timer(1000);
-            timer.Elapsed += (_, _) => {
-                CompletionPercentage = completionPercentage;
-                OnPropertyChanged(nameof(CompletionPercentage));
+        private async Task LoadTexturesCacheAsync() {
+            var viewModel = new ResourceCachingProgressViewModel();
+            var window = new ChildWindow() {
+                Content = new ResourceCachingProgressView() {
+                    DataContext = viewModel
+                },
+                SizeToContent = System.Windows.SizeToContent.WidthAndHeight,
+                Title = "Caching textures...",
+                WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner,
+                Style = (Style)App.Current.FindResource("ResourceLoadingWindowStyle")
             };
 
-            timer.AutoReset = true;
-            timer.Enabled = true;
+            _ = Task.Factory.StartNew(() => {
+                Thread.Sleep(200);
+                try {
+                    GohCachesFilling.FillTexturesCache(_gohTextureProvider, _gohHumanskinResourceProvider.Resource, viewModel.CancellationToken, viewModel.LoadFileHandler);
+                    viewModel.EndLoadingHandler();
+                } catch (OperationCanceledException) {
+                } finally {
+                    Thread.Sleep(200);
+                    App.Current.Synchronize(window.Close);
+                }
+            });
 
-            Task.Factory.StartNew(() => {
-                GohCachesFilling.FillTexturesCache(_gohResourceProvider, _gohHumanskinResourceProvider, ref completionPercentage);
-                completionPercentage = 0;
-            }).ContinueWith((t) => timer.Dispose());
+            IsWaitFillVisible = true;
+
+            await Task.Factory.StartNew(() => {
+                App.Current.Synchronize(window.ShowDialog, DispatcherPriority.Normal, true);
+            }).ContinueWith((t) => {
+                App.Current.Synchronize(() => IsWaitFillVisible = false); ;
+            });
         }
 
         private void SetTheme(string themeName) {
             _appThemesManager.SetCurrentTheme(themeName);
+        }
+
+        private void Test() {
+            FullLoadResources(false);
         }
     }
 }

@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="GohMdlExpert.Views.Dialogs.RequestTextDialogView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GohMdlExpert.Views.Dialogs"
+             Width="300"
+             mc:Ignorable="d" KeyDown="KeyDownHandler">
+    <StackPanel Margin="10">
+        <TextBlock x:Name="DialogText"/>
+        <TextBox x:Name="InputText" Margin="0 5"/>
+        <StackPanel Style="{StaticResource DialogButtonStackPanel}">
+            <Button x:Name="OkButton" Content="Ok" IsDefault="True"/>
+            <Button x:Name="CancleButton" Content="Cancel" IsCancel="True"/>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

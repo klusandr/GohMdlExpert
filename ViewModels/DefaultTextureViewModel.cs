@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using System.Windows.Media.TextFormatting;
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Services;
@@ -85,7 +86,7 @@ namespace GohMdlExpert.ViewModels {
             }
         }
 
-        public ICommand AddTextureCommand => CommandManager.GetCommand(AddMaterial);
+        public ICommand AddTextureCommand => CommandManager.GetCommand(AddTexture);
         public ICommand EditTextureNameSelectedTextureCommand => CommandManager.GetCommand(EditTextureNameSelectedTexture);
         public ICommand EditSelectedTextureCommand => CommandManager.GetCommand(EditSelectedTexture);
         public ICommand RemoveSelectedTextureCommand => CommandManager.GetCommand(RemoveSelectedTexture);
@@ -108,17 +109,40 @@ namespace GohMdlExpert.ViewModels {
             return _textures.FirstOrDefault(m => m.TextureName == textureName)?.Texture;
         }
 
-        public void AddMaterial() {
-            if (TextureName != null) {
-                var materialFile = _textureSelector.GetMaterialDialog();
+        public void AddTexture() {
+            try {
+                if (TextureName != null) {
+                    string textureName = TextureName;
+                    SelectedTexture = null;
+                    TextureName = textureName;
 
-                if (materialFile != null && CheckTextureNameUniqueness(TextureName)) {
-                    _textures.Add(new DefaultTextureItemViewModel(TextureName, materialFile));
-                    TextureName = null;
-                    OnTexturesUpdate();
+                    _textureSelector.SelectedTextureChange -= TextureSelectorTextureChangeHandlerWhenAdd;
+                    _textureSelector.SelectedTextureChange += TextureSelectorTextureChangeHandlerWhenAdd;
+
+                    var texture = _textureSelector.ShowDialog();
+
+                    if (texture != null) {
+                        if (SelectedTexture == null) {
+                            AddDefaulttexture(texture);
+                        }
+                    } else if (SelectedTexture != null) {
+                        RemoveSelectedTexture();
+                    }
+                } else {
+                    SetError(new Exception(), nameof(TextureName));
                 }
-            } else {
-                SetError(new Exception(), nameof(TextureName));
+            } finally {
+                _textureSelector.SelectedTextureChange -= TextureSelectorTextureChangeHandlerWhenAdd;
+            }
+        }
+
+        private void TextureSelectorTextureChangeHandlerWhenAdd(object? sender, EventArgs e) {
+            if (SelectedTexture != null) { return; }
+
+            var texture = _textureSelector.SelectedTexture;
+
+            if (texture != null) {
+                SelectedTexture = AddDefaulttexture(texture);
             }
         }
 
@@ -134,7 +158,7 @@ namespace GohMdlExpert.ViewModels {
             if (SelectedTexture != null) {
                 _textureSelector.SelectedTexture = SelectedTexture.Texture;
 
-                var materialFile = _textureSelector.GetMaterialDialog();
+                var materialFile = _textureSelector.ShowDialog();
 
                 if (materialFile != null) {
                     SelectedTexture.Texture = SelectedTexture.Texture = materialFile;
@@ -170,6 +194,21 @@ namespace GohMdlExpert.ViewModels {
 
         private bool CheckTextureNameUniqueness(string textureName) {
             return !_textures.Any(dm => dm.TextureName == textureName);
+        }
+
+        private DefaultTextureItemViewModel? AddDefaulttexture(MtlTexture texture) {
+            DefaultTextureItemViewModel? defaultTexture = null;
+
+            if (TextureName != null && CheckTextureNameUniqueness(TextureName)) {
+                defaultTexture = new DefaultTextureItemViewModel(TextureName, texture);
+
+                _textures.Add(defaultTexture);
+
+                TextureName = null;
+                OnTexturesUpdate();
+            }
+
+            return defaultTexture;
         }
 
         private void SetError(Exception? exception, [CallerMemberName]string? propertyName = null) {

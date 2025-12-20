@@ -1,32 +1,79 @@
-﻿using SystemPath = System.IO.Path;
+﻿using Windows.Networking.Vpn;
+using SystemPath = System.IO.Path;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class GohResourceElement {
-        public string Name { get; set; }
-        public string? Path { get; set; }
-        public string? RelativePathPoint { get; set; }
+        private string? _path;
+        private string? _relativePathPoint;
+        private string _name;
+
+        private string? _fullPath;
+        private string? _fullDirectoryPath;
+
+        public string Name {
+            get => _name;
+            set {
+                _name = value;
+                _fullPath = null;
+            }
+        }
+
+        public string? Path {
+            get => _path;
+            set {
+                _path = value;
+                _fullDirectoryPath = null;
+                _fullPath = null;
+            }
+        }
+
+        public string? RelativePathPoint {
+            get => _relativePathPoint;
+            set {
+                _relativePathPoint = value;
+                _fullDirectoryPath = null;
+                _fullPath = null;
+            }
+        }
         public bool IsRelativePath => RelativePathPoint != null;
 
         public GohResourceElement(string name, string? path = null, string? relativePathPoint = null) {
-            Name = name;
+            _name = name;
             Path = path;
             RelativePathPoint = relativePathPoint;
         }
 
-        public string GetFullPath() {
-            return SystemPath.Join(GetDirectoryPath(), Name);
+        public string GetFullPath(){
+            return _fullPath ??= SystemPath.Join(GetDirectoryPath(), Name);
         }
 
         public string? GetDirectoryPath() {
-            string? path;
-
-            if (RelativePathPoint != null) {
-                path = SystemPath.Join(RelativePathPoint, Path);
-            } else {
-                path = Path;
+            if (_fullDirectoryPath != null) {
+                return _fullDirectoryPath;
             }
 
-            return path;
+            string? path = Path;
+
+            if (RelativePathPoint != null) {
+                if (path != null) {
+                    var basePathElements = new List<string>(RelativePathPoint.Split('\\', StringSplitOptions.RemoveEmptyEntries));
+                    var pathElements = path.Split('\\', StringSplitOptions.RemoveEmptyEntries);
+
+                    foreach (var element in pathElements) {
+                        if (element == "..") {
+                            basePathElements.RemoveAt(basePathElements.Count - 1);
+                        } else {
+                            basePathElements.Add(element);
+                        }
+                    }
+
+                    path = string.Join('\\', basePathElements);
+                } else {
+                    path = RelativePathPoint;
+                }
+            }
+
+            return _fullDirectoryPath = path;
         }
 
         public override string ToString() {

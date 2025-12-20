@@ -34,8 +34,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D
             meshesEnumerator.MoveNext();
 
             foreach (var meshData in plyModel.Meshes) {
-                var geometry = new GeometryModel3D(meshesEnumerator.Current, GetMeshMaterialOrRandomColor(meshData.TextureName, meshesTextures));
+                var material = GetMeshMaterialOrRandomColor(meshData.TextureName, meshesTextures);
+                var geometry = new GeometryModel3D(meshesEnumerator.Current, material) { BackMaterial = material };
+
                 model.Children.Add(geometry);
+
                 meshesEnumerator.MoveNext();
             }
 

@@ -26,7 +26,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
         }
 
         public override void LoadData() {
-            var parameters = Serializer.Deserialize(GetAllText());
+            var parameters = Serializer.Deserialize(ReadAllText());
             var textureFilesPath = new List<string?>();
 
             foreach (var type in (IEnumerable<Types>)[Types.Diffuse, Types.Bump, Types.Specular]) {
@@ -45,42 +45,57 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
                 throw TextureException.TextureDiffuseMaterialIsNotDefine(this);
             }
 
-            Data = new MtlTexture(new MaterialFile(textureFilesPath[0]!)) {
-                Bump = textureFilesPath[1] != null ? new MaterialFile(textureFilesPath[1]!) : null,
-                Specular = textureFilesPath[1] != null ? new MaterialFile(textureFilesPath[2]!) : null,
+            Data = new MtlTexture(textureFilesPath[0]!, textureFilesPath[1], textureFilesPath[2]) {
                 Color = color
             };
         }
 
         public override void SaveData() {
-            string str = Serializer.Serialize(new ModelDataParameter() {
-                Type = Types.MaterialBump.ToString(),
-                Data = new ModelDataParameter[] {
-                    new() {
+            var data = new List<ModelDataParameter>() {
+                new() {
                        Type = Types.Diffuse.ToString(),
                        Data = '$' + SystemPath.Join(Data.Diffuse.Path, SystemPath.GetFileNameWithoutExtension(Data.Diffuse.Name)),
-                    },
-                    new() {
-                       Type = Types.Bump.ToString(),
-                       Data = '$' + SystemPath.Join(Data.Bump?.Path, SystemPath.GetFileNameWithoutExtension(Data.Bump?.Name)),
-                    },
-                    new() {
-                       Type = Types.Specular.ToString(),
-                       Data = '$' + SystemPath.Join(Data.Specular?.Path, SystemPath.GetFileNameWithoutExtension(Data.Specular?.Name)),
-                    },
-                    new() {
-                       Type = Types.Color.ToString(),
-                       Data = Data.Color,
-                    },
-                    new() {
-                       Type = Types.Blend.ToString(),
-                       Data = "none",
-                    },
-                }
+                },
+            };
+
+            if (Data.Bump != null) {
+                data.Add(new() {
+                    Type = Types.Bump.ToString(),
+                    Data = '$' + SystemPath.Join(Data.Bump?.Path, SystemPath.GetFileNameWithoutExtension(Data.Bump?.Name)),
+                });
+            }
+
+            if (Data.Specular != null) {
+                data.Add(new() {
+                    Type = Types.Specular.ToString(),
+                    Data = '$' + SystemPath.Join(Data.Specular?.Path, SystemPath.GetFileNameWithoutExtension(Data.Specular?.Name)),
+                });
+            }
+
+            if (Data.Color != null) {
+                data.Add(new() {
+                    Type = Types.Color.ToString(),
+                    Data = Data.Color,
+                });
+            } else {
+                data.Add(new() {
+                    Type = Types.FullSpecular.ToString(),
+                });
+            }
+
+            if (Data.Bump != null) {
+                data.Add(new() {
+                    Type = Types.Blend.ToString(),
+                    Data = "none",
+                });
+            }
+
+            string str = Serializer.Serialize(new ModelDataParameter() {
+                Type = Types.MaterialBump.ToString(),
+                Data = data
             });
 
-            using var stream = new StreamWriter(GetFullPath());
-            stream.Write(str);
+            WriteAllText(str);
         }
     }
 }

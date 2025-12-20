@@ -42,6 +42,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="NaturalSort.Extension" Version="4.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
   </ItemGroup>
@@ -66,6 +67,9 @@
     </Compile>
     <Compile Update="Views\HumanskinMdlOverviewView.xaml.cs">
       <Generator>MSBuild:Compile</Generator>
+    </Compile>
+    <Compile Update="Views\Trees\ResourceLoadFileTreeItemView.xaml.cs">
+      <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
 

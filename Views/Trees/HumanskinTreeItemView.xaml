@@ -1,0 +1,15 @@
+﻿<vbc:TreeItemView  x:Class="GohMdlExpert.Views.Trees.HumanskinTreeItemView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:vbc="clr-namespace:WpfMvvm.Views.Controls;assembly=WpfMvvm"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GohMdlExpert.Views.Trees" 
+             xmlns:viewmodel="clr-namespace:GohMdlExpert.ViewModels.Trees.Humanskins"
+             d:DataContext="{d:DesignInstance Type=viewmodel:HumanskinTreeItemViewModel}"
+             mc:Ignorable="d" MouseDoubleClick="MouseDoubleClickHandler">
+    <StackPanel Orientation="Horizontal">
+        <Image d:Source="/Resources/folder.ico" Source="{Binding Icon}" Width="20"/>
+        <TextBlock d:Text="Элемент дерева загрузки моделей" Text="{Binding Text}"/>
+    </StackPanel>
+</vbc:TreeItemView>

@@ -24,7 +24,7 @@
     <StackPanel x:Name="_stackPanel" Orientation="Horizontal">
         <Image d:Source="\Resources\mesh.ico" Source="{Binding Icon}" Width="20"/>
         <TextBlock x:Name="_textBlock" d:Text="Элемент дерева представления" Text="{Binding Text}"/>
-        <CheckBox Margin="2" IsChecked="{Binding IsEnableCheck}" Visibility="{Binding IsEnableCheckActive, Converter={StaticResource VisibilityConverter}}"/>
-        <CheckBox Template="{StaticResource ShowHideCheckBox}" IsChecked="{Binding IsVisible}" Visibility="{Binding IsVisibleActive, Converter={StaticResource VisibilityConverter}}"/>
+        <CheckBox Margin="2" IsChecked="{Binding IsEnableCheck}" Focusable="False" Visibility="{Binding IsEnableCheckActive, Converter={StaticResource VisibilityConverter}}"/>
+        <CheckBox Template="{StaticResource ShowHideCheckBox}" Focusable="False" IsChecked="{Binding IsVisible}" Visibility="{Binding IsVisibleActive, Converter={StaticResource VisibilityConverter}}"/>
     </StackPanel>
 </vbc:TreeItemView>

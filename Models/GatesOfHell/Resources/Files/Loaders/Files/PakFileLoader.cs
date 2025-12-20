@@ -1,20 +1,27 @@
 ﻿using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Text;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Extensions;
+using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories;
+using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Files {
     public class PakFileLoader : IFileLoader {
         private readonly ZipArchive _archive;
+        private readonly PakResourceLoader _resourceLoader;
+        private readonly PakDirectoryLoader _pakDirectoryLoader;
 
         public bool IsReadOnly => true;
 
         public string? PakPath { get; set; }
 
-        public PakFileLoader(ZipArchive archive) {
+        public IGohResourceLoader ResourceLoader => _resourceLoader;
+
+        public PakFileLoader(ZipArchive archive, PakResourceLoader resourceLoader, PakDirectoryLoader pakDirectoryLoader) {
             _archive = archive;
+            _resourceLoader = resourceLoader;
+            _pakDirectoryLoader = pakDirectoryLoader;
         }
 
         public bool Exists(string path) {
@@ -32,16 +39,20 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
 
         public Stream GetStream(string path) {
             var entry = GetEntry(path) ?? throw GohResourceFileException.IsNotExists(path);
-            
+
             return entry.Open();
         }
 
 
         private ZipArchiveEntry? GetEntry(string path) {
-            string fullPath = _archive.GetArchiveFilePath(path).ToLower();
+            string insidePath = _pakDirectoryLoader.GetInsidePath(path);
 
-            return _archive.Entries.FirstOrDefault(e => e.FullName.ToLower() == fullPath);
+            return _archive.Entries.FirstOrDefault(e => e.FullName.Equals(insidePath, StringComparison.CurrentCultureIgnoreCase));
             //return _archive.GetEntry(_archive.GetArchiveFilePath(path)) != null;
+        }
+
+        public void WriteAllText(string path, string text) {
+            throw new NotImplementedException();
         }
     }
 }

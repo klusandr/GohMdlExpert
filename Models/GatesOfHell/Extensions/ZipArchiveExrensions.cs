@@ -4,6 +4,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
 
 namespace GohMdlExpert.Models.GatesOfHell.Extensions {
     public static class ZipArchiveExtensions {
@@ -28,13 +29,12 @@ namespace GohMdlExpert.Models.GatesOfHell.Extensions {
         }
 
         public static IEnumerable<string> GetDirectoriesPathsByDeep(this ZipArchive archive, int deep) {
-            var directoriesPaths = archive.Entries.Where(e => GetDeep(e.FullName) == deep && CheckDirectory(e.FullName)).Select(e => e.FullName);
+            var directoriesPaths = new List<string>();
+            var entriesPaths = archive.Entries.Where(e => GetDeep(e.FullName) > deep).Select(e => e.FullName);
 
-            if (!directoriesPaths.Any()) {
-                string? directoryPath = archive.GetDeepDirectoryPath(deep);
-
-                if (directoryPath != null) {
-                    directoriesPaths = [directoryPath];
+            foreach (var directory in entriesPaths) {
+                if (!directoriesPaths.Any(directory.Contains)) {
+                    directoriesPaths.Add(SetPathAsDirectory(GetPathFromComponents(GetPathComponents(directory).Take(deep + 1))));
                 }
             }
 
@@ -48,11 +48,15 @@ namespace GohMdlExpert.Models.GatesOfHell.Extensions {
         }
 
         public static bool CheckDirectory(string fullName) {
-            return fullName.LastOrDefault() == '/';
+            return fullName.LastOrDefault() is ('/' or '\\');
+        }
+
+        public static string SetPathAsDirectory(string path) {
+            return path += PakResourceLoader.PATH_SEPARATOR;
         }
 
         public static int GetDeep(string fullName) {
-            return fullName.Count((c) => c == '/') - (CheckDirectory(fullName) ? 1 : 0);
+            return fullName.Count((c) => c is ('/' or '\\')) - (CheckDirectory(fullName) ? 1 : 0);
         }
 
         public static string[] GetPathComponents(string path) {
@@ -71,6 +75,14 @@ namespace GohMdlExpert.Models.GatesOfHell.Extensions {
             }
 
             return @$"{path}\{fullElementPath}";
+        }
+
+        public static string GetPathFromFirstElments(string path, int elementCount) {
+            return GetPathFromComponents(GetPathComponents(path).Take(elementCount));
+        }
+
+        public static string GetZipPath(string path) {
+            return path.Replace('\\', '/');
         }
     }
 }

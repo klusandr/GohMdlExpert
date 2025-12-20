@@ -10,13 +10,20 @@ using Microsoft.Win32;
 
 namespace GohMdlExpert.ViewModels.SettingsPages {
     public class GamePathSettingsPageViewModel : SettingsPageViewModel {
-        private string? _gameDirectoryPath;
         private readonly GohGameDirectory _gameDirectory;
 
-        public override string Name { get; } = nameof(GamePathSettingsPageViewModel);
+        public static readonly string PageName = "GamePathSettings";
+
+        public override string Name => PageName;
 
         public string? GameDirectoryPath => _gameDirectory.Path;
-        public bool IsLoadOnStart { get => Settings.LoadGameResourceOnStart; set => Settings.LoadGameResourceOnStart = value; }
+        public bool IsLoadOnStart {
+            get => Settings.LoadGameResourceOnStart;
+            set {
+                Settings.LoadGameResourceOnStart = value;
+                SaveSettings();
+            }
+        }
         public Version? Version => _gameDirectory.Version;
 
         public ICommand ReviewPathCommand => CommandManager.GetCommand(ReviewPath);

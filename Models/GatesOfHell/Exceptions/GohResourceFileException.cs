@@ -46,6 +46,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
             return new GohResourceFileException($"File path has be null.", file) { ExceptionCode = 7 };
         }
 
+        public static GohResourceFileException LoaderIsNull(GohResourceFile file) {
+            return new GohResourceFileException($"File resource loader has be null.", file) { ExceptionCode = 8 };
+        }
+
         private static string GetFullErrorMessage(string? message = null, string? fileName = null) {
             var fullMessage = new StringBuilder();
 

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders {
     public interface IDirectoryLoader {
-        IFileLoader FileLoader { get; }
+        IGohResourceLoader ResourceLoader { get; }
+        bool Exists(string path);
         IEnumerable<GohResourceDirectory> GetDirectories(string path);
         IEnumerable<GohResourceFile> GetFiles(string path);
     }

@@ -15,14 +15,63 @@
             <RowDefinition/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <TextBlock d:Text="Обозреватель LOD модели" Text="LOD models overview" />
-        <ListView ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem}" SelectedIndex="{Binding SelectedIndex}" Grid.Row="1">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock d:Text="Обозреватель LOD модели" Text="LOD models overview" Grid.ColumnSpan="2"/>
+        <ListView x:Name="LodListView" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem}" Grid.Row="1" SelectionChanged="LodListViewSelectionChanged">
+            <ListView.Template>
+                <ControlTemplate TargetType="{x:Type ListView}">
+                    <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="1" SnapsToDevicePixels="true">
+                        <Grid>
+                            <ScrollViewer Focusable="false" Padding="{TemplateBinding Padding}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <ListViewItem MouseLeftButtonDown="MainLodListViewItemMouseLeftButtonDown" Background="Transparent">
+                                        <TextBlock Text="{Binding PlyModel.PlyFile.Name}" MouseLeftButtonDown="MainLodListViewItemMouseLeftButtonDown"/>    
+                                    </ListViewItem>
+                                    <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Grid.Row="1"/>
+                                </Grid>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Background" TargetName="Bd" Value="{DynamicResource ButtonDisabledBackgroundBrush}"/>
+                            <Setter Property="BorderBrush" TargetName="Bd" Value="{DynamicResource DisabledBorderBrush}"/>
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsGrouping" Value="true"/>
+                                <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="false"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </ListView.Template>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Name}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Button Command="{Binding UpSelectLodCommand}">
+                <Path Data="M 0,0L5,-5L10,0" Stroke="Black" StrokeThickness="2" Stretch="Uniform"/>
+            </Button>
+            <Button Command="{Binding DownSelectLodCommand}" Grid.Row="1">
+                <Path Data="M 0,0L5,5L10,0" Stroke="Black" StrokeThickness="2" Stretch="Uniform"/>
+            </Button>
+        </Grid>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>

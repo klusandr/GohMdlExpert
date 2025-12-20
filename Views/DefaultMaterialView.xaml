@@ -18,7 +18,10 @@
                                 <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding Path=DataContext.EditSelectedTextureCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"/>
                             </Image.InputBindings>
                         </Image>
-                        <TextBlock Text="{Binding TextureName}" TextTrimming="WordEllipsis" VerticalAlignment="Center"/>
+                        <TextBlock TextTrimming="WordEllipsis" VerticalAlignment="Center">
+                            <Run Text="{Binding TextureName}"/>
+                            <Run Text="{Binding Texture.Diffuse.Name, StringFormat='[{0}]'}"/>
+                        </TextBlock>
                     </DockPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>

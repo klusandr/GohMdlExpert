@@ -1,7 +1,7 @@
 ﻿using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 
 namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
-    public class GohResourceDirectoryException : GohResourcesException {
+    public class GohResourceDirectoryException : GohResourceLoadException {
         private const string MESSAGE = "Dictionary load {0}error.{1}";
 
         protected override byte ExceptionTypeCode => 6;
@@ -10,6 +10,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
 
         public static GohResourceDirectoryException PathIsNull(GohResourceDirectory directory) {
             return new GohResourceDirectoryException($"Path has be null.", directory) { ExceptionCode = 1 };
+        }
+
+        public static GohResourceDirectoryException LoaderIsNull(GohResourceDirectory directory) {
+            return new GohResourceDirectoryException($"Directory resource loader has be null.", directory) { ExceptionCode = 2 };
         }
 
         private static string GetFullErrorMessage(string? message, GohResourceDirectory? directory) {

@@ -5,7 +5,8 @@ using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
+{
     [DebuggerDisplay("Path = {ToString()}")]
     public class GohResourceDirectory : GohResourceElement {
         private List<GohResourceElement>? _items;
@@ -20,34 +21,39 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
                 return _items!;
             }
-            set {
+            protected set {
                 _items = value;
             }
         }
 
         public IDirectoryLoader Loader {
-            get => _loader ?? GohServicesProvider.Instance.GetRequiredService<IDirectoryLoader>();
+            get => _loader ?? throw GohResourceDirectoryException.LoaderIsNull(this);
             set {
-                if (_loader != null) throw new InvalidOperationException($"Cannot reinitialize property {nameof(Loader)}.");
                 _loader = value;
             }
         }
+
+        public event EventHandler? Update;
 
         public GohResourceDirectory(string name, string? path = null, string? relativePathPoint = null)
             : base(name, path, relativePathPoint) {
 
             if (path == null) {
-                name = name.Replace("/", "\\");
-                int lastSeparateIndex = name.LastIndexOf('\\', name.Length - 2);
+                name = name.Replace('/', GohResourceLoading.DIRECTORY_SEPARATE);
+                int lastSeparateIndex = name.LastIndexOf(GohResourceLoading.DIRECTORY_SEPARATE, name.Length - 2);
 
                 if (lastSeparateIndex != -1) {
                     Path = name[..lastSeparateIndex];
-                    Name = name[(lastSeparateIndex + 1)..];
+                    Name = name[(lastSeparateIndex + 1)..].Trim(GohResourceLoading.DIRECTORY_SEPARATE);
                 }
             }
         }
 
-        public GohResourceDirectory(GohResourceElement resourceElement) : this(resourceElement.GetDirectoryPath() ?? throw GohResourcesException.PathIsNull(resourceElement)) { }
+        public GohResourceDirectory(GohResourceElement resourceElement) : this(resourceElement.GetDirectoryPath() ?? throw GohResourceLoadException.PathIsNull(resourceElement)) { }
+
+        public bool Exists() {
+            return Loader.Exists(GetFullPath());
+        }
 
         public virtual void LoadData() {
             if (_items != null) {
@@ -65,6 +71,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             }
         }
 
+        public virtual void UpdateData() {
+            ClearData();
+            LoadData();
+            Update?.Invoke(this, EventArgs.Empty);
+        }
 
         public virtual void ClearData() {
             _items = null;
@@ -83,11 +94,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         }
 
         public GohResourceDirectory? AlongPath(string path) {
-            return AlongPath(path.Split('\\', StringSplitOptions.RemoveEmptyEntries));
+            return AlongPath(PathUtils.GetPathComponents(path));
         }
 
         public GohResourceDirectory? AlongPath(IEnumerable<string> pathDirectoryNames) {
-            GohResourceDirectory? currentDirectory = null;
+            GohResourceDirectory? currentDirectory = this;
 
             if (pathDirectoryNames.Any()) {
                 currentDirectory = GetDirectory(pathDirectoryNames.First());
@@ -101,11 +112,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         }
 
         public GohResourceDirectory? GetDirectory(string name) {
-            return Items.FirstOrDefault(d => d.Name == name) as GohResourceDirectory;
+            return Items.FirstOrDefault(d => string.Equals(d.Name, name, StringComparison.OrdinalIgnoreCase)) as GohResourceDirectory;
         }
 
         public GohResourceFile? GetFile(string name) {
-            return Items.FirstOrDefault(d => d.Name == name) as GohResourceFile;
+            return Items.FirstOrDefault(d => d.Name.Equals(name, StringComparison.OrdinalIgnoreCase)) as GohResourceFile;
         }
 
         public IEnumerable<GohResourceElement> FindResourceElements(string? resourceName = null, string? searchPattern = null, bool deepSearch = true, bool first = false) {
@@ -117,23 +128,67 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         }
 
         public IEnumerable<GohResourceElement> FindResourceElements(Func<GohResourceElement, bool> predicate, bool deepSearch = true, bool first = false) {
-            return FindResourceElements(predicate, deepSearch, first, null);
+            if (!deepSearch) {
+                if (first) {
+                    return FindResourceElementLocal(predicate);
+                } else {
+                    return FindResourceElementsLocal(predicate);
+                }
+            } else {
+                if (first) {
+                    return FindResourceElement(predicate);
+                } else {
+                    return FindResourceElements(predicate, null);
+                }
+            }
         }
 
-        private List<GohResourceElement> FindResourceElements(Func<GohResourceElement, bool> predicate, bool deepSearch = true, bool first = false, List<GohResourceElement>? items = null) {
+        private List<GohResourceElement> FindResourceElementLocal(Func<GohResourceElement, bool> predicate) {
+            foreach (var item in Items) {
+                if (predicate(item)) {
+                    return [item];
+                }
+            }
+
+            return [];
+        }
+
+        private List<GohResourceElement> FindResourceElementsLocal(Func<GohResourceElement, bool> predicate) {
+            var items = new List<GohResourceElement>();
+
+            foreach (var item in Items) {
+                if (predicate(item)) {
+                    items.Add(item);
+                }
+            }
+
+            return items;
+        }
+
+        private List<GohResourceElement> FindResourceElement(Func<GohResourceElement, bool> predicate) {
+            foreach (var item in Items) {
+                if (predicate(item)) {
+                    return [item];
+                }
+            }
+
+            foreach (var directory in GetDirectories()) {
+                directory.FindResourceElement(predicate);
+            }
+
+            return [];
+        }
+
+        private List<GohResourceElement> FindResourceElements(Func<GohResourceElement, bool> predicate, List<GohResourceElement>? items = null) {
             items ??= [];
 
             foreach (var item in Items) {
                 if (predicate(item)) {
                     items.Add(item);
-
-                    if (first) { return items; }
                 }
-            }
 
-            if (deepSearch) {
-                foreach (var item in GetDirectories()) {
-                    item.FindResourceElements(predicate, deepSearch, first, items);
+                if (item is GohResourceDirectory directory) {
+                    directory.FindResourceElements(predicate, items);
                 }
             }
 

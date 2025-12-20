@@ -7,7 +7,8 @@
     xmlns:bv="clr-namespace:WpfMvvm.Views;assembly=WpfMvvm" 
     xmlns:vm="clr-namespace:GohMdlExpert.ViewModels" 
     xmlns:goh="clr-namespace:GohMdlExpert.Models.GatesOfHell.Media3D" 
-    xmlns:trees="clr-namespace:GohMdlExpert.Views.Trees"
+    xmlns:trees="clr-namespace:GohMdlExpert.Views.Trees" 
+    xmlns:controls="clr-namespace:WpfMvvm.Views.Controls;assembly=WpfMvvm"
     d:DataContext="{d:DesignInstance Type=vm:HumanskinMdlOverviewViewModel}"
     mc:Ignorable="d" 
     d:DesignHeight="450" d:DesignWidth="800">
@@ -25,18 +26,31 @@
             <ColumnDefinition Width=".3*"/>
         </Grid.ColumnDefinitions>
 
-        <Grid Margin="5">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
-            <local:HumanskinResourcesView/>
-            <trees:ModelsLoadTreeView DataContext="{Binding ModelsLoadTreeViewModel}" Grid.Row="1"/>
-            <local:PlyModelAdderView DataContext="{Binding ModelAdderViewModel}" Grid.Row="2" />
-            <local:DefaultMaterialView DataContext="{Binding DefaultMaterialViewModel}" Grid.Row="3"/>
-        </Grid>
+        <TabControl Margin="5">
+            <TabItem Header="Sources">
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <trees:ModelsLoadTreeView DataContext="{Binding ModelsLoadTreeViewModel}" Grid.Row="1"/>
+                    <local:PlyModelAdderView DataContext="{Binding ModelAdderViewModel}" Grid.Row="2" />
+                    <local:DefaultMaterialView DataContext="{Binding DefaultMaterialViewModel}" Grid.Row="3"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Humanskin">
+                <controls:TreeView DataContext="{Binding HumanskinTreeViewModel}">
+                    <controls:TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding Items}">
+                            <trees:HumanskinTreeItemView/>
+                        </HierarchicalDataTemplate>
+                    </controls:TreeView.ItemTemplate>
+                </controls:TreeView>
+            </TabItem>
+        </TabControl>
 
         <Grid x:Name="_sceneBackground" Background="{DynamicResource DarkBackgroundBrush}" MouseWheel="OnMouseWheel" Grid.Column="1" Cursor="Cross">
             <Viewport3D x:Name="_scene">
@@ -46,7 +60,6 @@
 
                 <Viewport3D.Children>
                     <ModelVisual3D>
-
                         <ModelVisual3D.Content>
                             <Model3DGroup>
                                 <DirectionalLight Color="White" Direction="0,-1,-2" />
@@ -58,7 +71,7 @@
                     </ModelVisual3D>
                     <ModelVisual3D>
                         <ModelVisual3D.Content>
-                            <Model3DGroup Children="{Binding Models, Mode=OneWay}"/>
+                            <Model3DGroup Children="{Binding Models, Mode=OneWay}" />
                         </ModelVisual3D.Content>
                     </ModelVisual3D>
                     <ModelVisual3D x:Name="_addedModel" Content="{Binding ModelAdderViewModel.AddedModel, Converter={StaticResource PlyModel3DToModel3DConverter}}"/>

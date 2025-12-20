@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using GohMdlExpert.ViewModels.Trees.OverviewModels;
 using WpfMvvm.Views.Attributes;
 using WpfMvvm.Views.Controls;
@@ -27,7 +28,8 @@ namespace GohMdlExpert.Views.Trees {
         private TextBox GetTextBox() {
             if (s_textBox == null) {
                 s_textBox = new TextBox();
-                s_textBox.LostFocus += TexBoxLostFocus;
+                s_textBox.LostFocus += TexBoxLostFocusHandler;
+                s_textBox.KeyDown += KeyDownHandler;
             }
             s_textBox.Text = ViewModel.Text;
             return s_textBox;
@@ -44,9 +46,26 @@ namespace GohMdlExpert.Views.Trees {
             }
         }
 
-        private void TexBoxLostFocus(object sender, RoutedEventArgs e) {
+        private void EndEdit() {
             ViewModel.Text = s_textBox!.Text;
             ViewModel.IsEdit = false;
+        }
+
+        private void CancelEdit() {
+            ViewModel.IsEdit = false;
+        }
+
+        private void TexBoxLostFocusHandler(object sender, RoutedEventArgs e) {
+            EndEdit();
+        }
+
+        private void KeyDownHandler(object sender, System.Windows.Input.KeyEventArgs e) {
+            if (ViewModel.IsEdit) {
+                switch (e.Key) {
+                    case Key.Enter: EndEdit(); break;
+                    case Key.Escape: CancelEdit(); break;
+                }
+            }
         }
     }
 }

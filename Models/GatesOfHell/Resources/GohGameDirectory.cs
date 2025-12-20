@@ -24,7 +24,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
             var resourceDirectory = SystemPath.Join(path, RESOURCE_DIR_NAME);
 
             if (!File.Exists(gameFile) || !Directory.Exists(resourceDirectory)) {
-                throw GohResourcesException.IsNotGohGameDirectory(path);
+                throw GohResourceLoadException.IsNotGohGameDirectory(path);
             }
 
             var gameVersion = FileVersionInfo.GetVersionInfo(gameFile);

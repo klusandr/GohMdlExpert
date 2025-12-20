@@ -27,6 +27,8 @@ namespace GohMdlExpert.ViewModels.Trees.OverviewModels {
                 .AddItemBuilder(new MenuItemViewModel("Set focus", SetFocusCommand));
 
             PropertyChangeHandler.AddHandler(nameof(Text), (_, _) => MdlFile.Name = Text);
+
+            IsExpanded = true;
         }
 
     }

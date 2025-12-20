@@ -1,8 +1,10 @@
 ﻿using System.IO;
+using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Serialization;
 using DataList = System.Collections.Generic.IList<GohMdlExpert.Models.GatesOfHell.Serialization.ModelDataSerializer.ModelDataParameter>;
 using ModelDataParameter = GohMdlExpert.Models.GatesOfHell.Serialization.ModelDataSerializer.ModelDataParameter;
+using SystemPath = System.IO.Path;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
 {
@@ -23,34 +25,46 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
         }
 
         public override void LoadData() {
-            var parameter = Serializer.Deserialize(GetAllText());
+            var parameter = Serializer.Deserialize(ReadAllText());
             var plyFiles = new List<PlyFile>();
             var plyLodFiles = new Dictionary<PlyFile, PlyFile[]>();
 
             var plyLodModels = (IEnumerable<ModelDataParameter>)ModelDataSerializer.FindParameterByName(parameter, "skin")?.Data!;
 
-            foreach (var plyLodModel in plyLodModels) {
-                var lodParameters = (IEnumerable<ModelDataParameter>)plyLodModel.Data!;
+            if (plyLodModels != null) {
+                foreach (var plyLodModel in plyLodModels) {
+                    if (plyLodModel.Type == MdlSerializer.MdlTypes.LODView.ToString()) {
+                        var lodParameters = (IEnumerable<ModelDataParameter>)plyLodModel.Data!;
 
-                var plyModelParameter = lodParameters.First();
-                var lodModelsParameters = lodParameters.Skip(1);
+                        var plyModelParameter = lodParameters.First();
+                        var lodModelsParameters = lodParameters.Skip(1);
 
-                var plyFile = new PlyFile(RelativePathRemove((string)plyModelParameter.Data!));
-                var lodFiles = new List<PlyFile>();
-                plyFiles.Add(plyFile);
+                        var plyFile = new PlyFile((string)plyModelParameter.Data!, relativePathPoint: GetDirectoryPath()) { Loader = Loader };
+                        var lodFiles = new List<PlyFile>();
+                        plyFiles.Add(plyFile);
 
 
-                foreach (var lodParameter in lodModelsParameters) {
-                    lodFiles.Add(new PlyFile(RelativePathRemove((string)lodParameter.Data!)));
+                        foreach (var lodParameter in lodModelsParameters) {
+                            lodFiles.Add(new PlyFile((string)lodParameter.Data!, relativePathPoint: GetDirectoryPath()) { Loader = Loader });
+                        }
+
+                        plyLodFiles.TryAdd(plyFile, [.. lodFiles]);
+                    } else if (plyLodModel.Type == MdlSerializer.MdlTypes.VolumeView.ToString()) {
+                        plyFiles.Add(new PlyFile((string)plyLodModel.Data!, relativePathPoint: GetDirectoryPath()) { Loader = Loader });
+                    }
                 }
 
-                plyLodFiles.TryAdd(plyFile, [.. lodFiles]);
+                Data = new MdlModel(parameter, plyFiles, plyLodFiles);
+            } else {
+                throw GohResourceFileException.InvalidFormat(this, "mdl data format");
             }
-
-            Data = new MdlModel(parameter, plyFiles, plyLodFiles);
         }
 
         public override void SaveData() {
+            if (Loader.IsReadOnly) {
+                throw GohResourceSaveException.SaveReadOnlyFile(this);
+            }
+
             var parameters = Data.Parameters;
             var skinParameter = new ModelDataParameter() {
                 Type = MdlSerializer.MdlTypes.Bone.ToString(),
@@ -59,16 +73,16 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
 
             var lodViews = new List<ModelDataParameter>();
 
-            foreach (var plyFile in Data.PlyModel) {
+            foreach (var plyFile in Data.PlyModels) {
                 var volumeViews = new List<ModelDataParameter>() {
                     new(MdlSerializer.MdlTypes.VolumeView.ToString()) {
-                        Data = plyFile.GetFullPath()
+                        Data = SystemPath.Join(GohResourceLoading.GetRelativelyPath(GetDirectoryPath()!, plyFile.GetDirectoryPath()!), plyFile.Name) 
                     }
                 };
 
-                foreach (var plyLodFile in Data.PlyModelLods[plyFile]) {
+                foreach (var plyLodFile in Data.PlyModelsLods[plyFile]) {
                     volumeViews.Add(new ModelDataParameter(MdlSerializer.MdlTypes.VolumeView.ToString()) {
-                        Data = plyLodFile.GetFullPath()
+                        Data = SystemPath.Join(GohResourceLoading.GetRelativelyPath(GetDirectoryPath()!, plyLodFile.GetDirectoryPath()!), plyLodFile.Name)
                     });
                 }
 
@@ -81,15 +95,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
 
             ((DataList)((DataList)parameters.Data!)[0].Data!)[13] = skinParameter;
 
-            var str = Serializer.Serialize(Data.Parameters);
-
-            using var stream = new StreamWriter(GetFullPath());
-
-            stream.Write(str);
-        }
-
-        private string RelativePathRemove(string relativePath) {
-            return relativePath.Replace("../", null);
+            WriteAllText(Serializer.Serialize(Data.Parameters));
         }
     }
 }

@@ -18,18 +18,18 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates
             }
         }
 
-        public AggregateMtlFiles(PlyFile plyFile, GohFactionHumanskinResource humanskinResource, GohTextureProvider? textureProvider = null) {
+        public AggregateMtlFiles(PlyFile plyFile, IGohHumanskinResource humanskinResource, GohTextureProvider textureProvider) {
             _files = [];
             PlyFile = plyFile;
 
             foreach (var mesh in plyFile.Data.Meshes) {
-                _files.Add(mesh.TextureName, new AggregateMtlFile(mesh.TextureName, plyFile, humanskinResource));
-            }
+                var aggregateMtlTexture = new AggregateMtlFile(mesh.TextureName, () => humanskinResource.GetPlyMeshMtlTextures(plyFile, mesh.TextureName));
 
-            if (textureProvider != null) {
-                foreach (var mtlTexture in _files.Values.SelectMany(a => a.Data)) {
-                    textureProvider.SetTextureMaterialsFullPath(mtlTexture);
+                foreach (var mtlTexture in aggregateMtlTexture.Data) {
+                    textureProvider.TextureMaterialsInitialize(mtlTexture);
                 }
+
+                _files.Add(mesh.TextureName, aggregateMtlTexture);
             }
         }
 

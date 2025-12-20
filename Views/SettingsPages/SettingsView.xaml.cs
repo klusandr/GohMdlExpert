@@ -40,5 +40,16 @@ namespace GohMdlExpert.Views.SettingsPages {
                 } 
             } 
         }
+
+        public void OpenPage(string pageName) {
+            foreach (var item in _tabControl.Items.Cast<TabItem>()) {
+                if (item.Content is SettingsPageView pageView) {
+                    if (pageView.PageName == pageName) {
+                        _tabControl.SelectedItem = item;
+                        return;
+                    }
+                }
+            }
+        }
     }
 }

@@ -12,20 +12,20 @@ using WpfMvvm.ViewModels.Controls.Menu;
 namespace GohMdlExpert.ViewModels.Trees.LoadModels {
     public class ModelsLoadTreePlyFileViewModel : ModelsLoadTreeItemViewModel {
         private static readonly ImageSource s_icon = new BitmapImage().FromByteArray(Resources.PlyIcon);
+        private static readonly ImageSource s_icon_m = new BitmapImage().FromByteArray(Resources.PlyIcon);
 
         public PlyFile PlyFile { get; }
         public AggregateMtlFiles? AggregateMtlFiles { get; private set; }
+        public IEnumerable<PlyFile>? LodPlyFiles { get; private set; }
 
         public override ICommand LoadCommand => Tree.ModelsAdder.AddModelCommand;
         public override ICommand DeleteCommand => Tree.ModelsAdder.ClearModelCommand;
         public ICommand AddCommand => CommandManager.GetCommand(AddPlyModel);
 
         private void AddPlyModel() {
-            if (Tree.HumanskinResource != null) {
-                try {
-                    Tree.ModelsAdder.AddModel(PlyFile, new AggregateMtlFiles(PlyFile, Tree.HumanskinResource, Tree.TextureProvider));
-                } catch (OperationCanceledException) { }
-            }
+            try {
+                Tree.ModelsAdder.AddModel(PlyFile, new AggregateMtlFiles(PlyFile, Tree.SkinResourceProvider.Resource, Tree.TextureProvider));
+            } catch (OperationCanceledException) { }
         }
 
         public ModelsLoadTreePlyFileViewModel(PlyFile plyFile, ModelsLoadTreeViewModel modelsTree) : base(plyFile, modelsTree) {
@@ -42,9 +42,25 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
             }
 
             AggregateMtlFiles = new AggregateMtlFiles(PlyFile, Tree.HumanskinResource, Tree.TextureProvider);
+            
+            var lodFiles = Tree.HumanskinResource.GetPlyLodFiles(PlyFile);
+
+            if (!lodFiles.Any()) {
+                var nullPly = Tree.HumanskinResource.GetNullPlyFile(PlyFile);
+
+                if (nullPly != null) {
+                    lodFiles = [nullPly];
+                }
+            }
+
+            LodPlyFiles = lodFiles;
 
             foreach (var mtlFile in AggregateMtlFiles) {
                 AddItem(new ModelsLoadTreeMeshViewModel(mtlFile, Tree));
+            }
+
+            if (LodPlyFiles != null) {
+                AddItem(new ModelsLoadTreePlyLodFilesViewModel(LodPlyFiles, Tree));
             }
         }
 
@@ -52,10 +68,11 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
             if (!IsApproved) {
                 try {
                     LoadData();
-                    Tree.ModelsAdder.SetModel(PlyFile, AggregateMtlFiles);
+                    Tree.ModelsAdder.SetModel(PlyFile, AggregateMtlFiles, LodPlyFiles);
                     SelectTextures();
                     IsButtonActive = true;
                     IsExpanded = true;
+                    IsSelected = true;
                 } catch (GohResourceFileException) {
                     throw;
                 } finally {

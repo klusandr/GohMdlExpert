@@ -6,11 +6,13 @@
         xmlns:local="clr-namespace:GohMdlExpert.Views.Dialogs"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="NoResize"
-        Style="{DynamicResource ChildWindowStyle}"
-        SizeToContent="WidthAndHeight" 
-        MinHeight="150"
-        MinWidth="150"
+ResizeMode="NoResize" 
+Topmost="True" 
+Style="{DynamicResource ChildWindowStyle}"
+SizeToContent="WidthAndHeight" 
+MinHeight="150"
+MinWidth="150"
+        MaxHeight="600"
         Title="UserErrorDialogWindow">
     <Grid>
         <Grid.Resources>

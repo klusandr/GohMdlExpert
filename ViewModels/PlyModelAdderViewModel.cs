@@ -5,6 +5,7 @@ using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
+using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 using WpfMvvm.ViewModels;
 using WpfMvvm.ViewModels.Commands;
 
@@ -49,7 +50,7 @@ namespace GohMdlExpert.ViewModels
             _defaultMaterialViewModel.TexturesUpdate += (_, _) => DefaultTextureUpdate();
         }
 
-        public void SetModel(PlyFile plyFile, AggregateMtlFiles? aggregateMtlFiles) {
+        public void SetModel(PlyFile plyFile, AggregateMtlFiles? aggregateMtlFiles, IEnumerable<PlyFile>? lodPlyFiles) {
             ClearModel();
 
             if (aggregateMtlFiles != null && aggregateMtlFiles.PlyFile != plyFile) {
@@ -57,13 +58,19 @@ namespace GohMdlExpert.ViewModels
             }
 
             AggregateMtlFiles = aggregateMtlFiles;
-            AddedModel = new PlyModel3D(plyFile, aggregateMtlFiles);
+            AddedModel = new PlyModel3D(plyFile, aggregateMtlFiles, lodPlyFiles);
+
+            AddedModel.ModelChanged += AddedModelModelChangedHandler;
 
             DefaultTextureUpdate();
 
             if (_models3DView.Autofocus) {
                 _models3DView.FocusablePlyModel = _addedModel;
             }
+        }
+
+        private void AddedModelModelChangedHandler(object? sender, EventArgs e) {
+            OnPropertyChanged(nameof(AddedModel));
         }
 
         public void SetMtlFiles(AggregateMtlFiles aggregateMtlFiles) {
@@ -97,7 +104,23 @@ namespace GohMdlExpert.ViewModels
         public void AddModel() {
             if (AddedModel != null) {
                 try {
+                    IEnumerable<string>? updatedTextureNames = null;
+
+                    if (_defaultMaterialViewModel.IsUse && AggregateMtlFiles != null) {
+                        SetDefaultTextures(AggregateMtlFiles, out updatedTextureNames);
+                    }
+                    
+                    AddedModel.SetLodIndex(0);
+
                     _models3DView.AddModel(AddedModel, AggregateMtlFiles);
+
+                    if (updatedTextureNames?.Any() != null) {
+                        foreach (var textureName in updatedTextureNames) {
+                            int index = _models3DView.AggregateMtlFiles[textureName].Data.Count - 1;
+                            _models3DView.SetMtlFileTextureByIndex(textureName, index);
+                        }
+                    }
+
                     AddedModel = null;
                     ModelAdded?.Invoke(this, EventArgs.Empty);
                 } catch (OperationCanceledException) { }
@@ -182,6 +205,25 @@ namespace GohMdlExpert.ViewModels
                     SetDefaultTexture();
                 }
             }
+        }
+
+        private void SetDefaultTextures(AggregateMtlFiles aggregateMtlFiles, out IEnumerable<string>? updatedTextureNames) {
+            List<string>? updatedTextureNamesList = null;
+
+            foreach (var aggregateMtlFile in aggregateMtlFiles) {
+                if (aggregateMtlFile.Data.Count == 0 || _defaultMaterialViewModel.IsUseAlways) {
+                    var texture = _defaultMaterialViewModel.GetTextureFile(aggregateMtlFile.Name);
+
+                    if (texture != null) {
+                        aggregateMtlFile.Data.Add(texture);
+                    }
+
+                    updatedTextureNamesList ??= [];
+                    updatedTextureNamesList.Add(aggregateMtlFile.Name);
+                }
+            }
+
+            updatedTextureNames = updatedTextureNamesList;
         }
     }
 }

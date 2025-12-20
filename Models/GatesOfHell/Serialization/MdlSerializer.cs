@@ -14,6 +14,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
             LODView,
             Position,
             VolumeView,
+            Cylinder,
+            Box,
+            disabled,
         }
 
         public MdlSerializer() {
@@ -95,6 +98,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
             );
             AddType("LODView", "LODView");
             AddType("VolumeView", "VolumeView");
+            AddType("Cylinder", "Cylinder");
+            AddType("Box", "Box");
+            AddType("disabled", "disabled");
         }
     }
 }
