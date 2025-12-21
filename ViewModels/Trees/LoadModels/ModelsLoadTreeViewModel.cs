@@ -69,6 +69,7 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
         }
 
         public void CreatedItemHandler(object? sender, EventArgs e) {
+#warning Optimize event handler
             if (sender is ModelsLoadTreePlyFileViewModel item) {
                 if (item.Tree == this) {
                     item.PropertyChangeHandler.AddHandler(nameof(item.IsApproved), PlyFileApprovedChangeHandler);

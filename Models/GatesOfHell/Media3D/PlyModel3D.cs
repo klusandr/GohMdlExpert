@@ -188,6 +188,16 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D
             return _currentLodIndex;
         }
 
+        public void UnloadResource() {
+            PlyFile.UnloadData();
+
+            if (LodPlyFiles != null) {
+                foreach (var item in LodPlyFiles) {
+                    item.UnloadData();
+                }
+            }
+        }
+
         private MeshData GetMesh(string meshTextureName) {
             if (!_meshes.TryGetValue(meshTextureName, out var mesh)) {
                 throw PlyModelException.NoContainMeshTextureName(null, meshTextureName);

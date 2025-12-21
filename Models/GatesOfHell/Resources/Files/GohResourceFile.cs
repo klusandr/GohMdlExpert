@@ -31,6 +31,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
             set => _data = value;
         }
 
+        public bool DataIsLoaded => _data != null;
+
         public GohResourceFile(string name, string? path = null, string? relativePathPoint = null) : base(name, path, relativePathPoint) {
             if (GetExtension() != null && SystemPath.GetExtension(name) != GetExtension()) {
                 throw GohResourceFileException.InvalidExtension(this, GetExtension()!);

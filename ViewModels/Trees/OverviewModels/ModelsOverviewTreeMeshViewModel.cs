@@ -1,4 +1,5 @@
-﻿using System.Windows.Media;
+﻿using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GohMdlExpert.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Media3D;
@@ -19,8 +20,7 @@ namespace GohMdlExpert.ViewModels.Trees.OverviewModels {
             Text = GetFullText();
             IsVisibleActive = true;
 
-            Tree.Models3DViewModel.UpdatedTextures += UpdatedTexturesHandler;
-            
+            WeakEventManager<HumanskinMdlOverviewViewModel, EventArgs>.AddHandler(Tree.Models3DViewModel, nameof(HumanskinMdlOverviewViewModel.UpdatedTextures), UpdatedTexturesHandler);
         }
 
         private string GetFullText() {

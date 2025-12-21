@@ -97,5 +97,21 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
 
             WriteAllText(Serializer.Serialize(Data.Parameters));
         }
+
+        public override void UnloadData() {
+            if (DataIsLoaded) {
+                foreach (var plyFile in Data.PlyModels) {
+                    plyFile.UnloadData();
+                }
+
+                foreach (var plyModelLods in Data.PlyModelsLods) {
+                    foreach (var plyFile in plyModelLods.Value) {
+                        plyFile.UnloadData();
+                    }
+                }
+            }
+
+            base.UnloadData();
+        }
     }
 }

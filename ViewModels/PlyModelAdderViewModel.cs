@@ -91,6 +91,8 @@ namespace GohMdlExpert.ViewModels
 
         public void ClearModel() {
             if (IsAddedInProgress) {
+                AddedModel?.UnloadResource();
+
                 AggregateMtlFiles = null;
                 AddedModel = null;
                 CancelModelAdded?.Invoke(this, EventArgs.Empty);
