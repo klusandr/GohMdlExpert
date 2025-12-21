@@ -52,6 +52,8 @@
             </TabItem>
         </TabControl>
 
+        <GridSplitter HorizontalAlignment="Right" Width="3"/>
+
         <Grid x:Name="_sceneBackground" Background="{DynamicResource DarkBackgroundBrush}" MouseWheel="OnMouseWheel" Grid.Column="1" Cursor="Cross">
             <Viewport3D x:Name="_scene">
                 <Viewport3D.Camera>
@@ -90,6 +92,9 @@
             <Button Content="Save humanskin" Padding="5 3" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding SaveMdlCommand}" DockPanel.Dock="Bottom"/>
             <trees:ModelsOverviewTreeView Margin="5" DataContext="{Binding ModelsOverviewTreeViewModel}" DockPanel.Dock="Left"/>
         </DockPanel>
+
+        <GridSplitter HorizontalAlignment="Left" Width="3" Grid.Column="2"/>
+
     </Grid>
     
     
