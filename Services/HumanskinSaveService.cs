@@ -36,7 +36,7 @@ namespace GohMdlExpert.Services {
                 throw new InvalidOperationException("Humansin save dialog is open already.");
             }
 
-            if (_viewModel.ModIsLoaded!) {
+            if (!_viewModel.ModIsLoaded!) {
                 if (_userDialog.Ask(
                         "For to save humanskin need to specifed output mod, open the output mod settings now?\n",
                         "Output mod",
