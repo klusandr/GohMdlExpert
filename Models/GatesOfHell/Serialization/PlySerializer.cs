@@ -132,6 +132,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization
                             int vertexDataSize = BitConverter.ToInt16(readBytes, 4);
                             int vertexFlags = BitConverter.ToInt16(readBytes, 6);
 
+                            bool someFlags = vertexDataSize == 60; //It's unclear why. For UV.
+
                             byte[] vertexesData = new byte[vertexCount * vertexDataSize];
                             modelFileStream.Read(vertexesData, 0, vertexesData.Length);
 
@@ -155,8 +157,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization
                                 //var d1 = vertexData[16..20];
 
                                 var uvPoint = new Point {
-                                    X = BitConverter.ToSingle(vertexData, 32),
-                                    Y = BitConverter.ToSingle(vertexData, 36),
+                                    X = BitConverter.ToSingle(vertexData, 32 + (someFlags ? 4 : 0)),
+                                    Y = BitConverter.ToSingle(vertexData, 36 + (someFlags ? 4 : 0)),
                                 };
 
                                 points.Add(point);
