@@ -70,11 +70,13 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D
 
         private readonly static Material s_transparentMaterial = new DiffuseMaterial();
 
-        private readonly Dictionary<string, MeshData> _meshes;
+        private readonly List<MeshData> _meshes;
         private readonly Model3DGroup _mainModel;
         private readonly List<Model3DGroup> _lodModels;
         private bool _isVisible;
         private int _currentLodIndex = 0;
+
+        public int MeshesCount => _meshes.Count;
 
         public PlyFile PlyFile { get; }
         public ObservableList<PlyFile>? LodPlyFiles { get; }
@@ -83,7 +85,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D
 
         public Model3DGroup Model { get; private set; }
 
-        public IEnumerable<string> MeshesTextureNames => _meshes.Keys;
+        public IEnumerable<string> MeshesTextureNames => _meshes.Select(m => m.TextureName);
         public bool IsVisible {
             get => _isVisible;
             set {
@@ -127,20 +129,22 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D
         }
 
         public void SetMeshTexture(string meshTextureName, MtlTexture? texture) {
-            GetMesh(meshTextureName).Texture = texture;
+            foreach (var mesh in GetMeshesByTextureName(meshTextureName)) {
+                mesh.Texture = texture;
+            }
         }
 
         public MtlTexture? GetMeshTexture(string meshTextureName) {
-            return GetMesh(meshTextureName).Texture;
+            return GetMeshesByTextureName(meshTextureName).FirstOrDefault()?.Texture;
         }
 
         public bool CheckNoMaterial(string? meshTextureName = null) {
             if (meshTextureName != null) {
-                if (GetMesh(meshTextureName) == null) {
+                if (!GetMeshesByTextureName(meshTextureName).Any()) {
                     return true;
                 }
             } else {
-                foreach (var mesh in _meshes.Values) {
+                foreach (var mesh in _meshes) {
                     if (mesh.Texture == null) {
                         return true;
                     }
@@ -151,12 +155,12 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D
         }
 
 
-        public void SetMeshVisibility(string meshTextureName, bool visible) {
-            GetMesh(meshTextureName).IsVisible = visible;
+        public void SetMeshVisibility(int meshIndex, bool visible) {
+            GetMesh(meshIndex).IsVisible = visible;
         }
 
-        public bool GetMeshVisibility(string meshTextureName) {
-            return GetMesh(meshTextureName).IsVisible;
+        public bool GetMeshVisibility(int meshIndex) {
+            return GetMesh(meshIndex).IsVisible;
         }
 
         public Point3D GetCenterPoint() {
@@ -198,12 +202,16 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D
             }
         }
 
-        private MeshData GetMesh(string meshTextureName) {
-            if (!_meshes.TryGetValue(meshTextureName, out var mesh)) {
-                throw PlyModelException.NoContainMeshTextureName(null, meshTextureName);
+        private IEnumerable<MeshData> GetMeshesByTextureName(string meshTextureName) {
+            return _meshes.Where(m => m.TextureName == meshTextureName);
+        }
+
+        private MeshData GetMesh(int meshIndex) {
+            if (meshIndex < 0 || meshIndex >= MeshesCount) {
+                throw PlyModelException.MeshIndexOutOfRange(PlyFile, meshIndex);
             }
 
-            return mesh;
+            return _meshes[meshIndex];
         }
 
         private Dictionary<string, GeometryModel3D> LoadMeshes(Dictionary<string, MtlTexture?>? meshesTextures) {
@@ -217,7 +225,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D
                 var modelMeshGeometry = (GeometryModel3D)model;
                 var texture = meshesTextures?.GetValueOrDefault(meshTextureName);
 
-                _meshes.Add(meshTextureName, new MeshData(meshTextureName, modelMeshGeometry, texture));
+                _meshes.Add(new MeshData(meshTextureName, modelMeshGeometry, texture));
 
                 meshEnumerator.MoveNext();
             }
@@ -226,7 +234,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D
         }
 
         private void VisibleChange() {
-            foreach (var mesh in _meshes.Values) {
+            foreach (var mesh in _meshes) {
                 if (IsVisible) {
                     mesh.Show();
                 } else {

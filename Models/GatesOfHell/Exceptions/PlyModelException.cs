@@ -40,5 +40,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions
         public static PlyModelException AttemptInstallInvalidMtlTexture(PlyFile? plyFile, MtlTexture mtlTexture) {
             return new PlyModelException($"Attempt set invalid texture \"{mtlTexture.Diffuse.Name}\".", plyFile) { ExceptionCode = 2 };
         }
+
+        public static PlyModelException MeshIndexOutOfRange(PlyFile? plyFile, int meshIndex) {
+            return new PlyModelException($"Ply model mesh's index out of the range. Index: {meshIndex}.", plyFile) { ExceptionCode = 3 };
+        }
     }
 }

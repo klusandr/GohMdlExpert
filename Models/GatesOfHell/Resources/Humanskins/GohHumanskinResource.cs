@@ -65,7 +65,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
         public IEnumerable<AggregateMtlFile> GetPlyAggregateMtlFiles(PlyFile plyFile) {
             var mtlFiles = new List<AggregateMtlFile>();
 
-            foreach (var mesh in plyFile.Data.Meshes) {
+            foreach (var mesh in plyFile.Data.Meshes.Distinct()) {
                 mtlFiles.Add(new AggregateMtlFile(mesh.TextureName, GetPlyMeshMtlTextures(plyFile, mesh.TextureName)));
             }
 

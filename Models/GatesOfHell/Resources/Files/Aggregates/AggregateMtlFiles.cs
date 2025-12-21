@@ -23,13 +23,15 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates
             PlyFile = plyFile;
 
             foreach (var mesh in plyFile.Data.Meshes) {
-                var aggregateMtlTexture = new AggregateMtlFile(mesh.TextureName, () => humanskinResource.GetPlyMeshMtlTextures(plyFile, mesh.TextureName));
+                if (!_files.ContainsKey(mesh.TextureName)) {
+                    var aggregateMtlTexture = new AggregateMtlFile(mesh.TextureName, () => humanskinResource.GetPlyMeshMtlTextures(plyFile, mesh.TextureName));
 
-                foreach (var mtlTexture in aggregateMtlTexture.Data) {
-                    textureProvider.TextureMaterialsInitialize(mtlTexture);
+                    foreach (var mtlTexture in aggregateMtlTexture.Data) {
+                        textureProvider.TextureMaterialsInitialize(mtlTexture);
+                    }
+
+                    _files.Add(mesh.TextureName, aggregateMtlTexture);
                 }
-
-                _files.Add(mesh.TextureName, aggregateMtlTexture);
             }
         }
 
