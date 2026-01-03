@@ -116,9 +116,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
             var pathComponents = PathUtils.GetPathComponents(plyFile.GetDirectoryPath()!);
             PlyFile? nullFile = null;
 
-            for (int i = 0; i < pathComponents.Length; i++) {
+            for (int i = 0; i < pathComponents.Length && nullFile == null; i++) {
                 var directory = _resourceProvider.GetDirectory(PathUtils.GetPathFromComponents(pathComponents.SkipLast(i)));
-                nullFile = directory!.FindResourceElements<PlyFile>(searchPattern: "null_*.ply", deepSearch: false, first: true).FirstOrDefault();
+                nullFile = directory!.FindResourceElements<PlyFile>(searchPattern: ".*null.ply", deepSearch: false, first: true).FirstOrDefault();
             }
 
             return nullFile;

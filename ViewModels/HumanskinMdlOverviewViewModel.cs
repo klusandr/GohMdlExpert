@@ -163,6 +163,22 @@ namespace GohMdlExpert.ViewModels {
                 }
             }
 
+            if (modelPly.LodPlyFiles.Count == 0) {
+                var result = _userDialog.Ask("Ply model don't have LOD models. Add null LOD?", "LOD models", QuestionType.YesNoCancel);
+
+                if (result == QuestionResult.Yes) {
+                    var nullLod = _humanskinProvider.Resource.GetNullPlyFile(modelPly.PlyFile);
+
+                    if (nullLod != null) {
+                        modelPly.LodPlyFiles.Add(nullLod);
+                    } else {
+                        _userDialog.ShowWarning(string.Format("Plgramm don't find null LOD moder for \"{0}\".", modelPly.PlyFile.GetFullPath()), "LOD models");
+                    }
+                } else if (result == QuestionResult.Cancel) {
+                    throw new OperationCanceledException();
+                }
+            }
+
             _plyModels.Add(modelPly);
             UpdateTextures();
         }
@@ -206,7 +222,7 @@ namespace GohMdlExpert.ViewModels {
             MdlFile.Data = new MdlModel(
                 mdlModel?.Parameters ?? GohResourceLoading.MdlTemplateParameters, 
                 PlyModels.Select(p => p.PlyFile), 
-                new(PlyModels.Select(l => new KeyValuePair<PlyFile, PlyFile[]>(l.PlyFile, [.. l.LodPlyFiles ?? []])))
+                new(PlyModels.Select(l => new KeyValuePair<PlyFile, PlyFile[]>(l.PlyFile, [.. l.LodPlyFiles])))
             );
 
             var textures = new Dictionary<string, MtlTexture>(

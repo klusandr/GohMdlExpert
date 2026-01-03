@@ -79,7 +79,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D
         public int MeshesCount => _meshes.Count;
 
         public PlyFile PlyFile { get; }
-        public ObservableList<PlyFile>? LodPlyFiles { get; }
+        public ObservableList<PlyFile> LodPlyFiles { get; }
 
         private readonly CollectionChangeBinder<Model3DGroup> _lodPlyFilesBinding;
 
@@ -195,10 +195,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D
         public void UnloadResource() {
             PlyFile.UnloadData();
 
-            if (LodPlyFiles != null) {
-                foreach (var item in LodPlyFiles) {
-                    item.UnloadData();
-                }
+            foreach (var item in LodPlyFiles) {
+                item.UnloadData();
             }
         }
 

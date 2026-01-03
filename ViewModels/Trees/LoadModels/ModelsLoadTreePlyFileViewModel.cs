@@ -45,21 +45,13 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
             
             var lodFiles = Tree.HumanskinResource.GetPlyLodFiles(PlyFile);
 
-            if (!lodFiles.Any()) {
-                var nullPly = Tree.HumanskinResource.GetNullPlyFile(PlyFile);
-
-                if (nullPly != null) {
-                    lodFiles = [nullPly];
-                }
-            }
-
             LodPlyFiles = lodFiles;
 
             foreach (var mtlFile in AggregateMtlFiles) {
                 AddItem(new ModelsLoadTreeMeshViewModel(mtlFile, Tree));
             }
 
-            if (LodPlyFiles != null) {
+            if (LodPlyFiles.Any()) {
                 AddItem(new ModelsLoadTreePlyLodFilesViewModel(LodPlyFiles, Tree));
             }
         }
