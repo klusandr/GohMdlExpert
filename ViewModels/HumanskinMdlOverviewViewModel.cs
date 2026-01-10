@@ -22,6 +22,8 @@ namespace GohMdlExpert.ViewModels {
     public sealed class HumanskinMdlOverviewViewModel : BaseViewModel {
         private MdlFile? _mdlFile;
         private PlyModel3D? _focusablePlyModel;
+        private IEnumerable<int>? _humanskinLodLevels;
+        private int _humanskinLodLevel;
         private readonly ObservableCollection<PlyModel3D> _plyModels;
         private readonly Model3DCollection _models;
         private readonly ObservableDictionary<string, AggregateMtlFile> _aggregateMtlFiles;
@@ -67,6 +69,26 @@ namespace GohMdlExpert.ViewModels {
             }
         }
 
+        public IEnumerable<int>? HumanskinLodLevels {
+            get => _humanskinLodLevels;
+            set {
+                _humanskinLodLevels = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int HumanskinLodLevel {
+            get => _humanskinLodLevel;
+            set {
+                _humanskinLodLevel = value;
+
+                foreach (var plyModel in _plyModels) {
+                    plyModel.SetLodIndex(value);
+                }
+
+                OnPropertyChanged();
+            }
+        }
 
         public ModelsOverviewTreeViewModel ModelsOverviewTreeViewModel => _modelsOverviewTreeViewModel;
         public ModelsLoadTreeViewModel ModelsLoadTreeViewModel => _modelsLoadTreeViewModel;
@@ -77,7 +99,6 @@ namespace GohMdlExpert.ViewModels {
         public ICommand SaveMdlCommand => CommandManager.GetCommand(SaveMtlFile, canExecute: (_) => MdlFile != null);
         public ICommand NewMdlCommand => CommandManager.GetCommand(CreateMdlFile);
         public ICommand ClearPlyModelFocusCommand => CommandManager.GetCommand(ClearPlyModelFocus);
-
 
         public event EventHandler? UpdatedTextures;
 
@@ -104,11 +125,27 @@ namespace GohMdlExpert.ViewModels {
                 (s) => { 
                     var plyModel = (s as PlyModel3D)!;
                     plyModel.ModelChanged += PlyModelChanged;
+                    UpdateLodLevels();
                     return plyModel.Model; 
                 });
             _plyModelsChangeHandler = new CollectionChangeHandler(_plyModels)
                 .AddHandlerBuilder(NotifyCollectionChangedAction.Remove, PlyModelRemoveHandler)
                 .AddHandlerBuilder(NotifyCollectionChangedAction.Reset, PlyModelRemoveHandler);
+        }
+
+        private void UpdateLodLevels() {
+            var maxLodLevel = _plyModels.Max(p => p.LodPlyFiles.Count);
+
+            if (maxLodLevel + 1 == HumanskinLodLevels?.Count()) { return; }
+
+            var array = new int[maxLodLevel + 1];
+
+            for (int i = 0; i <= maxLodLevel; i++) {
+                array[i] = i;
+            }
+
+            HumanskinLodLevel = 0;
+            HumanskinLodLevels = array;
         }
 
         public void CreateMdlFile() {

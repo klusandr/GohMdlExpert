@@ -30,6 +30,14 @@
                 </HierarchicalDataTemplate>
             </vbc:TreeView.Resources>
         </vbc:TreeView>
+        <Grid x:Name="_humanskinLod" Grid.Row="2" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Humanskin LOD level"/>
+            <ComboBox ItemsSource="{Binding Models3DViewModel.HumanskinLodLevels}" SelectedItem="{Binding Models3DViewModel.HumanskinLodLevel}" Grid.Row="1"/>
+        </Grid>
         <tml:PlyModelLodListView x:Name="_lodList" Grid.Row="2" DataContext="{Binding LodListViewModel}" Visibility="Collapsed"/>
         <tml:TextureMaterialListView x:Name="_materialList" Grid.Row="2" DataContext="{Binding AggregateTextureListViewModel}" Visibility="Collapsed"/>
     </Grid>

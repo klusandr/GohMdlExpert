@@ -175,6 +175,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D
             if (index == 0) {
                 Model = _mainModel;
             } else {
+                if (index - 1 >= _lodModels.Count) { return; }
+
                 Model = _lodModels[index - 1];
                 for (int i = 0; i < _mainModel.Children.Count; i++) {
                     var mainmodelMesh = ((GeometryModel3D)_mainModel.Children[i]);
