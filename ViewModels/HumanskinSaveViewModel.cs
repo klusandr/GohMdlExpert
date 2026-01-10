@@ -53,6 +53,34 @@ namespace GohMdlExpert.ViewModels
 
         public ObservableList<GohResourceFile> HumanskinFiles { get; }
 
+        public string? HumanskinName { 
+            get => HumanskinFiles.FirstOrDefault(f => f is MdlFile)?.Name; 
+            set {
+                if (value == null) {
+                    OnPropertyChanged();
+                    return;
+                }
+
+                var mdlFile = HumanskinFiles.FirstOrDefault(f => f is MdlFile);
+                var defFile = HumanskinFiles.FirstOrDefault(f => f is DefFile);
+
+                if (mdlFile != null) {
+                    if (!value.EndsWith(MdlFile.Extension)) {
+                        value = value.Trim();
+                        value += MdlFile.Extension;
+                    }
+
+                    mdlFile.Name = value;
+
+                    if (defFile != null) {
+                        defFile.Name = PathUtils.GetPathWithoutExtension(value) + DefFile.Extension;
+                    }
+                }
+
+                OnPropertyChanged();
+            }
+        }
+
         public string? NewDirectoryName {
             get => _newDirectoryName;
             set {
@@ -108,6 +136,9 @@ namespace GohMdlExpert.ViewModels
                     CurrentDirectoryItemsUpdate();
                     CommandManager.OnCommandCanExecuteChanged(nameof(SaveCommand));
                     CommandManager.OnCommandCanExecuteChanged(nameof(AddDirectoryCommand));
+                })
+                .AddHandlerBuilder(nameof(HumanskinName), (_, _) => {
+                    CurrentDirectoryItemsUpdate();
                 });
 
             _humanskinResourceProvider.ResourceUpdated += (_, _) => {
@@ -123,6 +154,7 @@ namespace GohMdlExpert.ViewModels
 
             Tree.ClearSelect();
             Tree.ExpandToResourceElement(mdlFile.GetDirectoryPath()?.Replace(GohResourceLocations.Humanskin, null) ?? "");
+            OnPropertyChanged(nameof(HumanskinName));
         }
 
         private void Seve() {

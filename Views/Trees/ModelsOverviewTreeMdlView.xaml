@@ -1,4 +1,4 @@
-﻿<vbc:TreeItemView x:Class="GohMdlExpert.Views.Trees.ModelsOverviewTreeItemView"
+﻿<vbc:TreeItemView x:Class="GohMdlExpert.Views.Trees.ModelsOverviewTreeMdlView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -24,8 +24,6 @@
     </vbc:TreeItemView.Resources>
     <StackPanel x:Name="_stackPanel" Orientation="Horizontal">
         <Image d:Source="\Resources\mesh.ico" Source="{Binding Icon}" Width="20"/>
-        <TextBlock d:Text="Элемент дерева представления" Text="{Binding Text}"/>
-        <CheckBox Margin="2" IsChecked="{Binding IsEnableCheck}" Focusable="False" Visibility="{Binding IsEnableCheckActive, Converter={StaticResource VisibilityConverter}}"/>
-        <CheckBox Template="{StaticResource ShowHideCheckBox}" Focusable="False" IsChecked="{Binding IsVisible}" Visibility="{Binding IsVisibleActive, Converter={StaticResource VisibilityConverter}}"/>
+        <controls:EditebleTextBlock x:Name="EditebleTextBlock" d:Text="Элемент дерева представления" Text="{Binding Text}"/>
     </StackPanel>
 </vbc:TreeItemView>

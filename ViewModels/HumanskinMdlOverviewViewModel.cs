@@ -232,6 +232,7 @@ namespace GohMdlExpert.ViewModels {
             );
 
             _humanskinSeveSrvice.Save(MdlFile, textures);
+            OnPropertyChanged(nameof(MdlFile));
         }
 
         public void SetMtlFileTextureByIndex(string meshTextureName, int index) {

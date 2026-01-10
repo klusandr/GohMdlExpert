@@ -41,47 +41,56 @@
                 <Button Content="Remove directory" Command="{Binding RemoveDirectoryCommand}" Margin="5" Grid.Column="1"/>
             </Grid>
         </Grid>
-        <DataGrid ItemsSource="{Binding CurrentDirectoryItems}" AutoGenerateColumns="False" IsReadOnly="True" CanUserResizeRows="False" CanUserReorderColumns="False"
-                  GridLinesVisibility="None" RowHeaderWidth="0" Margin="5" LoadingRow="DataGridLoadingRowHandler"
-                  Grid.Column="1">
-            <DataGrid.CellStyle>
-                <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
-                    <Setter Property="BorderThickness" Value="0 1"/>
-                    <Setter Property="Focusable" Value="False"/>
-                    <Setter Property="ToolTip" Value="{Binding ToolTip}"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Status}" Value="Good">
-                            <Setter Property="Background" Value="{DynamicResource StatusGoodBrush}"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Status}" Value="Warning">
-                            <Setter Property="Background" Value="{DynamicResource StatusWarningBrush}"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Status}" Value="Error">
-                            <Setter Property="Background" Value="{DynamicResource StatusErrorBrush}"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.CellStyle>
-            <DataGrid.Columns>
-                <DataGridTemplateColumn  Header="Name" Width="*">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" Margin="1">
-                                <Image Source="{Binding Icon}" Width="20"/>
-                                <TextBlock Text="{Binding Text}"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Save action" Width="200">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding SaveAction}" Margin="1"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <DataGrid ItemsSource="{Binding CurrentDirectoryItems}" AutoGenerateColumns="False" IsReadOnly="True" CanUserResizeRows="False" CanUserReorderColumns="False"
+                      GridLinesVisibility="None" RowHeaderWidth="0" Margin="5" LoadingRow="DataGridLoadingRowHandler"
+                      Grid.Column="1">
+                <DataGrid.CellStyle>
+                    <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+                        <Setter Property="BorderThickness" Value="0 1"/>
+                        <Setter Property="Focusable" Value="False"/>
+                        <Setter Property="ToolTip" Value="{Binding ToolTip}"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Status}" Value="Good">
+                                <Setter Property="Background" Value="{DynamicResource StatusGoodBrush}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Status}" Value="Warning">
+                                <Setter Property="Background" Value="{DynamicResource StatusWarningBrush}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Status}" Value="Error">
+                                <Setter Property="Background" Value="{DynamicResource StatusErrorBrush}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.CellStyle>
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn  Header="Name" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="1">
+                                    <Image Source="{Binding Icon}" Width="20"/>
+                                    <TextBlock Text="{Binding Text}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Save action" Width="200">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding SaveAction}" Margin="1"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <TextBox Text="{Binding HumanskinName, UpdateSourceTrigger=LostFocus}" KeyDown="HumanskinNameTextBoxKeyDownHandler" Margin="5 0" Grid.Row="1"/>
+        </Grid>
+        
         <StackPanel Style="{StaticResource DialogButtonStackPanel}" Grid.Row="1" Grid.Column="1">
             <Button Content="Save" Command="{Binding SaveCommand}"/>
             <Button Content="Cancel" Command="{Binding CancelCommand}"/>

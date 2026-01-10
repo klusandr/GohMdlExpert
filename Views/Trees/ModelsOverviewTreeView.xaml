@@ -18,12 +18,17 @@
             <RowDefinition Height=".3*"/>
         </Grid.RowDefinitions>
         <TextBlock Text="Humanskin overview" TextTrimming="CharacterEllipsis"/>
-        <vbc:TreeView Grid.Row="1">
-            <vbc:TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Items}">
+        <vbc:TreeView Grid.Row="1" ItemTemplate="{x:Null}">
+            
+            <vbc:TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type vm:ModelsOverviewTreeItemViewModel}" ItemsSource="{Binding Items}">
                     <local:ModelsOverviewTreeItemView/>
                 </HierarchicalDataTemplate>
-            </vbc:TreeView.ItemTemplate>
+
+                <HierarchicalDataTemplate DataType="{x:Type vm:ModelsOverviewTreeMdlViewModel}" ItemsSource="{Binding Items}">
+                    <local:ModelsOverviewTreeMdlView/>
+                </HierarchicalDataTemplate>
+            </vbc:TreeView.Resources>
         </vbc:TreeView>
         <tml:PlyModelLodListView x:Name="_lodList" Grid.Row="2" DataContext="{Binding LodListViewModel}" Visibility="Collapsed"/>
         <tml:TextureMaterialListView x:Name="_materialList" Grid.Row="2" DataContext="{Binding AggregateTextureListViewModel}" Visibility="Collapsed"/>

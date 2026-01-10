@@ -40,5 +40,11 @@ namespace GohMdlExpert.Views {
         private void DataGridLoadingRowHandler(object sender, DataGridRowEventArgs e) {
             e.Row.MouseDoubleClick += ListViewItemMouseLeftButtonDownHendler;
         }
+
+        private void HumanskinNameTextBoxKeyDownHandler(object sender, KeyEventArgs e) {
+            if (e.Key == Key.Enter) {
+                ((TextBox)sender).MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+            }
+        }
     }
 }

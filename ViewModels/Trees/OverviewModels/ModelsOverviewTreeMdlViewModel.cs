@@ -1,4 +1,6 @@
-﻿using System.Windows.Input;
+﻿using System.ComponentModel;
+using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GohMdlExpert.Extensions;
@@ -27,9 +29,15 @@ namespace GohMdlExpert.ViewModels.Trees.OverviewModels {
                 .AddItemBuilder(new MenuItemViewModel("Set focus", SetFocusCommand));
 
             PropertyChangeHandler.AddHandler(nameof(Text), (_, _) => MdlFile.Name = Text);
+            WeakEventManager<HumanskinMdlOverviewViewModel, PropertyChangedEventArgs>.AddHandler(Tree.Models3DViewModel, nameof(HumanskinMdlOverviewViewModel.PropertyChanged), OverviewPropertyUpdatedHandler);
 
             IsExpanded = true;
         }
 
+        private void OverviewPropertyUpdatedHandler(object? sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(HumanskinMdlOverviewViewModel.MdlFile)) {
+                Text = MdlFile.Name;
+            }
+        }
     }
 }
