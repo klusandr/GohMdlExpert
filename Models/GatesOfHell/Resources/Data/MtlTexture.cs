@@ -25,9 +25,9 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Data {
 
         public static MtlTexture NullTexture { get; } = new MtlTexture(new NullMaterialFile() { Name = string.Empty });
 
-        public string DiffusePath => GetMaterialPath(_diffuse?.GetFullPath()) ?? _diffusePath!;
-        public string? BumpPath => GetMaterialPath(Bump?.GetFullPath()) ?? _bumpPath; 
-        public string? SpecularPath => GetMaterialPath(Specular?.GetFullPath()) ?? _specularPath;
+        public string DiffusePath => _diffusePath!;
+        public string? BumpPath => _bumpPath; 
+        public string? SpecularPath => _specularPath;
 
         public MaterialFile Diffuse { get => _diffuse ?? throw TextureException.MaterialsNotInitialize(this); set => _diffuse = value; }
         public MaterialFile? Bump { get; set; }
@@ -75,9 +75,5 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Data {
         public MtlTexture Clone() {
             return (MtlTexture)MemberwiseClone();
         }
-
-        private static string? GetMaterialPath(string? path) {
-            return path != null ? PathUtils.GetPathWithoutExtension(path) : path;
-        } 
     }
 }
