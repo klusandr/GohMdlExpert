@@ -11,6 +11,7 @@ namespace GohMdlExpert.ViewModels.Lists {
         private Statuses _status;
         private string? _message;
         private string? _saveAction;
+        private bool _ignore;
 
         public Statuses Status {
             get => _status;
@@ -35,6 +36,14 @@ namespace GohMdlExpert.ViewModels.Lists {
             get => _saveAction;
             set {
                 _saveAction = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool Ignore {
+            get => _ignore;
+            set {
+                _ignore = value;
                 OnPropertyChanged();
             }
         }

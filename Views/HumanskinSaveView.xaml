@@ -9,6 +9,9 @@
              d:DataContext="{d:DesignInstance Type=viewmodels:HumanskinSaveViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <vb:BaseView.Resources>
+        <local:SaveParameterVisibilityConverter x:Key="SaveParameterVisibilityConverter"/>
+    </vb:BaseView.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width=".5*"/>
@@ -46,9 +49,9 @@
                 <RowDefinition/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <DataGrid ItemsSource="{Binding CurrentDirectoryItems}" AutoGenerateColumns="False" IsReadOnly="True" CanUserResizeRows="False" CanUserReorderColumns="False"
-                      GridLinesVisibility="None" RowHeaderWidth="0" Margin="5" LoadingRow="DataGridLoadingRowHandler"
-                      Grid.Column="1">
+            <DataGrid x:Name="DirectoryItemsDataGrid" ItemsSource="{Binding CurrentDirectoryItems}" AutoGenerateColumns="False" CanUserResizeRows="False" CanUserReorderColumns="False"
+                      GridLinesVisibility="None" RowHeaderWidth="0" Margin="5" LoadingRow="DataGridLoadingRowHandler" Sorting="DataGridSortingHandler"
+                      Grid.Column="1" CanUserSortColumns="True">
                 <DataGrid.CellStyle>
                     <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
                         <Setter Property="BorderThickness" Value="0 1"/>
@@ -64,11 +67,15 @@
                             <DataTrigger Binding="{Binding Status}" Value="Error">
                                 <Setter Property="Background" Value="{DynamicResource StatusErrorBrush}"/>
                             </DataTrigger>
+                            <DataTrigger Binding="{Binding Ignore}" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource DarkBackgroundBrush}"/>
+                            </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </DataGrid.CellStyle>
+
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn  Header="Name" Width="*">
+                    <DataGridTemplateColumn Header="Name" Width="*" SortMemberPath="Text" SortDirection="Ascending">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" Margin="1">
@@ -78,10 +85,19 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
+                    
                     <DataGridTemplateColumn Header="Save action" Width="200">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding SaveAction}" Margin="1"/>
+                                <TextBlock Text="{Binding SaveAction}" Visibility="{Binding Path='', Converter={StaticResource SaveParameterVisibilityConverter}}" Margin="1"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Ignore" Width="50">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding Ignore, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Path='', Converter={StaticResource SaveParameterVisibilityConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" Focusable="False" Margin="1"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

@@ -1,31 +1,20 @@
-﻿using System.Diagnostics;
-using System.IO;
-using System.Windows.Documents;
+﻿using System.IO;
 using System.Windows.Input;
-using GohMdlExpert.Models.GatesOfHell.Exceptions;
-using GohMdlExpert.Models.GatesOfHell.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
-using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
 using GohMdlExpert.Models.GatesOfHell.Resources.Mods;
-using GohMdlExpert.Models.GatesOfHell.Serialization;
-using GohMdlExpert.Properties;
 using GohMdlExpert.Services;
 using GohMdlExpert.ViewModels.Lists;
 using GohMdlExpert.ViewModels.Trees.ResourceLoad;
-using GohMdlExpert.Views;
-using Microsoft.Win32;
 using WpfMvvm.Collections.ObjectModel;
+using WpfMvvm.Data;
 using WpfMvvm.ViewModels;
 using WpfMvvm.ViewModels.Controls.Menu;
 using WpfMvvm.Views.Dialogs;
 
-namespace GohMdlExpert.ViewModels
-{
+namespace GohMdlExpert.ViewModels {
     public class HumanskinSaveViewModel : BaseViewModel {
         public ResourceLoadTreeViewModel Tree { get; }
 
@@ -53,8 +42,8 @@ namespace GohMdlExpert.ViewModels
 
         public ObservableList<GohResourceFile> HumanskinFiles { get; }
 
-        public string? HumanskinName { 
-            get => HumanskinFiles.FirstOrDefault(f => f is MdlFile)?.Name; 
+        public string? HumanskinName {
+            get => HumanskinFiles.FirstOrDefault(f => f is MdlFile)?.Name;
             set {
                 if (value == null) {
                     OnPropertyChanged();
@@ -162,21 +151,25 @@ namespace GohMdlExpert.ViewModels
                 return;
             }
 
-            if (CurrentDirectoryItems.Any(i => i.Status == WpfMvvm.Data.Statuses.Error)) {
+            var savingItems = CurrentDirectoryItems.Where(i => i.Status != Statuses.None && !i.Ignore);
+
+            if (savingItems.Any(i => i.Status == Statuses.Error)) {
                 if (_userDialog.Ask("One or many exist textures have different meterial. \nIf save your textures, other human skin may be replaced self textures.\n" +
                     "Contine saving?", "Saving", QuestionType.OKCancel) != QuestionResult.OK) {
                     return;
                 }
             }
 
-            if (CurrentDirectoryItems.Any(i => i.Status == WpfMvvm.Data.Statuses.Warning)) {
+            if (savingItems.Any(i => i.Status == Statuses.Warning)) {
                 if (_userDialog.Ask("One or many files will be repleces. Contine saving?", "Saving", QuestionType.OKCancel) != QuestionResult.OK) {
                     return;
                 }
             }
 
             foreach (var file in HumanskinFiles) {
-                Mod.AddFile(file, CurrentDirectory);
+                if (savingItems.Any(i => i.ResourceElement == file)) {
+                    Mod.AddFile(file, CurrentDirectory);
+                }
             }
 
             CurrentDirectory.UpdateData();
@@ -245,22 +238,25 @@ namespace GohMdlExpert.ViewModels
 
                 foreach (var item in HumanskinFiles) {
                     var directoryFileItem = currentDirectoryFilesItems.FirstOrDefault(f => f.ResourceElement.Name == item.Name);
+                    var newItem = new ResourceSaveListItemViewModel(item) { Status = Statuses.Good };
+
+                    CurrentDirectoryItems.Add(newItem);
 
                     if (directoryFileItem != null) {
                         if (item is MtlFile mtlFile) {
                             var directoryMtlFile = (MtlFile)directoryFileItem.ResourceElement;
 
                             if (directoryMtlFile.Data.DiffusePath != mtlFile.Data.DiffusePath) {
-                                directoryFileItem.Status = WpfMvvm.Data.Statuses.Error;
-                                directoryFileItem.Message = "Texture file have different material. If save your textures, other humanskin may be replaced self textures.";
+                                newItem.Status = Statuses.Error;
+                                newItem.Message = "Texture file have different material. If save your textures, other humanskin may be replaced self textures.";
                             } else {
-                                directoryFileItem.Status = WpfMvvm.Data.Statuses.Warning;
+                                newItem.Status = Statuses.Warning;
                             }
                         } else {
-                            directoryFileItem.Status = WpfMvvm.Data.Statuses.Warning;
+                            newItem.Status = Statuses.Warning;
                         }
-                    } else {
-                        CurrentDirectoryItems.Add(new ResourceSaveListItemViewModel(item) { Status = WpfMvvm.Data.Statuses.Good });
+
+                        CurrentDirectoryItems.Remove(directoryFileItem);
                     }
                 }
             }
