@@ -63,7 +63,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
             Loader.WriteAllText(GetFullPath(), text);
         }
 
-#warning Слишком частый вызов при загрузке одной моделей или текстур к ней.
         public bool Exists() {
             return Path != null && Loader.Exists(GetFullPath());
         }

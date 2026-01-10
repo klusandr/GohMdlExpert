@@ -15,7 +15,6 @@ namespace GohMdlExpert.ViewModels.SettingsPages {
         private readonly GohOutputModProvider _modProvider;
         private readonly GohGameDirectory _gameDirectory;
         private OutputModResource? _mod;
-        private bool _loadOnStart;
         public readonly static string PageName = "OutputModSettings";
 
         public override string Name => PageName;

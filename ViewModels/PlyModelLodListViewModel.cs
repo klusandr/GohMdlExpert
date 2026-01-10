@@ -14,7 +14,6 @@ namespace GohMdlExpert.ViewModels {
     public class PlyModelLodListViewModel : BaseViewModel {
         private PlyModel3D? _plyModel;
         private ObservableCollection<PlyFile>? _items;
-        private int _selectedIndex;
         private PlyFile? _selectedItem;
         private readonly SelectResourceFileService _selectResourceFileService;
 

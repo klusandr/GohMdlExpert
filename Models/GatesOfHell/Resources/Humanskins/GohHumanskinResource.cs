@@ -15,10 +15,12 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
     public class GohHumanskinResource : IGohHumanskinResource {
         private readonly GohResourceProvider _resourceProvider;
         private readonly GohCacheProvider _cacheProvider;
+        private GohResourceDirectory? _source;
+        private GohResourceDirectory? _humanskins;
 
         public GohResourceDirectory Root { get; }
-        public GohResourceDirectory? Source { get; private set; }
-        public GohResourceDirectory? Humanskins { get; private set; }
+        public GohResourceDirectory Source { get => _source ?? throw GohResourceLoadException.IsNotLoad(); private set => _source = value; }
+        public GohResourceDirectory Humanskins { get => _humanskins ?? throw GohResourceLoadException.IsNotLoad(); private set => _humanskins = value; }
 
         public GohHumanskinResource(GohResourceDirectory humanskinsDirectory, GohResourceProvider resourceProvider, GohCacheProvider cacheProvider) {
             Root = humanskinsDirectory;
@@ -96,20 +98,18 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Humanskins {
             return mtlTextures;
         }
 
-
-
         /// <summary>
         /// Возвращает коллекцию LOD файлов для указанного <see cref="PlyFile"/> файла.
         /// </summary>
         /// <param name="plyFile">Файл, для которого будут возвращены LOD файлы.</param>
         /// <returns>Коллекция <see cref="PlyFile"/> файлов, который являются LOD для указанного файла.</returns>
         public IEnumerable<PlyFile> GetPlyLodFiles(PlyFile plyFile) {
-            var directory = _resourceProvider.GetDirectory(plyFile.GetDirectoryPath());
+            var directory = _resourceProvider.GetDirectory(plyFile.GetDirectoryPath()!);
 
-            var lodFiles = directory
+            var lodFiles = directory?
                 .FindResourceElements<PlyFile>(searchPattern: @$"{plyFile.Name[..^4]}_lod\d*\.", deepSearch: false);
 
-            return lodFiles;
+            return lodFiles ?? [];
         }
 
         public PlyFile? GetNullPlyFile(PlyFile plyFile) {
