@@ -125,27 +125,11 @@ namespace GohMdlExpert.ViewModels {
                 (s) => { 
                     var plyModel = (s as PlyModel3D)!;
                     plyModel.ModelChanged += PlyModelChanged;
-                    UpdateLodLevels();
                     return plyModel.Model; 
                 });
             _plyModelsChangeHandler = new CollectionChangeHandler(_plyModels)
                 .AddHandlerBuilder(NotifyCollectionChangedAction.Remove, PlyModelRemoveHandler)
                 .AddHandlerBuilder(NotifyCollectionChangedAction.Reset, PlyModelRemoveHandler);
-        }
-
-        private void UpdateLodLevels() {
-            var maxLodLevel = _plyModels.Max(p => p.LodPlyFiles.Count);
-
-            if (maxLodLevel + 1 == HumanskinLodLevels?.Count()) { return; }
-
-            var array = new int[maxLodLevel + 1];
-
-            for (int i = 0; i <= maxLodLevel; i++) {
-                array[i] = i;
-            }
-
-            HumanskinLodLevel = 0;
-            HumanskinLodLevels = array;
         }
 
         public void CreateMdlFile() {
@@ -376,6 +360,22 @@ namespace GohMdlExpert.ViewModels {
             }
         }
 
+        private void UpdateLodLevels() {
+            var maxLodLevel = _plyModels.Max(p => p.LodPlyFiles.Count);
+
+            if (maxLodLevel + 1 == HumanskinLodLevels?.Count()) { return; }
+
+            var array = new int[maxLodLevel + 1];
+
+            for (int i = 0; i <= maxLodLevel; i++) {
+                array[i] = i;
+            }
+
+            HumanskinLodLevel = 0;
+            HumanskinLodLevels = array;
+        }
+
+
         private void PlyModelChanged(object? s, EventArgs e) {
             var plyModel = (s as PlyModel3D)!;
 
@@ -384,6 +384,8 @@ namespace GohMdlExpert.ViewModels {
             if (index >= 0 && index < _models.Count) {
                 _models[_plyModels.IndexOf(plyModel)] = plyModel.Model;
             }
+
+            UpdateLodLevels();
         }
 
         private void PlyModelRemoveHandler(object? sender, NotifyCollectionChangedEventArgs e) {
