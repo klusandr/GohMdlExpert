@@ -1,18 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GohMdlExpert.Models.GatesOfHell.Caches;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Files;
+﻿using GohMdlExpert.Models.GatesOfHell.Caches;
 using GohMdlExpert.Models.GatesOfHell.Сaches;
 using Microsoft.Extensions.DependencyInjection;
-using WpfMvvm.DependencyInjection;
 
-namespace GohMdlExpert.Models.GatesOfHell
-{
+namespace GohMdlExpert.Models.GatesOfHell {
     public class GohServicesProvider : IServiceProvider {
         private static GohServicesProvider? s_instance;
         private readonly ServiceCollection _services;

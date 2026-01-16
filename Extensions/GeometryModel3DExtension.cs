@@ -1,7 +1,5 @@
-﻿using System.Linq;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 using System.Windows.Media.Media3D;
-using static GohMdlExpert.Models.GatesOfHell.Resources.Data.PlyModel;
 
 namespace GohMdlExpert.Extensions {
     public static class GeometryModel3DExtension {
@@ -27,8 +25,8 @@ namespace GohMdlExpert.Extensions {
             } else {
                 var material = model3D.Material;
 
-                model3D.Material = new MaterialGroup() { 
-                    Children = { material, s_selectMaterial } 
+                model3D.Material = new MaterialGroup() {
+                    Children = { material, s_selectMaterial }
                 };
             }
 

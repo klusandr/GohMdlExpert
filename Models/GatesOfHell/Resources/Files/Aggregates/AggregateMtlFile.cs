@@ -1,9 +1,6 @@
-﻿using GohMdlExpert.Models.GatesOfHell.Exceptions;
-using GohMdlExpert.Models.GatesOfHell.Resources.Data;
-using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
+﻿using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates
-{
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates {
     public class AggregateMtlFile : GohResourceFile {
         private readonly Func<MtlTextureCollection>? _loadData;
 

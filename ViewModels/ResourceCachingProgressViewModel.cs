@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using GohMdlExpert.Models.GatesOfHell.Resources;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+﻿using System.Windows.Input;
 using SeoMeterVerifier.ViewModels;
 using WpfMvvm.ViewModels;
 using Timer = System.Timers.Timer;

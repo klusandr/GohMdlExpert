@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GohMdlExpert.Models.GatesOfHell.Serialization;
+﻿using GohMdlExpert.Models.GatesOfHell.Serialization;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods {
     public class ModInfo {
@@ -14,7 +9,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods {
         public string Name { get; set; }
         public IEnumerable<string>? Tags { get; set; }
         public string? Description { get; set; }
-        public string? MinGameVersion { get; set; } 
+        public string? MinGameVersion { get; set; }
         public string? MaxGameVersion { get; set; }
         public IEnumerable<string>? Require { get; set; }
 
@@ -25,7 +20,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods {
         public static ModInfo Parse(string modInfoFileText) {
             var parameters = s_dataSerializer.Deserialize(modInfoFileText);
 
-            var modInfo = new ModInfo((string)ModelDataSerializer.FindParameter(parameters, "name")!.Value.Data!) { 
+            var modInfo = new ModInfo((string)ModelDataSerializer.FindParameter(parameters, "name")!.Value.Data!) {
                 Tags = ((string?)ModelDataSerializer.FindParameter(parameters, "tags")?.Data)?.Split('"', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries),
                 Description = (string?)ModelDataSerializer.FindParameter(parameters, "desc")?.Data,
                 MinGameVersion = (string?)ModelDataSerializer.FindParameter(parameters, "minGameVersion")?.Data,

@@ -1,13 +1,9 @@
 ﻿using System.Collections.ObjectModel;
-using System.Text.RegularExpressions;
 using System.Windows.Input;
 using GohMdlExpert.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Media3D;
-using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Services;
-using Microsoft.Win32;
-using Newtonsoft.Json.Linq;
 using WpfMvvm.ViewModels;
 
 namespace GohMdlExpert.ViewModels {

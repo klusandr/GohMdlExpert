@@ -1,12 +1,9 @@
 ﻿using System.IO;
-using System.Linq.Expressions;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
-using Microsoft.Extensions.DependencyInjection;
 using SystemPath = System.IO.Path;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
-{
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class GohResourceFile : GohResourceElement {
         private object? _data;
         private IFileLoader? _loader;

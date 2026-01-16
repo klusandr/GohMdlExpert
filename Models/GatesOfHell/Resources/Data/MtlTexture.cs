@@ -1,7 +1,4 @@
-﻿using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Security.Policy;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Windows.Media;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
@@ -26,7 +23,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Data {
         public static MtlTexture NullTexture { get; } = new MtlTexture(new NullMaterialFile() { Name = string.Empty });
 
         public string DiffusePath => _diffusePath!;
-        public string? BumpPath => _bumpPath; 
+        public string? BumpPath => _bumpPath;
         public string? SpecularPath => _specularPath;
 
         public MaterialFile Diffuse { get => _diffuse ?? throw TextureException.MaterialsNotInitialize(this); set => _diffuse = value; }

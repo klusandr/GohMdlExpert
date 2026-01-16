@@ -1,11 +1,9 @@
 ﻿using System.IO;
-using System.Linq;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources
-{
+namespace GohMdlExpert.Models.GatesOfHell.Resources {
     public class GohTextureProvider {
         private GohResourceDirectory? _textureDirectory;
 
@@ -55,7 +53,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             var materialFile = TextureDirectory.AlongPath(meterialFilePath)?
                 .FindResourceElements<MaterialFile>(searchPattern: $"(?i)^{materialFileName}\\.[^.]+$", deepSearch: false, first: true).FirstOrDefault();
 
-             if (materialFile != null) {
+            if (materialFile != null) {
                 materialFile.Path = meterialFilePath;
                 materialFile.RelativePathPoint = TextureDirectory.GetFullPath();
             }

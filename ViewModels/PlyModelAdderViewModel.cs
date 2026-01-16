@@ -5,12 +5,10 @@ using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
-using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 using WpfMvvm.ViewModels;
 using WpfMvvm.ViewModels.Commands;
 
-namespace GohMdlExpert.ViewModels
-{
+namespace GohMdlExpert.ViewModels {
     public class PlyModelAdderViewModel : BaseViewModel {
         private readonly HumanskinMdlOverviewViewModel _models3DView;
         private readonly DefaultTextureViewModel _defaultMaterialViewModel;
@@ -111,7 +109,7 @@ namespace GohMdlExpert.ViewModels
                     if (_defaultMaterialViewModel.IsUse && AggregateMtlFiles != null) {
                         SetDefaultTextures(AggregateMtlFiles, out updatedTextureNames);
                     }
-                    
+
                     AddedModel.SetLodIndex(0);
 
                     _models3DView.AddModel(AddedModel, AggregateMtlFiles);

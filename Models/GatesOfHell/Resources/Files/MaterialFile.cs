@@ -1,6 +1,5 @@
 ﻿using System.Windows.Media;
 using System.Windows.Media.Media3D;
-using GohMdlExpert.Models.GatesOfHell.Exceptions;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class MaterialFile : GohResourceFile {
@@ -19,7 +18,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         public override void LoadData() { }
 
         private static string GetNameWithExtension(string name) {
-            return (name.Contains(Extension) || name.Contains(Extension2))? name : name + Extension;
+            return (name.Contains(Extension) || name.Contains(Extension2)) ? name : name + Extension;
         }
 
         protected virtual DiffuseMaterial GetMaterial() {

@@ -1,5 +1,4 @@
-﻿using System.Windows.Media.Media3D;
-using GohMdlExpert.Models.GatesOfHell.Resources.Data;
+﻿using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Views;
 

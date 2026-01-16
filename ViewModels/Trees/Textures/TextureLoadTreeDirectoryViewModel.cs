@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using GohMdlExpert.Models.GatesOfHell.Resources;
+﻿using System.ComponentModel;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Properties;
 using WpfMvvm.ViewModels.Controls;

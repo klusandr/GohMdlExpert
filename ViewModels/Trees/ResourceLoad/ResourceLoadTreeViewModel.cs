@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GohMdlExpert.Models.GatesOfHell.Resources;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+﻿using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using WpfMvvm.ViewModels.Controls;
 
 namespace GohMdlExpert.ViewModels.Trees.ResourceLoad {
@@ -13,9 +6,9 @@ namespace GohMdlExpert.ViewModels.Trees.ResourceLoad {
         public GohResourceDirectory? Root { get; set; }
         public Func<GohResourceFile, bool>? Filter { get; set; }
 
-        public new ResourceLoadTreeItemViewModel? SelectedItem { 
-            get => (ResourceLoadTreeItemViewModel?)base.SelectedItem; 
-            set => base.SelectedItem = value; 
+        public new ResourceLoadTreeItemViewModel? SelectedItem {
+            get => (ResourceLoadTreeItemViewModel?)base.SelectedItem;
+            set => base.SelectedItem = value;
         }
 
         public ResourceLoadTreeViewModel() { }

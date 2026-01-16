@@ -2,8 +2,7 @@
 using System.Windows.Media.Media3D;
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 
-namespace GohMdlExpert.Models.GatesOfHell.Media3D
-{
+namespace GohMdlExpert.Models.GatesOfHell.Media3D {
     /// <summary>
     /// Предоставляет методы преобразования различных ресурсов GoH в объекты используемые в .Net.
     /// </summary>

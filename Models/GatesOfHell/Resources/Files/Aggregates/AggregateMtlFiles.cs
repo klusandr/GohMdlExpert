@@ -2,8 +2,7 @@
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates
-{
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates {
     public class AggregateMtlFiles : IEnumerable<AggregateMtlFile> {
         protected readonly Dictionary<string, AggregateMtlFile> _files;
 

@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GohMdlExpert.Models.GatesOfHell.Exceptions;
+﻿using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
@@ -14,15 +8,15 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
         private bool _isLoad = false;
         private GohResourceDirectory? _root;
 
-        public GohResourceDirectory Root { 
+        public GohResourceDirectory Root {
             get {
                 if (!_isLoad) {
                     LoadRootDictionary();
                 }
 
-                return _root!;    
+                return _root!;
             }
-            protected set => _root = value; 
+            protected set => _root = value;
         }
 
         public IEnumerable<IGohResourceLoader> ResourceLoaders => _resourceLoaders;

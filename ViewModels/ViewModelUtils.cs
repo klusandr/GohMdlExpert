@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Files;
@@ -31,7 +30,7 @@ namespace GohMdlExpert.ViewModels {
 
             if (path != null) {
                 Process.Start("explorer.exe", $"/select, {path}");
-            }            
+            }
         }
     }
 }

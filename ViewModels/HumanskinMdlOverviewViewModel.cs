@@ -121,11 +121,11 @@ namespace GohMdlExpert.ViewModels {
             _modelsOverviewTreeViewModel = new ModelsOverviewTreeViewModel(this, textureSelector, selectResourceFileService);
 
             PropertyChangeHandler.AddHandler(nameof(MdlFile), (_, _) => CommandManager.OnCommandCanExecuteChanged(nameof(SaveMdlCommand)));
-            _modelsCollectionBinder = new CollectionChangeBinder<Model3D>(_plyModels, _models, 
-                (s) => { 
+            _modelsCollectionBinder = new CollectionChangeBinder<Model3D>(_plyModels, _models,
+                (s) => {
                     var plyModel = (s as PlyModel3D)!;
                     plyModel.ModelChanged += PlyModelChanged;
-                    return plyModel.Model; 
+                    return plyModel.Model;
                 });
             _plyModelsChangeHandler = new CollectionChangeHandler(_plyModels)
                 .AddHandlerBuilder(NotifyCollectionChangedAction.Remove, PlyModelRemoveHandler)
@@ -163,7 +163,7 @@ namespace GohMdlExpert.ViewModels {
                 lodFiles.TryGetValue(plyFile, out var lodFile);
                 AddModel(new PlyModel3D(plyFile, lodPlyFiles: lodFile));
             }
-            
+
             UpdateTextures();
 
             if (missTexture.Count != 0) {
@@ -241,8 +241,8 @@ namespace GohMdlExpert.ViewModels {
             MdlModel? mdlModel = null;
 
             MdlFile.Data = new MdlModel(
-                mdlModel?.Parameters ?? GohResourceLoading.MdlTemplateParameters, 
-                PlyModels.Select(p => p.PlyFile), 
+                mdlModel?.Parameters ?? GohResourceLoading.MdlTemplateParameters,
+                PlyModels.Select(p => p.PlyFile),
                 new(PlyModels.Select(l => new KeyValuePair<PlyFile, PlyFile[]>(l.PlyFile, [.. l.LodPlyFiles])))
             );
 

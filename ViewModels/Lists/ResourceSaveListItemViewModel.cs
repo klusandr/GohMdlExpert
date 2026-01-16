@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+﻿using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using WpfMvvm.Data;
 
 namespace GohMdlExpert.ViewModels.Lists {
@@ -27,7 +22,7 @@ namespace GohMdlExpert.ViewModels.Lists {
             set {
                 _message = value;
                 ToolTip = value;
-                
+
                 OnPropertyChanged();
             }
         }

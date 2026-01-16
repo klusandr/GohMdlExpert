@@ -2,7 +2,6 @@
 using System.IO.Compression;
 using System.Text;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
-using GohMdlExpert.Models.GatesOfHell.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories;
 using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
 

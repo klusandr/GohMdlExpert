@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Text;
+﻿using System.Text;
 using SystemPath = System.IO.Path;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {

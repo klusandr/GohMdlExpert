@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Windows;
-using System.Windows.Navigation;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
@@ -14,7 +13,6 @@ using Microsoft.Extensions.DependencyInjection;
 using WpfMvvm;
 using WpfMvvm.DependencyInjection;
 using WpfMvvm.Exceptions;
-using WpfMvvm.Extensions;
 using WpfMvvm.ViewModels.Commands;
 using WpfMvvm.Views;
 using WpfMvvm.Views.Dialogs;
@@ -63,7 +61,7 @@ namespace GohMdlExpert {
             string fileName = DUMP_FILE;
 
             int fileNumber = 1;
-            while (File.Exists(fileName)) { 
+            while (File.Exists(fileName)) {
                 fileName = DUMP_FILE + fileNumber++;
             }
 
@@ -111,7 +109,7 @@ namespace GohMdlExpert {
                     if (gameDirectory.ResourcePath != null) {
                         ServiceProvider.GetRequiredService<GohResourceProvider>().LoadGameResource(gameDirectory.ResourcePath);
                         ServiceProvider.GetRequiredService<ApplicationViewModel>().FullLoadResources();
-                    }  
+                    }
                 };
 
                 if (settings.LoadGameResourceOnStart) {
@@ -124,7 +122,7 @@ namespace GohMdlExpert {
                     } else {
                         if (ServiceProvider.GetRequiredService<IUserDialogProvider>().Ask(
                             "The path to the game directory is not specified, open the game directory settings now?\n" +
-                            "You can disble automatic load of game resource in the settings.", "Game directory path", 
+                            "You can disble automatic load of game resource in the settings.", "Game directory path",
                             QuestionType.YesNo) == QuestionResult.Yes) {
                             ServiceProvider.GetRequiredService<SettingsWindowService>().OpenSettings(GamePathSettingsPageViewModel.PageName);
                         }

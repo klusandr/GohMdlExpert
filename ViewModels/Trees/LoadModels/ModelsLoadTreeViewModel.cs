@@ -33,7 +33,7 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
             DefaultTexture = defaultTexture;
             SkinResourceProvider = skinResourceProvider;
             TextureProvider = textureProvider;
-            
+
             ModelsAdder.ModelAdded += ModelAddedHandler;
             ModelsAdder.CancelModelAdded += CancelModelAddedHandler;
             SkinResourceProvider.ResourceUpdated += HumanskinResourceUpdatedHandler;
@@ -45,7 +45,7 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
             }
 
             if (HumanskinResource != null) {
-                App.Current.Synchronize(() => _items.Add(new ModelsLoadTreeDirectoryViewModel(HumanskinResource.Source, this)));  
+                App.Current.Synchronize(() => _items.Add(new ModelsLoadTreeDirectoryViewModel(HumanskinResource.Source, this)));
             }
         }
 

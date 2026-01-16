@@ -1,25 +1,17 @@
-﻿using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
-using GohMdlExpert.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
-using GohMdlExpert.Models.GatesOfHell.Media3D;
-using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
-using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
 using GohMdlExpert.Models.GatesOfHell.Serialization;
 using GohMdlExpert.Models.GatesOfHell.Сaches;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources
-{
+namespace GohMdlExpert.Models.GatesOfHell.Resources {
     /// <summary>
     /// Предоставляет методы для загрузки различных ресурсов.
     /// </summary>
@@ -137,7 +129,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
                     }
                 }
             }
-            
+
             if (mdlFilePath != null) {
                 var mdlResourceDirectory = resourceProvider.GetDirectory(mdlFilePath);
 
@@ -257,7 +249,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
             int upStep = (firstPathElements.Length - 1) - lastSharedPathElementIndex;
             int startIndexDownSteap = lastSharedPathElementIndex + 1;
 
-            string relativelyPath = string.Join(DIRECTORY_SEPARATE, [.. Enumerable.Repeat("..", upStep) ,..secondPathElements[(lastSharedPathElementIndex + 1)..]]);
+            string relativelyPath = string.Join(DIRECTORY_SEPARATE, [.. Enumerable.Repeat("..", upStep), .. secondPathElements[(lastSharedPathElementIndex + 1)..]]);
 
             return relativelyPath;
         }

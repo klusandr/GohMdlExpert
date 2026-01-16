@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files;
+﻿using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.ViewModels.Dialogs;
 using GohMdlExpert.Views.Dialogs;
 
@@ -20,7 +15,7 @@ namespace GohMdlExpert.Services {
         public T? SelectResourceFile<T>(Func<GohResourceFile, bool>? filter = null, string? initPath = null) where T : GohResourceFile {
             var fileType = typeof(T);
 
-            var childWindow = new ChildWindow() { 
+            var childWindow = new ChildWindow() {
                 Title = "Select resource",
                 Content = _dialogView,
             };

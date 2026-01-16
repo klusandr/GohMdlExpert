@@ -4,7 +4,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GohMdlExpert.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Media3D;
-using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Properties;
 using WpfMvvm.ViewModels.Commands;
 using WpfMvvm.ViewModels.Controls.Menu;

@@ -64,9 +64,9 @@ namespace GohMdlExpert.Properties {
 
         [UserScopedSetting()]
         [DefaultValue(null)]
-        public ModSettings[]? ModsSettings { 
-            get => GetValue<ModSettings[]>(); 
-            set => SetValue(value); 
+        public ModSettings[]? ModsSettings {
+            get => GetValue<ModSettings[]>();
+            set => SetValue(value);
         }
 
         [UserScopedSetting()]

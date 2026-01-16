@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Threading;
-using WpfMvvm.Exceptions;
-using WpfMvvm.Views.Dialogs;
+﻿using System.Windows.Threading;
 using WpfMvvm;
+using WpfMvvm.Exceptions;
 using WpfMvvm.Extensions;
+using WpfMvvm.Views.Dialogs;
 using WpfTestApp.View.Dialogs;
 
 namespace GohMdlExpert.Views.Dialogs {

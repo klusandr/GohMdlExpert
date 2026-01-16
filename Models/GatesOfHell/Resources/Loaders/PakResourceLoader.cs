@@ -3,7 +3,6 @@ using System.IO.Compression;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders.Directories;
-using Windows.Networking.Sockets;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
     public class PakResourceLoader : IGohResourceLoader {
@@ -34,7 +33,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Loaders {
                 GohResourceDirectory currentDirectory = rootDirectory;
 
                 foreach (var directoryName in pathDirectories) {
-                    var directory = new GohResourceDirectory(directoryName, currentDirectory.GetFullPath()); 
+                    var directory = new GohResourceDirectory(directoryName, currentDirectory.GetFullPath());
 
                     if (directoryName != pathDirectories.Last()) {
                         directory.Loader = new PakVirtualDirectoryLoader(this);

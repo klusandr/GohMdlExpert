@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GohMdlExpert.Models.GatesOfHell.Resources;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files;
-using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
+﻿using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 using WpfMvvm.Extensions;
 using WpfMvvm.ViewModels.Controls;
 
@@ -19,7 +12,7 @@ namespace GohMdlExpert.ViewModels.Trees.Humanskins {
         public HumanskinTreeViewModel(HumanskinMdlOverviewViewModel humanskinOverview, GohHumanskinResourceProvider humanskinProvider) {
             HumanskinOverview = humanskinOverview;
             _humanskinProvider = humanskinProvider;
-            
+
             humanskinProvider.ResourceUpdated += HumanskinProviderUpdatedHandler;
         }
 

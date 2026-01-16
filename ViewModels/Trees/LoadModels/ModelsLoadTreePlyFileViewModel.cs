@@ -42,7 +42,7 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
             }
 
             AggregateMtlFiles = new AggregateMtlFiles(PlyFile, Tree.HumanskinResource, Tree.TextureProvider);
-            
+
             var lodFiles = Tree.HumanskinResource.GetPlyLodFiles(PlyFile);
 
             LodPlyFiles = lodFiles;

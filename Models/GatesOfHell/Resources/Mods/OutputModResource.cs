@@ -1,14 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Shapes;
+﻿using System.IO;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
-using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
-using SystemPath = System.IO.Path;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods {
     public class OutputModResource : ModResource {

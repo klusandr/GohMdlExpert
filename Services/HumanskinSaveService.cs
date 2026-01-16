@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GohMdlExpert.Models.GatesOfHell.Resources.Data;
+﻿using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
-using GohMdlExpert.Properties;
 using GohMdlExpert.ViewModels;
 using GohMdlExpert.ViewModels.SettingsPages;
 using GohMdlExpert.Views;
-using GohMdlExpert.Views.Dialogs;
-using Microsoft.Extensions.DependencyInjection;
 using WpfMvvm.Views.Dialogs;
 
 namespace GohMdlExpert.Services {

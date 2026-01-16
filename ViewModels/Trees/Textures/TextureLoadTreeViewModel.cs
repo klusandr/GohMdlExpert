@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GohMdlExpert.Models.GatesOfHell;
-using GohMdlExpert.Models.GatesOfHell.Caches;
+﻿using GohMdlExpert.Models.GatesOfHell;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Сaches;
@@ -43,7 +37,7 @@ namespace GohMdlExpert.ViewModels.Trees.Textures {
             if (ResourceProvider.IsResourceLoaded) {
                 var cache = GohServicesProvider.Instance.GetRequiredService<GohCacheProvider>().TexturesCache;
 
-                
+
 
                 if (cache != null) {
                     var rootDirectory = GohResourceLoading.GetResourceStructure(cache.Values.First(), ResourceProvider);

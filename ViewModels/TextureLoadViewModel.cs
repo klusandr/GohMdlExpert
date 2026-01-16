@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using System.Windows.Media;
 using GohMdlExpert.Models.GatesOfHell.Resources;

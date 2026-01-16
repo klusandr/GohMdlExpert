@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GohMdlExpert.Models.GatesOfHell.Exceptions;
-
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
+﻿namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class GohResourceVirtualDirectory : GohResourceDirectory {
         private readonly GohResourceDirectory? _resourceDirectory;
         private readonly bool _loadFiles;

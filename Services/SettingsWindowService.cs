@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GohMdlExpert.ViewModels.SettingsPages;
-using GohMdlExpert.Views.SettingsPages;
+﻿using GohMdlExpert.Views.SettingsPages;
 
 namespace GohMdlExpert.Services {
-    public class SettingsWindowService { 
+    public class SettingsWindowService {
         private SettingsView? _settingsView;
         private ChildWindow? _childWindow;
 

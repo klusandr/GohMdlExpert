@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Mods;
 using GohMdlExpert.Properties;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using WpfMvvm.Collections.ObjectModel;
 
@@ -54,7 +48,7 @@ namespace GohMdlExpert.ViewModels.SettingsPages {
         public ICommand AddModCommand => CommandManager.GetCommand(AddMod);
         public ICommand RemoveModCommand => CommandManager.GetCommand(RemoveMod, canExecute: (_) => SelectedMod != null);
         public ICommand ApproveCommand => CommandManager.GetCommand(Approve);
-        
+
 
         public ModsSettingsPageViewModel(GohResourceProvider resourceProvider, GohModsResourceProvider modResourceProvider, ApplicationViewModel applicationViewModel) {
             _resourceProvider = resourceProvider;

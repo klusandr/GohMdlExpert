@@ -2,9 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using System.Windows.Media.TextFormatting;
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Services;
 using WpfMvvm.Collections.ObjectModel;
 using WpfMvvm.ViewModels;
@@ -211,7 +209,7 @@ namespace GohMdlExpert.ViewModels {
             return defaultTexture;
         }
 
-        private void SetError(Exception? exception, [CallerMemberName]string? propertyName = null) {
+        private void SetError(Exception? exception, [CallerMemberName] string? propertyName = null) {
             if (propertyName != null) {
 
                 _errors[propertyName] = exception;

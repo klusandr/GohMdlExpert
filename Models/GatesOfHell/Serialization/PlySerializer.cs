@@ -7,8 +7,7 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using static GohMdlExpert.Models.GatesOfHell.Resources.Data.PlyModel;
 using Mesh = GohMdlExpert.Models.GatesOfHell.Resources.Data.PlyModel.Mesh;
 
-namespace GohMdlExpert.Models.GatesOfHell.Serialization
-{
+namespace GohMdlExpert.Models.GatesOfHell.Serialization {
     public class PlySerializer {
         private enum MashFlags {
             TwoSided = 0x01,     // render this mesh without culling

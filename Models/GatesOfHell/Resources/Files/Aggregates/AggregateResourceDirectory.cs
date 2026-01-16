@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates {
+﻿namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates {
     public class AggregateResourceDirectory : GohResourceDirectory {
         private readonly IEnumerable<GohResourceDirectory> _directories;
 

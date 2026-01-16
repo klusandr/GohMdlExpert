@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using NaturalSort.Extension;
+﻿using NaturalSort.Extension;
 
 namespace GohMdlExpert.Models.GatesOfHell.Extensions {
     public static class CollectionsExtensions {
@@ -44,6 +38,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Extensions {
 
         public static IEnumerable<T> OrderByNature<T>(this IEnumerable<T> items, Func<T, string> selector) {
             return items.OrderBy(i => selector(i).ToLower(), s_naturalComparer);
-        } 
+        }
     }
 }

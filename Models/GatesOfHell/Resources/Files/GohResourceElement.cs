@@ -1,5 +1,4 @@
-﻿using Windows.Networking.Vpn;
-using SystemPath = System.IO.Path;
+﻿using SystemPath = System.IO.Path;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class GohResourceElement {
@@ -43,7 +42,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
             RelativePathPoint = relativePathPoint;
         }
 
-        public string GetFullPath(){
+        public string GetFullPath() {
             return _fullPath ??= SystemPath.Join(GetDirectoryPath(), Name);
         }
 

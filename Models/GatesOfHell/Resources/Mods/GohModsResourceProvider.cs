@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods
-{
+﻿namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods {
     public class GohModsResourceProvider {
         private readonly List<ModResource> _mods;
 
@@ -20,12 +13,12 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods
             _mods.Add(mod);
         }
 
-        public void RemoveMod(ModResource mod) { 
+        public void RemoveMod(ModResource mod) {
             _mods.Remove(mod);
         }
 
         public void ClearMods() {
-            _mods.Clear(); 
+            _mods.Clear();
         }
     }
 }

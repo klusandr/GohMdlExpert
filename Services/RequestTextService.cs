@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GohMdlExpert.Views.Dialogs;
+﻿using GohMdlExpert.Views.Dialogs;
 
 namespace GohMdlExpert.Services {
     public class RequestTextService {

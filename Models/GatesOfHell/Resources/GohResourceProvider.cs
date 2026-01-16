@@ -1,13 +1,10 @@
 ﻿using System.IO;
-using System.Reflection;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
 using GohMdlExpert.Models.GatesOfHell.Resources.Mods;
-using Windows.ApplicationModel.Resources;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources
-{
+namespace GohMdlExpert.Models.GatesOfHell.Resources {
     public class GohResourceProvider {
         private IGohResourceLoader? _baseResourceLoader;
         private IGohResourceLoader? _currentResourceLoader;

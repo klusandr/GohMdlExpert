@@ -1,13 +1,11 @@
-﻿using System.IO;
-using GohMdlExpert.Models.GatesOfHell.Exceptions;
+﻿using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Serialization;
 using DataList = System.Collections.Generic.IList<GohMdlExpert.Models.GatesOfHell.Serialization.ModelDataSerializer.ModelDataParameter>;
 using ModelDataParameter = GohMdlExpert.Models.GatesOfHell.Serialization.ModelDataSerializer.ModelDataParameter;
 using SystemPath = System.IO.Path;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
-{
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class MdlFile : GohResourceFile {
         public static MdlSerializer? s_serializer;
 
@@ -76,7 +74,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
             foreach (var plyFile in Data.PlyModels) {
                 var volumeViews = new List<ModelDataParameter>() {
                     new(MdlSerializer.MdlTypes.VolumeView.ToString()) {
-                        Data = SystemPath.Join(GohResourceLoading.GetRelativelyPath(GetDirectoryPath()!, plyFile.GetDirectoryPath()!), plyFile.Name) 
+                        Data = SystemPath.Join(GohResourceLoading.GetRelativelyPath(GetDirectoryPath()!, plyFile.GetDirectoryPath()!), plyFile.Name)
                     }
                 };
 

@@ -2,8 +2,7 @@
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 
-namespace GohMdlExpert.Models.GatesOfHell.Exceptions
-{
+namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
     public class PlyModelException : GohException {
         private const string MESSAGE = "Gates of hell ply model {0}error.";
         public PlyFile? PlyFile { get; }

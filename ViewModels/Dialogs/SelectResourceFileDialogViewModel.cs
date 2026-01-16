@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
-using GohMdlExpert.Models.GatesOfHell.Resources.Mods;
 using GohMdlExpert.ViewModels.Trees.ResourceLoad;
 using WpfMvvm.Data;
 using WpfMvvm.ViewModels;
@@ -52,7 +46,7 @@ namespace GohMdlExpert.ViewModels.Dialogs {
             _treePropertyChangeHandler = new PropertyChangeHandler(Tree)
                 .AddHandlerBuilder(nameof(Tree.SelectedItem), (_, _) => {
                     if (Tree.SelectedItem is ResourceLoadTreeFileViewModel fileItem) {
-                        SelectedResource = fileItem.ResourceFile; 
+                        SelectedResource = fileItem.ResourceFile;
                     }
                 });
 

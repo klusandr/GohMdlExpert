@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Mods;
 using Microsoft.Win32;
@@ -43,7 +37,7 @@ namespace GohMdlExpert.ViewModels.SettingsPages {
 
         public ICommand ApproveCommand => CommandManager.GetCommand(Approve);
 
-        public OutputModSettingsPageViewModel(GohResourceProvider resourceProvider,GohOutputModProvider modProvider, GohGameDirectory gameDirectory) {
+        public OutputModSettingsPageViewModel(GohResourceProvider resourceProvider, GohOutputModProvider modProvider, GohGameDirectory gameDirectory) {
             _resourceProvider = resourceProvider;
             _modProvider = modProvider;
             _gameDirectory = gameDirectory;
@@ -75,9 +69,9 @@ namespace GohMdlExpert.ViewModels.SettingsPages {
             } else {
                 folderDialog.InitialDirectory = _mod.Path;
             }
-            
+
             if (folderDialog.ShowDialog() ?? false) {
-                 _mod = new OutputModResource(folderDialog.FolderName);
+                _mod = new OutputModResource(folderDialog.FolderName);
             }
 
             OnPropertyChanged("");
