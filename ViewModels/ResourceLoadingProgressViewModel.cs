@@ -9,7 +9,7 @@ namespace GohMdlExpert.ViewModels {
     public class ResourceLoadingProgressViewModel : BaseViewModel {
         private const int UPDATE_INTERVAL = 100;
 
-        private readonly string[] _stepsText = ["Load humanskins", "Load textures"];
+        private readonly string[] _stepsText = ["Load humanskin", "Load textures"];
         private readonly GohResourceDirectory _textureDirectoty;
         private readonly IEnumerable<GohResourceDirectory> _progressDirectories;
         private readonly CancellationTokenSource _cancellationTokenSource;

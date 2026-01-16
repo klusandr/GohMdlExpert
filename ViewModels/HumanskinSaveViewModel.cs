@@ -154,14 +154,14 @@ namespace GohMdlExpert.ViewModels {
             var savingItems = CurrentDirectoryItems.Where(i => i.Status != Statuses.None && !i.Ignore);
 
             if (savingItems.Any(i => i.Status == Statuses.Error)) {
-                if (_userDialog.Ask("One or many exist textures have different meterial. \nIf save your textures, other human skin may be replaced self textures.\n" +
-                    "Contine saving?", "Saving", QuestionType.OKCancel) != QuestionResult.OK) {
+                if (_userDialog.Ask("One or many exist textures have different material. \nIf save your textures, other human skin may be replaced self textures.\n" +
+                    "Continue saving?", "Saving", QuestionType.OKCancel) != QuestionResult.OK) {
                     return;
                 }
             }
 
             if (savingItems.Any(i => i.Status == Statuses.Warning)) {
-                if (_userDialog.Ask("One or many files will be repleces. Contine saving?", "Saving", QuestionType.OKCancel) != QuestionResult.OK) {
+                if (_userDialog.Ask("One or many files will be replaces. Continue saving?", "Saving", QuestionType.OKCancel) != QuestionResult.OK) {
                     return;
                 }
             }

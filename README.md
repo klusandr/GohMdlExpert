@@ -1,6 +1,6 @@
 ## -- EN --
 
-### Beta version of the program for creating skins of human units (humanksin) in the game "Call to arms - Gates of Hell"
+### Beta version of the program for creating skins of human units (humanskin) in the game "Call to arms - Gates of Hell"
 
 ### Installation:
   Unzip the archive wherever you want and run it.
@@ -8,7 +8,7 @@
 ### Versions:
    (beta)
    - 0.0.1.0 release
-   - 0.0.2.0 add finnish
+   - 0.0.2.0 add Finnish
    - 0.0.2.1 hotfix default LOD null, load soviet resource, load unpack resource
    - 0.0.3.0 add united kingdom, any fix
    
@@ -27,7 +27,7 @@
   If you expand the model file (mdl), you can see what elements (ply) it consists of. By right-clicking on an element, you can remove it from the skin, hide it, or set focus on it. In the lower window of the right column, with a selected skin element, you can configure its LOD files. If you expand the element, we will see the meshes, which are the same textures, that the skin elements use. The current texture material is displayed in square brackets after the mesh name.
   
   If you select a texture file (mtl), the available materials for the selected texture are at the bottom of the right column. If you expand the texture file, the skin elements that use the current texture will be displayed.
-  To add a new texture, click the "Add" button under the texture list overview window, and in the window that appears, in the "Textures" tab, select a texture suitable for all skin elements, and click "Ok". To edit an existing texture, double-click on it. To select a texture that will be used when saving, simply select it in the list. Carefully check that all elements adequately display the selected texture.
+  To add a new texture, click the "Add" button under the texture list overview window, and in the window that appears, in the "Textures" tab, select a texture suitable for all skin elements, and click "OK". To edit an existing texture, double-click on it. To select a texture that will be used when saving, simply select it in the list. Carefully check that all elements adequately display the selected texture.
   
   To save the skin, click the "Save humanskin" button at the bottom of the right column, and select the location where you want to save it.
   
@@ -58,14 +58,14 @@
 
 ## -- RU --
 
-### Бета версия программы для создания скинов человеческих юнитов (humanksin) в игре "Call to arms - Gates of Hell"
+### Бета версия программы для создания скинов человеческих юнитов (humanskin) в игре "Call to arms - Gates of Hell"
 
 ### Версии:
    (beta)
    - 0.0.1.0 релиз
-   - 0.0.2.0 долбавлены фины
+   - 0.0.2.0 добавлены фины
    - 0.0.2.1 hotfix стандартного LOD null, загрузки советских ресурсов, загрузки распакованных ресурсов
-   - 0.0.3.0 добавлено соедиенённое королевство, другие исправления
+   - 0.0.3.0 добавлено соединённое королевство, другие исправления
 
 ### Установка:
 
@@ -91,7 +91,7 @@
 
   Для сохранения скина, нажимаем кнопку "Save humanskin" внизу правой колонки, и выбираем расположение, куда хотим его сохранить.
   
-  :exclamation:Важно:exclamation: Корректный путь для сохранения скина должен быть следущим "ваш_мод\resource\entity\humanskin\[имя_фракции]\ваша_папка\humanskin.mdl", и никакой иначе. Во всяком случае в данной версии программы.
+  :exclamation:Важно:exclamation: Корректный путь для сохранения скина должен быть следующим "ваш_мод\resource\entity\humanskin\[имя_фракции]\ваша_папка\humanskin.mdl", и никакой иначе. Во всяком случае в данной версии программы.
     
   Для открытия уже созданных скинов, в выбираем пункт "File" в верхнем меню программы, после нажимаем "Open file". Текущая версия программы не может открывать файлы скинов из оригинальной игры без их распаковки.
   

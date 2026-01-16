@@ -25,12 +25,12 @@ namespace GohMdlExpert.Services {
 
         public void Save(MdlFile mdlFile, Dictionary<string, MtlTexture> mtlTextures) {
             if (_window != null) {
-                throw new InvalidOperationException("Humansin save dialog is open already.");
+                throw new InvalidOperationException("Humanskin save dialog is open already.");
             }
 
             if (!_viewModel.ModIsLoaded!) {
                 if (_userDialog.Ask(
-                        "For to save humanskin need to specifed output mod, open the output mod settings now?\n",
+                        "For to save humanskin need to specified output mod, open the output mod settings now?\n",
                         "Output mod",
                         QuestionType.YesNo) == QuestionResult.Yes) {
                     _settingsWindow.OpenSettings(OutputModSettingsPageViewModel.PageName);

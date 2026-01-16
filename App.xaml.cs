@@ -122,7 +122,7 @@ namespace GohMdlExpert {
                     } else {
                         if (ServiceProvider.GetRequiredService<IUserDialogProvider>().Ask(
                             "The path to the game directory is not specified, open the game directory settings now?\n" +
-                            "You can disble automatic load of game resource in the settings.", "Game directory path",
+                            "You can disable automatic load of game resource in the settings.", "Game directory path",
                             QuestionType.YesNo) == QuestionResult.Yes) {
                             ServiceProvider.GetRequiredService<SettingsWindowService>().OpenSettings(GamePathSettingsPageViewModel.PageName);
                         }

@@ -193,7 +193,7 @@ namespace GohMdlExpert.ViewModels {
                     if (nullLod != null) {
                         modelPly.LodPlyFiles.Add(nullLod);
                     } else {
-                        _userDialog.ShowWarning(string.Format("Plgramm don't find null LOD moder for \"{0}\".", modelPly.PlyFile.GetFullPath()), "LOD models");
+                        _userDialog.ShowWarning(string.Format("Program don't find null LOD models for \"{0}\".", modelPly.PlyFile.GetFullPath()), "LOD models");
                     }
                 } else if (result == QuestionResult.Cancel) {
                     throw new OperationCanceledException();
