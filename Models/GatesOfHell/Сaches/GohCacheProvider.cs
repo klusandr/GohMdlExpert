@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.CompilerServices;
 using GohMdlExpert.Models.GatesOfHell.Caches;
 
 namespace GohMdlExpert.Models.GatesOfHell.Сaches {
@@ -24,7 +19,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Сaches {
             _cache.Clear();
         }
 
-        private Dictionary<string, T>? GetCache<T>([CallerMemberName]string? key = null) {
+        private Dictionary<string, T>? GetCache<T>([CallerMemberName] string? key = null) {
             key = key!.Replace("Cache", null);
 
             if (!_cache.TryGetValue(key, out var cache)) {

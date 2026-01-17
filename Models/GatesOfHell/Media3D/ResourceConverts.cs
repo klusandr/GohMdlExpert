@@ -2,8 +2,7 @@
 using System.Windows.Media.Media3D;
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 
-namespace GohMdlExpert.Models.GatesOfHell.Media3D
-{
+namespace GohMdlExpert.Models.GatesOfHell.Media3D {
     /// <summary>
     /// Предоставляет методы преобразования различных ресурсов GoH в объекты используемые в .Net.
     /// </summary>
@@ -34,8 +33,11 @@ namespace GohMdlExpert.Models.GatesOfHell.Media3D
             meshesEnumerator.MoveNext();
 
             foreach (var meshData in plyModel.Meshes) {
-                var geometry = new GeometryModel3D(meshesEnumerator.Current, GetMeshMaterialOrRandomColor(meshData.TextureName, meshesTextures));
+                var material = GetMeshMaterialOrRandomColor(meshData.TextureName, meshesTextures);
+                var geometry = new GeometryModel3D(meshesEnumerator.Current, material) { BackMaterial = material };
+
                 model.Children.Add(geometry);
+
                 meshesEnumerator.MoveNext();
             }
 

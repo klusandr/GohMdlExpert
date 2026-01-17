@@ -1,0 +1,27 @@
+﻿using System.IO;
+using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
+using SystemPath = System.IO.Path;
+
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Mods {
+    public class ModResource {
+        public string Path { get; }
+        public bool IsEnable { get; set; } = true;
+        public ModInfo? ModInfo { get; private set; }
+        public ModResourceLoader ResourceLoader { get; private set; }
+
+        public ModResource(string path) {
+            Path = path;
+            ResourceLoader = new ModResourceLoader(path);
+        }
+
+        public void Load() {
+            string modInfoPath = SystemPath.Join(Path, ModInfo.FileName);
+
+            if (File.Exists(modInfoPath)) {
+                try {
+                    ModInfo = ModInfo.Parse(File.ReadAllText(modInfoPath));
+                } catch (Exception) { }
+            }
+        }
+    }
+}

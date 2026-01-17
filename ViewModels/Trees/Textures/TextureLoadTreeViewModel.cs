@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GohMdlExpert.Models.GatesOfHell;
-using GohMdlExpert.Models.GatesOfHell.Caches;
+﻿using GohMdlExpert.Models.GatesOfHell;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Сaches;
@@ -43,9 +37,24 @@ namespace GohMdlExpert.ViewModels.Trees.Textures {
             if (ResourceProvider.IsResourceLoaded) {
                 var cache = GohServicesProvider.Instance.GetRequiredService<GohCacheProvider>().TexturesCache;
 
+
+
                 if (cache != null) {
-                    foreach (var item in cache) {
-                        AddItem(new TextureLoadTreeDirectoryViewModel(item.Key, item.Value, this));
+                    var rootDirectory = GohResourceLoading.GetResourceStructure(cache.Values.First(), ResourceProvider);
+
+                    if (GohResourceLoading.TryGetNextCompletedDirectory(rootDirectory, out var nextDirectory, out _)) {
+                        rootDirectory = (GohResourceVirtualDirectory)nextDirectory;
+                    }
+
+                    foreach (var directory in rootDirectory.GetDirectories().ToArray()) {
+                        var mtlFiles = directory.FindResourceElements<MtlFile>(deepSearch: true);
+
+                        TextureProvider.SetTexturesMaterialsFullPath(mtlFiles.Select(mF => mF.Data));
+
+                        directory.Items.Clear();
+                        directory.Items.AddRange(mtlFiles.OrderBy(f => f.Name));
+
+                        AddItem(new TextureLoadTreeDirectoryViewModel(directory, this));
                     }
                 }
             }

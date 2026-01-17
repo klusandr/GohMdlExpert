@@ -1,10 +1,15 @@
-﻿using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Windows.Media;
+using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Data {
     public class MtlTexture {
+        private MaterialFile? _diffuse;
+        private readonly string? _diffusePath;
+        private readonly string? _specularPath;
+        private readonly string? _bumpPath;
+
         private class EqualsCompare : IEqualityComparer<MtlTexture> {
             public bool Equals(MtlTexture? x, MtlTexture? y) {
                 return x?.Equals(y) ?? y == null;
@@ -15,18 +20,30 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Data {
             }
         }
 
-        public MaterialFile Diffuse { get; set; }
+        public static MtlTexture NullTexture { get; } = new MtlTexture(new NullMaterialFile() { Name = string.Empty });
+
+        public string DiffusePath => _diffusePath!;
+        public string? BumpPath => _bumpPath;
+        public string? SpecularPath => _specularPath;
+
+        public MaterialFile Diffuse { get => _diffuse ?? throw TextureException.MaterialsNotInitialize(this); set => _diffuse = value; }
         public MaterialFile? Bump { get; set; }
         public MaterialFile? Specular { get; set; }
         public Color? Color { get; set; }
+
+        public bool IsMaterialsInitialize => _diffuse != null;
 
         public MtlTexture(MaterialFile diffuse) {
             Diffuse = diffuse;
         }
 
-        public static IEqualityComparer<MtlTexture> GetEqualityComparer() => new EqualsCompare();
+        public MtlTexture(string DiffusePath, string? BumpPath, string? SpecularPath) {
+            _diffusePath = PathUtils.SetDefaultPathSepatate(DiffusePath);
+            _bumpPath = BumpPath != null ? PathUtils.SetDefaultPathSepatate(BumpPath) : null;
+            _specularPath = SpecularPath != null ? PathUtils.SetDefaultPathSepatate(SpecularPath) : null;
+        }
 
-        public static MtlTexture NullTexture { get; } = new MtlTexture(new NullMaterialFile() { Name = string.Empty });
+        public static IEqualityComparer<MtlTexture> GetEqualityComparer() => new EqualsCompare();
 
         public override bool Equals(object? obj) {
             if (obj == null) {
@@ -38,20 +55,18 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Data {
             }
 
             if (obj is MtlTexture mtl) {
-                return Diffuse.Equals(mtl.Diffuse)
-                    && (Bump?.Equals(mtl.Bump) ?? mtl.Bump == null)
-                    && (Specular?.Equals(mtl.Specular) ?? mtl.Specular == null)
-                    && (Color?.Equals(mtl.Color) ?? mtl.Color == null);
+                return GetHashCode() == mtl.GetHashCode();
             }
 
             return false;
         }
 
         public override int GetHashCode() {
-            return Diffuse.GetHashCode()
-                + (Bump?.GetHashCode() ?? 0)
-                + (Specular?.GetHashCode() ?? 0)
-                + (Color?.GetHashCode() ?? 0);
+            if (IsMaterialsInitialize) {
+                return HashCode.Combine(Diffuse.GetHashCode(), Bump?.GetHashCode(), Specular?.GetHashCode(), Color?.GetHashCode());
+            } else {
+                return HashCode.Combine(DiffusePath.GetHashCode(), BumpPath?.GetHashCode(), SpecularPath?.GetHashCode(), Color?.GetHashCode());
+            }
         }
 
         public MtlTexture Clone() {

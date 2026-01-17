@@ -2,15 +2,16 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:wpfmvvm="clr-namespace:WpfMvvm;assembly=WpfMvvm" 
-             xmlns:local="clr-namespace:GohMdlExpert"
-             StartupUri="MainWindow.xaml">
+             xmlns:local="clr-namespace:GohMdlExpert" xmlns:converters="clr-namespace:WpfMvvm.Converters;assembly=WpfMvvm"
+                        StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Styles/MainStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <converters:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <converters:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverterRevers" Reverse="True"/>
         </ResourceDictionary>
     </Application.Resources>
 </wpfmvvm:WpfApplication>

@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Text;
+﻿using System.Text;
 using SystemPath = System.IO.Path;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
@@ -13,14 +12,13 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
         }
 
         public override void SaveData() {
-            using var stream = new StreamWriter(GetFullPath());
             var buildString = new StringBuilder();
 
             buildString.AppendLine("{game_entity")
                 .Append("\t{extension \"").Append(SystemPath.GetFileNameWithoutExtension(Name)).Append(".mdl").AppendLine("\"}{RimLight}")
             .Append('}');
 
-            stream.WriteLine(buildString.ToString());
+            WriteAllText(buildString.ToString());
         }
     }
 }

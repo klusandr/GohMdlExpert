@@ -1,20 +1,16 @@
 ﻿using System.IO;
-using System.Linq.Expressions;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
-using Microsoft.Extensions.DependencyInjection;
 using SystemPath = System.IO.Path;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
-{
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class GohResourceFile : GohResourceElement {
         private object? _data;
         private IFileLoader? _loader;
 
         public IFileLoader Loader {
-            get => _loader ?? GohServicesProvider.Instance.GetRequiredService<IFileLoader>();
+            get => _loader ?? throw GohResourceFileException.LoaderIsNull(this);
             set {
-                if (_loader != null) throw new InvalidOperationException($"Cannot reinitialize property {nameof(Loader)}.");
                 _loader = value;
             }
         }
@@ -32,6 +28,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
             set => _data = value;
         }
 
+        public bool DataIsLoaded => _data != null;
+
         public GohResourceFile(string name, string? path = null, string? relativePathPoint = null) : base(name, path, relativePathPoint) {
             if (GetExtension() != null && SystemPath.GetExtension(name) != GetExtension()) {
                 throw GohResourceFileException.InvalidExtension(this, GetExtension()!);
@@ -46,17 +44,24 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
             }
         }
 
-        public string GetAllText() {
-            return Loader.GetAllText(GetFullPath());
-        }
-
         public Stream GetStream() {
             return Loader.GetStream(GetFullPath());
         }
 
-#warning Слишком частый вызов при загрузке одной моделей или текстур к ней.
+        public string ReadAllText() {
+            return Loader.GetAllText(GetFullPath());
+        }
+
+        public void WriteAllText(string text) {
+            if (Loader.IsReadOnly) {
+                throw GohResourceSaveException.SaveReadOnlyFile(this);
+            }
+
+            Loader.WriteAllText(GetFullPath(), text);
+        }
+
         public bool Exists() {
-            return Path != null && Loader.Exists(GetFullPath()); ;
+            return Path != null && Loader.Exists(GetFullPath());
         }
 
         public virtual string? GetExtension() {
@@ -64,7 +69,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
         }
 
         public virtual void LoadData() {
-            Data = GetAllText();
+            Data = ReadAllText();
         }
 
         public virtual void UnloadData() {

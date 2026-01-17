@@ -1,35 +1,26 @@
-﻿using GohMdlExpert.Models.GatesOfHell.Exceptions;
-using GohMdlExpert.Models.GatesOfHell.Resources.Data;
-using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
+﻿using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates
-{
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates {
     public class AggregateMtlFile : GohResourceFile {
-        private readonly PlyFile _plyFile;
-        private readonly GohFactionHumanskinResource? _humanskinResource;
-
-        public PlyFile PlyFile => _plyFile;
+        private readonly Func<MtlTextureCollection>? _loadData;
 
         public new MtlTextureCollection Data { get => (MtlTextureCollection)base.Data; set => base.Data = value; }
 
-        public AggregateMtlFile(string name, PlyFile plyFile, GohFactionHumanskinResource HumanskinResource) : base(name) {
-            _plyFile = plyFile;
-            _humanskinResource = HumanskinResource;
+        public AggregateMtlFile(string name, MtlTextureCollection mtlTextures) : base(name) {
+            Data = mtlTextures;
         }
 
-        public AggregateMtlFile(MtlFile mtlFile, PlyFile plyFile) : base(mtlFile.Name) {
-            _plyFile = plyFile;
-            _humanskinResource = null;
-            Data = new MtlTextureCollection() { mtlFile.Data };
+        public AggregateMtlFile(string name, Func<MtlTextureCollection> loadData) : base(name) {
+            _loadData = loadData;
+        }
+
+        public AggregateMtlFile(MtlFile mtlFile) : base(mtlFile.Name) {
+            Data = [mtlFile.Data];
         }
 
         public override void LoadData() {
-            try {
-                if (_humanskinResource != null) {
-                    Data = _humanskinResource.GetPlyMeshMtlTextures(PlyFile, Name);
-                }
-            } catch (InvalidOperationException) {
-                throw new GohResourceFileException($"Error load aggregate .mtl file for {_plyFile.Name} file. Ply file don't contain mesh with the same name.", Name);
+            if (_loadData != null) {
+                Data = _loadData();
             }
         }
     }

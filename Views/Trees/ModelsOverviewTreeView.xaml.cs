@@ -26,14 +26,22 @@ namespace GohMdlExpert.Views.Trees {
                 case ModelsOverviewTreePlyViewModel:
                     _lodList.Visibility = Visibility.Visible;
                     _materialList.Visibility = Visibility.Collapsed;
+                    _humanskinLod.Visibility = Visibility.Collapsed;
                     break;
                 case ModelsOverviewTreeMtlViewModel:
                     _materialList.Visibility = Visibility.Visible;
                     _lodList.Visibility = Visibility.Collapsed;
+                    _humanskinLod.Visibility = Visibility.Collapsed;
+                    break;
+                case ModelsOverviewTreeMdlViewModel:
+                    _materialList.Visibility = Visibility.Collapsed;
+                    _lodList.Visibility = Visibility.Collapsed;
+                    _humanskinLod.Visibility = Visibility.Visible;
                     break;
                 default:
                     _materialList.Visibility = Visibility.Collapsed;
                     _lodList.Visibility = Visibility.Collapsed;
+                    _humanskinLod.Visibility = Visibility.Collapsed;
                     break;
             }
         }

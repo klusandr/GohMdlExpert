@@ -14,8 +14,11 @@
         <TabItem Header="Game directory" Padding="5">
             <local:GamePathSettingsPageView/>
         </TabItem>
-        <TabItem Header="Coming soon" Padding="5">
-            
+        <TabItem Header="Mod manager" Padding="5">
+            <local:ModsSettingsPageView/>
+        </TabItem>
+        <TabItem Header="Output mod" Padding="5">
+            <local:OutputModSettingsPageView/>
         </TabItem>
     </TabControl>
 </bv:BaseView>

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -31,7 +32,7 @@ namespace GohMdlExpert.ViewModels.Trees.OverviewModels {
 
             PropertyChangeHandler.AddHandler(nameof(IsSelected), SelectedChangeHandler);
             _models3DView.PlyModels.CollectionChanged += PlyModelsChanged;
-            _models3DView.UpdatedTextures += Models3DViewModelUpdatedTextures;
+            WeakEventManager<HumanskinMdlOverviewViewModel, EventArgs>.AddHandler(_models3DView, nameof(HumanskinMdlOverviewViewModel.UpdatedTextures), Models3DViewModelUpdatedTextures);
         }
 
         public void LoadData() {

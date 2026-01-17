@@ -2,8 +2,7 @@
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates
-{
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates {
     public class AggregateMtlFiles : IEnumerable<AggregateMtlFile> {
         protected readonly Dictionary<string, AggregateMtlFile> _files;
 
@@ -18,17 +17,19 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates
             }
         }
 
-        public AggregateMtlFiles(PlyFile plyFile, GohFactionHumanskinResource humanskinResource, GohTextureProvider? textureProvider = null) {
+        public AggregateMtlFiles(PlyFile plyFile, IGohHumanskinResource humanskinResource, GohTextureProvider textureProvider) {
             _files = [];
             PlyFile = plyFile;
 
             foreach (var mesh in plyFile.Data.Meshes) {
-                _files.Add(mesh.TextureName, new AggregateMtlFile(mesh.TextureName, plyFile, humanskinResource));
-            }
+                if (!_files.ContainsKey(mesh.TextureName)) {
+                    var aggregateMtlTexture = new AggregateMtlFile(mesh.TextureName, () => humanskinResource.GetPlyMeshMtlTextures(plyFile, mesh.TextureName));
 
-            if (textureProvider != null) {
-                foreach (var mtlTexture in _files.Values.SelectMany(a => a.Data)) {
-                    textureProvider.SetTextureMaterialsFullPath(mtlTexture);
+                    foreach (var mtlTexture in aggregateMtlTexture.Data) {
+                        textureProvider.TextureMaterialsInitialize(mtlTexture);
+                    }
+
+                    _files.Add(mesh.TextureName, aggregateMtlTexture);
                 }
             }
         }

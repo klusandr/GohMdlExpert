@@ -1,19 +1,15 @@
 ﻿using System.Windows;
 using System.Windows.Media.Media3D;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Data
-{
-    public class PlyModel
-    {
-        public struct Mesh
-        {
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Data {
+    public class PlyModel {
+        public struct Mesh {
             public int FirstFace { get; set; }
             public int FaceCount { get; set; }
             public string TextureName { get; set; }
         }
 
-        public readonly struct Face
-        {
+        public readonly struct Face {
             public int[] PointIndices { get; } = new int[3];
 
             public Face() { }
@@ -29,8 +25,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Data
 
         public PlyModel(IEnumerable<Point3D> points, IEnumerable<Face> indicesList,
             IEnumerable<Vector3D> normalizes, IEnumerable<Point> uvPoints,
-            IEnumerable<Mesh> meshes, Point3D? minPoint = null, Point3D? maxPoint = null)
-        {
+            IEnumerable<Mesh> meshes, Point3D? minPoint = null, Point3D? maxPoint = null) {
             Points = points.ToArray();
             Faces = indicesList.ToArray();
             Normalizes = normalizes.ToArray();

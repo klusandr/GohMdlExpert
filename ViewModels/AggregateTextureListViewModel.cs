@@ -1,17 +1,12 @@
-﻿using System.Collections.Specialized;
-using System.Windows.Controls.Primitives;
-using System.Windows.Input;
-using System.Windows.Media.TextFormatting;
+﻿using System.Windows.Input;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
 using GohMdlExpert.Services;
 using WpfMvvm.Collections.ObjectModel;
-using WpfMvvm.Data;
 using WpfMvvm.ViewModels;
 
-namespace GohMdlExpert.ViewModels
-{
+namespace GohMdlExpert.ViewModels {
     public class AggregateTextureListViewModel : BaseViewModel {
         private readonly TextureLoadService _materialSelector;
         private readonly ObservableTargetList<MtlTexture> _items;
@@ -52,7 +47,7 @@ namespace GohMdlExpert.ViewModels
         }
 
         public void AddTexture() {
-            var texture = _materialSelector.GetMaterialDialog();
+            var texture = _materialSelector.ShowDialog();
 
             if (texture != null) {
                 if (_items.Any(t => t.Equals(texture))) {
@@ -73,14 +68,14 @@ namespace GohMdlExpert.ViewModels
                     _materialSelector.SelectedTextureChange += TextureSelectorChangeHandler;
                     _materialSelector.SelectedTexture = texture.Clone();
 
-                    texture = _materialSelector.GetMaterialDialog();
+                    texture = _materialSelector.ShowDialog();
 
                     if (texture != null) {
                         SetTexture(texture, SelectedTextureIndex);
                     }
-                } catch {
-_materialSelector.SelectedTextureChange -= TextureSelectorChangeHandler;
-                }                
+                } finally {
+                    _materialSelector.SelectedTextureChange -= TextureSelectorChangeHandler;
+                }
             }
         }
 

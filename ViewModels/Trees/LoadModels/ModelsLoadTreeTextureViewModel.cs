@@ -4,8 +4,7 @@ using GohMdlExpert.Extensions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Properties;
 
-namespace GohMdlExpert.ViewModels.Trees.LoadModels
-{
+namespace GohMdlExpert.ViewModels.Trees.LoadModels {
     public class ModelsLoadTreeTextureViewModel : ModelsLoadTreeItemViewModel {
         private static readonly ImageSource s_icon = new BitmapImage().FromByteArray(Resources.TextureIcon);
 

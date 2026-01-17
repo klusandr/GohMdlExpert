@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using GohMdlExpert.Properties;
+﻿using System.Windows.Input;
 using WpfMvvm.ViewModels.Controls;
 
 namespace GohMdlExpert.ViewModels.Trees.Textures {

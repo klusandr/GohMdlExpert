@@ -3,6 +3,7 @@ using System.Windows.Input;
 using GohMdlExpert.Models.GatesOfHell.Resources;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 using WpfMvvm.Collections;
+using WpfMvvm.Extensions;
 using WpfMvvm.ViewModels.Controls;
 
 namespace GohMdlExpert.ViewModels.Trees.LoadModels {
@@ -14,7 +15,7 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
         public GohHumanskinResourceProvider SkinResourceProvider { get; }
         public GohTextureProvider TextureProvider { get; }
 
-        public GohFactionHumanskinResource? HumanskinResource => SkinResourceProvider.Current;
+        public IGohHumanskinResource? HumanskinResource => SkinResourceProvider.Resource;
 
         public ModelsLoadTreePlyFileViewModel? ApprovedPlyItem {
             get => _approvedPlyItem;
@@ -32,7 +33,7 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
             DefaultTexture = defaultTexture;
             SkinResourceProvider = skinResourceProvider;
             TextureProvider = textureProvider;
-            
+
             ModelsAdder.ModelAdded += ModelAddedHandler;
             ModelsAdder.CancelModelAdded += CancelModelAddedHandler;
             SkinResourceProvider.ResourceUpdated += HumanskinResourceUpdatedHandler;
@@ -44,7 +45,7 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
             }
 
             if (HumanskinResource != null) {
-                _items.Add(new ModelsLoadTreeDirectoryViewModel(HumanskinResource.Source, this));
+                App.Current.Synchronize(() => _items.Add(new ModelsLoadTreeDirectoryViewModel(HumanskinResource.Source, this)));
             }
         }
 
@@ -68,6 +69,7 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
         }
 
         public void CreatedItemHandler(object? sender, EventArgs e) {
+#warning Optimize event handler
             if (sender is ModelsLoadTreePlyFileViewModel item) {
                 if (item.Tree == this) {
                     item.PropertyChangeHandler.AddHandler(nameof(item.IsApproved), PlyFileApprovedChangeHandler);

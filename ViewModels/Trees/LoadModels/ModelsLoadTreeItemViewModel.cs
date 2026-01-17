@@ -1,9 +1,5 @@
-﻿using System.Diagnostics;
-using System.IO;
-using System.IO.Compression;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
-using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
 using WpfMvvm.ViewModels.Controls;
 using WpfMvvm.ViewModels.Controls.Menu;
 
@@ -72,14 +68,8 @@ namespace GohMdlExpert.ViewModels.Trees.LoadModels {
                 IsApproved = false;
             }
         }
-
         private void OpenInExplorer() {
-            string? path = ((ResourceElement as GohResourceFile)?.Loader as PakFileLoader)?.PakPath;
-
-            path ??= ((ResourceElement as GohResourceDirectory)?.Loader as PakDirectoryLoader)?.PakPath;
-            path ??= ResourceElement.GetFullPath();
-
-            Process.Start("explorer.exe", $"/select, {path}");
+            ViewModelUtils.OpenInExplorer(ResourceElement);
         }
     }
 }

@@ -11,7 +11,7 @@
         d:DataContext="{d:DesignInstance Type=viewmodels:ApplicationViewModel}"
         mc:Ignorable="d"
         WindowState="Maximized"
-        Title="GoH .mdl expert (beta)" Height="450" Width="800" MinHeight="400" MinWidth="675">
+        Title="{Binding AppVersion, StringFormat='GoH .mdl expert (beta) {0}'}" Height="450" Width="800" MinHeight="400" MinWidth="675">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -26,7 +26,7 @@
             </Menu.Resources>
             <MenuItem Header="File">
                 <MenuItem Header="Open resource" Command="{Binding OpenResourceCommand}"/>
-                <MenuItem Header="Open file" Command="{Binding OpenFileCommand}"/>
+                <!--<MenuItem Header="Open file" Command="{Binding OpenFileCommand}"/>-->
                 <MenuItem Header="Exit" Click="MenuItemExitClick"/>
             </MenuItem>
             <MenuItem Header="Edit">
@@ -41,6 +41,7 @@
                 <MenuItem Header="Dark" Command="{Binding SetDarkThemeCommand}"/>
             </MenuItem>
             <MenuItem Header="About" Click="MenuItemAboutClick"/>
+            <MenuItem Header="Test" Command="{Binding TestCommand}"/>
         </Menu>
         <!--<StackPanel HorizontalAlignment="Right">
             <Button Width="20" Height="20" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}">
@@ -59,10 +60,8 @@
             <views:HumanskinMdlOverviewView Grid.Column="2"/>
         </Grid>
         <StatusBar Grid.Row="2" Height="15">
-            <StatusBarItem>
-                <ProgressBar Value="{Binding CompletionPercentage}" Width="100" Margin="0 -5"/>
-            </StatusBarItem>
             <StatusBarItem/>
         </StatusBar>
+        <Rectangle Fill="Black" Opacity="0.5" d:Visibility="Collapsed" Visibility="{Binding IsWaitFillVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.RowSpan="3" />
     </Grid>
 </Window>

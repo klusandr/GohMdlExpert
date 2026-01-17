@@ -1,16 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
 using GohMdlExpert.Services;
 using WpfMvvm.Views.Dialogs;
 
@@ -22,8 +10,8 @@ namespace GohMdlExpert.Views.Dialogs {
         public new QuestionResult? DialogResult { get; private set; }
 
         public UserErrorDialogWindow(Window owner, string message, Exception? exception = null, string? title = null) {
-            InitializeComponent(); 
-            
+            InitializeComponent();
+
             Title = title ?? "Error!";
             Owner = owner;
             Messagse.Text = message;
@@ -35,7 +23,7 @@ namespace GohMdlExpert.Views.Dialogs {
 
                 Messagse.Text +=
                     $"Error message: {exception.Message}\n\n" +
-                    $"Code: {exception.HResult.ToString("x")}\n\n" +
+                    $"Code: 0x{exception.HResult:x}\n\n" +
                     $"Stack trace: {exception.StackTrace}";
             }
 
@@ -58,7 +46,7 @@ namespace GohMdlExpert.Views.Dialogs {
         }
 
         private void ButtonReportClick(object sender, RoutedEventArgs e) {
-            ErrorReporter.Report();
+            Reporter.Report(ReportType.Error, GetType().Assembly.GetName().Version?.ToString(), Messagse.Text);
         }
     }
 }

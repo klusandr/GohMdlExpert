@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO.Compression;
+using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
 
 namespace GohMdlExpert.Models.GatesOfHell.Extensions {
     public static class ZipArchiveExtensions {
@@ -33,7 +29,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Extensions {
 
             foreach (var directory in entriesPaths) {
                 if (!directoriesPaths.Any(directory.Contains)) {
-                    directoriesPaths.Add(GetPathFromComponents(GetPathComponents(directory).Take(deep + 1)) + '/');
+                    directoriesPaths.Add(SetPathAsDirectory(GetPathFromComponents(GetPathComponents(directory).Take(deep + 1))));
                 }
             }
 
@@ -47,11 +43,15 @@ namespace GohMdlExpert.Models.GatesOfHell.Extensions {
         }
 
         public static bool CheckDirectory(string fullName) {
-            return fullName.LastOrDefault() == '/';
+            return fullName.LastOrDefault() is ('/' or '\\');
+        }
+
+        public static string SetPathAsDirectory(string path) {
+            return path += PakResourceLoader.PATH_SEPARATOR;
         }
 
         public static int GetDeep(string fullName) {
-            return fullName.Count((c) => c == '/') - (CheckDirectory(fullName) ? 1 : 0);
+            return fullName.Count((c) => c is ('/' or '\\')) - (CheckDirectory(fullName) ? 1 : 0);
         }
 
         public static string[] GetPathComponents(string path) {
@@ -70,6 +70,14 @@ namespace GohMdlExpert.Models.GatesOfHell.Extensions {
             }
 
             return @$"{path}\{fullElementPath}";
+        }
+
+        public static string GetPathFromFirstElments(string path, int elementCount) {
+            return GetPathFromComponents(GetPathComponents(path).Take(elementCount));
+        }
+
+        public static string GetZipPath(string path) {
+            return path.Replace('\\', '/');
         }
     }
 }

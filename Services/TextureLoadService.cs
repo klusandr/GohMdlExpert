@@ -1,5 +1,4 @@
-﻿using System.Windows.Media.Media3D;
-using GohMdlExpert.Models.GatesOfHell.Resources.Data;
+﻿using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Views;
 
@@ -14,7 +13,7 @@ namespace GohMdlExpert.Services {
 
         public TextureLoadService() { }
 
-        public MtlTexture? GetMaterialDialog() {
+        public MtlTexture? ShowDialog() {
             _materialLoad ??= LoadView();
 
             if (SelectedTexture != null) {
@@ -38,15 +37,18 @@ namespace GohMdlExpert.Services {
         private TextureLoadView LoadView() {
             var view = new TextureLoadView();
 
-            view.ViewModel.TextureApprove += MaterialApproveHandler;
-            view.ViewModel.TextureApply += MaterialApplyHandler;
+            view.ViewModel.CancelEvent += CloseWibdow;
+            view.ViewModel.ApplyEvent += ApplyEventHandler;
+            view.ViewModel.OkEvent += CloseWibdow;
 
             return view;
         }
 
         private MtlTexture? GetSelectedTexture() {
-            if (_materialLoad?.ViewModel.Texture.Diffuse is not NullMaterialFile) {
-                return _materialLoad?.ViewModel.Texture;
+            var viewModel = _materialLoad?.ViewModel;
+
+            if (viewModel?.Texture.Diffuse is not NullMaterialFile) {
+                return viewModel?.Texture;
             } else {
                 return null;
             }
@@ -56,12 +58,12 @@ namespace GohMdlExpert.Services {
             _materialLoad?.ViewModel.ClearTexture();
         }
 
-        private void MaterialApplyHandler(object? sender, EventArgs e) {
+        private void ApplyEventHandler(object? sender, EventArgs e) {
             SelectedTexture = GetSelectedTexture();
             SelectedTextureChange?.Invoke(this, EventArgs.Empty);
         }
 
-        private void MaterialApproveHandler(object? sender, EventArgs e) {
+        private void CloseWibdow(object? sender, EventArgs e) {
             _childWindow?.Close();
         }
     }

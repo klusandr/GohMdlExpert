@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Serialization;
@@ -7,8 +6,7 @@ using static GohMdlExpert.Models.GatesOfHell.Serialization.ModelDataSerializer;
 using static GohMdlExpert.Models.GatesOfHell.Serialization.MtlSerializer;
 using SystemPath = System.IO.Path;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
-{
+namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class MtlFile : GohResourceFile {
         private static MtlSerializer? s_serializer;
 
@@ -26,7 +24,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
         }
 
         public override void LoadData() {
-            var parameters = Serializer.Deserialize(GetAllText());
+            var parameters = Serializer.Deserialize(ReadAllText());
             var textureFilesPath = new List<string?>();
 
             foreach (var type in (IEnumerable<Types>)[Types.Diffuse, Types.Bump, Types.Specular]) {
@@ -45,9 +43,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
                 throw TextureException.TextureDiffuseMaterialIsNotDefine(this);
             }
 
-            Data = new MtlTexture(new MaterialFile(textureFilesPath[0]!)) {
-                Bump = textureFilesPath[1] != null ? new MaterialFile(textureFilesPath[1]!) : null,
-                Specular = textureFilesPath[1] != null ? new MaterialFile(textureFilesPath[2]!) : null,
+            Data = new MtlTexture(textureFilesPath[0]!, textureFilesPath[1], textureFilesPath[2]) {
                 Color = color
             };
         }
@@ -97,8 +93,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files
                 Data = data
             });
 
-            using var stream = new StreamWriter(GetFullPath());
-            stream.Write(str);
+            WriteAllText(str);
         }
     }
 }

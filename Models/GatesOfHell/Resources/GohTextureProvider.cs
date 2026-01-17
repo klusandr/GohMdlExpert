@@ -1,9 +1,9 @@
-﻿using GohMdlExpert.Models.GatesOfHell.Exceptions;
+﻿using System.IO;
+using GohMdlExpert.Models.GatesOfHell.Exceptions;
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 
-namespace GohMdlExpert.Models.GatesOfHell.Resources
-{
+namespace GohMdlExpert.Models.GatesOfHell.Resources {
     public class GohTextureProvider {
         private GohResourceDirectory? _textureDirectory;
 
@@ -22,30 +22,39 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources
 
         public void Update() {
             if (GohResourceProvider.IsResourceLoaded) {
-                _textureDirectory = GohResourceProvider.GetLocationDirectory("texture");
+                _textureDirectory = GohResourceProvider.GetDirectory(GohResourceLocations.TextureCommon);
                 ResourceUpdated?.Invoke(this, EventArgs.Empty);
             }
         }
 
-        public void SetTextureMaterialsFullPath(MtlTexture mtlTexture) {
-            GohResourceFile?[] materialFiles = [mtlTexture.Diffuse, mtlTexture.Bump, mtlTexture.Specular];
+        public void TextureMaterialsInitialize(MtlTexture mtlTexture) {
+            if (!mtlTexture.IsMaterialsInitialize) {
+                mtlTexture.Diffuse = GetMaterialFile(mtlTexture.DiffusePath) ?? throw GohResourceFileException.IsNotExists(mtlTexture.DiffusePath);
 
-            foreach (var materialFile in materialFiles) {
-                if (materialFile != null) {
-                    SetMaterialFullPath((MaterialFile)materialFile);
+                if (mtlTexture.BumpPath != null) {
+                    mtlTexture.Bump = GetMaterialFile(mtlTexture.BumpPath) ?? throw GohResourceFileException.IsNotExists(mtlTexture.BumpPath);
+                }
+
+                if (mtlTexture.SpecularPath != null) {
+                    mtlTexture.Specular = GetMaterialFile(mtlTexture.SpecularPath) ?? throw GohResourceFileException.IsNotExists(mtlTexture.SpecularPath);
                 }
             }
         }
 
         public void SetTexturesMaterialsFullPath(IEnumerable<MtlTexture> mtlTextures) {
             foreach (var mtlTexture in mtlTextures) {
-                SetTextureMaterialsFullPath(mtlTexture);
+                TextureMaterialsInitialize(mtlTexture);
             }
         }
 
-        private MaterialFile SetMaterialFullPath(MaterialFile materialFile) {
-            if (materialFile.RelativePathPoint == null) {
-                materialFile.Loader = TextureDirectory.Loader.FileLoader;
+        private MaterialFile? GetMaterialFile(string materialPath) {
+            string materialFileName = Path.GetFileName(materialPath);
+            string meterialFilePath = Path.GetDirectoryName(materialPath)!;
+            var materialFile = TextureDirectory.AlongPath(meterialFilePath)?
+                .FindResourceElements<MaterialFile>(searchPattern: $"(?i)^{materialFileName}\\.[^.]+$", deepSearch: false, first: true).FirstOrDefault();
+
+            if (materialFile != null) {
+                materialFile.Path = meterialFilePath;
                 materialFile.RelativePathPoint = TextureDirectory.GetFullPath();
             }
 

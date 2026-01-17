@@ -2,8 +2,7 @@
 using GohMdlExpert.Models.GatesOfHell.Resources.Data;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 
-namespace GohMdlExpert.Models.GatesOfHell.Exceptions
-{
+namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
     public class PlyModelException : GohException {
         private const string MESSAGE = "Gates of hell ply model {0}error.";
         public PlyFile? PlyFile { get; }
@@ -39,6 +38,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions
 
         public static PlyModelException AttemptInstallInvalidMtlTexture(PlyFile? plyFile, MtlTexture mtlTexture) {
             return new PlyModelException($"Attempt set invalid texture \"{mtlTexture.Diffuse.Name}\".", plyFile) { ExceptionCode = 2 };
+        }
+
+        public static PlyModelException MeshIndexOutOfRange(PlyFile? plyFile, int meshIndex) {
+            return new PlyModelException($"Ply model mesh's index out of the range. Index: {meshIndex}.", plyFile) { ExceptionCode = 3 };
         }
     }
 }

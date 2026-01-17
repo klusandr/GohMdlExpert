@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.IO;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using GohMdlExpert.Models.GatesOfHell.Exceptions;
@@ -11,6 +10,7 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Files.Aggregates;
 using GohMdlExpert.Models.GatesOfHell.Resources.Humanskins;
 using GohMdlExpert.Services;
+using GohMdlExpert.ViewModels.Trees.Humanskins;
 using GohMdlExpert.ViewModels.Trees.LoadModels;
 using GohMdlExpert.ViewModels.Trees.OverviewModels;
 using WpfMvvm.Collections.ObjectModel;
@@ -18,16 +18,16 @@ using WpfMvvm.Data;
 using WpfMvvm.ViewModels;
 using WpfMvvm.Views.Dialogs;
 
-namespace GohMdlExpert.ViewModels
-{
+namespace GohMdlExpert.ViewModels {
     public sealed class HumanskinMdlOverviewViewModel : BaseViewModel {
         private MdlFile? _mdlFile;
         private PlyModel3D? _focusablePlyModel;
+        private IEnumerable<int>? _humanskinLodLevels;
+        private int _humanskinLodLevel;
         private readonly ObservableCollection<PlyModel3D> _plyModels;
         private readonly Model3DCollection _models;
         private readonly ObservableDictionary<string, AggregateMtlFile> _aggregateMtlFiles;
         private readonly Dictionary<string, int> _currentMtlFilesTexturesIndex;
-        private readonly Dictionary<PlyModel3D, ObservableCollection<PlyFile>> _lodPlyFiles;
         private readonly CollectionChangeBinder<Model3D> _modelsCollectionBinder;
         private readonly CollectionChangeHandler _plyModelsChangeHandler;
 
@@ -39,12 +39,17 @@ namespace GohMdlExpert.ViewModels
         private readonly ModelsOverviewTreeViewModel _modelsOverviewTreeViewModel;
         private readonly PlyModelAdderViewModel _modelAdderViewModel;
         private readonly ModelsLoadTreeViewModel _modelsLoadTreeViewModel;
-        private readonly HumanskinMdlGeneratorViewModel _humanskinMdlGeneratorViewModel;
+        private readonly HumanskinTreeViewModel _humanskinTreeViewModel;
+        private readonly HumanskinSaveService _humanskinSeveSrvice;
         private readonly DefaultTextureViewModel _defaultMaterialViewModel;
 
         public MdlFile? MdlFile {
             get => _mdlFile;
             set {
+                if (_mdlFile != value) {
+                    _mdlFile?.UnloadData();
+                }
+
                 _mdlFile = value;
                 OnPropertyChanged();
             }
@@ -64,22 +69,42 @@ namespace GohMdlExpert.ViewModels
             }
         }
 
+        public IEnumerable<int>? HumanskinLodLevels {
+            get => _humanskinLodLevels;
+            set {
+                _humanskinLodLevels = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int HumanskinLodLevel {
+            get => _humanskinLodLevel;
+            set {
+                _humanskinLodLevel = value;
+
+                foreach (var plyModel in _plyModels) {
+                    plyModel.SetLodIndex(value);
+                }
+
+                OnPropertyChanged();
+            }
+        }
 
         public ModelsOverviewTreeViewModel ModelsOverviewTreeViewModel => _modelsOverviewTreeViewModel;
         public ModelsLoadTreeViewModel ModelsLoadTreeViewModel => _modelsLoadTreeViewModel;
+        public HumanskinTreeViewModel HumanskinTreeViewModel => _humanskinTreeViewModel;
         public PlyModelAdderViewModel ModelAdderViewModel => _modelAdderViewModel;
         public DefaultTextureViewModel DefaultMaterialViewModel => _defaultMaterialViewModel;
 
-        public ICommand SaveMdlCommand => CommandManager.GetCommand(SaveMtlFile);
+        public ICommand SaveMdlCommand => CommandManager.GetCommand(SaveMtlFile, canExecute: (_) => MdlFile != null);
         public ICommand NewMdlCommand => CommandManager.GetCommand(CreateMdlFile);
         public ICommand ClearPlyModelFocusCommand => CommandManager.GetCommand(ClearPlyModelFocus);
 
         public event EventHandler? UpdatedTextures;
 
-        public HumanskinMdlOverviewViewModel(IUserDialogProvider userDialog, GohResourceProvider resourceProvider, GohHumanskinResourceProvider humanskinProvider, GohTextureProvider textureProvider, HumanskinMdlGeneratorViewModel humanskinMdlGeneratorViewModel, TextureLoadService textureSelector) {
+        public HumanskinMdlOverviewViewModel(IUserDialogProvider userDialog, GohResourceProvider resourceProvider, GohHumanskinResourceProvider humanskinProvider, GohTextureProvider textureProvider, HumanskinSaveService humanskinSeveSrvice, TextureLoadService textureSelector, SelectResourceFileService selectResourceFileService) {
             _models = [];
             _plyModels = [];
-            _lodPlyFiles = [];
             _aggregateMtlFiles = [];
             _currentMtlFilesTexturesIndex = [];
 
@@ -87,14 +112,21 @@ namespace GohMdlExpert.ViewModels
             _resourceProvider = resourceProvider;
             _humanskinProvider = humanskinProvider;
             _textureProvider = textureProvider;
-            _humanskinMdlGeneratorViewModel = humanskinMdlGeneratorViewModel;
+            _humanskinSeveSrvice = humanskinSeveSrvice;
 
             _defaultMaterialViewModel = new DefaultTextureViewModel(textureSelector);
             _modelAdderViewModel = new PlyModelAdderViewModel(this, _defaultMaterialViewModel);
             _modelsLoadTreeViewModel = new ModelsLoadTreeViewModel(_modelAdderViewModel, _defaultMaterialViewModel, humanskinProvider, textureProvider);
-            _modelsOverviewTreeViewModel = new ModelsOverviewTreeViewModel(this, textureSelector);
+            _humanskinTreeViewModel = new HumanskinTreeViewModel(this, humanskinProvider);
+            _modelsOverviewTreeViewModel = new ModelsOverviewTreeViewModel(this, textureSelector, selectResourceFileService);
 
-            _modelsCollectionBinder = new CollectionChangeBinder<Model3D>(_plyModels, _models, (i) => ((PlyModel3D)i!).Model);
+            PropertyChangeHandler.AddHandler(nameof(MdlFile), (_, _) => CommandManager.OnCommandCanExecuteChanged(nameof(SaveMdlCommand)));
+            _modelsCollectionBinder = new CollectionChangeBinder<Model3D>(_plyModels, _models,
+                (s) => {
+                    var plyModel = (s as PlyModel3D)!;
+                    plyModel.ModelChanged += PlyModelChanged;
+                    return plyModel.Model;
+                });
             _plyModelsChangeHandler = new CollectionChangeHandler(_plyModels)
                 .AddHandlerBuilder(NotifyCollectionChangedAction.Remove, PlyModelRemoveHandler)
                 .AddHandlerBuilder(NotifyCollectionChangedAction.Reset, PlyModelRemoveHandler);
@@ -108,11 +140,12 @@ namespace GohMdlExpert.ViewModels
         public void SetMtlFile(MdlFile mdlFile) {
             PlyModels.Clear();
 
-            GohResourceLoading.LoadHumanskinFile(mdlFile, out var mtlFiles, _humanskinProvider, _textureProvider);
+            _humanskinProvider.Resource.MdlMdoelInitialize(mdlFile.Data);
+            GohResourceLoading.LoadHumanskinFile(mdlFile, out var mtlFiles, _resourceProvider, _textureProvider);
 
             MdlFile = mdlFile;
-            var plyFiles = mdlFile.Data.PlyModel;
-            var lodFiles = mdlFile.Data.PlyModelLods;
+            var plyFiles = mdlFile.Data.PlyModels;
+            var lodFiles = mdlFile.Data.PlyModelsLods;
 
             var missTexture = new List<MtlFile>();
 
@@ -120,16 +153,17 @@ namespace GohMdlExpert.ViewModels
                 var plyFile = plyFiles.FirstOrDefault(p => p.Data.Meshes.Select(m => m.TextureName).Contains(mtlFile.Name));
 
                 if (plyFile != null) {
-                    AddAggregateMtlFile(new AggregateMtlFile(mtlFile, plyFile));
+                    AddAggregateMtlFile(new AggregateMtlFile(mtlFile));
                 } else {
                     missTexture.Add(mtlFile);
                 }
             }
 
             foreach (var plyFile in plyFiles) {
-                AddModel(new PlyModel3D(plyFile), lodModels: lodFiles[plyFile]);
+                lodFiles.TryGetValue(plyFile, out var lodFile);
+                AddModel(new PlyModel3D(plyFile, lodPlyFiles: lodFile));
             }
-            
+
             UpdateTextures();
 
             if (missTexture.Count != 0) {
@@ -139,7 +173,7 @@ namespace GohMdlExpert.ViewModels
             ClearPlyModelFocus();
         }
 
-        public void AddModel(PlyModel3D modelPly, AggregateMtlFiles? aggregateMtlFiles = null, IEnumerable<PlyFile>? lodModels = null) {
+        public void AddModel(PlyModel3D modelPly, AggregateMtlFiles? aggregateMtlFiles = null) {
             if (MdlFile == null) {
                 CreateMdlFile();
             }
@@ -150,12 +184,22 @@ namespace GohMdlExpert.ViewModels
                 }
             }
 
-            try {
-                _lodPlyFiles.Add(modelPly, new ObservableCollection<PlyFile>(lodModels ?? GohResourceLoading.GetPlyLodFiles(modelPly.PlyFile, _humanskinProvider.Current, _resourceProvider)));
-            } catch (GohException) {
-                _userDialog.ShowWarning("Load LOD models failed. Add LOD elements by manually.");
+            if (modelPly.LodPlyFiles.Count == 0) {
+                var result = _userDialog.Ask("Ply model don't have LOD models. Add null LOD?", "LOD models", QuestionType.YesNoCancel);
+
+                if (result == QuestionResult.Yes) {
+                    var nullLod = _humanskinProvider.Resource.GetNullPlyFile(modelPly.PlyFile);
+
+                    if (nullLod != null) {
+                        modelPly.LodPlyFiles.Add(nullLod);
+                    } else {
+                        _userDialog.ShowWarning(string.Format("Program don't find null LOD models for \"{0}\".", modelPly.PlyFile.GetFullPath()), "LOD models");
+                    }
+                } else if (result == QuestionResult.Cancel) {
+                    throw new OperationCanceledException();
+                }
             }
-            
+
             _plyModels.Add(modelPly);
             UpdateTextures();
         }
@@ -194,12 +238,22 @@ namespace GohMdlExpert.ViewModels
                 return;
             }
 
-            _humanskinMdlGeneratorViewModel.CreateMtlFile(
-                MdlFile,
+            MdlModel? mdlModel = null;
+
+            MdlFile.Data = new MdlModel(
+                mdlModel?.Parameters ?? GohResourceLoading.MdlTemplateParameters,
                 PlyModels.Select(p => p.PlyFile),
-                new Dictionary<string, MtlTexture>(AggregateMtlFiles.Values.Select(m => new KeyValuePair<string, MtlTexture>(m.Name, m.Data.ElementAt(GetMtlFileMaterialIndex(m.Name))))),
-                new Dictionary<PlyFile, PlyFile[]>(_lodPlyFiles.Select(l => new KeyValuePair<PlyFile, PlyFile[]>(l.Key.PlyFile, l.Value.ToArray())))
+                new(PlyModels.Select(l => new KeyValuePair<PlyFile, PlyFile[]>(l.PlyFile, [.. l.LodPlyFiles])))
             );
+
+            var textures = new Dictionary<string, MtlTexture>(
+                AggregateMtlFiles.Keys.Select(
+                    (n) => new KeyValuePair<string, MtlTexture>(n, GetCurrentMtlFileTexture(n) ?? throw GohResourceSaveException.MtlTextureIsNotDefindForMesh(n))
+                )
+            );
+
+            _humanskinSeveSrvice.Save(MdlFile, textures);
+            OnPropertyChanged(nameof(MdlFile));
         }
 
         public void SetMtlFileTextureByIndex(string meshTextureName, int index) {
@@ -261,11 +315,6 @@ namespace GohMdlExpert.ViewModels
             return _plyModels.Where(p => p.MeshesTextureNames.Contains(mtlFileName));
         }
 
-        public ObservableCollection<PlyFile>? GetPlyModelLodFiles(PlyModel3D modelPly) {
-            _lodPlyFiles.TryGetValue(modelPly, out var value);
-            return value;
-        }
-
         public void ClearPlyModelFocus() {
             FocusablePlyModel = null;
         }
@@ -311,19 +360,46 @@ namespace GohMdlExpert.ViewModels
             }
         }
 
+        private void UpdateLodLevels() {
+            var maxLodLevel = _plyModels.Max(p => p.LodPlyFiles.Count);
+
+            if (maxLodLevel + 1 == HumanskinLodLevels?.Count()) { return; }
+
+            var array = new int[maxLodLevel + 1];
+
+            for (int i = 0; i <= maxLodLevel; i++) {
+                array[i] = i;
+            }
+
+            HumanskinLodLevel = 0;
+            HumanskinLodLevels = array;
+        }
+
+
+        private void PlyModelChanged(object? s, EventArgs e) {
+            var plyModel = (s as PlyModel3D)!;
+
+            int index = _plyModels.IndexOf(plyModel);
+
+            if (index >= 0 && index < _models.Count) {
+                _models[_plyModels.IndexOf(plyModel)] = plyModel.Model;
+            }
+
+            UpdateLodLevels();
+        }
+
         private void PlyModelRemoveHandler(object? sender, NotifyCollectionChangedEventArgs e) {
             if (_plyModels.Count == 0) {
                 ClearAggregateFiles();
-                _lodPlyFiles.Clear();
             } else {
-                _lodPlyFiles.Remove(e.GetItem<PlyModel3D>()!);
-
                 foreach (var aggregateMtlFile in _aggregateMtlFiles.Values) {
                     if (!GetMtlFilePlyModels(aggregateMtlFile.Name).Any()) {
                         RemoveAggregateMtlFile(aggregateMtlFile.Name);
                     }
                 }
             }
+
+            e.GetItem<PlyModel3D>()?.UnloadResource();
         }
     }
 }
