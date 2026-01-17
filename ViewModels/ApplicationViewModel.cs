@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -36,6 +37,8 @@ namespace GohMdlExpert.ViewModels {
                 OnPropertyChanged();
             }
         }
+
+        public string? AppVersion => Assembly.GetExecutingAssembly().GetName().Version?.ToString();
 
         public ICommand OpenResourceCommand => CommandManager.GetCommand(OpenResourceDirectory);
         public ICommand OpenFileCommand => CommandManager.GetCommand(OpenFile);

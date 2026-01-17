@@ -11,7 +11,7 @@
         d:DataContext="{d:DesignInstance Type=viewmodels:ApplicationViewModel}"
         mc:Ignorable="d"
         WindowState="Maximized"
-        Title="GoH .mdl expert (beta)" Height="450" Width="800" MinHeight="400" MinWidth="675">
+        Title="{Binding AppVersion, StringFormat='GoH .mdl expert (beta) {0}'}" Height="450" Width="800" MinHeight="400" MinWidth="675">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
