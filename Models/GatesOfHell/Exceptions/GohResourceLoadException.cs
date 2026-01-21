@@ -1,5 +1,6 @@
 ﻿using GohMdlExpert.Models.GatesOfHell.Resources.Files;
 using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
+using Windows.ApplicationModel.Resources;
 
 namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
     public class GohResourceLoadException : GohException {
@@ -51,6 +52,10 @@ namespace GohMdlExpert.Models.GatesOfHell.Exceptions {
 
         public static GohResourceLoadException LoaderNotLoadResource(IGohResourceLoader resourceLoader) {
             return new GohResourceLoadException(string.Format("Resource loader \"{0}\" is not load data.", resourceLoader.GetType().Name)) { ExceptionCode = 12 };
+        }
+
+        public static GohResourceLoadException InvalidNumberFormat() {
+            return new GohResourceLoadException("The number format is invalid.") { ExceptionCode = 13 };
         }
 
         private static string GetFullErrorMessage(string? message = null) {
