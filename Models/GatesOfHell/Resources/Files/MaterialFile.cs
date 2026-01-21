@@ -2,11 +2,8 @@
 using System.Windows.Media.Media3D;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
-    public class MaterialFile : GohResourceFile {
-        public static string Extension => ".dds";
-        public static string Extension2 => ".ebm";
-
-        public MaterialFile(string name, string? path = null, string? relativePathPoint = null) : base(GetNameWithExtension(name), path, relativePathPoint) { }
+    public abstract class MaterialFile : GohResourceFile {
+        protected MaterialFile(string name, string extension, string? path = null, string? relativePathPoint = null) : base(GetNameWithExtension(name, extension), path, relativePathPoint) { }
 
         public new DiffuseMaterial Data => GetMaterial();
         public ImageSource? ImageSource => (Data.Brush as ImageBrush)?.ImageSource;
@@ -17,8 +14,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
 
         public override void LoadData() { }
 
-        private static string GetNameWithExtension(string name) {
-            return (name.Contains(Extension) || name.Contains(Extension2)) ? name : name + Extension;
+        protected static string GetNameWithExtension(string name, string extension) {
+            return name.Contains(extension) ? name : name + extension;
         }
 
         protected virtual DiffuseMaterial GetMaterial() {

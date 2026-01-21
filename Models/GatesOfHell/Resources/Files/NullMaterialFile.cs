@@ -3,7 +3,7 @@ using GohMdlExpert.Models.GatesOfHell.Media3D;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources.Files {
     public class NullMaterialFile : MaterialFile {
-        public NullMaterialFile() : base(string.Empty) { }
+        public NullMaterialFile() : base(string.Empty, string.Empty) { }
 
         public override string? GetExtension() {
             return null;
