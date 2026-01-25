@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
+using GohMdlExpert.Models.GatesOfHell.Exceptions;
 
 namespace GohMdlExpert.Models.GatesOfHell.Serialization {
     public class ModelDataSerializer {
@@ -36,6 +38,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
 
         private readonly Dictionary<string, ParameterType> _types;
 
+        public static readonly NumberFormatInfo NumberFormat = new() { NumberDecimalSeparator = "." };
 
         public ModelDataSerializer() {
             _types = [];
@@ -77,7 +80,6 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
         public virtual string Serialize(ModelDataParameter modelDataParameter) {
             var buildString = WriteParameter(modelDataParameter);
 
-            buildString.Replace(',', '.');
             buildString.Replace('\\', '/');
 
             return buildString.ToString();
@@ -128,6 +130,30 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
             }
 
             return -1;
+        }
+
+        public static float StringToFloat(string text) {
+            if (!float.TryParse(text, NumberStyles.Any, NumberFormat, out float value)) {
+                throw GohResourceLoadException.InvalidNumberFormat();
+            }
+
+            return value;
+        }
+
+        public static string FloadToString(float value) {
+            return value.ToString(NumberFormat);
+        }
+
+        public static double StringToDoble(string text) {
+            if (!double.TryParse(text, NumberStyles.Any, NumberFormat, out double value)) {
+                throw GohResourceLoadException.InvalidNumberFormat();
+            }
+
+            return value;
+        }
+
+        public static string DobleToString(double value) {
+            return value.ToString(NumberFormat);
         }
 
         private StringBuilder WriteParameter(ModelDataParameter parameter, StringBuilder? buildString = null, int level = 0) {
@@ -183,7 +209,7 @@ namespace GohMdlExpert.Models.GatesOfHell.Serialization {
             string textData = (string)parameter.Data!;
 
             if (_types.TryGetValue(parameter.Type, out var type) && type.Parser != null) {
-                parameter.Data = type.Parser(textData.Replace('.', ','));
+                parameter.Data = type.Parser(textData);
             } else {
                 if (textData.Contains('{')) {
                     parameter.Data = ParseParameterCollection(textData);

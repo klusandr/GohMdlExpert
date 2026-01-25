@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.DirectoryServices.ActiveDirectory;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -10,6 +12,7 @@ using GohMdlExpert.Models.GatesOfHell.Resources.Files.Loaders;
 using GohMdlExpert.Models.GatesOfHell.Resources.Loaders;
 using GohMdlExpert.Models.GatesOfHell.Serialization;
 using GohMdlExpert.Models.GatesOfHell.Сaches;
+using Pfim;
 
 namespace GohMdlExpert.Models.GatesOfHell.Resources {
     /// <summary>
@@ -41,8 +44,8 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
             [MdlFile.Extension] = typeof(MdlFile),
             [PlyFile.Extension] = typeof(PlyFile),
             [MtlFile.Extension] = typeof(MtlFile),
-            [MaterialFile.Extension] = typeof(MaterialFile),
-            [MaterialFile.Extension2] = typeof(MaterialFile),
+            [DdsTextureFile.Extension] = typeof(DdsTextureFile),
+            [EbmTextureFile.Extension] = typeof(EbmTextureFile),
             [DefFile.Extension] = typeof(DefFile)
         };
 
@@ -69,14 +72,42 @@ namespace GohMdlExpert.Models.GatesOfHell.Resources {
 
                 using var stream = materialFile.GetStream();
 
-                var bitmap = new BitmapImage();
+                BitmapSource bitmap;
 
-                bitmap.BeginInit();
-                bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                bitmap.StreamSource = new MemoryStream();
-                stream.CopyTo(bitmap.StreamSource);
-                bitmap.EndInit();
+                if (materialFile is DdsTextureFile) {
+                    using var pImage = Pfimage.FromStream(stream);
 
+                    var format = pImage.Format switch {
+                        ImageFormat.Rgb24 => PixelFormats.Bgr24,
+                        ImageFormat.Rgba32 => PixelFormats.Bgra32,
+                        ImageFormat.R5g5b5 => PixelFormats.Bgr555,
+                        ImageFormat.R5g6b5 => PixelFormats.Bgr565,
+                        _ => throw new Exception("Неподдерживаемый формат DDS"),
+                    };
+                    var handle = GCHandle.Alloc(pImage.Data, GCHandleType.Pinned);
+
+                    try {
+                        var ptr = handle.AddrOfPinnedObject();
+
+                        bitmap = BitmapSource.Create(
+                            pImage.Width, pImage.Height,
+                            96, 96, format, null,
+                            ptr, pImage.DataLen, pImage.Stride);
+                    } finally {
+                        handle.Free();
+                    }
+
+                } else {
+                    var imgBitmap = new BitmapImage();
+
+                    imgBitmap.BeginInit();
+                    imgBitmap.StreamSource = new MemoryStream();
+                    imgBitmap.CacheOption = BitmapCacheOption.OnLoad;
+                    stream.CopyTo(imgBitmap.StreamSource);
+                    imgBitmap.EndInit();
+
+                    bitmap = imgBitmap;
+                }
 
                 diffuseMaterial = new DiffuseMaterial(
                     new ImageBrush(bitmap) {
